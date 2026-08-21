@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brand-50 text-brand-800 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-brand-950 font-semibold tracking-tight;
+  }
+}
+
+/* Clases de diseño premium Shopify-style */
+.shopify-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.shopify-card {
+  @apply bg-white border border-brand-200 rounded-lg shadow-premium hover:shadow-card transition-all duration-300;
+}
+
+.shopify-btn-primary {
+  @apply bg-brand-950 text-white hover:bg-brand-800 disabled:bg-brand-300 rounded px-6 py-3 font-medium text-sm transition-all duration-200 shadow-sm flex items-center justify-center;
+}
+
+.shopify-btn-secondary {
+  @apply bg-white text-brand-700 border border-brand-200 hover:bg-brand-100 hover:text-brand-950 rounded px-6 py-3 font-medium text-sm transition-all duration-200 flex items-center justify-center;
+}
+
+.shopify-input {
+  @apply w-full px-3.5 py-2.5 bg-white border border-brand-300 rounded shadow-input focus:border-brand-950 focus:ring-1 focus:ring-brand-950 outline-none text-sm text-brand-800 placeholder-brand-400 transition-colors duration-150;
+}
+
+/* Efecto de brillo de tarjeta física premium */
+.card-glossy {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glossy::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 30%,
+    rgba(255, 255, 255, 0.2) 40%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  transition: transform 0.8s ease-in-out;
+}
+
+.card-glossy:hover::after {
+  transform: skewX(-25deg) translate3d(50%, 0, 0);
+}
