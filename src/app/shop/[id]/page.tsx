@@ -48,6 +48,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         setRedirectUrl('https://www.tripadvisor.com/UserReview-...');
       } else if (found.type === 'instagram') {
         setRedirectUrl('https://instagram.com/mi_negocio');
+      } else if (found.type === 'airbnb') {
+        setRedirectUrl('https://www.airbnb.com/rooms/...');
       }
     }
   }, [params.id]);
@@ -173,7 +175,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <span className="text-[9px] font-black uppercase tracking-wider opacity-85">
                     {product.type === 'google' ? 'Google Reviews' :
                      product.type === 'tripadvisor' ? 'TripAdvisor' :
-                     product.type === 'instagram' ? 'Instagram' : 'Contacto Inteligente'}
+                     product.type === 'instagram' ? 'Instagram' :
+                     product.type === 'airbnb' ? 'Airbnb Connect' : 'Contacto Inteligente'}
                   </span>
                   
                   {/* Visual Chip Representation */}

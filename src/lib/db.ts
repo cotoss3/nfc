@@ -11,7 +11,7 @@ export interface Product {
   colors?: string[];
   material?: string;
   category: 'plates' | 'cards' | 'accessories';
-  type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'custom';
+  type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'airbnb' | 'custom';
 }
 
 export interface OrderItem {
@@ -110,6 +110,17 @@ const INITIAL_PRODUCTS: Product[] = [
     type: 'instagram'
   },
   {
+    id: 'placa-airbnb',
+    name: 'Placa NFC Airbnb Connect (Acrílico)',
+    description: 'Placa de acrílico premium para anfitriones de Airbnb. Permite a tus huéspedes conectarse al WiFi del alojamiento, abrir la guía digital de la casa o calificar con 5 estrellas con un solo toque.',
+    price: 34.99,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600',
+    colors: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
+    material: 'Acrílico Premium 3mm',
+    category: 'plates',
+    type: 'airbnb'
+  },
+  {
     id: 'tarjeta-pvc',
     name: 'Tarjeta de Presentación NFC PVC',
     description: 'Tarjeta inteligente de PVC negro o blanco mate. Reemplaza miles de tarjetas de papel tradicionales compartiendo tu información de contacto con un toque.',
@@ -168,7 +179,8 @@ class LocalDbService {
     const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
     const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
     const isGooglePlacaPVC = storedProducts.some(p => p.id === 'placa-google' && p.name.includes('PVC'));
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC) {
+    const hasAirbnb = storedProducts.some(p => p.id === 'placa-airbnb');
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {
