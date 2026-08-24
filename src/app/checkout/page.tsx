@@ -70,8 +70,8 @@ export default function CheckoutPage() {
     switch (shippingMethod) {
       case 'uno': return 6.50;
       case 'servi': return 7.50;
-      case 'local': return 4.00;
-      case 'office': return 0.00;
+      case 'local': return 3.75;
+      case 'office': return 3.00;
     }
   };
 
@@ -260,10 +260,10 @@ export default function CheckoutPage() {
                     }`}
                   >
                     <div>
-                      <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Mensajería Local</span>
-                      <span className="text-[10px] text-brand-400">Ciudad de Panamá (1-2 días)</span>
+                      <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Panamá Centro</span>
+                      <span className="text-[10px] text-brand-400">Oficina o Residencia (1-2 días)</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$4.00</span>
+                    <span className="font-black text-xs text-brand-950">$3.75</span>
                   </button>
 
                   <button
@@ -305,7 +305,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Retiro Oficina</span>
                       <span className="text-[10px] text-brand-400">San Francisco, Panamá</span>
                     </div>
-                    <span className="font-bold text-xs text-accent-600 uppercase">Gratis</span>
+                    <span className="font-black text-xs text-brand-950">$3.00</span>
                   </button>
                 </div>
               </div>
