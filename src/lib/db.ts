@@ -82,12 +82,12 @@ const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: 'placa-google',
-    name: 'Tarjeta NFC Google Reviews (Acrílico)',
-    description: 'Tarjeta inteligente de acrílico premium de tamaño bolsillo (estilo tarjeta de crédito). Diseñada para llevar en la billetera y conseguir reseñas en Google Maps en cualquier lugar con un solo toque.',
-    price: 34.99,
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=600',
-    colors: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
-    material: 'Acrílico Premium 3mm',
+    name: 'Tarjeta NFC Google Reviews (PVC)',
+    description: 'Tarjeta inteligente de PVC premium de tamaño bolsillo (estilo tarjeta de crédito). Diseñada para llevar en la billetera y conseguir reseñas en Google Maps en cualquier lugar con un solo toque.',
+    price: 24.99,
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
+    colors: ['Negro Mate', 'Blanco Mate'],
+    material: 'PVC Premium 0.76mm (Grado Tarjeta de Crédito)',
     category: 'cards',
     type: 'google'
   },
@@ -167,8 +167,8 @@ class LocalDbService {
     
     const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
     const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
-    const isGooglePlacaUpdated = storedProducts.some(p => p.id === 'placa-google' && p.category === 'cards');
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaUpdated) {
+    const isGooglePlacaPVC = storedProducts.some(p => p.id === 'placa-google' && p.name.includes('PVC'));
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {
