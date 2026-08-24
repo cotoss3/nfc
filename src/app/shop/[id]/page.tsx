@@ -21,12 +21,21 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [isSuccess, setIsSuccess] = useState(false);
   const [logoFile, setLogoFile] = useState<string>('');
 
+  const [activeTab, setActiveTab] = useState<'photos' | 'mockup'>('photos');
+  const [selectedImage, setSelectedImage] = useState('');
+
   useEffect(() => {
     const found = dbLocal.getProductById(params.id);
     if (!found) {
       notFound();
     } else {
       setProduct(found);
+      setSelectedImage(found.image);
+      if (found.images && found.images.length > 0) {
+        setActiveTab('photos');
+      } else {
+        setActiveTab('mockup');
+      }
       if (found.type === 'google') {
         setRedirectUrl('https://search.google.com/local/writereview?placeid=...');
       } else if (found.type === 'tripadvisor') {
@@ -92,60 +101,108 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* Left Side: Mockup & Images */}
-        <div className="lg:col-span-5 space-y-8">
-          {/* Card Hardware Mockup */}
-          <div className="bg-white border border-brand-200 rounded-lg p-6 shadow-premium flex flex-col items-center">
-            <span className="text-[10px] font-bold text-brand-400 mb-6 uppercase tracking-widest">Maqueta 3D Digital</span>
-            
-            {/* Visual Hardware Card */}
-            <div className={`relative w-72 h-44 rounded-xl shadow-card flex flex-col justify-between p-5 border text-white card-glossy transition-all duration-300 ${
-              color.includes('Negro') ? 'bg-brand-950 border-brand-950' :
-              color.includes('Blanco') ? 'bg-white border-brand-200 !text-brand-950' :
-              color.includes('Bambú') ? 'bg-[#f7e2c4] border-[#ebd4b3] !text-amber-950' :
-              color.includes('Nogal') ? 'bg-[#3b2314] border-[#29170c]' :
-              color.includes('Dorado') ? 'bg-gradient-to-r from-amber-400 to-yellow-600 border-amber-600' :
-              'bg-gradient-to-r from-zinc-200 to-zinc-400 border-zinc-400 !text-zinc-800'
-            }`}>
-              {/* Top Card Row */}
-              <div className="flex justify-between items-start">
-                <span className="text-[9px] font-black uppercase tracking-wider opacity-85">
-                  {product.type === 'google' ? 'Google Reviews' :
-                   product.type === 'tripadvisor' ? 'TripAdvisor' :
-                   product.type === 'instagram' ? 'Instagram' : 'Contacto Inteligente'}
-                </span>
-                
-                {/* Visual Chip Representation */}
-                <div className="w-6 h-5 bg-yellow-400/25 border border-yellow-400/50 rounded flex items-center justify-center">
-                  <div className="w-3.5 h-3 border-r border-b border-yellow-400/30"></div>
-                </div>
-              </div>
+        <div className="lg:col-span-5 space-y-6">
+          
+          {/* Tab Selector if images exist */}
+          {product.images && product.images.length > 0 && (
+            <div className="flex border-b border-brand-200">
+              <button
+                type="button"
+                onClick={() => setActiveTab('photos')}
+                className={`flex-1 pb-2.5 text-xs font-bold uppercase tracking-wider border-b-2 text-center transition-all ${
+                  activeTab === 'photos' ? 'border-brand-950 text-brand-950 font-bold' : 'border-transparent text-brand-400 hover:text-brand-700'
+                }`}
+              >
+                Fotos Reales
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('mockup')}
+                className={`flex-1 pb-2.5 text-xs font-bold uppercase tracking-wider border-b-2 text-center transition-all ${
+                  activeTab === 'mockup' ? 'border-brand-950 text-brand-950 font-bold' : 'border-transparent text-brand-400 hover:text-brand-700'
+                }`}
+              >
+                Diseño Interactivo
+              </button>
+            </div>
+          )}
 
-              {/* Logo Overlay */}
-              <div className="flex justify-center items-center h-12">
-                {logoPreview ? (
-                  <img src={logoPreview} alt="Tu Logo" className="max-h-10 object-contain" />
-                ) : (
-                  <span className="text-[10px] uppercase font-bold opacity-30 tracking-widest">LOGOTIPO</span>
-                )}
+          {activeTab === 'photos' && product.images && product.images.length > 0 ? (
+            /* Physical Photo Gallery */
+            <div className="space-y-4">
+              <div className="bg-white border border-brand-200 rounded-lg p-4 shadow-premium flex items-center justify-center aspect-square overflow-hidden">
+                <img src={selectedImage} alt={product.name} className="max-h-full max-w-full object-contain" />
               </div>
-
-              {/* Bottom Card Row */}
-              <div className="flex justify-between items-end border-t border-white/10 pt-3">
-                <div className="max-w-[70%]">
-                  <span className="text-[8px] opacity-50 uppercase block tracking-wider">Establecimiento</span>
-                  <span className="text-xs font-bold truncate block">{businessName || 'MI NEGOCIO'}</span>
-                </div>
-                {/* Simulated QR Code */}
-                <div className={`w-8 h-8 rounded p-0.5 ${color.includes('Blanco') ? 'bg-brand-950' : 'bg-white'}`}>
-                  <div className={`w-full h-full rounded-[2px] ${color.includes('Blanco') ? 'bg-white' : 'bg-brand-950'}`}></div>
-                </div>
+              <div className="grid grid-cols-5 gap-2">
+                {product.images.map((img, idx) => (
+                  <button
+                    type="button"
+                    key={idx}
+                    onClick={() => setSelectedImage(img)}
+                    className={`aspect-square border rounded overflow-hidden bg-brand-50 hover:border-brand-950 transition-colors ${
+                      selectedImage === img ? 'border-brand-950 ring-1 ring-brand-950' : 'border-brand-200'
+                    }`}
+                  >
+                    <img src={img} alt={`Miniatura ${idx}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
             </div>
-            
-            <p className="text-[10px] text-brand-400 mt-6 text-center leading-relaxed max-w-[220px]">
-              *Visualización del grabado láser. El producto final se produce con acabados físicos reales.
-            </p>
-          </div>
+          ) : (
+            /* Card Hardware Mockup Customizer */
+            <div className="bg-white border border-brand-200 rounded-lg p-6 shadow-premium flex flex-col items-center">
+              <span className="text-[10px] font-bold text-brand-400 mb-6 uppercase tracking-widest">Maqueta 3D Digital</span>
+              
+              {/* Visual Hardware Card */}
+              <div className={`relative w-72 h-44 rounded-xl shadow-card flex flex-col justify-between p-5 border text-white card-glossy transition-all duration-300 ${
+                color.includes('Negro') ? 'bg-brand-950 border-brand-950' :
+                color.includes('Blanco') ? 'bg-white border-brand-200 !text-brand-950' :
+                color.includes('Bambú') ? 'bg-[#f7e2c4] border-[#ebd4b3] !text-amber-950' :
+                color.includes('Nogal') ? 'bg-[#3b2314] border-[#29170c]' :
+                color.includes('Dorado') ? 'bg-gradient-to-r from-amber-400 to-yellow-600 border-amber-600' :
+                'bg-gradient-to-r from-zinc-200 to-zinc-400 border-zinc-400 !text-zinc-800'
+              }`}>
+                {/* Top Card Row */}
+                <div className="flex justify-between items-start">
+                  <span className="text-[9px] font-black uppercase tracking-wider opacity-85">
+                    {product.type === 'google' ? 'Google Reviews' :
+                     product.type === 'tripadvisor' ? 'TripAdvisor' :
+                     product.type === 'instagram' ? 'Instagram' : 'Contacto Inteligente'}
+                  </span>
+                  
+                  {/* Visual Chip Representation */}
+                  <div className="w-6 h-5 bg-yellow-400/25 border border-yellow-400/50 rounded flex items-center justify-center">
+                    <div className="w-3.5 h-3 border-r border-b border-yellow-400/30"></div>
+                  </div>
+                </div>
+
+                {/* Logo Overlay */}
+                <div className="flex justify-center items-center h-12">
+                  {logoPreview ? (
+                    <img src={logoPreview} alt="Tu Logo" className="max-h-10 object-contain" />
+                  ) : (
+                    <span className="text-[10px] uppercase font-bold opacity-30 tracking-widest">LOGOTIPO</span>
+                  )}
+                </div>
+
+                {/* Bottom Card Row */}
+                <div className="flex justify-between items-end border-t border-white/10 pt-3">
+                  <div className="max-w-[70%]">
+                    <span className="text-[8px] opacity-50 uppercase block tracking-wider">Establecimiento</span>
+                    <span className="text-xs font-bold truncate block">{businessName || 'MI NEGOCIO'}</span>
+                  </div>
+                  {/* Simulated QR Code */}
+                  <div className={`w-8 h-8 rounded p-0.5 ${color.includes('Blanco') ? 'bg-brand-950' : 'bg-white'}`}>
+                    <div className={`w-full h-full rounded-[2px] ${color.includes('Blanco') ? 'bg-white' : 'bg-brand-950'}`}></div>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-[10px] text-brand-400 mt-6 text-center leading-relaxed max-w-[220px]">
+                *Visualización del grabado láser. El producto final se produce con acabados físicos reales.
+              </p>
+            </div>
+          )}
 
           {/* Details */}
           <div className="bg-white border border-brand-200 rounded-lg p-6 space-y-4 shadow-premium">

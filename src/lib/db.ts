@@ -7,6 +7,7 @@ export interface Product {
   description: string;
   price: number;
   image: string;
+  images?: string[];
   category: 'plates' | 'cards' | 'accessories';
   type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'custom';
 }
@@ -61,6 +62,22 @@ export interface ScanRecord {
 
 // Productos semilla predeterminados
 const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'NFC_10001',
+    name: 'Placa NFC Google Reviews Elite (Acrílico Blanco)',
+    description: 'Aumenta tus reseñas de Google Maps de forma rápida y orgánica en Panamá con esta elegante placa NFC de acrílico blanco pulido de 3mm. Pago único de por vida sin mensualidades.',
+    price: 34.99,
+    image: '/products/NFC_10001/NFC_10001_white_0.png',
+    images: [
+      '/products/NFC_10001/NFC_10001_white_0.png',
+      '/products/NFC_10001/NFC_10001_white_1.png',
+      '/products/NFC_10001/NFC_10001_white_2.png',
+      '/products/NFC_10001/NFC_10001_white_3.png',
+      '/products/NFC_10001/NFC_10001_white_4.png'
+    ],
+    category: 'plates',
+    type: 'google'
+  },
   {
     id: 'placa-google',
     name: 'Placa NFC Google Reviews (Acrílico)',
