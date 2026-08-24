@@ -68,8 +68,8 @@ export default function CheckoutPage() {
 
   const getShippingCost = () => {
     switch (shippingMethod) {
-      case 'uno': return 6.00;
-      case 'servi': return 6.50;
+      case 'uno': return 6.50;
+      case 'servi': return 7.50;
       case 'local': return 4.00;
       case 'office': return 0.00;
     }
@@ -277,7 +277,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Uno Express</span>
                       <span className="text-[10px] text-brand-400">Retiro en Sucursal Interior</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$6.00</span>
+                    <span className="font-black text-xs text-brand-950">$6.50</span>
                   </button>
 
                   <button
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Servientrega</span>
                       <span className="text-[10px] text-brand-400">A Domicilio en Provincias</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$6.50</span>
+                    <span className="font-black text-xs text-brand-950">$7.50</span>
                   </button>
 
                   <button
