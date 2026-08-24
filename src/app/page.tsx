@@ -1,9 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { dbLocal } from '@/lib/db';
+import { dbLocal, Product } from '@/lib/db';
 import { ShieldCheck, Truck, RotateCcw, ArrowRight, Star, MapPin, Smartphone, Award, CheckCircle2 } from 'lucide-react';
+
+const HoverableImage = ({ product }: { product: Product }) => {
+  const [imgSrc, setImgSrc] = useState(product.image);
+
+  useEffect(() => {
+    setImgSrc(product.image);
+  }, [product.image]);
+
+  const handleMouseEnter = () => {
+    if (product.images && product.images.length > 1) {
+      setImgSrc(product.images[1]);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setImgSrc(product.image);
+  };
+
+  return (
+    <img
+      src={imgSrc}
+      alt={product.name}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="w-full h-full object-cover transition-all duration-300 hover:scale-105"
+    />
+  );
+};
 
 export default function HomePage() {
   const products = dbLocal.getProducts().slice(0, 3);
@@ -169,11 +197,7 @@ export default function HomePage() {
           {products.map((product) => (
             <div key={product.id} className="group flex flex-col h-full bg-white border border-brand-200 overflow-hidden hover:shadow-premium transition-shadow duration-300">
               <div className="relative aspect-square overflow-hidden bg-brand-100 border-b border-brand-200">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                <HoverableImage product={product} />
                 {product.category === 'plates' && (
                   <span className="absolute top-4 left-4 bg-brand-950 text-white text-[9px] font-bold tracking-widest uppercase px-2.5 py-1">
                     Acrílico Premium

@@ -69,10 +69,10 @@ const INITIAL_PRODUCTS: Product[] = [
     name: 'Placa NFC Google Reviews Elite (Acrílico Blanco)',
     description: 'Aumenta tus reseñas de Google Maps de forma rápida y orgánica en Panamá con esta elegante placa NFC de acrílico blanco pulido de 3mm. Pago único de por vida sin mensualidades.',
     price: 34.99,
-    image: '/products/NFC_10001/NFC_10001_white_0.png',
+    image: '/products/NFC_10001/NFC_10001_white_1.png',
     images: [
-      '/products/NFC_10001/NFC_10001_white_0.png',
       '/products/NFC_10001/NFC_10001_white_1.png',
+      '/products/NFC_10001/NFC_10001_white_0.png',
       '/products/NFC_10001/NFC_10001_white_2.png',
       '/products/NFC_10001/NFC_10001_white_3.png',
       '/products/NFC_10001/NFC_10001_white_4.png'
@@ -180,7 +180,8 @@ class LocalDbService {
     const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
     const isGooglePlacaPVC = storedProducts.some(p => p.id === 'placa-google' && p.name.includes('PVC'));
     const hasAirbnb = storedProducts.some(p => p.id === 'placa-airbnb');
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb) {
+    const isNFC10001ImageUpdated = storedProducts.some(p => p.id === 'NFC_10001' && p.image.includes('white_1.png'));
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isNFC10001ImageUpdated) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {
