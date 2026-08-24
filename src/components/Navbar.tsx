@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
@@ -10,6 +10,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const { getItemCount } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isActive = (path: string) => pathname === path;
 
@@ -67,7 +72,7 @@ export default function Navbar() {
               aria-label="Ver carrito"
             >
               <ShoppingBag className="h-5 w-5 stroke-[1.8]" />
-              {getItemCount() > 0 && (
+              {mounted && getItemCount() > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-brand-950 text-[10px] font-bold text-white">
                   {getItemCount()}
                 </span>

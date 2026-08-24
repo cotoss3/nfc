@@ -1,12 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getItemCount } = useCart();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-24 text-center text-xs text-brand-400 uppercase tracking-widest">
+        Cargando carrito...
+      </div>
+    );
+  }
 
   if (cart.length === 0) {
     return (

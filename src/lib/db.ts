@@ -161,7 +161,9 @@ class LocalDbService {
   init() {
     if (typeof window === 'undefined') return;
     
-    if (!localStorage.getItem('nfc_products')) {
+    const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
+    const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
+    if (storedProducts.length === 0 || !hasNewProduct) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {

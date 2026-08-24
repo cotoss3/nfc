@@ -33,11 +33,25 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    if (cart.length === 0 && !isSuccess) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && cart.length === 0 && !isSuccess) {
       router.push('/shop');
     }
-  }, [cart, isSuccess, router]);
+  }, [cart, isSuccess, router, mounted]);
+
+  if (!mounted) {
+    return (
+      <div className="max-w-md mx-auto py-24 text-center text-xs text-brand-400 uppercase tracking-widest">
+        Cargando checkout...
+      </div>
+    );
+  }
 
   const provincesPanama = [
     'Panamá',
