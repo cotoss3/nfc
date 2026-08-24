@@ -8,6 +8,8 @@ export interface Product {
   price: number;
   image: string;
   images?: string[];
+  colors?: string[];
+  material?: string;
   category: 'plates' | 'cards' | 'accessories';
   type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'custom';
 }
@@ -80,11 +82,13 @@ const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: 'placa-google',
-    name: 'Placa NFC Google Reviews (Acrílico)',
-    description: 'Placa de acrílico premium autoadhesiva ideal para mostradores y mesas. Permite a los clientes escanear la placa y dejar una reseña en Google Maps en 2 segundos.',
+    name: 'Tarjeta NFC Google Reviews (Acrílico)',
+    description: 'Tarjeta inteligente de acrílico premium de tamaño bolsillo (estilo tarjeta de crédito). Diseñada para llevar en la billetera y conseguir reseñas en Google Maps en cualquier lugar con un solo toque.',
     price: 34.99,
     image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=600',
-    category: 'plates',
+    colors: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
+    material: 'Acrílico Premium 3mm',
+    category: 'cards',
     type: 'google'
   },
   {
@@ -163,7 +167,8 @@ class LocalDbService {
     
     const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
     const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
-    if (storedProducts.length === 0 || !hasNewProduct) {
+    const isGooglePlacaUpdated = storedProducts.some(p => p.id === 'placa-google' && p.category === 'cards');
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaUpdated) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {

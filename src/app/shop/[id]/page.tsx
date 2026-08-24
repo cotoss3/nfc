@@ -36,6 +36,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       } else {
         setActiveTab('mockup');
       }
+      
+      const defaultColors = found.colors || (found.category === 'cards' 
+        ? ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'] 
+        : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado']);
+      setColor(defaultColors[0]);
+
       if (found.type === 'google') {
         setRedirectUrl('https://search.google.com/local/writereview?placeid=...');
       } else if (found.type === 'tripadvisor') {
@@ -50,9 +56,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm text-brand-400">Cargando producto...</div>;
   }
 
-  const colors = product.category === 'cards' 
+  const colors = product.colors || (product.category === 'cards' 
     ? ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'] 
-    : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'];
+    : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado']);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -208,7 +214,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <div className="bg-white border border-brand-200 rounded-lg p-6 space-y-4 shadow-premium">
             <h3 className="text-xs font-bold uppercase tracking-wider text-brand-950">Especificaciones</h3>
             <ul className="text-xs text-brand-500 space-y-2">
-              <li className="flex justify-between"><span>Material</span><span className="font-semibold text-brand-800">{product.category === 'plates' ? 'Acrílico Premium 3mm' : 'PVC / Madera Maciza'}</span></li>
+              <li className="flex justify-between"><span>Material</span><span className="font-semibold text-brand-800">{product.material || (product.category === 'plates' ? 'Acrílico Premium 3mm' : 'PVC / Madera Maciza')}</span></li>
               <li className="flex justify-between"><span>Chip Interno</span><span className="font-semibold text-brand-800">NTAG213 (Alta velocidad)</span></li>
               <li className="flex justify-between"><span>Ciclo de Vida</span><span className="font-semibold text-brand-800">100,000 lecturas / Grabado Permanente</span></li>
               <li className="flex justify-between"><span>Fulfillment</span><span className="font-semibold text-brand-800">Grabado láser en Panamá</span></li>
