@@ -30,9 +30,15 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           {/* Logo & Navigation */}
           <div className="flex items-center space-x-12">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="font-bold text-lg tracking-tight text-brand-950">
-                PANA<span className="font-light text-brand-500">CARDS</span>
+            <Link href="/" className="flex items-center">
+              <span className="font-black text-2xl tracking-tighter text-brand-950 flex items-baseline">
+                star
+                <span className="uppercase ml-[1px]">
+                  <span className="text-[#4285F4]">t</span>
+                  <span className="text-[#EA4335]">a</span>
+                  <span className="text-[#FBBC05]">p</span>
+                </span>
+                <span className="text-brand-300 text-3xl ml-0.5 leading-none">.</span>
               </span>
             </Link>
 

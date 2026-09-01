@@ -65,9 +65,51 @@ export interface ScanRecord {
 // Productos semilla predeterminados
 const INITIAL_PRODUCTS: Product[] = [
   {
+    id: 'stand-nfc',
+    name: 'Stand NFC para Reseñas de Google',
+    description: 'Stand NFC optimizado para SEO local. Perfecto para capturar reseñas para restaurante y comercios. Mejora tu posicionamiento en Google Maps al instante y vende más en Panamá. Elegante, sin apps y listo para usar.',
+    price: 17.00,
+    image: 'https://tapreview.es/wp-content/uploads/2025/01/stand-nfc-tapreview.webp',
+    images: [
+      'https://tapreview.es/wp-content/uploads/2025/01/stand-nfc-tapreview.webp',
+      'https://tapreview.es/wp-content/uploads/2025/01/StandNFC-Google.webp'
+    ],
+    material: 'PVC Técnico',
+    category: 'accessories',
+    type: 'google'
+  },
+  {
+    id: 'tarjeta-nfc',
+    name: 'Tarjeta NFC para Reseñas de Google',
+    description: 'Tarjeta NFC portátil para disparar tu SEO local. Lleva tu captación de clientes a otro nivel: obtén reseñas para restaurante, clínica o tienda con un solo toque y vende más en Panamá rápidamente.',
+    price: 15.00,
+    image: 'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
+    images: [
+      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
+      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-Resenas-Google-funcionando.webp'
+    ],
+    material: 'PVC Premium',
+    category: 'cards',
+    type: 'google'
+  },
+  {
+    id: 'placa-acrilica-nfc',
+    name: 'Placa NFC para Reseñas de Google',
+    description: 'Placa NFC de instalación permanente. La herramienta definitiva de SEO local para conseguir reseñas para restaurante, recepción o local comercial. Domina las búsquedas orgánicas y vende más en Panamá.',
+    price: 15.00,
+    image: 'https://tapreview.es/wp-content/uploads/2025/01/Placa-nfc-tapreview.webp',
+    images: [
+      'https://tapreview.es/wp-content/uploads/2025/01/Placa-nfc-tapreview.webp',
+      'https://tapreview.es/wp-content/uploads/2025/01/Placa2-nfc-tapreview.webp'
+    ],
+    material: 'PVC de alta densidad',
+    category: 'plates',
+    type: 'google'
+  },
+  {
     id: 'NFC_10001',
     name: 'Placa NFC Google Reviews Elite (Acrílico Blanco)',
-    description: 'Aumenta tus reseñas de Google Maps de forma rápida y orgánica en Panamá con esta elegante placa NFC de acrílico blanco pulido de 3mm. Pago único de por vida sin mensualidades.',
+    description: 'Aumenta tus reseñas de Google Maps de forma rápida y mejora tu SEO local en Panamá. Diseñada en elegante acrílico blanco pulido de 3mm, perfecta para capturar reseñas para restaurante o clínica. Pago único de por vida y vende más en Panamá sin mensualidades.',
     price: 34.99,
     image: '/products/NFC_10001/NFC_10001_white_1.png',
     images: [
@@ -83,7 +125,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'placa-google',
     name: 'Tarjeta NFC Google Reviews (PVC)',
-    description: 'Tarjeta inteligente de PVC premium de tamaño bolsillo (estilo tarjeta de crédito). Diseñada para llevar en la billetera y conseguir reseñas en Google Maps en cualquier lugar con un solo toque.',
+    description: 'Tarjeta inteligente de PVC premium para llevar tu estrategia de SEO local en el bolsillo. Consigue reseñas en Google Maps, recolecta reseñas para restaurante o atención a domicilio y vende más en Panamá con un solo toque.',
     price: 24.99,
     image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
     colors: ['Negro Mate', 'Blanco Mate'],
@@ -94,7 +136,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'placa-tripadvisor',
     name: 'Placa NFC TripAdvisor (Acrílico)',
-    description: 'Ideal para hoteles, restaurantes y cafeterías turísticas en Panamá. Los clientes califican tu negocio al instante con solo acercar su celular.',
+    description: 'Ideal para hoteles, cafeterías y conseguir reseñas para restaurante turísticos. Impulsa tu reputación online, fortalece tu SEO local y vende más en Panamá logrando que los clientes te califiquen al instante.',
     price: 34.99,
     image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=600',
     category: 'plates',
@@ -103,7 +145,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'placa-instagram',
     name: 'Placa NFC Instagram Followers',
-    description: 'Aumenta tus seguidores orgánicamente en tu tienda, salón de belleza o restaurante. Redirige directamente a tu perfil de Instagram.',
+    description: 'Aumenta tus seguidores orgánicamente en tu tienda o restaurante. Apoya tu estrategia de SEO local en redes sociales y vende más en Panamá redirigiendo a tu perfil de Instagram con un solo toque.',
     price: 29.99,
     image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600',
     category: 'plates',
@@ -112,7 +154,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'placa-airbnb',
     name: 'Placa NFC Airbnb Connect (Acrílico)',
-    description: 'Placa de acrílico premium para anfitriones de Airbnb. Permite a tus huéspedes conectarse al WiFi del alojamiento, abrir la guía digital de la casa o calificar con 5 estrellas con un solo toque.',
+    description: 'Placa premium para anfitriones. Permite a tus huéspedes conectarse al WiFi o dejar calificación 5 estrellas al instante. Mejora tu posicionamiento de SEO local en la plataforma de turismo y vende más en Panamá.',
     price: 34.99,
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600',
     colors: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
@@ -123,7 +165,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'tarjeta-pvc',
     name: 'Tarjeta de Presentación NFC PVC',
-    description: 'Tarjeta inteligente de PVC negro o blanco mate. Reemplaza miles de tarjetas de papel tradicionales compartiendo tu información de contacto con un toque.',
+    description: 'Tarjeta inteligente de PVC mate. Potencia tu networking y contribuye a tu SEO local al compartir todos tus datos comerciales al instante. Vende más en Panamá con una presentación inolvidable.',
     price: 24.99,
     image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
     category: 'cards',
@@ -132,7 +174,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'tarjeta-madera',
     name: 'Tarjeta de Presentación NFC Madera Ecológica',
-    description: 'Tarjeta inteligente fabricada en madera natural de bambú o nogal con grabado láser personalizado de tu logotipo.',
+    description: 'Tarjeta inteligente fabricada en madera natural. Una primera impresión premium que apoya tu SEO local. Cierra más tratos y vende más en Panamá proyectando una imagen ecológica.',
     price: 39.99,
     image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=600',
     category: 'cards',
@@ -141,7 +183,7 @@ const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'llavero-google',
     name: 'Llavero NFC Google Reviews',
-    description: 'Llavero de resina resistente y compacto. Ideal para conductores, personal de entrega a domicilio o mecánicos.',
+    description: 'Llavero de resina ultra resistente. El accesorio ideal de SEO local para personal de entrega y captura de reseñas para restaurante a domicilio. Vende más en Panamá multiplicando tus reviews donde vayas.',
     price: 14.99,
     image: 'https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&q=80&w=600',
     category: 'accessories',
@@ -181,7 +223,13 @@ class LocalDbService {
     const isGooglePlacaPVC = storedProducts.some(p => p.id === 'placa-google' && p.name.includes('PVC'));
     const hasAirbnb = storedProducts.some(p => p.id === 'placa-airbnb');
     const isNFC10001ImageUpdated = storedProducts.some(p => p.id === 'NFC_10001' && p.image.includes('white_1.png'));
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isNFC10001ImageUpdated) {
+    const hasStandNFC = storedProducts.some(p => p.id === 'stand-nfc');
+    const hasTarjetaNFC = storedProducts.some(p => p.id === 'tarjeta-nfc');
+    const hasPlacaNFC = storedProducts.some(p => p.id === 'placa-acrilica-nfc');
+    const hasSEO = storedProducts.some(p => p.id === 'stand-nfc' && p.description.includes('SEO local'));
+    const hasAllSEO = storedProducts.some(p => p.id === 'llavero-google' && p.description.includes('SEO local'));
+    
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isNFC10001ImageUpdated || !hasStandNFC || !hasTarjetaNFC || !hasPlacaNFC || !hasSEO || !hasAllSEO) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {

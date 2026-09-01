@@ -152,6 +152,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <span className="text-lg font-black text-brand-950">${product.price.toFixed(2)}</span>
                 <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 font-bold uppercase rounded">Pago único</span>
               </div>
+              {product.description && (
+                <p className="text-sm text-brand-600 pt-2 leading-relaxed">
+                  {product.description}
+                </p>
+              )}
             </div>
 
             <hr className="border-brand-200" />
@@ -276,6 +281,46 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               </button>
             </div>
           </form>
+        </div>
+      </div>
+
+      {/* SEO & Extra Information Block */}
+      <div className="mt-24 pt-16 border-t border-brand-200">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-black text-brand-950 uppercase tracking-tight">Preguntas Frecuentes sobre la {product.name}</h2>
+            <p className="text-brand-600 text-sm">Todo lo que necesitas saber antes de potenciar tu SEO local en Panamá.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-brand-700">
+            <div className="space-y-3">
+              <h3 className="font-bold text-brand-950 text-base">¿En qué negocios funciona mejor?</h3>
+              <p className="leading-relaxed">
+                Ideal para negocios con mostrador o pared donde fijarla: restaurantes, bares, hoteles, recepciones, clínicas, peluquerías y cualquier local de atención al público. Su diseño se adapta a cualquier superficie comercial.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <h3 className="font-bold text-brand-950 text-base">¿Cómo se instala?</h3>
+              <p className="leading-relaxed">
+                La instalación es muy sencilla: limpia la superficie, despega el adhesivo de alta fijación de la parte trasera y pégala en el lugar que elijas. No necesitas herramientas ni perforar la pared. En menos de un minuto está lista.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="font-bold text-brand-950 text-base">¿Necesito una app para que funcione?</h3>
+              <p className="leading-relaxed">
+                No. La placa funciona directamente con el lector NFC integrado en la mayoría de smartphones modernos. Tus clientes solo necesitan acercar su teléfono y tener sesión iniciada en su cuenta de Google.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="font-bold text-brand-950 text-base">¿Por qué elegir esta solución?</h3>
+              <p className="leading-relaxed">
+                Aumentar tus reseñas en Google Maps orgánicamente es la mejor inversión en marketing local. Más estrellas atraen a más clientes todos los días, mejorando tu posicionamiento sobre tus competidores en el mapa de Panamá.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

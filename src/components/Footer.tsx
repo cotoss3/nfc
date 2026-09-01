@@ -9,12 +9,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-2 text-white">
-              <span className="p-1.5 gradient-bg rounded-lg text-white">
-                <CreditCard className="h-5 w-5" />
-              </span>
-              <span className="font-bold text-lg tracking-tight">
-                Pana<span className="text-primary-400">Cards</span>
+            <Link href="/" className="flex items-center text-white">
+              <span className="font-black text-2xl tracking-tighter flex items-baseline">
+                star
+                <span className="uppercase ml-[1px]">
+                  <span className="text-[#4285F4]">t</span>
+                  <span className="text-[#EA4335]">a</span>
+                  <span className="text-[#FBBC05]">p</span>
+                </span>
+                <span className="text-gray-500 text-3xl ml-0.5 leading-none">.</span>
               </span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
@@ -62,14 +65,14 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-primary-400" />
-                <span>soporte@panacards.com</span>
+                <span>soporte@startap.com.pa</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-800 text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p>© {new Date().getFullYear()} PanaCards NFC. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} startap. Todos los derechos reservados.</p>
           <p className="flex items-center">
             Desarrollado con <Heart className="h-3 w-3 text-red-500 mx-1 fill-current" /> para negocios locales de Panamá.
           </p>
