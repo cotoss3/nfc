@@ -73,11 +73,11 @@ export default function HomePage() {
       </div>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-white via-yellow-50 to-yellow-200 border-b border-yellow-200 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-white via-accent-50 to-accent-100 border-b border-accent-200 relative overflow-hidden">
         {/* Subtle decorative glow to mimic the radial effect in the reference */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-white rounded-full opacity-40 blur-3xl pointer-events-none"></div>
         <div className="shopify-container max-w-7xl mx-auto px-4 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="space-y-8">
+          <div className="space-y-8 order-2 lg:order-1">
             <div className="flex items-center space-x-2 text-yellow-500">
               <Star className="fill-current w-5 h-5" />
               <Star className="fill-current w-5 h-5" />
@@ -103,7 +103,7 @@ export default function HomePage() {
               <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-600" /> Envío a todo el país</li>
             </ul>
           </div>
-          <div className="relative">
+          <div className="relative order-1 lg:order-2">
             <div className="aspect-square bg-brand-100 rounded-3xl overflow-hidden shadow-2xl border border-brand-200">
                {products.length > 0 && (
                  <img src={products[0].images?.[0] || products[0].image} alt="Placa Google" className="w-full h-full object-cover" />

@@ -23,7 +23,7 @@
 }
 
 .shopify-btn-primary {
-  @apply bg-brand-950 text-white hover:bg-brand-800 disabled:bg-brand-300 rounded px-6 py-3 font-medium text-sm transition-all duration-200 shadow-sm flex items-center justify-center;
+  @apply bg-accent-500 text-white hover:bg-accent-600 disabled:bg-brand-300 rounded px-6 py-3 font-medium text-sm transition-all duration-200 shadow-sm flex items-center justify-center;
 }
 
 .shopify-btn-secondary {
@@ -31,7 +31,7 @@
 }
 
 .shopify-input {
-  @apply w-full px-3.5 py-2.5 bg-white border border-brand-300 rounded shadow-input focus:border-brand-950 focus:ring-1 focus:ring-brand-950 outline-none text-sm text-brand-800 placeholder-brand-400 transition-colors duration-150;
+  @apply w-full px-3.5 py-2.5 bg-white border border-brand-300 rounded shadow-input focus:border-accent-500 focus:ring-1 focus:ring-accent-500 outline-none text-sm text-brand-800 placeholder-brand-400 transition-colors duration-150;
 }
 
 /* Efecto de brillo de tarjeta física premium */

@@ -12,31 +12,32 @@ const config: Config = {
         sans: ['Geist', 'Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Paleta premium de Shopify / Marca de Lujo
+        // Paleta premium Minimalista (Blanco y Negro)
         brand: {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#374151',
-          700: '#1f2937',
-          800: '#111827',
-          950: '#030712', // Negro profundo
+          50: '#ffffff',
+          100: '#f9f9f9',
+          200: '#f0f0f0',
+          300: '#e5e5e5',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#000000', // Negro puro
         },
+        // Nuevo color principal starTAP
         accent: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          600: '#16a34a', // Verde Shopify para credibilidad/éxito
-          700: '#15803d',
-        },
-        violet: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7e22ce',
+          50: '#e0f7fb',
+          100: '#b3ebf4',
+          200: '#80dded',
+          300: '#4dcee5',
+          400: '#26c2df',
+          500: '#01A6D2', // Color principal solicitado
+          600: '#0194bc', 
+          700: '#017ca0',
+          800: '#006380',
+          900: '#004d66',
         }
       },
       boxShadow: {

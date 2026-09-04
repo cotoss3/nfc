@@ -7,6 +7,9 @@ import Footer from '@/components/Footer';
 export const metadata: Metadata = {
   title: 'startap | Tarjetas y Placas Inteligentes para Negocios en Panamá',
   description: 'Multiplica tus reseñas en Google Maps, TripAdvisor e Instagram con nuestras placas y tarjetas NFC personalizadas. startap.com.pa',
+  icons: {
+    icon: '/logos/favicon.jpeg',
+  },
 };
 
 export default function RootLayout({

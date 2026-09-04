@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
 import { ArrowLeft, Upload, Check, Info } from 'lucide-react';
+import StandLanding from '@/components/landings/StandLanding';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -50,6 +51,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   if (!product) {
     return <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm text-brand-400">Cargando producto...</div>;
+  }
+
+  if (product.id === 'stand-nfc') {
+    return <StandLanding product={product} />;
   }
 
   const colors = product.colors || (product.category === 'cards' 

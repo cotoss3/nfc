@@ -31,15 +31,7 @@ export default function Navbar() {
           {/* Logo & Navigation */}
           <div className="flex items-center space-x-12">
             <Link href="/" className="flex items-center">
-              <span className="font-black text-2xl tracking-tighter text-brand-950 flex items-baseline">
-                star
-                <span className="uppercase ml-[1px]">
-                  <span className="text-[#4285F4]">t</span>
-                  <span className="text-[#EA4335]">a</span>
-                  <span className="text-[#FBBC05]">p</span>
-                </span>
-                <span className="text-brand-300 text-3xl ml-0.5 leading-none">.</span>
-              </span>
+              <img src="/logos/Logo.webp" alt="starTAP Logo" className="h-9 md:h-11 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation */}

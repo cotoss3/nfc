@@ -68,7 +68,7 @@ const INITIAL_PRODUCTS: Product[] = [
     id: 'stand-nfc',
     name: 'Stand NFC para Reseñas de Google',
     description: 'Stand NFC optimizado para SEO local. Perfecto para capturar reseñas para restaurante y comercios. Mejora tu posicionamiento en Google Maps al instante y vende más en Panamá. Elegante, sin apps y listo para usar.',
-    price: 17.00,
+    price: 35.00,
     image: 'https://tapreview.es/wp-content/uploads/2025/01/stand-nfc-tapreview.webp',
     images: [
       'https://tapreview.es/wp-content/uploads/2025/01/stand-nfc-tapreview.webp',
@@ -82,7 +82,7 @@ const INITIAL_PRODUCTS: Product[] = [
     id: 'tarjeta-nfc',
     name: 'Tarjeta NFC para Reseñas de Google',
     description: 'Tarjeta NFC portátil para disparar tu SEO local. Lleva tu captación de clientes a otro nivel: obtén reseñas para restaurante, clínica o tienda con un solo toque y vende más en Panamá rápidamente.',
-    price: 15.00,
+    price: 20.00,
     image: 'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
     images: [
       'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
@@ -96,7 +96,7 @@ const INITIAL_PRODUCTS: Product[] = [
     id: 'placa-acrilica-nfc',
     name: 'Placa NFC para Reseñas de Google',
     description: 'Placa NFC de instalación permanente. La herramienta definitiva de SEO local para conseguir reseñas para restaurante, recepción o local comercial. Domina las búsquedas orgánicas y vende más en Panamá.',
-    price: 15.00,
+    price: 30.00,
     image: 'https://tapreview.es/wp-content/uploads/2025/01/Placa-nfc-tapreview.webp',
     images: [
       'https://tapreview.es/wp-content/uploads/2025/01/Placa-nfc-tapreview.webp',
@@ -228,8 +228,9 @@ class LocalDbService {
     const hasPlacaNFC = storedProducts.some(p => p.id === 'placa-acrilica-nfc');
     const hasSEO = storedProducts.some(p => p.id === 'stand-nfc' && p.description.includes('SEO local'));
     const hasAllSEO = storedProducts.some(p => p.id === 'llavero-google' && p.description.includes('SEO local'));
+    const hasCorrectPrices = storedProducts.some(p => p.id === 'stand-nfc' && p.price === 35.00);
     
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isNFC10001ImageUpdated || !hasStandNFC || !hasTarjetaNFC || !hasPlacaNFC || !hasSEO || !hasAllSEO) {
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isNFC10001ImageUpdated || !hasStandNFC || !hasTarjetaNFC || !hasPlacaNFC || !hasSEO || !hasAllSEO || !hasCorrectPrices) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {

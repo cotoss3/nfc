@@ -10,15 +10,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center text-white">
-              <span className="font-black text-2xl tracking-tighter flex items-baseline">
-                star
-                <span className="uppercase ml-[1px]">
-                  <span className="text-[#4285F4]">t</span>
-                  <span className="text-[#EA4335]">a</span>
-                  <span className="text-[#FBBC05]">p</span>
-                </span>
-                <span className="text-gray-500 text-3xl ml-0.5 leading-none">.</span>
-              </span>
+              <img src="/logos/negativo.jpeg" alt="starTAP Logo" className="h-10 w-auto object-contain invert mix-blend-screen opacity-90" />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
               Soluciones NFC de alta calidad para digitalizar negocios en Panamá. Aumenta tus reseñas en Google Maps y TripAdvisor con un toque.
