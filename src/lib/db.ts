@@ -210,6 +210,22 @@ export const supabase = isRealSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
+export const DEFAULT_SEED_CARDS: NfcCard[] = [
+  {
+    card_id: 'STT-1001',
+    activation_code: 'STT-1001',
+    owner_id: 'user-carlos',
+    owner_name: 'Carlos Mendoza',
+    owner_email: 'carlos.mendoza@gmail.com',
+    label: 'Placa de Mostrador (STT-1001)',
+    target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
+    is_active: true,
+    claimed: true,
+    type: 'google',
+    created_at: new Date(Date.now() - 3600000 * 48).toISOString()
+  }
+];
+
 // MOTOR DE BASE DE DATOS LOCAL (Fallback & Sync)
 class LocalDbService {
   private getStorageItem<T>(key: string, defaultValue: T): T {
@@ -440,7 +456,7 @@ class LocalDbService {
 
   // Métodos de Tarjetas NFC
   getCards(): NfcCard[] {
-    return this.getStorageItem('nfc_cards', []);
+    return this.getStorageItem('nfc_cards', DEFAULT_SEED_CARDS);
   }
 
   getCardsByOwner(emailOrId: string): NfcCard[] {
@@ -552,7 +568,7 @@ class LocalDbService {
       owner_name: ownerName || cleanEmail.split('@')[0],
       owner_email: cleanEmail,
       label: `Dispositivo TAP (${rawCode})`,
-      target_url: 'https://search.google.com/local/writereview?placeid=...',
+      target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
       is_active: true,
       claimed: true,
       type: 'google',
