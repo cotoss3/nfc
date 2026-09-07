@@ -27,6 +27,12 @@ function DashboardContent() {
   // Analytics states
   const [scans, setScans] = useState<ScanRecord[]>([]);
 
+  // Auth states
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [nameInput, setNameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const queryEmail = searchParams.get('email');
@@ -54,14 +60,33 @@ function DashboardContent() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailInput) return;
-    setUserEmail(emailInput);
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('current_user_email', emailInput);
+    setAuthError(null);
+
+    const email = emailInput.trim().toLowerCase();
+    if (!email) {
+      setAuthError('Por favor ingresa un correo electrónico.');
+      return;
     }
-    loadUserData(emailInput);
+
+    if (authMode === 'register') {
+      const name = nameInput.trim() || email.split('@')[0];
+      const res = dbLocal.registerUser(name, email);
+      if (!res.success) {
+        setAuthError(res.message);
+        return;
+      }
+    } else {
+      dbLocal.registerUser(email.split('@')[0], email);
+    }
+
+    setUserEmail(email);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('current_user_email', email);
+      if (nameInput) sessionStorage.setItem('current_user_name', nameInput);
+    }
+    loadUserData(email);
   };
 
   const handleLogout = () => {
@@ -211,17 +236,58 @@ function DashboardContent() {
       )}
 
       {!userEmail ? (
-        /* Login Form */
+        /* Auth Form (Login / Register) */
         <div className="max-w-md mx-auto bg-white border border-brand-200 rounded p-8 shadow-premium space-y-6">
           <div className="text-center space-y-2">
-            <span className="text-xs font-bold tracking-widest text-brand-400 uppercase block">Acceso Clientes</span>
-            <h1 className="text-xl font-bold uppercase tracking-wide text-brand-950">Administrar mis Dispositivos NFC</h1>
+            <span className="text-xs font-bold tracking-widest text-brand-400 uppercase block">Portal de Clientes</span>
+            <h1 className="text-xl font-bold uppercase tracking-wide text-brand-950">Administrar mis Dispositivos TAP</h1>
             <p className="text-xs text-brand-500 leading-relaxed">
-              Ingresa el correo con el que realizaste tu compra para configurar las redirecciones de tus productos físicos.
+              Inicia sesión o crea tu cuenta para configurar tus enlaces de redirección NFC y QR.
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          {/* Mode Switch Tabs */}
+          <div className="flex border-b border-brand-200">
+            <button
+              type="button"
+              onClick={() => { setAuthMode('login'); setAuthError(null); }}
+              className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-wider text-center border-b-2 transition-colors ${
+                authMode === 'login'
+                  ? 'border-brand-950 text-brand-950'
+                  : 'border-transparent text-brand-400 hover:text-brand-600'
+              }`}
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              type="button"
+              onClick={() => { setAuthMode('register'); setAuthError(null); }}
+              className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-wider text-center border-b-2 transition-colors ${
+                authMode === 'register'
+                  ? 'border-brand-950 text-brand-950'
+                  : 'border-transparent text-brand-400 hover:text-brand-600'
+              }`}
+            >
+              Crear Cuenta
+            </button>
+          </div>
+
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
+            {authMode === 'register' && (
+              <div className="space-y-1">
+                <label htmlFor="name" className="text-[10px] font-bold text-brand-500 uppercase tracking-wider block">Nombre Completo o Empresa</label>
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  placeholder="Tu Nombre o Negocio"
+                  className="shopify-input"
+                />
+              </div>
+            )}
+
             <div className="space-y-1">
               <label htmlFor="email" className="text-[10px] font-bold text-brand-500 uppercase tracking-wider block">Correo Electrónico</label>
               <input
@@ -230,23 +296,36 @@ function DashboardContent() {
                 required
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
-                placeholder="carlos.mendoza@gmail.com"
+                placeholder="tuemail@ejemplo.com"
                 className="shopify-input"
               />
             </div>
+
+            <div className="space-y-1">
+              <label htmlFor="pass" className="text-[10px] font-bold text-brand-500 uppercase tracking-wider block">Contraseña</label>
+              <input
+                type="password"
+                id="pass"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="••••••••"
+                className="shopify-input"
+              />
+            </div>
+
+            {authError && (
+              <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded text-xs font-bold">
+                {authError}
+              </div>
+            )}
 
             <button
               type="submit"
               className="w-full shopify-btn-primary uppercase tracking-widest text-xs font-bold py-3.5"
             >
-              Entrar al Portal
+              {authMode === 'register' ? 'Crear Mi Cuenta' : 'Entrar al Portal'}
             </button>
           </form>
-
-          <div className="border border-brand-200 bg-brand-50 p-4 rounded text-[11px] text-brand-600 leading-relaxed">
-            <p className="font-bold text-brand-950 uppercase tracking-wider mb-1">💡 Cuenta Demo de Prueba:</p>
-            <p>Ingresa con <span className="font-bold text-brand-850">carlos.mendoza@gmail.com</span> para ver un dispositivo configurado con analíticas simuladas de prueba.</p>
-          </div>
         </div>
       ) : (
         /* Dashboard Portal */

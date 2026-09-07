@@ -46,5 +46,15 @@ export async function GET(
   }
 
   // Redirección rápida al destino deseado
-  return NextResponse.redirect(new URL(card.target_url));
+  let targetUrl = (card.target_url || '').trim();
+  if (targetUrl && !targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+    targetUrl = `https://${targetUrl}`;
+  }
+
+  try {
+    return NextResponse.redirect(new URL(targetUrl));
+  } catch (err) {
+    console.error('Error al redirigir URL:', err);
+    return NextResponse.redirect(new URL(`/dashboard?claim=${cardId}`, request.url));
+  }
 }

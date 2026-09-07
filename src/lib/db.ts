@@ -64,6 +64,13 @@ export interface ScanRecord {
   created_at: string;
 }
 
+export interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  created_at: string;
+}
+
 // Productos semilla predeterminados
 const INITIAL_PRODUCTS: Product[] = [
   {
@@ -437,34 +444,67 @@ class LocalDbService {
   }
 
   getCardsByOwner(emailOrId: string): NfcCard[] {
-    return this.getCards().filter(c => c.owner_email === emailOrId || c.owner_id === emailOrId);
+    const cleanEmail = emailOrId.trim().toLowerCase();
+    return this.getCards().filter(c => 
+      c.owner_email.trim().toLowerCase() === cleanEmail || 
+      c.owner_id === emailOrId
+    );
+  }
+
+  private resolveCardId(cardId: string, cards: NfcCard[]): string {
+    let clean = cardId.trim().toLowerCase();
+    
+    // Direct match check
+    const direct = cards.find(c => 
+      c.card_id.toLowerCase() === clean || 
+      (c.activation_code && c.activation_code.toLowerCase() === clean)
+    );
+    if (direct) return direct.card_id;
+
+    // Pattern STT-X -> STT-100X (ej. STT-1 -> STT-1001)
+    const sttMatch = clean.match(/^stt-(\d+)$/i);
+    if (sttMatch) {
+      const num = parseInt(sttMatch[1], 10);
+      if (num < 1000) {
+        const fullCode = `stt-${1000 + num}`;
+        const found = cards.find(c => 
+          c.card_id.toLowerCase() === fullCode || 
+          (c.activation_code && c.activation_code.toLowerCase() === fullCode)
+        );
+        if (found) return found.card_id;
+      }
+    }
+
+    // Number only "1" -> "STT-1001"
+    const numOnly = parseInt(clean, 10);
+    if (!isNaN(numOnly)) {
+      const targetCode = numOnly < 1000 ? `stt-${1000 + numOnly}` : `stt-${numOnly}`;
+      const found = cards.find(c => 
+        c.card_id.toLowerCase() === targetCode || 
+        (c.activation_code && c.activation_code.toLowerCase() === targetCode)
+      );
+      if (found) return found.card_id;
+    }
+
+    return clean;
   }
 
   getCardById(cardId: string): NfcCard | undefined {
     const cards = this.getCards();
-    let clean = cardId.trim().toLowerCase();
-    
-    // Normalizar alias habituales STT-1, STT1, 1 a STT-1001
-    if (clean === 'stt-1' || clean === 'stt1' || clean === 'stt-01' || clean === '1') {
-      clean = 'stt-1001';
-    }
-
+    const resolvedId = this.resolveCardId(cardId, cards);
     return cards.find(c => 
-      c.card_id.toLowerCase() === clean || 
-      (c.activation_code && c.activation_code.toLowerCase() === clean)
+      c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
+      (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
     );
   }
 
   updateCardRedirect(cardId: string, targetUrl: string, label: string): boolean {
     const cards = this.getCards();
-    let clean = cardId.trim().toLowerCase();
-    if (clean === 'stt-1' || clean === 'stt1' || clean === 'stt-01' || clean === '1') {
-      clean = 'stt-1001';
-    }
+    const resolvedId = this.resolveCardId(cardId, cards);
 
     const index = cards.findIndex(c => 
-      c.card_id.toLowerCase() === clean || 
-      (c.activation_code && c.activation_code.toLowerCase() === clean)
+      c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
+      (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
     );
     if (index !== -1) {
       cards[index].target_url = targetUrl;
@@ -477,27 +517,25 @@ class LocalDbService {
 
   claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = ''): { success: boolean; message: string; card?: NfcCard } {
     const cards = this.getCards();
-    let cleanCode = codeOrCardId.trim().toLowerCase();
-    if (cleanCode === 'stt-1' || cleanCode === 'stt1' || cleanCode === 'stt-01' || cleanCode === '1') {
-      cleanCode = 'stt-1001';
-    }
+    const resolvedId = this.resolveCardId(codeOrCardId, cards);
+    const cleanEmail = ownerEmail.trim().toLowerCase();
     
     // Buscar si ya existe la tarjeta por ID o por código de activación
     let cardIndex = cards.findIndex(c => 
-      c.card_id.toLowerCase() === cleanCode || 
-      (c.activation_code && c.activation_code.toLowerCase() === cleanCode)
+      c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
+      (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
     );
 
     if (cardIndex !== -1) {
       const card = cards[cardIndex];
-      if (card.claimed && card.owner_email && card.owner_email !== ownerEmail) {
+      if (card.claimed && card.owner_email && card.owner_email.trim().toLowerCase() !== cleanEmail) {
         return { success: false, message: 'Este dispositivo ya ha sido reclamado por otra cuenta.' };
       }
       
       cards[cardIndex] = {
         ...card,
-        owner_email: ownerEmail,
-        owner_name: ownerName || ownerEmail.split('@')[0],
+        owner_email: cleanEmail,
+        owner_name: ownerName || cleanEmail.split('@')[0],
         claimed: true,
         is_active: true
       };
@@ -506,14 +544,14 @@ class LocalDbService {
     }
 
     // Si es un código nuevo no registrado previamente, crearlo automáticamente para el usuario
-    const formattedCode = cleanCode.toUpperCase();
+    const rawCode = codeOrCardId.trim().toUpperCase();
     const newCard: NfcCard = {
-      card_id: cleanCode.startsWith('tap-') ? cleanCode : `tap-${cleanCode}`,
-      activation_code: formattedCode,
+      card_id: rawCode.startsWith('STT-') || rawCode.startsWith('TAP-') ? rawCode : `STT-${rawCode}`,
+      activation_code: rawCode,
       owner_id: 'user-' + Date.now(),
-      owner_name: ownerName || ownerEmail.split('@')[0],
-      owner_email: ownerEmail,
-      label: `Dispositivo TAP (${formattedCode})`,
+      owner_name: ownerName || cleanEmail.split('@')[0],
+      owner_email: cleanEmail,
+      label: `Dispositivo TAP (${rawCode})`,
       target_url: 'https://search.google.com/local/writereview?placeid=...',
       is_active: true,
       claimed: true,
@@ -524,6 +562,37 @@ class LocalDbService {
     cards.unshift(newCard);
     this.setStorageItem('nfc_cards', cards);
     return { success: true, message: '¡Dispositivo TAP activado y vinculado a tu cuenta!', card: newCard };
+  }
+
+  // Métodos de Usuarios
+  getUsers(): UserAccount[] {
+    return this.getStorageItem<UserAccount[]>('nfc_users', []);
+  }
+
+  registerUser(name: string, email: string): { success: boolean; message: string; user?: UserAccount } {
+    const cleanEmail = email.trim().toLowerCase();
+    const users = this.getUsers();
+
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      return { success: false, message: 'Ingresa un correo electrónico válido.' };
+    }
+
+    const existing = users.find(u => u.email.toLowerCase() === cleanEmail);
+    if (existing) {
+      return { success: true, message: 'Sesión iniciada con tu cuenta existente.', user: existing };
+    }
+
+    const newUser: UserAccount = {
+      id: `usr-${Date.now()}`,
+      name: name.trim() || cleanEmail.split('@')[0],
+      email: cleanEmail,
+      created_at: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    this.setStorageItem('nfc_users', users);
+
+    return { success: true, message: '¡Cuenta creada exitosamente!', user: newUser };
   }
 
   // Analíticas de Escaneo
