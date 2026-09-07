@@ -65,6 +65,15 @@ export default function AdminPage() {
   const [editProductType, setEditProductType] = useState<'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'airbnb' | 'custom'>('google');
   const [editProductImage, setEditProductImage] = useState('');
   const [fullEditSuccess, setFullEditSuccess] = useState(false);
+  const [copiedCardId, setCopiedCardId] = useState<{ id: string; type: string } | null>(null);
+
+  const copyToClipboard = (text: string, id: string, type: string) => {
+    if (typeof window !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedCardId({ id, type });
+      setTimeout(() => setCopiedCardId(null), 2000);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -642,8 +651,30 @@ export default function AdminPage() {
 
                             return (
                               <tr key={card.card_id} className="hover:bg-slate-50">
-                                <td className="p-3.5 font-mono font-bold text-amber-700 select-all">
-                                  /r/{card.card_id}
+                                <td className="p-3.5 space-y-1.5">
+                                  <div className="font-mono font-bold text-amber-700 text-xs">
+                                    /r/{card.card_id}
+                                  </div>
+                                  <div className="flex flex-col gap-1 text-[10px]">
+                                    <button
+                                      type="button"
+                                      onClick={() => copyToClipboard(`${window.location.origin}/r/${card.card_id}?m=nfc`, card.card_id, 'nfc')}
+                                      className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold rounded flex items-center gap-1 transition shadow-xs"
+                                      title="Copiar URL completa para grabar en el chip NFC"
+                                    >
+                                      <Radio className="w-3 h-3 text-emerald-600" />
+                                      <span>{copiedCardId?.id === card.card_id && copiedCardId?.type === 'nfc' ? '¡NFC Copiado!' : 'Copiar URL NFC'}</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => copyToClipboard(`${window.location.origin}/r/${card.card_id}?m=qr`, card.card_id, 'qr')}
+                                      className="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 font-bold rounded flex items-center gap-1 transition shadow-xs"
+                                      title="Copiar URL completa para imprimir en Código QR"
+                                    >
+                                      <QrCode className="w-3 h-3 text-blue-600" />
+                                      <span>{copiedCardId?.id === card.card_id && copiedCardId?.type === 'qr' ? '¡QR Copiado!' : 'Copiar URL QR'}</span>
+                                    </button>
+                                  </div>
                                 </td>
                                 <td className="p-3.5 font-bold text-slate-900">
                                   {card.label}

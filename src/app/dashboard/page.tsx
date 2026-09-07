@@ -979,6 +979,51 @@ function DashboardContent() {
                             </select>
                           </div>
 
+                          {/* Box de URLs de Grabación para NFC y QR */}
+                          <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <Copy className="w-4 h-4 text-amber-600" />
+                                URLs Asignadas para Grabación NFC y Código QR
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                              <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-emerald-800 uppercase">
+                                  <span>URL para Grabador NFC</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(`${window.location.origin}/r/${selectedCard.card_id}?m=nfc`, 'nfc_write')}
+                                    className="px-2 py-0.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold rounded flex items-center gap-1"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                    <span>{copiedLink === 'nfc_write' ? '¡Copiado!' : 'Copiar URL'}</span>
+                                  </button>
+                                </div>
+                                <p className="font-mono text-[11px] text-slate-800 break-all select-all font-bold">
+                                  {typeof window !== 'undefined' ? window.location.origin : 'https://startap.com.pa'}/r/{selectedCard.card_id}?m=nfc
+                                </p>
+                              </div>
+
+                              <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-blue-800 uppercase">
+                                  <span>URL para Código QR</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(`${window.location.origin}/r/${selectedCard.card_id}?m=qr`, 'qr_write')}
+                                    className="px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded flex items-center gap-1"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                    <span>{copiedLink === 'qr_write' ? '¡Copiado!' : 'Copiar URL'}</span>
+                                  </button>
+                                </div>
+                                <p className="font-mono text-[11px] text-slate-800 break-all select-all font-bold">
+                                  {typeof window !== 'undefined' ? window.location.origin : 'https://startap.com.pa'}/r/{selectedCard.card_id}?m=qr
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
                           {/* Dual URLs */}
                           <div className="space-y-4 pt-2 border-t border-slate-100">
                             {/* NFC URL Field */}
