@@ -22,6 +22,7 @@ export default function Navbar() {
     { name: 'Inicio', href: '/' },
     { name: 'Catálogo', href: '/shop' },
     { name: 'Corporativo', href: '/corporativo' },
+    { name: 'App Pro ⚡', href: '/app' },
     { name: 'Administrar Tarjetas', href: '/dashboard' },
   ];
 
