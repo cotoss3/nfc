@@ -19,12 +19,13 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Productos</h3>
+            <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Productos & Plataforma</h3>
             <ul className="space-y-2 text-sm">
+              <li><Link href="/funciones" className="text-amber-400 font-bold hover:text-white transition-colors">⚡ 16 Funcionalidades</Link></li>
               <li><Link href="/shop" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
-              <li><Link href="/shop" className="hover:text-white transition-colors">Tarjetas de PVC</Link></li>
-              <li><Link href="/shop" className="hover:text-white transition-colors">Tarjetas de Madera</Link></li>
-              <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Soluciones Corporativas B2B</Link></li>
+              <li><Link href="/shop" className="hover:text-white transition-colors">Tarjetas de PVC y Madera</Link></li>
+              <li><Link href="/app" className="hover:text-white transition-colors">Software App Pro</Link></li>
+              <li><Link href="/corporativo" className="text-brand-400 font-bold hover:text-white transition-colors">Soluciones Corporativas B2B</Link></li>
             </ul>
           </div>
 
