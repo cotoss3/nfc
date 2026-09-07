@@ -750,10 +750,32 @@ class LocalDbService {
     const ownerCards = this.getCardsByOwner(emailOrId);
     const groups = new Set<string>();
     groups.add('General');
+
+    if (typeof window !== 'undefined') {
+      const cleanEmail = emailOrId.toLowerCase().trim();
+      const savedCustom = this.getStorageItem<string[]>(`nfc_groups_${cleanEmail}`, []);
+      savedCustom.forEach(g => {
+        if (g && g.trim()) groups.add(g.trim());
+      });
+    }
+
     ownerCards.forEach(c => {
-      if (c.group_name) groups.add(c.group_name);
+      if (c.group_name && c.group_name.trim()) groups.add(c.group_name.trim());
     });
     return Array.from(groups);
+  }
+
+  addGroupForOwner(emailOrId: string, groupName: string): boolean {
+    const cleanEmail = emailOrId.toLowerCase().trim();
+    const cleanGroup = groupName.trim();
+    if (!cleanGroup) return false;
+
+    const existing = this.getStorageItem<string[]>(`nfc_groups_${cleanEmail}`, []);
+    if (!existing.includes(cleanGroup)) {
+      existing.push(cleanGroup);
+      this.setStorageItem(`nfc_groups_${cleanEmail}`, existing);
+    }
+    return true;
   }
 }
 

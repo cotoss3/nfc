@@ -217,7 +217,10 @@ function DashboardContent() {
     const gName = newGroupNameInput.trim();
     if (!gName) return;
 
-    if (!groupsList.includes(gName)) {
+    if (userEmail) {
+      dbLocal.addGroupForOwner(userEmail, gName);
+      setGroupsList(dbLocal.getGroupsForOwner(userEmail));
+    } else if (!groupsList.includes(gName)) {
       setGroupsList([...groupsList, gName]);
     }
     setNewGroupNameInput('');
@@ -555,6 +558,25 @@ function DashboardContent() {
             {/* ---------------- MODULE 1: DISPOSITIVOS TAP ---------------- */}
             {activeTab === 'devices' && (
               <div className="space-y-6">
+                {/* Mobile Top Banner: Vincular Nueva Placa */}
+                <div className="md:hidden p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-amber-500 text-slate-950 rounded-xl flex items-center justify-center font-bold shrink-0">
+                      <Plus className="w-5 h-5 stroke-[2.5]" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-900">¿Tienes una nueva placa?</h4>
+                      <p className="text-[11px] text-slate-500">Ingresa el código STT-XXXX</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsClaimModalOpen(true)}
+                    className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl shadow-sm transition uppercase tracking-wider shrink-0"
+                  >
+                    Vincular
+                  </button>
+                </div>
+
                 {/* Header Bar */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
                   <div>
@@ -1049,6 +1071,15 @@ function DashboardContent() {
           </main>
         </>
       )}
+
+      {/* ---------------- FLOATING ACTION BUTTON (FAB) FOR MOBILE ---------------- */}
+      <button
+        onClick={() => setIsClaimModalOpen(true)}
+        className="md:hidden fixed bottom-20 right-4 z-40 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-amber-300 transition-transform active:scale-95"
+      >
+        <Plus className="w-5 h-5 stroke-[3]" />
+        <span>Vincular Placa</span>
+      </button>
 
       {/* ---------------- CLAIM DEVICE MODAL ---------------- */}
       {isClaimModalOpen && (
