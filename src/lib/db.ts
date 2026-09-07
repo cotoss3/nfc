@@ -407,6 +407,23 @@ class LocalDbService {
     return false;
   }
 
+  updateFullProduct(id: string, updates: Partial<Product>): boolean {
+    const products = this.getProducts();
+    const index = products.findIndex(p => p.id === id);
+    if (index !== -1) {
+      products[index] = {
+        ...products[index],
+        ...updates
+      };
+      this.setStorageItem('nfc_products', products);
+      if (supabase) {
+        supabase.from('products').upsert(products[index]).then();
+      }
+      return true;
+    }
+    return false;
+  }
+
   // Métodos de Pedidos
   getOrders(): Order[] {
     return this.getStorageItem('nfc_orders', []);
