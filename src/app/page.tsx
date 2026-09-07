@@ -106,9 +106,7 @@ export default function HomePage() {
           </div>
           <div className="relative order-1 lg:order-2">
             <div className="aspect-square bg-brand-100 rounded-3xl overflow-hidden shadow-2xl border border-brand-200">
-               {products.length > 0 && (
-                 <img src={products[0].images?.[0] || products[0].image} alt="Placa Google" className="w-full h-full object-cover" />
-               )}
+              <img src="/images/startap_negocio_resenas.webp" alt="Conviértete en la primera opción en Google Maps Panamá" className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-brand-100 hidden md:block animate-bounce-slow">
                <div className="flex items-center gap-4">
@@ -117,8 +115,8 @@ export default function HomePage() {
                     <div className="flex text-yellow-500">
                       <Star className="fill-current w-4 h-4" /><Star className="fill-current w-4 h-4" /><Star className="fill-current w-4 h-4" /><Star className="fill-current w-4 h-4" /><Star className="fill-current w-4 h-4" />
                     </div>
-                    <p className="font-bold text-sm">"Excelente servicio. Muy recomendado."</p>
-                    <p className="text-xs text-brand-500">Hace 2 minutos</p>
+                    <p className="font-bold text-sm">"Tu negocio: #1 en Panamá (4.9 ★)"</p>
+                    <p className="text-xs text-brand-500">Conviértete en la primera opción</p>
                  </div>
                </div>
             </div>
@@ -373,19 +371,19 @@ export default function HomePage() {
         {/* Section 2 */}
         <div className="shopify-container max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">Elimina la fricción. Multiplica tus reseñas.</h2>
+            <div className="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-900 border border-amber-300 font-extrabold text-xs uppercase px-3 py-1 rounded-full">
+              🥇 Posicionamiento #1 en Google Maps
+            </div>
+            <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">Conviértete en la primera opción de tu zona</h2>
             <p className="text-brand-600 text-lg leading-relaxed">
               Pedir a un cliente que busque tu negocio en Google y escriba una reseña es pedirle demasiado. Nuestra solución reduce un proceso de 2 minutos a solo 2 segundos.
             </p>
             <p className="text-brand-600 text-lg leading-relaxed">
-              Está demostrado estadísticamente que facilitar este proceso aumenta la conversión de reseñas en más de un 300%. Más reseñas positivas mejoran tu posicionamiento en el mapa (SEO Local) y atraen a nuevos clientes todos los días.
+              Está demostrado estadísticamente que facilitar este proceso aumenta la conversión de reseñas en más de un 300%. Supera a tu competencia en Casco Viejo, Calle 50, San Francisco y todo Panamá.
             </p>
           </div>
-          <div className="bg-brand-950 text-white p-8 sm:p-12 rounded-3xl shadow-lg relative overflow-hidden h-full flex flex-col justify-center min-h-[400px]">
-             <div className="relative z-10 text-center space-y-6">
-                <h3 className="text-4xl font-black text-accent-500">+300%</h3>
-                <p className="text-xl font-bold">Aumento promedio en volumen de reseñas en los primeros 30 días.</p>
-             </div>
+          <div className="rounded-3xl shadow-2xl overflow-hidden border border-brand-200 bg-white">
+            <img src="/images/startap_negocio_resenas.webp" alt="Conviértete en la primera opción en Google Maps Panamá" className="w-full h-auto object-cover" />
           </div>
         </div>
       </section>
