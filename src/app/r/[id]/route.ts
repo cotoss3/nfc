@@ -29,7 +29,7 @@ export async function GET(
 
   // Registrar analíticas de manera asíncrona
   try {
-    dbLocal.registerScan(cardId, device, referrer);
+    dbLocal.registerScan(card.card_id, device, referrer);
   } catch (err) {
     console.error('Error registrando analítica:', err);
   }
@@ -37,18 +37,8 @@ export async function GET(
   // Obtener URL de destino configurada
   let targetUrl = card?.target_url ? card.target_url.trim() : '';
 
-  // Sanitizar cualquier placeholder con "..."
-  if (targetUrl.includes('...')) {
-    targetUrl = 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU';
-  }
-
-  // Si la tarjeta no existe o no tiene una URL configurada, redirigir al portal para vincularla
-  if (!targetUrl && (!card || card.claimed === false)) {
-    return NextResponse.redirect(new URL(`/dashboard?claim=${cardId}`, request.url));
-  }
-
-  // Fallback si sigue vacía
-  if (!targetUrl) {
+  // Sanitizar cualquier placeholder con "..." o cadena vacía
+  if (!targetUrl || targetUrl.includes('...')) {
     targetUrl = 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU';
   }
 
@@ -58,10 +48,10 @@ export async function GET(
   }
 
   try {
-    // Redirección DIRECTA E INSTANTÁNEA a la URL del usuario
+    // Redirección DIRECTA E INSTANTÁNEA a la URL de destino del usuario
     return NextResponse.redirect(new URL(targetUrl));
   } catch (err) {
     console.error('Error procesando URL de redirección:', err);
-    return NextResponse.redirect(new URL(`/dashboard?claim=${cardId}`, request.url));
+    return NextResponse.redirect(new URL('https://google.com'));
   }
 }
