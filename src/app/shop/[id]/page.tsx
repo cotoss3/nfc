@@ -237,11 +237,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <label htmlFor="redirectUrl" className="text-xs font-bold uppercase tracking-wider text-brand-900">Enlace de Redirección Inicial</label>
                 </div>
                 <input
-                  type="url"
+                  type="text"
                   id="redirectUrl"
                   value={redirectUrl}
                   onChange={(e) => setRedirectUrl(e.target.value)}
-                  placeholder="https://search.google.com/local/writereview?placeid=..."
+                  placeholder="google.com, instagram.com/mi_negocio, etc."
                   className="shopify-input font-mono text-xs"
                   required
                 />

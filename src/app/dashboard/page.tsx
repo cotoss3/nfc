@@ -113,18 +113,24 @@ function DashboardContent() {
     e.preventDefault();
     if (!selectedCard) return;
 
+    let cleanUrl = editUrl.trim();
+    if (cleanUrl && !cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+      cleanUrl = `https://${cleanUrl}`;
+    }
+
     setIsUpdating(true);
     setTimeout(() => {
-      const success = dbLocal.updateCardRedirect(selectedCard.card_id, editUrl, editLabel);
+      const success = dbLocal.updateCardRedirect(selectedCard.card_id, cleanUrl, editLabel);
       if (success) {
         setUpdateSuccess(true);
+        setEditUrl(cleanUrl);
         const updatedCards = cards.map(c => 
           c.card_id === selectedCard.card_id 
-            ? { ...c, label: editLabel, target_url: editUrl } 
+            ? { ...c, label: editLabel, target_url: cleanUrl } 
             : c
         );
         setCards(updatedCards);
-        setSelectedCard({ ...selectedCard, label: editLabel, target_url: editUrl });
+        setSelectedCard({ ...selectedCard, label: editLabel, target_url: cleanUrl });
         
         setTimeout(() => setUpdateSuccess(false), 2000);
       }
@@ -419,10 +425,11 @@ function DashboardContent() {
                         <div className="space-y-1">
                           <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">URL Destino de Escaneo</label>
                           <input
-                            type="url"
+                            type="text"
                             required
                             value={editUrl}
                             onChange={(e) => setEditUrl(e.target.value)}
+                            placeholder="google.com, instagram.com/mi_negocio, etc."
                             className="shopify-input font-mono text-xs"
                           />
                         </div>
