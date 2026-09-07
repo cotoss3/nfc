@@ -203,17 +203,62 @@ export const supabase = isRealSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// MOTOR DE BASE DE DATOS LOCAL (Fallback)
+// MOTOR DE BASE DE DATOS LOCAL (Fallback & Sync)
 class LocalDbService {
   private getStorageItem<T>(key: string, defaultValue: T): T {
-    if (typeof window === 'undefined') return defaultValue;
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : defaultValue;
+    if (typeof window !== 'undefined') {
+      const data = localStorage.getItem(key);
+      if (data) return JSON.parse(data);
+    } else {
+      // Server-side Node.js file fallback
+      try {
+        const fsModule = eval("require('fs')");
+        const pathModule = eval("require('path')");
+        const storeFile = pathModule.join(process.cwd(), 'db_store.json');
+
+        if (fsModule.existsSync(storeFile)) {
+          const fileContent = fsModule.readFileSync(storeFile, 'utf-8');
+          const store = JSON.parse(fileContent);
+          if (store[key] !== undefined) return store[key];
+        }
+      } catch (e) {
+        // Fallback silencioso en servidor
+      }
+    }
+    return defaultValue;
   }
 
   private setStorageItem<T>(key: string, value: T): void {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(value));
+      // Notificar al servidor Next.js para sincronizar el archivo de almacenamiento
+      fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+      }).catch(() => {});
+      return;
+    }
+
+    // Server-side Node.js file fallback
+    try {
+      const fsModule = eval("require('fs')");
+      const pathModule = eval("require('path')");
+      const storeFile = pathModule.join(process.cwd(), 'db_store.json');
+
+      let store: Record<string, any> = {};
+      if (fsModule.existsSync(storeFile)) {
+        try {
+          store = JSON.parse(fsModule.readFileSync(storeFile, 'utf-8'));
+        } catch {
+          store = {};
+        }
+      }
+      store[key] = value;
+      fsModule.writeFileSync(storeFile, JSON.stringify(store, null, 2), 'utf-8');
+    } catch (e) {
+      console.error('Error escribiendo db_store.json en servidor:', e);
+    }
   }
 
   // Inicializar bases simuladas si no existen
@@ -396,12 +441,31 @@ class LocalDbService {
   }
 
   getCardById(cardId: string): NfcCard | undefined {
-    return this.getCards().find(c => c.card_id === cardId);
+    const cards = this.getCards();
+    let clean = cardId.trim().toLowerCase();
+    
+    // Normalizar alias habituales STT-1, STT1, 1 a STT-1001
+    if (clean === 'stt-1' || clean === 'stt1' || clean === 'stt-01' || clean === '1') {
+      clean = 'stt-1001';
+    }
+
+    return cards.find(c => 
+      c.card_id.toLowerCase() === clean || 
+      (c.activation_code && c.activation_code.toLowerCase() === clean)
+    );
   }
 
   updateCardRedirect(cardId: string, targetUrl: string, label: string): boolean {
     const cards = this.getCards();
-    const index = cards.findIndex(c => c.card_id === cardId);
+    let clean = cardId.trim().toLowerCase();
+    if (clean === 'stt-1' || clean === 'stt1' || clean === 'stt-01' || clean === '1') {
+      clean = 'stt-1001';
+    }
+
+    const index = cards.findIndex(c => 
+      c.card_id.toLowerCase() === clean || 
+      (c.activation_code && c.activation_code.toLowerCase() === clean)
+    );
     if (index !== -1) {
       cards[index].target_url = targetUrl;
       cards[index].label = label;
@@ -413,7 +477,10 @@ class LocalDbService {
 
   claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = ''): { success: boolean; message: string; card?: NfcCard } {
     const cards = this.getCards();
-    const cleanCode = codeOrCardId.trim().toLowerCase();
+    let cleanCode = codeOrCardId.trim().toLowerCase();
+    if (cleanCode === 'stt-1' || cleanCode === 'stt1' || cleanCode === 'stt-01' || cleanCode === '1') {
+      cleanCode = 'stt-1001';
+    }
     
     // Buscar si ya existe la tarjeta por ID o por código de activación
     let cardIndex = cards.findIndex(c => 
