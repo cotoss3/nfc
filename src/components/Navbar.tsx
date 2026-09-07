@@ -54,15 +54,6 @@ export default function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center space-x-6">
-            {/* Admin access (discreet link at the top right) */}
-            <Link 
-              href="/admin" 
-              className="hidden sm:flex items-center space-x-1 text-xs text-brand-400 hover:text-brand-900 transition-colors uppercase tracking-wider"
-            >
-              <Shield className="h-3.5 w-3.5" />
-              <span>Admin</span>
-            </Link>
-
             {/* Cart Icon */}
             <Link
               href="/cart"
@@ -106,13 +97,6 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Link
-            href="/admin"
-            onClick={() => setIsOpen(false)}
-            className="block px-3 py-2.5 rounded text-sm font-medium tracking-wide uppercase text-brand-400 hover:bg-brand-50"
-          >
-            Panel Admin
-          </Link>
         </div>
       )}
     </nav>

@@ -947,7 +947,7 @@ export default function AdminPage() {
                     </div>
 
                     <button
-                      onClick={() => router.push('/admin/products/new')}
+                      onClick={() => router.push('/master-control/products/new')}
                       className="py-2 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center gap-1.5 shrink-0"
                     >
                       <Plus className="w-4 h-4 text-amber-400" />
@@ -1019,7 +1019,7 @@ export default function AdminPage() {
                                   {priceSuccess[p.id] ? '¡Precio OK!' : 'Precio'}
                                 </button>
                                 <button
-                                  onClick={() => router.push(`/admin/products/edit/${p.id}`)}
+                                  onClick={() => router.push(`/master-control/products/edit/${p.id}`)}
                                   className="py-1.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm transition flex items-center gap-1"
                                 >
                                   <Edit2 className="w-3 h-3 text-amber-400" />
