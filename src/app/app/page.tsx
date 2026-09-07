@@ -135,13 +135,77 @@ export default function AppProPage() {
         </div>
       </section>
 
-      {/* 2. FEATURES GRID (PRO FEATURES) */}
+      {/* 2. GOOGLE BUSINESS PROFILE INTEGRATION SHOWCASE */}
+      <section className="py-20 px-4 bg-brand-950 text-white border-y border-brand-800">
+        <div className="max-w-6xl mx-auto space-y-16">
+          <div className="text-center space-y-4 max-w-3xl mx-auto">
+            <div className="inline-flex items-center space-x-2 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-amber-300 uppercase tracking-widest">
+              <Globe className="w-3.5 h-3.5 text-amber-400" />
+              <span>Conexión Directa con Google Business Profile API</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-white">
+              Data de SEO Local en Tiempo Real <br /> Directo de tu Ficha en Google Maps
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              La versión App Pro se conecta de forma segura a la API oficial de Google para mostrarte qué está funcionando en tu perfil local, monitorear reseñas al instante y optimizar tu posicionamiento en Panamá.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Feature G1 */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                ★
+              </div>
+              <h3 className="font-bold text-white text-base">Monitoreo de Reseñas & Rating Live</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Sincroniza tus estrellas en Google (ej: 4.9 ★) y el contador total de opiniones en tiempo real. Recibe alertas en WhatsApp cada vez que entra una nueva reseña.
+              </p>
+            </div>
+
+            {/* Feature G2 */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                🤖
+              </div>
+              <h3 className="font-bold text-white text-base">Respuestas a Reseñas Asistidas por IA</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Genera respuestas profesionales en segundos para responder reseñas de tus clientes en Google Maps, mejorando la interacción y puntuación SEO en la plataforma.
+              </p>
+            </div>
+
+            {/* Feature G3 */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                🔍
+              </div>
+              <h3 className="font-bold text-white text-base">Auditoría de Salud SEO Local</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Revisa el estado de salud de tu ficha en Google Maps (horarios, fotos recientes, verificación activa) y detecta qué optimizaciones faltan para aparecer de #1 en Panamá.
+              </p>
+            </div>
+
+            {/* Feature G4 */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                📊
+              </div>
+              <h3 className="font-bold text-white text-base">Conversion Ratio NFC vs Búsquedas</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Mide cuántos toques NFC ocurren físicamente en tu local vs cuantas visualizaciones e impresiones orgánicas recibes en Google Search y Maps.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2.5 FEATURES GRID (PRO FEATURES) */}
       <section className="py-24 px-4 bg-slate-50">
         <div className="max-w-6xl mx-auto space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <span className="text-xs font-black uppercase tracking-widest text-brand-600 block">Funciones Futuras</span>
             <h2 className="text-3xl sm:text-4xl font-black text-brand-950">
-              ¿Qué incluirá la versión starTAP App Pro?
+              ¿Qué más incluirá starTAP App Pro?
             </h2>
             <p className="text-brand-600 text-sm sm:text-base leading-relaxed">
               Herramientas diseñadas para maximizar tus ventas, fidelizar clientes y capturar métricas avanzadas.
