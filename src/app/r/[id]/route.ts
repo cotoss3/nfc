@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbLocal } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -48,10 +51,24 @@ export async function GET(
   }
 
   try {
-    // Redirección DIRECTA E INSTANTÁNEA a la URL de destino del usuario
-    return NextResponse.redirect(new URL(targetUrl));
+    // Redirección DIRECTA E INSTANTÁNEA sin almacenamiento en caché
+    return NextResponse.redirect(new URL(targetUrl), {
+      status: 307,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (err) {
     console.error('Error procesando URL de redirección:', err);
-    return NextResponse.redirect(new URL('https://google.com'));
+    return NextResponse.redirect(new URL('https://google.com'), {
+      status: 307,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   }
 }
