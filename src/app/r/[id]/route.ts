@@ -20,6 +20,9 @@ export async function GET(
   let cardLabel = 'Dispositivo TAP';
   let resolvedCardId = cardId;
 
+  let isActive = true;
+  let allowedChannels: 'both' | 'nfc' | 'qr' = 'both';
+
   // 1. Intentar consulta en tiempo real desde Supabase si está configurado
   if (supabase) {
     try {
@@ -36,7 +39,7 @@ export async function GET(
 
       const { data, error } = await supabase
         .from('nfc_cards')
-        .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label')
+        .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label, is_active, channels')
         .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode}`)
         .maybeSingle();
 
@@ -47,6 +50,8 @@ export async function GET(
         groupName = data.group_name || 'General';
         cardLabel = data.label || 'Dispositivo TAP';
         resolvedCardId = data.card_id;
+        if (data.is_active !== undefined) isActive = data.is_active;
+        if (data.channels) allowedChannels = data.channels;
       }
     } catch (e) {
       console.error('Error consultando Supabase en redirección:', e);
@@ -54,9 +59,9 @@ export async function GET(
   }
 
   // 2. Si no se encontró en Supabase o no está configurado, usar motor local
-  if (!nfcTargetUrl && !qrTargetUrl && !legacyTargetUrl) {
-    const card = dbLocal.getCardById(cardId);
-    if (card) {
+  const card = dbLocal.getCardById(cardId);
+  if (card) {
+    if (!nfcTargetUrl && !qrTargetUrl && !legacyTargetUrl) {
       nfcTargetUrl = card.nfc_target_url ? card.nfc_target_url.trim() : '';
       qrTargetUrl = card.qr_target_url ? card.qr_target_url.trim() : '';
       legacyTargetUrl = card.target_url ? card.target_url.trim() : '';
@@ -64,6 +69,113 @@ export async function GET(
       cardLabel = card.label || 'Dispositivo TAP';
       resolvedCardId = card.card_id || cardId;
     }
+    isActive = card.is_active;
+    if (card.channels) allowedChannels = card.channels;
+  }
+
+  // 3. BLOQUEO: Si la ID no está activa habilitada por el Administrador
+  if (!isActive) {
+    return new NextResponse(`
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dispositivo Inactivo | starTAP Panamá</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
+          <div class="w-16 h-16 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+            🚫
+          </div>
+          <div>
+            <span class="inline-block px-3 py-1 bg-slate-800 text-rose-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+              DISPOSITIVO INACTIVO
+            </span>
+            <h1 class="text-2xl font-bold text-slate-100">${resolvedCardId}</h1>
+            <p class="text-slate-400 text-sm mt-2">
+              Este ID de dispositivo está inactivo. El administrador debe habilitar este código desde el Panel Administrativo para permitir la redirección.
+            </p>
+          </div>
+          <div class="bg-slate-950/60 p-4 rounded-xl text-xs text-slate-400 border border-slate-800 text-left space-y-1">
+            <p class="font-semibold text-slate-300">🔒 Control Exclusivo de Administrador</p>
+            <p>Sólo el administrador del sistema puede activar nuevos códigos o rehabilitar dispositivos suspendidos.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `, {
+      status: 403,
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+    });
+  }
+
+  // 4. BLOQUEO CANAL: Si el medio de escaneo no está habilitado por el Administrador
+  if (isQr && allowedChannels === 'nfc') {
+    return new NextResponse(`
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Canal no habilitado | starTAP Panamá</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
+          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+            ⚠️
+          </div>
+          <div>
+            <span class="inline-block px-3 py-1 bg-slate-800 text-amber-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+              CANAL QR DESHABILITADO
+            </span>
+            <h1 class="text-2xl font-bold text-slate-100">${resolvedCardId}</h1>
+            <p class="text-slate-400 text-sm mt-2">
+              Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-400">Chip NFC</strong>.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `, {
+      status: 403,
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+    });
+  }
+
+  if (!isQr && allowedChannels === 'qr') {
+    return new NextResponse(`
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Canal no habilitado | starTAP Panamá</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
+          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+            ⚠️
+          </div>
+          <div>
+            <span class="inline-block px-3 py-1 bg-slate-800 text-amber-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+              CANAL NFC DESHABILITADO
+            </span>
+            <h1 class="text-2xl font-bold text-slate-100">${resolvedCardId}</h1>
+            <p class="text-slate-400 text-sm mt-2">
+              Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-400">Código QR</strong>.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `, {
+      status: 403,
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+    });
   }
 
   // Capturar información de dispositivo mediante User-Agent

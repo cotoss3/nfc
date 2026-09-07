@@ -53,6 +53,7 @@ export interface NfcCard {
   qr_target_url?: string;
   group_name?: string;
   is_active: boolean;
+  channels?: 'both' | 'nfc' | 'qr';
   type: string;
   claimed?: boolean;
   activation_code?: string;
@@ -523,18 +524,19 @@ class LocalDbService {
 
     if (found) return found;
 
-    // Si la tarjeta aún no existe en la base de datos, auto-generarla para garantizar que la redirección NUNCA falle
+    // Si la tarjeta no ha sido habilitada por el Admin, se registra inactiva por defecto
     const cleanCode = resolvedId.toUpperCase();
     const autoCard: NfcCard = {
       card_id: cleanCode,
       activation_code: cleanCode,
-      owner_id: 'user-auto',
-      owner_name: 'Cliente TapStar',
-      owner_email: 'cliente@tapstar.es',
+      owner_id: 'unassigned',
+      owner_name: 'Pendiente de Habilitación',
+      owner_email: 'admin@startap.pa',
       label: `Dispositivo TAP (${cleanCode})`,
       target_url: 'https://google.com',
-      is_active: true,
-      claimed: true,
+      is_active: false, // Inactivo hasta que el Admin lo habilite
+      channels: 'both',
+      claimed: false,
       type: 'google',
       created_at: new Date().toISOString()
     };
@@ -542,6 +544,76 @@ class LocalDbService {
     cards.push(autoCard);
     this.setStorageItem('nfc_cards', cards);
     return autoCard;
+  }
+
+  toggleCardActive(cardId: string, isActive: boolean): boolean {
+    const cards = this.getCards();
+    const resolvedId = this.resolveCardId(cardId, cards);
+    const index = cards.findIndex(c => c.card_id.toLowerCase() === resolvedId.toLowerCase());
+
+    if (index !== -1) {
+      cards[index].is_active = isActive;
+      this.setStorageItem('nfc_cards', cards);
+      if (supabase) {
+        supabase.from('nfc_cards').update({ is_active: isActive }).eq('card_id', cards[index].card_id).then();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateCardChannels(cardId: string, channels: 'both' | 'nfc' | 'qr'): boolean {
+    const cards = this.getCards();
+    const resolvedId = this.resolveCardId(cardId, cards);
+    const index = cards.findIndex(c => c.card_id.toLowerCase() === resolvedId.toLowerCase());
+
+    if (index !== -1) {
+      cards[index].channels = channels;
+      this.setStorageItem('nfc_cards', cards);
+      if (supabase) {
+        supabase.from('nfc_cards').update({ channels }).eq('card_id', cards[index].card_id).then();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  createAdminCard(cardId: string, channels: 'both' | 'nfc' | 'qr' = 'both', isActive: boolean = true, label: string = ''): NfcCard {
+    const cards = this.getCards();
+    const cleanCode = cardId.trim().toUpperCase();
+    
+    const existingIndex = cards.findIndex(c => c.card_id.toLowerCase() === cleanCode.toLowerCase());
+    if (existingIndex !== -1) {
+      cards[existingIndex].is_active = isActive;
+      cards[existingIndex].channels = channels;
+      if (label) cards[existingIndex].label = label;
+      this.setStorageItem('nfc_cards', cards);
+      return cards[existingIndex];
+    }
+
+    const newCard: NfcCard = {
+      card_id: cleanCode,
+      activation_code: cleanCode,
+      owner_id: 'admin',
+      owner_name: 'Administrador starTAP',
+      owner_email: 'admin@startap.pa',
+      label: label || `Placa TAP (${cleanCode})`,
+      target_url: 'https://google.com',
+      is_active: isActive,
+      channels: channels,
+      claimed: false,
+      type: 'google',
+      created_at: new Date().toISOString()
+    };
+
+    cards.push(newCard);
+    this.setStorageItem('nfc_cards', cards);
+
+    if (supabase) {
+      supabase.from('nfc_cards').upsert(newCard).then();
+    }
+
+    return newCard;
   }
 
   updateCardRedirect(cardId: string, nfcUrl: string, qrUrl: string, label: string, groupName: string = 'General'): boolean {

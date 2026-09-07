@@ -11,15 +11,52 @@ export default function AdminPage() {
   const [stickerQuantity, setStickerQuantity] = useState(5);
   const [generatedStickers, setGeneratedStickers] = useState<string[]>([]);
 
+  // Admin creation states
+  const [newCardIdInput, setNewCardIdInput] = useState('');
+  const [newCardChannels, setNewCardChannels] = useState<'both' | 'nfc' | 'qr'>('both');
+  const [newCardIsActive, setNewCardIsActive] = useState(true);
+  const [newCardLabelInput, setNewCardLabelInput] = useState('');
+  const [createCardSuccess, setCreateCardSuccess] = useState(false);
+
+  // Sticker batch states
+  const [batchChannels, setBatchChannels] = useState<'both' | 'nfc' | 'qr'>('both');
+  const [batchIsActive, setBatchIsActive] = useState(true);
+
+  const handleCreateOrEnableCard = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCardIdInput.trim()) return;
+
+    dbLocal.createAdminCard(newCardIdInput.trim(), newCardChannels, newCardIsActive, newCardLabelInput.trim());
+    setCreateCardSuccess(true);
+    setNewCardIdInput('');
+    setNewCardLabelInput('');
+    loadData();
+    setTimeout(() => setCreateCardSuccess(false), 2000);
+  };
+
+  const handleToggleActive = (cardId: string, currentStatus: boolean) => {
+    dbLocal.toggleCardActive(cardId, !currentStatus);
+    loadData();
+  };
+
+  const handleChangeChannels = (cardId: string, channels: 'both' | 'nfc' | 'qr') => {
+    dbLocal.updateCardChannels(cardId, channels);
+    loadData();
+  };
+
   const handleGenerateStickers = () => {
     const list: string[] = [];
     const baseCode = dbLocal.getNextStickerCode();
     let num = parseInt(baseCode.replace('STT-', ''), 10) || 1001;
 
     for (let i = 0; i < stickerQuantity; i++) {
-      list.push(`STT-${num + i}`);
+      const code = `STT-${num + i}`;
+      list.push(code);
+      // Registrar e inicializar en DB como habilitado por Admin
+      dbLocal.createAdminCard(code, batchChannels, batchIsActive);
     }
     setGeneratedStickers(list);
+    loadData();
   };
   const [loading, setLoading] = useState(true);
 
@@ -48,10 +85,10 @@ export default function AdminPage() {
         <div>
           <div className="inline-flex items-center space-x-1.5 text-[9px] font-bold text-red-650 bg-red-50 border border-red-100 px-2.5 py-1 rounded mb-1 uppercase tracking-wider">
             <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Fulfillment PanaCards Panamá</span>
+            <span>Fulfillment & Control de Activación starTAP</span>
           </div>
-          <h1 className="text-2xl font-black text-brand-950 uppercase tracking-wide">Panel Administrativo</h1>
-          <p className="text-xs text-brand-400">Control de grabado láser, grabado NFC y despacho provincial de pedidos.</p>
+          <h1 className="text-2xl font-black text-brand-950 uppercase tracking-wide">Panel de Control de Administrador</h1>
+          <p className="text-xs text-brand-400">Habilitación de IDs STT-XXXX, asignación de canales (NFC / QR / Ambas) y control de estado activo.</p>
         </div>
 
         <button
@@ -83,7 +120,7 @@ export default function AdminPage() {
               : 'border-transparent text-brand-400 hover:text-brand-650'
           }`}
         >
-          Registros NFC ({cards.length})
+          Gestión de IDs & Canales ({cards.length})
         </button>
         <button
           onClick={() => setActiveTab('stickers')}
@@ -93,7 +130,7 @@ export default function AdminPage() {
               : 'border-transparent text-brand-400 hover:text-brand-650'
           }`}
         >
-          Generador de Etiquetas STT
+          Generador de Lotes STT
         </button>
       </div>
 
@@ -179,119 +216,188 @@ export default function AdminPage() {
                       <p className="text-base font-black text-brand-950 mt-1">${order.total.toFixed(2)}</p>
                     </div>
                   </div>
-
-                  {/* Production specifications */}
-                  <div className="bg-brand-50 border border-brand-200 rounded p-4 space-y-4">
-                    <h3 className="text-[9px] font-bold text-brand-400 uppercase tracking-widest flex items-center gap-1.5">
-                      <Package className="h-3.5 w-3.5" /> Ficha de Producción Física
-                    </h3>
-
-                    <div className="divide-y divide-brand-200">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="py-3 first:pt-0 last:pb-0 flex flex-col sm:flex-row justify-between sm:items-center gap-4 text-xs">
-                          <div className="space-y-1">
-                            <p className="font-bold text-brand-950 uppercase tracking-wide">
-                              {item.quantity}x {item.product_name}
-                            </p>
-                            <div className="text-[10px] text-brand-500 space-y-0.5">
-                              <p>Material/Color: <span className="font-bold text-brand-800 uppercase">{item.selected_color}</span></p>
-                              <p>Grabado Láser: <span className="font-bold text-brand-800 uppercase">{item.business_name}</span></p>
-                              {item.initial_redirect_url && (
-                                <p className="flex items-center gap-1 text-brand-700 font-bold font-mono text-[9px] break-all pt-0.5">
-                                  <LinkIcon className="h-3 w-3 flex-shrink-0" />
-                                  <span>Redirección Inicial: {item.initial_redirect_url}</span>
-                                </p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Logo Preview */}
-                          {item.logo_url && (
-                            <div className="flex items-center space-x-2 border border-brand-200 bg-white p-2 rounded">
-                              <span className="text-[8px] text-brand-400 font-bold uppercase tracking-wider">Logo Vector:</span>
-                              <img src={item.logo_url} alt="Logo" className="h-7 max-w-14 object-contain" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               ))}
             </div>
           )}
         </div>
       ) : activeTab === 'cards' ? (
-        /* Active chip links */
-        <div className="bg-white border border-brand-200 rounded shadow-premium overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-brand-50 text-brand-400 font-bold border-b border-brand-200 uppercase tracking-wider">
-                  <th className="p-4">Ruta del Chip NFC</th>
-                  <th className="p-4">Establecimiento</th>
-                  <th className="p-4">Propietario</th>
-                  <th className="p-4">Destino Actual en la Nube</th>
-                  <th className="p-4 text-center">NFC</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-100 font-medium text-brand-700">
-                {cards.map((card) => (
-                  <tr key={card.card_id} className="hover:bg-brand-50">
-                    <td className="p-4 font-mono font-bold text-brand-950 select-all">
-                      /r/{card.card_id}
-                    </td>
-                    <td className="p-4 font-bold text-brand-950 uppercase tracking-wide">
-                      {card.label}
-                    </td>
-                    <td className="p-4">
-                      <p className="font-semibold text-brand-800">{card.owner_name}</p>
-                      <p className="text-[9px] text-brand-400 font-mono">{card.owner_email}</p>
-                    </td>
-                    <td className="p-4 font-mono text-[10px] text-brand-500 max-w-[200px] truncate break-all" title={card.target_url}>
-                      {card.target_url}
-                    </td>
-                    <td className="p-4 text-center">
-                      <span className="inline-flex h-1.5 w-1.5 rounded-full bg-accent-600"></span>
-                    </td>
+        /* Active chip links & Admin Creation */
+        <div className="space-y-6">
+          {/* Admin Enable / Create New ID Form */}
+          <div className="bg-white border border-brand-200 rounded p-6 shadow-premium space-y-4">
+            <h2 className="text-sm font-black text-brand-950 uppercase tracking-wide flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>Habilitar Nueva ID o Dispositivo STT-XXXX</span>
+            </h2>
+            <p className="text-xs text-brand-500">
+              Solo las IDs habilitadas en este panel podrán generar redirecciones. Define el ID, canales soportados (NFC / QR / Ambas) y estado de activación.
+            </p>
+
+            <form onSubmit={handleCreateOrEnableCard} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end pt-2">
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-brand-700 mb-1">Código ID STT-XXXX</label>
+                <input
+                  type="text"
+                  required
+                  value={newCardIdInput}
+                  onChange={(e) => setNewCardIdInput(e.target.value)}
+                  placeholder="ej. STT-1005"
+                  className="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs font-mono font-bold uppercase"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-brand-700 mb-1">Tipo / Canales Soportados</label>
+                <select
+                  value={newCardChannels}
+                  onChange={(e) => setNewCardChannels(e.target.value as any)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs font-semibold"
+                >
+                  <option value="both">NFC + Código QR (Ambas)</option>
+                  <option value="nfc">Solo NFC (Sin QR)</option>
+                  <option value="qr">Solo Código QR (Sin NFC)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-brand-700 mb-1">Estado Inicial</label>
+                <select
+                  value={newCardIsActive ? 'true' : 'false'}
+                  onChange={(e) => setNewCardIsActive(e.target.value === 'true')}
+                  className="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs font-semibold"
+                >
+                  <option value="true">Activo (Habilitado)</option>
+                  <option value="false">Inactivo (Bloqueado)</option>
+                </select>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="w-full py-2.5 px-4 bg-brand-950 hover:bg-brand-900 text-white font-bold text-xs uppercase tracking-wider rounded transition"
+                >
+                  Habilitar ID
+                </button>
+              </div>
+            </form>
+
+            {createCardSuccess && (
+              <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 pt-1">
+                <CheckCircle className="w-4 h-4" /> ¡ID Habilitada correctamente en la plataforma!
+              </p>
+            )}
+          </div>
+
+          {/* Cards Table */}
+          <div className="bg-white border border-brand-200 rounded shadow-premium overflow-hidden">
+            <div className="p-4 border-b border-brand-200 bg-brand-50 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-brand-950">Inventario Global de Dispositivos Registrados ({cards.length})</h3>
+              <span className="text-[10px] text-brand-400">Control directo de Administrador</span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-brand-50 text-brand-400 font-bold border-b border-brand-200 uppercase tracking-wider">
+                    <th className="p-4">Ruta / ID Placa</th>
+                    <th className="p-4">Establecimiento / Etiqueta</th>
+                    <th className="p-4">Propietario / Cliente</th>
+                    <th className="p-4 text-center">Tipo de Canales</th>
+                    <th className="p-4 text-center">Estado de Activación</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-brand-100 font-medium text-brand-700">
+                  {cards.map((card) => (
+                    <tr key={card.card_id} className="hover:bg-brand-50">
+                      <td className="p-4 font-mono font-bold text-brand-950 select-all">
+                        /r/{card.card_id}
+                      </td>
+                      <td className="p-4 font-bold text-brand-950 uppercase tracking-wide">
+                        {card.label}
+                      </td>
+                      <td className="p-4">
+                        <p className="font-semibold text-brand-800">{card.owner_name}</p>
+                        <p className="text-[9px] text-brand-400 font-mono">{card.owner_email}</p>
+                      </td>
+                      <td className="p-4 text-center">
+                        <select
+                          value={card.channels || 'both'}
+                          onChange={(e) => handleChangeChannels(card.card_id, e.target.value as any)}
+                          className="bg-white border border-slate-200 text-[11px] font-bold rounded px-2 py-1 focus:outline-none"
+                        >
+                          <option value="both">📻 NFC + QR (Ambas)</option>
+                          <option value="nfc">⚡ Solo NFC</option>
+                          <option value="qr">📷 Solo QR</option>
+                        </select>
+                      </td>
+                      <td className="p-4 text-center">
+                        <button
+                          onClick={() => handleToggleActive(card.card_id, card.is_active)}
+                          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition ${
+                            card.is_active 
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100' 
+                              : 'bg-rose-50 text-rose-700 border-rose-300 hover:bg-rose-100'
+                          }`}
+                        >
+                          {card.is_active ? '🟢 Habilitado (Activo)' : '🔴 Bloqueado (Inactivo)'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       ) : (
         /* Stickers Tab */
         <div className="bg-white border border-brand-200 rounded p-8 space-y-6 shadow-premium">
           <div className="border-b border-brand-100 pb-4">
-            <h2 className="text-lg font-black text-brand-950 uppercase tracking-tight">Generador de Etiquetas Secuenciales STT</h2>
-            <p className="text-xs text-brand-500">Crea nuevos códigos únicos para grabar en chips NFC o imprimir en stickers físicos (Formato: STT-1001, STT-1002...).</p>
+            <h2 className="text-lg font-black text-brand-950 uppercase tracking-tight">Generador de Lotes STT Habilitados</h2>
+            <p className="text-xs text-brand-500">Crea e inicializa nuevos códigos únicos habilitados automáticamente en el sistema.</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-end gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-brand-700 block">Cantidad de Etiquetas a Generar</label>
+              <label className="text-xs font-bold text-brand-700 block">Cantidad a Generar</label>
               <input
                 type="number"
                 min="1"
                 max="50"
                 value={stickerQuantity}
                 onChange={(e) => setStickerQuantity(parseInt(e.target.value, 10) || 1)}
-                className="shopify-input w-40"
+                className="shopify-input w-full"
               />
             </div>
-            <button
-              onClick={handleGenerateStickers}
-              className="shopify-btn-primary py-2.5 px-6 font-bold uppercase tracking-wider text-xs"
-            >
-              Generar Lote STT
-            </button>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-brand-700 block">Tipo / Canales del Lote</label>
+              <select
+                value={batchChannels}
+                onChange={(e) => setBatchChannels(e.target.value as any)}
+                className="shopify-input w-full"
+              >
+                <option value="both">NFC + QR (Ambas)</option>
+                <option value="nfc">Solo NFC</option>
+                <option value="qr">Solo QR</option>
+              </select>
+            </div>
+
+            <div>
+              <button
+                onClick={handleGenerateStickers}
+                className="shopify-btn-primary w-full py-2.5 px-6 font-bold uppercase tracking-wider text-xs"
+              >
+                Generar e Inicializar Lote
+              </button>
+            </div>
           </div>
 
           {generatedStickers.length > 0 && (
             <div className="space-y-4 pt-4 border-t border-brand-100">
               <div className="flex justify-between items-center">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-brand-800">Lote Generado Listo para Imprimir / Grabar</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-brand-800">Lote Generado e Habilitado Listo para Grabar / Imprimir</h3>
                 <button
                   onClick={() => window.print()}
                   className="shopify-btn-secondary py-1.5 px-3 text-xs font-bold"
@@ -305,8 +411,8 @@ export default function AdminPage() {
                   <div key={code} className="border-2 border-brand-950 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center space-y-2 text-center">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-brand-400">starTAP Panamá</span>
                     <span className="font-mono text-xl font-black text-brand-950 tracking-wider">{code}</span>
-                    <span className="text-[9px] font-mono text-brand-500 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">
-                      startap.com.pa/r/{code}
+                    <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
+                      Habilitado ({batchChannels === 'both' ? 'NFC+QR' : batchChannels.toUpperCase()})
                     </span>
                   </div>
                 ))}
