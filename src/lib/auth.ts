@@ -12,12 +12,10 @@ export const authService = {
     if (!supabase) {
       throw new Error('Supabase no está configurado');
     }
-    const isLocal = typeof window !== 'undefined' && window.location.hostname.includes('localhost');
-    const origin = isLocal ? window.location.origin : 'https://startap.com.pa';
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${origin}/dashboard`
+        redirectTo: 'https://startap.com.pa/dashboard'
       }
     });
     if (error) throw error;
