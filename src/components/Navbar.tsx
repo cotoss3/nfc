@@ -21,10 +21,9 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Inicio', href: '/' },
     { name: 'Catálogo', href: '/shop' },
-    { name: 'Funciones ⚡', href: '/funciones' },
     { name: 'Corporativo', href: '/corporativo' },
-    { name: 'App Pro', href: '/app' },
-    { name: 'Administrar', href: '/dashboard' },
+    { name: 'App Pro ⚡', href: '/app' },
+    { name: 'Administrar Tarjetas', href: '/dashboard' },
   ];
 
   return (
