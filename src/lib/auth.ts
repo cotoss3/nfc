@@ -8,14 +8,18 @@ export interface UserProfile {
 
 export const authService = {
   // Iniciar sesión con Google OAuth
-  async signInWithGoogle() {
+  async signInWithGoogle(redirectToPath: string = '/dashboard') {
     if (!supabase) {
       throw new Error('Supabase no está configurado');
     }
+    const isLocal = typeof window !== 'undefined' && window.location.hostname.includes('localhost');
+    const origin = isLocal ? window.location.origin : 'https://startap.com.pa';
+    const redirectUrl = `${origin}${redirectToPath.startsWith('/') ? redirectToPath : '/' + redirectToPath}`;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://startap.com.pa/dashboard'
+        redirectTo: redirectUrl
       }
     });
     if (error) throw error;
