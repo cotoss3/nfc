@@ -272,32 +272,32 @@ function DashboardContent() {
   const qrScansCount = allScans.filter(s => s.scan_type === 'qr' || s.referrer.toLowerCase().includes('qr')).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col md:flex-row">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row pb-20 md:pb-0">
       
-      {/* ---------------- LOGIN & REGISTRATION OVERLAY ---------------- */}
+      {/* ---------------- LOGIN & REGISTRATION OVERLAY (LIGHT THEME) ---------------- */}
       {!userEmail ? (
-        <div className="flex-1 flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-950/20 via-slate-950 to-slate-950">
-          <div className="max-w-md w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-md space-y-6">
+        <div className="flex-1 flex items-center justify-center p-4 bg-slate-100/80">
+          <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 shadow-xl space-y-6">
             <div className="text-center space-y-2">
-              <div className="inline-flex p-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl mb-2">
+              <div className="inline-flex p-3 bg-amber-500/10 border border-amber-500/20 text-amber-600 rounded-2xl mb-2">
                 <Smartphone className="w-8 h-8" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white">starTAP Panamá</h1>
-              <p className="text-xs text-slate-400 uppercase tracking-widest">Panel de Control de Administración</p>
+              <h1 className="text-2xl font-black tracking-tight text-slate-900">starTAP Panamá</h1>
+              <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Panel de Control de Administración</p>
             </div>
 
-            <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+            <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
               <button
                 type="button"
                 onClick={() => setAuthMode('login')}
-                className={`flex-1 py-2 rounded-lg transition ${authMode === 'login' ? 'bg-amber-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white'}`}
+                className={`flex-1 py-2.5 rounded-lg transition ${authMode === 'login' ? 'bg-slate-900 text-white font-bold shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
               >
                 Iniciar Sesión
               </button>
               <button
                 type="button"
                 onClick={() => setAuthMode('register')}
-                className={`flex-1 py-2 rounded-lg transition ${authMode === 'register' ? 'bg-amber-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white'}`}
+                className={`flex-1 py-2.5 rounded-lg transition ${authMode === 'register' ? 'bg-slate-900 text-white font-bold shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
               >
                 Registrar Comercio
               </button>
@@ -305,7 +305,7 @@ function DashboardContent() {
 
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {authError && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center gap-2">
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center gap-2 font-medium">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>{authError}</span>
                 </div>
@@ -313,39 +313,39 @@ function DashboardContent() {
 
               {authMode === 'register' && (
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nombre del Establecimiento / Comercio</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nombre del Establecimiento / Comercio</label>
                   <input
                     type="text"
                     required
                     value={nameInput}
                     onChange={(e) => setNameInput(e.target.value)}
                     placeholder="Ej. Restaurante El Trapiche"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500 transition"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 transition"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Correo Electrónico Propietario</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Correo Electrónico Propietario</label>
                 <input
                   type="email"
                   required
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
                   placeholder="ejemplo@comercio.com"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500 transition"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 transition"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition text-sm uppercase tracking-wider"
+                className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-md transition text-sm uppercase tracking-wider"
               >
                 {authMode === 'login' ? 'Acceder al Panel' : 'Crear Cuenta Administrador'}
               </button>
             </form>
 
-            <div className="pt-4 border-t border-slate-800/80 text-center">
+            <div className="pt-4 border-t border-slate-200 text-center">
               <p className="text-xs text-slate-500">¿Tienes un código de activación en tu caja?</p>
               <button
                 type="button"
@@ -353,7 +353,7 @@ function DashboardContent() {
                   setAuthMode('register');
                   setEmailInput('');
                 }}
-                className="text-xs font-bold text-amber-400 hover:underline mt-1 inline-block"
+                className="text-xs font-bold text-amber-600 hover:underline mt-1 inline-block"
               >
                 Vincular nueva placa STT-XXXX
               </button>
@@ -362,42 +362,69 @@ function DashboardContent() {
         </div>
       ) : (
 
-        /* ---------------- MAIN DASHBOARD LAYOUT WITH SIDEBAR ---------------- */
+        /* ---------------- MAIN DASHBOARD LAYOUT (LIGHT THEME) ---------------- */
         <>
-          {/* SIDEBAR NAVIGATION */}
-          <aside className="w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
+          {/* MOBILE TOP HEADER BAR */}
+          <header className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-amber-500 text-slate-950 font-black rounded-lg flex items-center justify-center text-xs shadow-sm">
+                ST
+              </div>
+              <div>
+                <h2 className="text-xs font-black text-slate-900 leading-tight">starTAP</h2>
+                <p className="text-[9px] text-amber-600 font-bold uppercase tracking-wider">{userName}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsClaimModalOpen(true)}
+                className="p-2 bg-amber-500 text-slate-950 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="p-2 text-slate-400 hover:text-rose-600 rounded-lg transition"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          </header>
+
+          {/* DESKTOP SIDEBAR NAVIGATION (LIGHT MODE) */}
+          <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col shrink-0">
             {/* Header / Brand */}
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-amber-500 text-slate-950 font-black rounded-xl flex items-center justify-center text-sm shadow-md shadow-amber-500/20">
                   ST
                 </div>
                 <div>
-                  <h2 className="text-sm font-black text-white leading-tight">starTAP</h2>
-                  <p className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Panamá Pro</p>
+                  <h2 className="text-sm font-black text-slate-900 leading-tight">starTAP</h2>
+                  <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider">Panamá Pro</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
                 title="Cerrar Sesión"
-                className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition"
+                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
 
             {/* Tenant User Info Card */}
-            <div className="p-4 border-b border-slate-800/60 bg-slate-950/40">
-              <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+            <div className="p-4 border-b border-slate-200 bg-slate-50/60">
+              <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="truncate font-semibold text-white">{userName}</span>
+                <span className="truncate font-semibold text-slate-900">{userName}</span>
               </div>
               <p className="text-[11px] text-slate-500 truncate mt-0.5">{userEmail}</p>
             </div>
 
             {/* Navigation Modules */}
             <nav className="p-3 space-y-1 flex-1">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 py-2">
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-2">
                 Módulos de Gestión
               </div>
 
@@ -405,15 +432,15 @@ function DashboardContent() {
                 onClick={() => setActiveTab('devices')}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
                   activeTab === 'devices'
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-slate-900 text-white shadow-md font-bold'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <Smartphone className="w-4 h-4" />
                   <span>Dispositivos TAP</span>
                 </div>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'devices' ? 'bg-slate-950 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'devices' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
                   {cards.length}
                 </span>
               </button>
@@ -422,15 +449,15 @@ function DashboardContent() {
                 onClick={() => setActiveTab('groups')}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
                   activeTab === 'groups'
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-slate-900 text-white shadow-md font-bold'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <Folder className="w-4 h-4" />
                   <span>Grupos y Sucursales</span>
                 </div>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'groups' ? 'bg-slate-950 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'groups' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
                   {groupsList.length}
                 </span>
               </button>
@@ -439,15 +466,15 @@ function DashboardContent() {
                 onClick={() => setActiveTab('analytics')}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
                   activeTab === 'analytics'
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-slate-900 text-white shadow-md font-bold'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <BarChart2 className="w-4 h-4" />
                   <span>Analíticas de Grupo</span>
                 </div>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'analytics' ? 'bg-slate-950 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'analytics' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
                   {allScans.length}
                 </span>
               </button>
@@ -456,8 +483,8 @@ function DashboardContent() {
                 onClick={() => setActiveTab('settings')}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
                   activeTab === 'settings'
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-slate-900 text-white shadow-md font-bold'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -468,10 +495,10 @@ function DashboardContent() {
             </nav>
 
             {/* Footer Action */}
-            <div className="p-4 border-t border-slate-800">
+            <div className="p-4 border-t border-slate-200">
               <button
                 onClick={() => setIsClaimModalOpen(true)}
-                className="w-full py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 border border-slate-700/60"
+                className="w-full py-2.5 px-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 <span>Vincular Nueva Placa</span>
@@ -479,38 +506,81 @@ function DashboardContent() {
             </div>
           </aside>
 
-          {/* MAIN CONTENT AREA */}
+          {/* MOBILE BOTTOM NAVIGATION BAR (NATIVE MOBILE APP STYLE) */}
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 px-1 shadow-lg shadow-slate-900/10">
+            <button
+              onClick={() => setActiveTab('devices')}
+              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+                activeTab === 'devices' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <Smartphone className="w-5 h-5" />
+              <span className="text-[10px] font-semibold">Dispositivos</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('groups')}
+              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+                activeTab === 'groups' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <Folder className="w-5 h-5" />
+              <span className="text-[10px] font-semibold">Grupos</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+                activeTab === 'analytics' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <BarChart2 className="w-5 h-5" />
+              <span className="text-[10px] font-semibold">Analíticas</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+                activeTab === 'settings' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+              <span className="text-[10px] font-semibold">Ajustes</span>
+            </button>
+          </nav>
+
+          {/* MAIN CONTENT AREA (LIGHT THEME) */}
           <main className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
 
             {/* ---------------- MODULE 1: DISPOSITIVOS TAP ---------------- */}
             {activeTab === 'devices' && (
               <div className="space-y-6">
                 {/* Header Bar */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
                   <div>
-                    <h1 className="text-xl font-black text-white flex items-center gap-2">
+                    <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
                       <Smartphone className="w-5 h-5 text-amber-500" />
                       Gestión de Dispositivos TAP
                     </h1>
-                    <p className="text-xs text-slate-400 mt-1">Configura enlaces independientes para lectura NFC y Código QR impreso.</p>
+                    <p className="text-xs text-slate-500 mt-1">Configura enlaces independientes para lectura NFC y Código QR impreso.</p>
                   </div>
                   <div className="flex items-center gap-3">
                     {/* Search */}
-                    <div className="relative">
-                      <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                    <div className="relative flex-1 md:w-auto">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Buscar placa..."
-                        className="bg-slate-900 border border-slate-800 text-xs rounded-xl pl-9 pr-3 py-2 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500"
+                        className="w-full bg-white border border-slate-200 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900"
                       />
                     </div>
                     {/* Group Filter */}
                     <select
                       value={selectedGroupFilter}
                       onChange={(e) => setSelectedGroupFilter(e.target.value)}
-                      className="bg-slate-900 border border-slate-800 text-xs rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-amber-500 font-medium"
+                      className="bg-white border border-slate-200 text-xs rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:border-slate-900 font-medium"
                     >
                       <option value="TODOS">Todos los Grupos</option>
                       {groupsList.map(g => (
@@ -525,14 +595,14 @@ function DashboardContent() {
                   
                   {/* Left Column: Device Selector List */}
                   <div className="lg:col-span-5 space-y-3">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
                       <span>Tarjetas Registradas ({filteredCards.length})</span>
                     </div>
 
                     {filteredCards.length === 0 ? (
-                      <div className="p-8 bg-slate-900/60 border border-slate-800 rounded-2xl text-center space-y-3">
+                      <div className="p-8 bg-white border border-slate-200 rounded-2xl text-center space-y-3 shadow-sm">
                         <ShieldAlert className="w-8 h-8 text-amber-500 mx-auto opacity-60" />
-                        <p className="text-xs text-slate-400">No se encontraron dispositivos en este filtro.</p>
+                        <p className="text-xs text-slate-500">No se encontraron dispositivos en este filtro.</p>
                         <button
                           onClick={() => setIsClaimModalOpen(true)}
                           className="px-4 py-2 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl"
@@ -552,20 +622,20 @@ function DashboardContent() {
                             onClick={() => handleSelectCard(card)}
                             className={`p-4 rounded-2xl border transition cursor-pointer relative ${
                               isSelected 
-                                ? 'bg-slate-900 border-amber-500 shadow-lg shadow-amber-500/10' 
-                                : 'bg-slate-900/50 border-slate-800/80 hover:border-slate-700'
+                                ? 'bg-white border-amber-500 shadow-md ring-2 ring-amber-500/20' 
+                                : 'bg-white border-slate-200/90 hover:border-slate-300 shadow-sm'
                             }`}
                           >
                             <div className="flex items-start justify-between">
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-white">{card.label}</span>
-                                  <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-950 border border-slate-800 text-amber-400 rounded-md">
+                                  <span className="text-xs font-bold text-slate-900">{card.label}</span>
+                                  <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-100 border border-slate-200 text-amber-700 font-bold rounded-md">
                                     {card.card_id}
                                   </span>
                                 </div>
-                                <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                                  <Folder className="w-3 h-3 text-slate-500" />
+                                <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                                  <Folder className="w-3 h-3 text-slate-400" />
                                   <span>{card.group_name || 'General'}</span>
                                 </div>
                               </div>
@@ -576,19 +646,19 @@ function DashboardContent() {
                                   setQrModalCard(card);
                                 }}
                                 title="Ver Código QR impreso"
-                                className="p-2 bg-slate-950 border border-slate-800 rounded-xl text-slate-400 hover:text-amber-400 transition"
+                                className="p-2 bg-slate-100 border border-slate-200 rounded-xl text-slate-600 hover:text-amber-600 transition"
                               >
                                 <QrCode className="w-4 h-4" />
                               </button>
                             </div>
 
                             {/* Dual URL Badges */}
-                            <div className="mt-3 pt-3 border-t border-slate-800/60 flex items-center gap-2 text-[10px] font-semibold">
-                              <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasNfc ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-500'}`}>
+                            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-[10px] font-semibold">
+                              <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasNfc ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500'}`}>
                                 <Radio className="w-3 h-3" />
                                 {hasNfc ? 'NFC Configurado' : 'NFC En blanco'}
                               </span>
-                              <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasQr ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
+                              <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasQr ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
                                 <QrCode className="w-3 h-3" />
                                 {hasQr ? 'QR Configurado' : 'QR En blanco'}
                               </span>
@@ -602,13 +672,13 @@ function DashboardContent() {
                   {/* Right Column: Dual URL Editor Form */}
                   <div className="lg:col-span-7">
                     {selectedCard ? (
-                      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                           <div>
-                            <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest">Configuración Dual</span>
-                            <h2 className="text-lg font-bold text-white">{selectedCard.label}</h2>
+                            <span className="text-[10px] font-mono text-amber-600 font-bold uppercase tracking-widest">Configuración Dual</span>
+                            <h2 className="text-lg font-bold text-slate-900">{selectedCard.label}</h2>
                           </div>
-                          <span className="text-xs font-mono px-3 py-1 bg-slate-950 text-slate-400 rounded-full border border-slate-800">
+                          <span className="text-xs font-mono px-3 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200 font-bold">
                             {selectedCard.card_id}
                           </span>
                         </div>
@@ -616,22 +686,22 @@ function DashboardContent() {
                         <form onSubmit={handleUpdateCard} className="space-y-5">
                           {/* Label */}
                           <div>
-                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nombre / Etiqueta del Dispositivo</label>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nombre / Etiqueta del Dispositivo</label>
                             <input
                               type="text"
                               value={editLabel}
                               onChange={(e) => setEditLabel(e.target.value)}
-                              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-slate-900"
                             />
                           </div>
 
                           {/* Group Assignment */}
                           <div>
-                            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Grupo / Sucursal Asignada</label>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Grupo / Sucursal Asignada</label>
                             <select
                               value={editGroup}
                               onChange={(e) => setEditGroup(e.target.value)}
-                              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-slate-900"
                             >
                               {groupsList.map(g => (
                                 <option key={g} value={g}>{g}</option>
@@ -640,18 +710,18 @@ function DashboardContent() {
                           </div>
 
                           {/* Dual URLs */}
-                          <div className="space-y-4 pt-2 border-t border-slate-800">
+                          <div className="space-y-4 pt-2 border-t border-slate-100">
                             {/* NFC URL Field */}
-                            <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-2">
+                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                               <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase tracking-wider">
+                                <label className="text-xs font-bold text-emerald-700 flex items-center gap-1.5 uppercase tracking-wider">
                                   <Radio className="w-4 h-4" />
                                   1. Redirección para Escaneo NFC (Aproximación física)
                                 </label>
                                 <button
                                   type="button"
                                   onClick={() => copyToClipboard(`${window.location.origin}/r/${selectedCard.card_id}?m=nfc`, 'nfc')}
-                                  className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1"
+                                  className="text-[11px] text-slate-500 hover:text-slate-900 flex items-center gap-1 font-semibold"
                                 >
                                   <Copy className="w-3 h-3" />
                                   <span>{copiedLink === 'nfc' ? '¡Copiado!' : 'Copiar Link'}</span>
@@ -662,22 +732,22 @@ function DashboardContent() {
                                 value={editNfcUrl}
                                 onChange={(e) => setEditNfcUrl(e.target.value)}
                                 placeholder="datakorex.com o https://g.page/r/..."
-                                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 font-mono"
+                                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 font-mono"
                               />
                               <p className="text-[11px] text-slate-500">URL a la que se dirigirá cuando el cliente acerque su celular al chip NFC.</p>
                             </div>
 
                             {/* QR URL Field */}
-                            <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-2">
+                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                               <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-blue-400 flex items-center gap-1.5 uppercase tracking-wider">
+                                <label className="text-xs font-bold text-blue-700 flex items-center gap-1.5 uppercase tracking-wider">
                                   <QrCode className="w-4 h-4" />
                                   2. Redirección para Código QR impreso
                                 </label>
                                 <button
                                   type="button"
                                   onClick={() => copyToClipboard(`${window.location.origin}/r/${selectedCard.card_id}?m=qr`, 'qr')}
-                                  className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1"
+                                  className="text-[11px] text-slate-500 hover:text-slate-900 flex items-center gap-1 font-semibold"
                                 >
                                   <Copy className="w-3 h-3" />
                                   <span>{copiedLink === 'qr' ? '¡Copiado!' : 'Copiar Link'}</span>
@@ -688,7 +758,7 @@ function DashboardContent() {
                                 value={editQrUrl}
                                 onChange={(e) => setEditQrUrl(e.target.value)}
                                 placeholder="Dejar en blanco o colocar enlace (ej. instagram.com/...)"
-                                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500 font-mono"
+                                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-600 font-mono"
                               />
                               <p className="text-[11px] text-slate-500">Si se deja en blanco, al escanear el QR mostrará aviso elegante de "No configurado".</p>
                             </div>
@@ -699,13 +769,13 @@ function DashboardContent() {
                             <button
                               type="submit"
                               disabled={isUpdating}
-                              className="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center gap-2"
+                              className="py-3 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center gap-2"
                             >
                               {isUpdating ? 'Guardando en Supabase...' : 'Guardar Cambios de Redirección'}
                             </button>
 
                             {updateSuccess && (
-                              <span className="text-xs text-emerald-400 font-bold flex items-center gap-1.5 animate-pulse">
+                              <span className="text-xs text-emerald-600 font-bold flex items-center gap-1.5 animate-pulse">
                                 <Check className="w-4 h-4" />
                                 ¡Sincronizado en tiempo real!
                               </span>
@@ -714,7 +784,7 @@ function DashboardContent() {
                         </form>
                       </div>
                     ) : (
-                      <div className="p-12 bg-slate-900/40 border border-slate-800 rounded-3xl text-center text-slate-500 text-xs">
+                      <div className="p-12 bg-white border border-slate-200 rounded-3xl text-center text-slate-400 text-xs">
                         Selecciona un dispositivo para editar su configuración.
                       </div>
                     )}
@@ -727,32 +797,32 @@ function DashboardContent() {
             {/* ---------------- MODULE 2: GRUPOS Y SUCURSALES ---------------- */}
             {activeTab === 'groups' && (
               <div className="space-y-6">
-                <div className="pb-4 border-b border-slate-800">
-                  <h1 className="text-xl font-black text-white flex items-center gap-2">
+                <div className="pb-4 border-b border-slate-200">
+                  <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
                     <Folder className="w-5 h-5 text-amber-500" />
                     Gestión de Grupos y Sucursales
                   </h1>
-                  <p className="text-xs text-slate-400 mt-1">Organiza tus dispositivos por ubicación, departamento o sucursal.</p>
+                  <p className="text-xs text-slate-500 mt-1">Organiza tus dispositivos por ubicación, departamento o sucursal.</p>
                 </div>
 
                 {/* Create New Group */}
-                <form onSubmit={handleCreateGroup} className="p-4 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col md:flex-row items-center gap-3">
+                <form onSubmit={handleCreateGroup} className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col md:flex-row items-center gap-3 shadow-sm">
                   <input
                     type="text"
                     value={newGroupNameInput}
                     onChange={(e) => setNewGroupNameInput(e.target.value)}
                     placeholder="Nombre del nuevo grupo (ej. Sucursal Costa del Este)"
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500"
+                    className="flex-1 w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-900"
                   />
                   <button
                     type="submit"
-                    className="w-full md:w-auto px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
+                    className="w-full md:w-auto px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Crear Grupo</span>
                   </button>
                   {createGroupSuccess && (
-                    <span className="text-xs text-emerald-400 font-bold flex items-center gap-1">
+                    <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
                       <Check className="w-4 h-4" /> ¡Creado!
                     </span>
                   )}
@@ -765,18 +835,18 @@ function DashboardContent() {
                     const groupScans = allScans.filter(s => s.group_name === group);
 
                     return (
-                      <div key={group} className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-3">
+                      <div key={group} className="p-5 bg-white border border-slate-200 rounded-2xl space-y-3 shadow-sm">
                         <div className="flex items-center justify-between">
-                          <h3 className="font-bold text-white text-sm">{group}</h3>
-                          <span className="text-[10px] font-mono px-2.5 py-0.5 bg-slate-950 border border-slate-800 text-amber-400 rounded-full">
+                          <h3 className="font-bold text-slate-900 text-sm">{group}</h3>
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 bg-amber-50 text-amber-700 font-bold border border-amber-200 rounded-full">
                             {groupCards.length} dispositivos
                           </span>
                         </div>
 
-                        <div className="space-y-1.5 text-xs text-slate-400 pt-2 border-t border-slate-800">
+                        <div className="space-y-1.5 text-xs text-slate-500 pt-2 border-t border-slate-100">
                           <div className="flex justify-between">
                             <span>Escaneos Totales:</span>
-                            <span className="font-bold text-white">{groupScans.length}</span>
+                            <span className="font-bold text-slate-900">{groupScans.length}</span>
                           </div>
                         </div>
 
@@ -785,7 +855,7 @@ function DashboardContent() {
                             setSelectedGroupFilter(group);
                             setActiveTab('devices');
                           }}
-                          className="w-full py-2 bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs font-semibold rounded-xl border border-slate-800 transition flex items-center justify-center gap-1"
+                          className="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition flex items-center justify-center gap-1"
                         >
                           <span>Ver Tarjetas de este grupo</span>
                           <ChevronRight className="w-3 h-3" />
@@ -800,48 +870,48 @@ function DashboardContent() {
             {/* ---------------- MODULE 3: ANALÍTICAS DE GRUPO ---------------- */}
             {activeTab === 'analytics' && (
               <div className="space-y-6">
-                <div className="pb-4 border-b border-slate-800">
-                  <h1 className="text-xl font-black text-white flex items-center gap-2">
+                <div className="pb-4 border-b border-slate-200">
+                  <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
                     <BarChart2 className="w-5 h-5 text-amber-500" />
                     Analíticas de Grupo y Rendimiento
                   </h1>
-                  <p className="text-xs text-slate-400 mt-1">Métricas de rendimiento comparativas por canal (NFC vs QR) y sucursales.</p>
+                  <p className="text-xs text-slate-500 mt-1">Métricas de rendimiento comparativas por canal (NFC vs QR) y sucursales.</p>
                 </div>
 
                 {/* Key Metric Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Escaneos Totales</span>
-                    <p className="text-2xl font-black text-white mt-1">{allScans.length}</p>
+                  <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Escaneos Totales</span>
+                    <p className="text-2xl font-black text-slate-900 mt-1">{allScans.length}</p>
                   </div>
-                  <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl">
-                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1">
+                  <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest flex items-center gap-1">
                       <Radio className="w-3 h-3" /> Escaneos NFC
                     </span>
-                    <p className="text-2xl font-black text-emerald-400 mt-1">{nfcScansCount}</p>
+                    <p className="text-2xl font-black text-emerald-600 mt-1">{nfcScansCount}</p>
                   </div>
-                  <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl">
-                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1">
+                  <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest flex items-center gap-1">
                       <QrCode className="w-3 h-3" /> Escaneos QR
                     </span>
-                    <p className="text-2xl font-black text-blue-400 mt-1">{qrScansCount}</p>
+                    <p className="text-2xl font-black text-blue-600 mt-1">{qrScansCount}</p>
                   </div>
-                  <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl">
-                    <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Grupos Activos</span>
-                    <p className="text-2xl font-black text-amber-400 mt-1">{groupsList.length}</p>
+                  <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <span className="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Grupos Activos</span>
+                    <p className="text-2xl font-black text-amber-600 mt-1">{groupsList.length}</p>
                   </div>
                 </div>
 
                 {/* Scan Logs Table */}
-                <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">Registro Reciente de Actividad</h3>
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Registro Reciente de Actividad</h3>
                   {allScans.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic text-center py-6">No hay escaneos registrados aún.</p>
+                    <p className="text-xs text-slate-400 italic text-center py-6">No hay escaneos registrados aún.</p>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs">
                         <thead>
-                          <tr className="border-b border-slate-800 text-slate-500 uppercase tracking-wider">
+                          <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider">
                             <th className="pb-3">Dispositivo ID</th>
                             <th className="pb-3">Grupo</th>
                             <th className="pb-3">Canal</th>
@@ -849,18 +919,18 @@ function DashboardContent() {
                             <th className="pb-3">Fecha y Hora</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                        <tbody className="divide-y divide-slate-100 text-slate-700">
                           {allScans.slice(-15).reverse().map((scan) => (
-                            <tr key={scan.id} className="hover:bg-slate-950/40">
-                              <td className="py-2.5 font-mono text-amber-400">{scan.card_id}</td>
+                            <tr key={scan.id} className="hover:bg-slate-50">
+                              <td className="py-2.5 font-mono text-amber-700 font-bold">{scan.card_id}</td>
                               <td className="py-2.5">{scan.group_name || 'General'}</td>
                               <td className="py-2.5">
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${scan.scan_type === 'qr' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${scan.scan_type === 'qr' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
                                   {scan.scan_type === 'qr' ? 'QR Code' : 'NFC Scan'}
                                 </span>
                               </td>
                               <td className="py-2.5">{scan.device}</td>
-                              <td className="py-2.5 text-slate-500">
+                              <td className="py-2.5 text-slate-400">
                                 {new Date(scan.created_at).toLocaleString('es-PA')}
                               </td>
                             </tr>
@@ -876,28 +946,28 @@ function DashboardContent() {
             {/* ---------------- MODULE 4: AJUSTES & EXPORTAR ---------------- */}
             {activeTab === 'settings' && (
               <div className="space-y-6">
-                <div className="pb-4 border-b border-slate-800">
-                  <h1 className="text-xl font-black text-white flex items-center gap-2">
+                <div className="pb-4 border-b border-slate-200">
+                  <h1 className="text-xl font-black text-slate-900 flex items-center gap-2">
                     <Settings className="w-5 h-5 text-amber-500" />
                     Ajustes de Perfil y Exportación
                   </h1>
-                  <p className="text-xs text-slate-400 mt-1">Configuración del tenant de comercio y exportación de datos.</p>
+                  <p className="text-xs text-slate-500 mt-1">Configuración del tenant de comercio y exportación de datos.</p>
                 </div>
 
-                <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 max-w-xl">
-                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Información de Cuenta Tenant</h3>
-                  <div className="space-y-2 text-xs text-slate-400">
-                    <div className="flex justify-between py-2 border-b border-slate-800">
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 max-w-xl shadow-sm">
+                  <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Información de Cuenta Tenant</h3>
+                  <div className="space-y-2 text-xs text-slate-600">
+                    <div className="flex justify-between py-2 border-b border-slate-100">
                       <span>Propietario:</span>
-                      <span className="font-bold text-white">{userName}</span>
+                      <span className="font-bold text-slate-900">{userName}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-slate-800">
+                    <div className="flex justify-between py-2 border-b border-slate-100">
                       <span>Correo Electrónico:</span>
-                      <span className="font-mono text-amber-400">{userEmail}</span>
+                      <span className="font-mono text-amber-700 font-bold">{userEmail}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-slate-800">
+                    <div className="flex justify-between py-2 border-b border-slate-100">
                       <span>Nube Supabase:</span>
-                      <span className="text-emerald-400 font-bold">Activo (Realtime Sync)</span>
+                      <span className="text-emerald-600 font-bold">Activo (Realtime Sync)</span>
                     </div>
                   </div>
 
@@ -912,7 +982,7 @@ function DashboardContent() {
                         downloadAnchor.click();
                         downloadAnchor.remove();
                       }}
-                      className="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex items-center gap-2"
+                      className="py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-2"
                     >
                       <Download className="w-4 h-4" />
                       <span>Exportar Configuración y Escaneos a JSON</span>
@@ -928,13 +998,13 @@ function DashboardContent() {
 
       {/* ---------------- CLAIM DEVICE MODAL ---------------- */}
       {isClaimModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-bold text-white text-sm">Vincular Nueva Placa STT-XXXX</h3>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="font-bold text-slate-900 text-sm">Vincular Nueva Placa STT-XXXX</h3>
               <button
                 onClick={() => setIsClaimModalOpen(false)}
-                className="text-slate-500 hover:text-white text-xs font-bold"
+                className="text-slate-400 hover:text-slate-900 text-xs font-bold"
               >
                 ✕
               </button>
@@ -942,26 +1012,26 @@ function DashboardContent() {
 
             <form onSubmit={handleClaimTap} className="space-y-4">
               {claimMessage && (
-                <div className={`p-3 rounded-xl text-xs font-semibold ${claimMessage.success ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
+                <div className={`p-3 rounded-xl text-xs font-semibold ${claimMessage.success ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
                   {claimMessage.text}
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Código de Activación del Sticker</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Código de Activación del Sticker</label>
                 <input
                   type="text"
                   required
                   value={claimInput}
                   onChange={(e) => setClaimInput(e.target.value)}
                   placeholder="Ej. STT-1002"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white font-mono uppercase focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 font-mono uppercase focus:outline-none focus:border-slate-900"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition"
+                className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-sm"
               >
                 Vincular a mi Cuenta
               </button>
@@ -972,24 +1042,23 @@ function DashboardContent() {
 
       {/* ---------------- QR MODAL ---------------- */}
       {qrModalCard && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="max-w-xs w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 text-center space-y-4 shadow-2xl">
-            <h3 className="font-bold text-white text-sm">{qrModalCard.label}</h3>
-            <span className="inline-block text-xs font-mono px-3 py-1 bg-slate-950 text-amber-400 rounded-full border border-slate-800">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="max-w-xs w-full bg-white border border-slate-200 rounded-3xl p-6 text-center space-y-4 shadow-2xl">
+            <h3 className="font-bold text-slate-900 text-sm">{qrModalCard.label}</h3>
+            <span className="inline-block text-xs font-mono px-3 py-1 bg-slate-100 text-amber-700 rounded-full border border-slate-200 font-bold">
               {qrModalCard.card_id}
             </span>
-            <div className="bg-white p-4 rounded-2xl mx-auto inline-block">
-              {/* Render QR code via Google API service */}
+            <div className="bg-white p-4 rounded-2xl mx-auto inline-block border border-slate-200 shadow-sm">
               <img
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`${typeof window !== 'undefined' ? window.location.origin : 'https://startap.pa'}/r/${qrModalCard.card_id}?m=qr`)}`}
                 alt="QR Code"
                 className="w-44 h-44 mx-auto"
               />
             </div>
-            <p className="text-[11px] text-slate-400">Este QR redirige directamente a la URL de QR configurada (`/r/${qrModalCard.card_id}?m=qr`).</p>
+            <p className="text-[11px] text-slate-500">Este QR redirige directamente a la URL de QR configurada (`/r/${qrModalCard.card_id}?m=qr`).</p>
             <button
               onClick={() => setQrModalCard(null)}
-              className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl"
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition"
             >
               Cerrar
             </button>
@@ -1008,3 +1077,4 @@ export default function DashboardPage() {
     </Suspense>
   );
 }
+
