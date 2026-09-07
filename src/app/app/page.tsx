@@ -274,9 +274,9 @@ export default function AppProPage() {
               <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center">
                 <Users className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-brand-950">Captura de Prospectos / Leads</h3>
+              <h3 className="text-lg font-bold text-brand-950">Ranking & Competencia de Empleados</h3>
               <p className="text-xs text-brand-600 leading-relaxed">
-                Formulario integrado para recopilar nombres, correos y WhatsApps de tus clientes durante su visita para campañas de marketing en Panamá.
+                Gamifica la captación de opiniones. Asigna dispositivos a tus meseros o ejecutivos y premia al empleado del mes con el Leaderboard en vivo.
               </p>
               <span className="text-[10px] bg-amber-50 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-200 inline-block">
                 Opcional Pro
@@ -284,6 +284,34 @@ export default function AppProPage() {
             </div>
 
             {/* Feature 6 */}
+            <div className="bg-white rounded-2xl p-8 border border-brand-200 shadow-sm space-y-4 hover:border-brand-950 transition-colors">
+              <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold text-lg">
+                ⚠️
+              </div>
+              <h3 className="text-lg font-bold text-brand-950">Alertas de Reseñas Negativas</h3>
+              <p className="text-xs text-brand-600 leading-relaxed">
+                Recibe notificaciones instantáneas en WhatsApp ante opiniones bajas para actuar antes de que afecten la puntuación pública de tu local.
+              </p>
+              <span className="text-[10px] bg-amber-50 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-200 inline-block">
+                Opcional Pro
+              </span>
+            </div>
+
+            {/* Feature 7 */}
+            <div className="bg-white rounded-2xl p-8 border border-brand-200 shadow-sm space-y-4 hover:border-brand-950 transition-colors">
+              <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center">
+                <Layers className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-brand-950">Gestión Multi-Sucursal & Publicaciones</h3>
+              <p className="text-xs text-brand-600 leading-relaxed">
+                Administra franquicias o redes de negocios en Panamá. Publica ofertas, fotos y cambios de horario masivos en todos tus perfiles de Google a la vez.
+              </p>
+              <span className="text-[10px] bg-amber-50 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-200 inline-block">
+                Opcional Pro
+              </span>
+            </div>
+
+            {/* Feature 8 */}
             <div className="bg-white rounded-2xl p-8 border border-brand-200 shadow-sm space-y-4 hover:border-brand-950 transition-colors">
               <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center">
                 <ShieldCheck className="w-6 h-6" />

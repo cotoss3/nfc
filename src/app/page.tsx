@@ -168,8 +168,81 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Cloud Platform & Dashboard Features Showcase */}
+      <section className="py-20 bg-brand-950 text-white">
+        <div className="shopify-container max-w-6xl mx-auto px-4 space-y-16">
+          <div className="text-center space-y-4 max-w-3xl mx-auto">
+            <span className="text-xs font-black uppercase tracking-widest text-amber-400 block">Software Incluido & Innovación</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white">
+              El Control Total de tu Negocio en Un Solo Lugar
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              Cada dispositivo starTAP incluye nuestro portal web en tiempo real. Gestiona tus tarjetas, mide resultados y prepárate para las funciones inteligentes que tenemos preparadas.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Feature 1 */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                ⚡
+              </div>
+              <h3 className="font-bold text-white text-base">Ruteo en Tiempo Real</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Cambia el destino de tus dispositivos las veces que quieras. Dirige a Google Maps, Instagram, WhatsApp o menú digital al instante.
+              </p>
+              <span className="text-[10px] bg-green-500/20 text-green-400 font-bold px-2 py-0.5 rounded border border-green-500/30 inline-block uppercase">
+                ✓ Incluido Gratis
+              </span>
+            </div>
+
+            {/* Feature 2: Ranking Empleados */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3 relative overflow-hidden">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                🏆
+              </div>
+              <h3 className="font-bold text-white text-base">Ranking por Empleado</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Asigna tarjetas a tus meseros o vendedores. Gamifica la captación de opiniones premiando al colaborador con más toques del mes.
+              </p>
+              <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-400/30 inline-block uppercase">
+                Próximamente
+              </span>
+            </div>
+
+            {/* Feature 3: Respuestas IA */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3 relative overflow-hidden">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                🤖
+              </div>
+              <h3 className="font-bold text-white text-base">Respuestas IA a Reseñas</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Asistente inteligente que genera respuestas profesionales para Google Maps en segundos según el tono oficial de tu marca.
+              </p>
+              <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-400/30 inline-block uppercase">
+                Próximamente
+              </span>
+            </div>
+
+            {/* Feature 4: Reportes PDF */}
+            <div className="bg-brand-900 border border-brand-800 rounded-2xl p-6 space-y-3 relative overflow-hidden">
+              <div className="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-sm">
+                📄
+              </div>
+              <h3 className="font-bold text-white text-base">Reportes Ejecutivo PDF</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Descarga informes mensuales en PDF con tendencias de escaneos y métricas de reputación para la gerencia de tu empresa.
+              </p>
+              <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-400/30 inline-block uppercase">
+                Próximamente
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Auto-Configurable 3-Step Guide */}
-      <div className="shopify-container max-w-6xl mx-auto px-4">
+      <div className="shopify-container max-w-6xl mx-auto px-4 pt-12">
         <AutoConfigGuide />
       </div>
 
