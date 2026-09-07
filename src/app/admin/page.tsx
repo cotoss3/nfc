@@ -34,13 +34,33 @@ export default function AdminPage() {
     setTimeout(() => setCreateCardSuccess(false), 2000);
   };
 
-  const handleToggleActive = (cardId: string, currentStatus: boolean) => {
+  const handleToggleActive = async (cardId: string, currentStatus: boolean) => {
     dbLocal.toggleCardActive(cardId, !currentStatus);
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error guardando estado activo:', err);
+    }
     loadData();
   };
 
-  const handleChangeChannels = (cardId: string, channels: 'both' | 'nfc' | 'qr') => {
+  const handleChangeChannels = async (cardId: string, channels: 'both' | 'nfc' | 'qr') => {
     dbLocal.updateCardChannels(cardId, channels);
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error guardando canales:', err);
+    }
     loadData();
   };
 
@@ -332,16 +352,25 @@ export default function AdminPage() {
                         </select>
                       </td>
                       <td className="p-4 text-center">
-                        <button
-                          onClick={() => handleToggleActive(card.card_id, card.is_active)}
-                          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition ${
+                        <div className="flex items-center justify-center space-x-2">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                             card.is_active 
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100' 
-                              : 'bg-rose-50 text-rose-700 border-rose-300 hover:bg-rose-100'
-                          }`}
-                        >
-                          {card.is_active ? '🟢 Habilitado (Activo)' : '🔴 Bloqueado (Inactivo)'}
-                        </button>
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                              : 'bg-rose-100 text-rose-800 border border-rose-300'
+                          }`}>
+                            {card.is_active ? '🟢 Activo' : '🔴 Inactivo'}
+                          </span>
+                          <button
+                            onClick={() => handleToggleActive(card.card_id, card.is_active)}
+                            className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition ${
+                              card.is_active 
+                                ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300 shadow-sm' 
+                                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300 shadow-sm'
+                            }`}
+                          >
+                            {card.is_active ? 'Desactivar' : 'Activar'}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

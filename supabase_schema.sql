@@ -54,6 +54,32 @@ CREATE TABLE IF NOT EXISTS public.nfc_cards (
 ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS nfc_target_url TEXT;
 ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS qr_target_url TEXT;
 ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS group_name TEXT DEFAULT 'General';
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT false;
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS channels TEXT DEFAULT 'both';
+
+-- 3.1 Vista para Tarjetas / Dispositivos Activos en Supabase (public.active_cards)
+CREATE OR REPLACE VIEW public.active_cards AS
+SELECT 
+  card_id,
+  activation_code,
+  owner_id,
+  owner_name,
+  owner_email,
+  label,
+  target_url,
+  nfc_target_url,
+  qr_target_url,
+  group_name,
+  channels,
+  is_active,
+  claimed,
+  type,
+  created_at
+FROM public.nfc_cards
+WHERE is_active = true;
+
+-- Otorgar permisos a la vista
+GRANT SELECT ON public.active_cards TO anon, authenticated, service_role;
 
 -- 4. Tabla de Escaneos y Analíticas
 CREATE TABLE IF NOT EXISTS public.scans (
@@ -85,4 +111,5 @@ CREATE POLICY "Permitir lectura publica de productos" ON public.products FOR SEL
 CREATE POLICY "Permitir lectura publica de nfc_cards para redireccion" ON public.nfc_cards FOR SELECT USING (true);
 CREATE POLICY "Permitir escritura y actualizacion publica de nfc_cards" ON public.nfc_cards FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Permitir insercion publica de escaneos" ON public.scans FOR INSERT WITH CHECK (true);
+
 

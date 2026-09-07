@@ -300,6 +300,31 @@ function DashboardContent() {
     setIsUpdating(false);
   };
 
+  const handleToggleCardActive = async (cardId: string, currentActiveStatus: boolean) => {
+    const newStatus = !currentActiveStatus;
+    dbLocal.toggleCardActive(cardId, newStatus);
+    
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error sincronizando estado activo:', err);
+    }
+
+    const updatedCards = cards.map(c => 
+      c.card_id === cardId ? { ...c, is_active: newStatus } : c
+    );
+    setCards(updatedCards);
+
+    if (selectedCard && selectedCard.card_id === cardId) {
+      setSelectedCard({ ...selectedCard, is_active: newStatus });
+    }
+  };
+
   const handleCreateGroup = (e: React.FormEvent) => {
     e.preventDefault();
     const gName = newGroupNameInput.trim();
@@ -817,16 +842,38 @@ function DashboardContent() {
                               </button>
                             </div>
 
-                            {/* Dual URL Badges */}
-                            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-[10px] font-semibold">
-                              <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasNfc ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500'}`}>
-                                <Radio className="w-3 h-3" />
-                                {hasNfc ? 'NFC Configurado' : 'NFC En blanco'}
-                              </span>
-                              <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasQr ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
-                                <QrCode className="w-3 h-3" />
-                                {hasQr ? 'QR Configurado' : 'QR En blanco'}
-                              </span>
+                            {/* Status & Dual URL Badges */}
+                            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold">
+                              <div className="flex items-center gap-1.5">
+                                <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasNfc ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500'}`}>
+                                  <Radio className="w-3 h-3" />
+                                  {hasNfc ? 'NFC Configurado' : 'NFC En blanco'}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-full flex items-center gap-1 ${hasQr ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
+                                  <QrCode className="w-3 h-3" />
+                                  {hasQr ? 'QR Configurado' : 'QR En blanco'}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-1.5">
+                                <span className={`px-2 py-0.5 rounded-full font-bold border ${card.is_active ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-rose-100 text-rose-800 border-rose-300'}`}>
+                                  {card.is_active ? '🟢 Activo' : '🔴 Inactivo'}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleCardActive(card.card_id, card.is_active);
+                                  }}
+                                  className={`px-2.5 py-0.5 rounded font-bold text-[10px] uppercase tracking-wider border transition ${
+                                    card.is_active 
+                                      ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300' 
+                                      : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300'
+                                  }`}
+                                >
+                                  {card.is_active ? 'Desactivar' : 'Activar'}
+                                </button>
+                              </div>
                             </div>
                           </div>
                         );
@@ -846,6 +893,34 @@ function DashboardContent() {
                           <span className="text-xs font-mono px-3 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200 font-bold">
                             {selectedCard.card_id}
                           </span>
+                        </div>
+
+                        {/* Banner Control Estado Activo / Inactivo */}
+                        <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Estado del Dispositivo:</span>
+                              <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${selectedCard.is_active ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-rose-100 text-rose-800 border-rose-300'}`}>
+                                {selectedCard.is_active ? '🟢 HABILITADO / ACTIVO' : '🔴 BLOQUEADO / INACTIVO'}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 mt-1">
+                              {selectedCard.is_active 
+                                ? 'El dispositivo está activo y redirige escaneos NFC/QR a la URL configurada.' 
+                                : 'El dispositivo está inactivo. Quien lo escanee verá una pantalla de aviso de inactivo.'}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleCardActive(selectedCard.card_id, selectedCard.is_active)}
+                            className={`w-full sm:w-auto px-4 py-2 text-xs font-bold rounded-xl border transition shadow-sm uppercase tracking-wider shrink-0 ${
+                              selectedCard.is_active
+                                ? 'bg-rose-600 hover:bg-rose-700 text-white border-rose-700'
+                                : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
+                            }`}
+                          >
+                            {selectedCard.is_active ? 'Desactivar Dispositivo' : 'Activar Dispositivo'}
+                          </button>
                         </div>
 
                         <form onSubmit={handleUpdateCard} className="space-y-5">
