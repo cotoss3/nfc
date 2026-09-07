@@ -570,6 +570,26 @@ class LocalDbService {
     }
 
     this.setStorageItem('nfc_cards', cards);
+
+    // Sincronizar en tiempo real con Supabase si está disponible
+    if (supabase) {
+      const cleanCode = resolvedId.toUpperCase();
+      supabase.from('nfc_cards').upsert({
+        card_id: cleanCode,
+        activation_code: cleanCode,
+        owner_id: 'user-auto',
+        owner_name: 'Cliente TapStar',
+        owner_email: 'cliente@tapstar.es',
+        label: label || `Dispositivo TAP (${cleanCode})`,
+        target_url: cleanUrl,
+        is_active: true,
+        claimed: true,
+        type: 'google'
+      }).then(({ error }) => {
+        if (error) console.error('Error guardando tarjeta en Supabase:', error);
+      });
+    }
+
     return true;
   }
 
