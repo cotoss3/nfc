@@ -127,14 +127,22 @@ export default function ShopPage() {
             Ofrecemos tarifas para corporativos, hoteles y franquicias con múltiples locales en Panamá. Personalizamos el color de acrílico y grabado de logos complejos.
           </p>
         </div>
-        <a
-          href="https://wa.me/50765239821?text=Hola,%20quisiera%20cotizar%20placas%20NFC%20al%20por%20mayor%20para%20negocio"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shopify-btn-secondary py-3 px-6 text-xs uppercase tracking-wider font-bold border-brand-950 hover:bg-brand-950 hover:text-white"
-        >
-          WhatsApp Corporativo
-        </a>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link
+            href="/corporativo"
+            className="shopify-btn-primary py-3 px-6 text-xs uppercase tracking-wider font-bold text-center"
+          >
+            Ver Planes Corporativos
+          </Link>
+          <a
+            href="https://wa.me/50767134341?text=Hola,%20quisiera%20cotizar%20placas%20NFC%20al%20por%20mayor%20para%20mi%20empresa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shopify-btn-secondary py-3 px-6 text-xs uppercase tracking-wider font-bold border-brand-950 hover:bg-brand-950 hover:text-white text-center"
+          >
+            WhatsApp Corporativo (+507 6713-4341)
+          </a>
+        </div>
       </div>
     </div>
   );

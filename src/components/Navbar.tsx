@@ -21,6 +21,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Inicio', href: '/' },
     { name: 'Catálogo', href: '/shop' },
+    { name: 'Corporativo', href: '/corporativo' },
     { name: 'Administrar Tarjetas', href: '/dashboard' },
   ];
 

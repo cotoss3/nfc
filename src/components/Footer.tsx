@@ -24,7 +24,7 @@ export default function Footer() {
               <li><Link href="/shop" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
               <li><Link href="/shop" className="hover:text-white transition-colors">Tarjetas de PVC</Link></li>
               <li><Link href="/shop" className="hover:text-white transition-colors">Tarjetas de Madera</Link></li>
-              <li><Link href="/shop" className="hover:text-white transition-colors">Llaveros y Accesorios</Link></li>
+              <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Soluciones Corporativas B2B</Link></li>
             </ul>
           </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-primary-400" />
-                <span>+507 6523-9821</span>
+                <span>+507 6713-4341</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-primary-400" />
