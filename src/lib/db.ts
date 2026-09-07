@@ -51,6 +51,8 @@ export interface NfcCard {
   target_url: string;
   is_active: boolean;
   type: string;
+  claimed?: boolean;
+  activation_code?: string;
   created_at: string;
 }
 
@@ -384,6 +386,54 @@ class LocalDbService {
       return true;
     }
     return false;
+  }
+
+  claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = ''): { success: boolean; message: string; card?: NfcCard } {
+    const cards = this.getCards();
+    const cleanCode = codeOrCardId.trim().toLowerCase();
+    
+    // Buscar si ya existe la tarjeta por ID o por código de activación
+    let cardIndex = cards.findIndex(c => 
+      c.card_id.toLowerCase() === cleanCode || 
+      (c.activation_code && c.activation_code.toLowerCase() === cleanCode)
+    );
+
+    if (cardIndex !== -1) {
+      const card = cards[cardIndex];
+      if (card.claimed && card.owner_email && card.owner_email !== ownerEmail) {
+        return { success: false, message: 'Este dispositivo ya ha sido reclamado por otra cuenta.' };
+      }
+      
+      cards[cardIndex] = {
+        ...card,
+        owner_email: ownerEmail,
+        owner_name: ownerName || ownerEmail.split('@')[0],
+        claimed: true,
+        is_active: true
+      };
+      this.setStorageItem('nfc_cards', cards);
+      return { success: true, message: '¡Dispositivo TAP reclamado con éxito!', card: cards[cardIndex] };
+    }
+
+    // Si es un código nuevo no registrado previamente, crearlo automáticamente para el usuario
+    const formattedCode = cleanCode.toUpperCase();
+    const newCard: NfcCard = {
+      card_id: cleanCode.startsWith('tap-') ? cleanCode : `tap-${cleanCode}`,
+      activation_code: formattedCode,
+      owner_id: 'user-' + Date.now(),
+      owner_name: ownerName || ownerEmail.split('@')[0],
+      owner_email: ownerEmail,
+      label: `Dispositivo TAP (${formattedCode})`,
+      target_url: 'https://search.google.com/local/writereview?placeid=...',
+      is_active: true,
+      claimed: true,
+      type: 'google',
+      created_at: new Date().toISOString()
+    };
+
+    cards.unshift(newCard);
+    this.setStorageItem('nfc_cards', cards);
+    return { success: true, message: '¡Dispositivo TAP activado y vinculado a tu cuenta!', card: newCard };
   }
 
   // Analíticas de Escaneo

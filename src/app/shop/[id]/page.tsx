@@ -5,8 +5,9 @@ import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, Upload, Check, Info } from 'lucide-react';
 import StandLanding from '@/components/landings/StandLanding';
+import TarjetaLanding from '@/components/landings/TarjetaLanding';
+import PlacaLanding from '@/components/landings/PlacaLanding';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -55,6 +56,14 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   if (product.id === 'stand-nfc') {
     return <StandLanding product={product} />;
+  }
+
+  if (product.id === 'tarjeta-nfc' || product.id === 'placa-google') {
+    return <TarjetaLanding product={product} />;
+  }
+
+  if (product.id === 'placa-acrilica-nfc' || product.id === 'NFC_10001') {
+    return <PlacaLanding product={product} />;
   }
 
   const colors = product.colors || (product.category === 'cards' 

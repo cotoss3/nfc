@@ -4,24 +4,24 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
-import { Star, CheckCircle2, ChevronDown, ChevronUp, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Star, CheckCircle2, ChevronDown, ChevronUp, ArrowRight, ShieldCheck, Layers } from 'lucide-react';
 
-interface StandLandingProps {
+interface PlacaLandingProps {
   product: Product;
 }
 
-export default function StandLanding({ product }: StandLandingProps) {
+export default function PlacaLanding({ product }: PlacaLandingProps) {
   const router = useRouter();
   const { addToCart } = useCart();
   
   // Customization States for Checkout Section
-  const [color, setColor] = useState('Negro Mate');
+  const [color, setColor] = useState('Blanco Acrílico');
   const [businessName, setBusinessName] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isSuccess, setIsSuccess] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
-  const colors = product.colors || ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'];
+  const colors = product.colors || ['Blanco Acrílico', 'Negro Mateo', 'Dorado Espejo', 'Plata Pulido'];
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +52,10 @@ export default function StandLanding({ product }: StandLandingProps) {
   };
 
   const faqs = [
-    { q: '¿Necesito pagar alguna mensualidad o suscripción?', a: 'No, el pago es único. Compras tu Stand NFC una vez y te funciona para siempre sin cobros ocultos ni mantenimiento.' },
-    { q: '¿Funciona con iPhone y Android?', a: 'Sí, es 100% compatible. Todos los smartphones modernos tienen lector NFC integrado. Para modelos antiguos, el Stand incluye un código QR grabado.' },
-    { q: '¿Cómo configuran el enlace hacia mi negocio?', a: 'Al procesar tu pedido, nosotros nos encargamos de programar el chip interno para que apunte directamente a tu perfil de Google Maps. Te lo entregamos listo para usar.' },
-    { q: '¿Si cambio la ubicación de mi local, debo comprar otro Stand?', a: 'No es necesario. Tendrás acceso a nuestro panel donde podrás actualizar el enlace hacia donde dirige tu Stand en tiempo real, sin costo adicional.' },
+    { q: '¿Cómo se instala la placa en mi local o restaurante?', a: 'Todas nuestras placas incluyen adhesivo 3M ultrarresistente de grado industrial en el reverso. Solo despegas la cinta protectora y la fijas en cristal, madera, azulejo o acrílico sin necesidad de perforar ni usar taladro.' },
+    { q: '¿Soporta la intemperie o salpicaduras de agua?', a: 'Sí. El chip NFC interno está completamente sellado dentro del cuerpo de acrílico de 3mm. Es impermeable, resistente al calor de Panamá y no sufre daños por salpicaduras.' },
+    { q: '¿Puedo cambiar el enlace si cambio de ubicación?', a: '¡Por supuesto! Gracias a nuestro software starTAP Cloud incluido, podrás actualizar el enlace hacia donde dirige tu placa en cualquier momento desde tu celular.' },
+    { q: '¿Cobran mensualidades por usar la placa?', a: 'No. Es un pago único por el dispositivo. No hay suscripciones obligatorias ni renovaciones anuales.' },
   ];
 
   return (
@@ -66,25 +66,24 @@ export default function StandLanding({ product }: StandLandingProps) {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 order-2 lg:order-1">
             <div className="inline-flex items-center space-x-2 bg-white px-3 py-1 rounded-full shadow-sm text-xs font-bold text-accent-600 border border-accent-100">
-              <Star className="fill-accent-500 w-3 h-3 text-accent-500" />
-              <span>El producto #1 para negocios en Panamá</span>
+              <Layers className="w-3.5 h-3.5 text-accent-500" />
+              <span>Instalación Permanente Adhesiva 3M</span>
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-950 leading-[1.1] tracking-tight">
-              Multiplica tus <br className="hidden sm:block"/> reseñas en Google. <br className="hidden sm:block"/>
-              <span className="text-accent-500">Sin esfuerzo.</span>
+              Transforma cada rincón en <br className="hidden sm:block"/> <span className="text-accent-500">reseñas de 5 estrellas.</span>
             </h1>
             <p className="text-lg text-brand-600 max-w-lg leading-relaxed">
-              El Stand NFC es tu vendedor silencioso. Colócalo en tu mostrador o mesa y observa cómo tus clientes satisfechos te dejan reseñas de 5 estrellas en segundos.
+              La Placa Acrílica Adhesiva NFC es la solución definitiva para mesas de restaurantes, puertas de cristal, mostradores y paredes de clínicas o locales comerciales en Panamá.
             </p>
             <div className="pt-4">
               <button onClick={scrollToCheckout} className="shopify-btn-primary w-full sm:w-auto text-lg py-4 px-10 rounded-full shadow-lg hover:scale-105 transition-transform font-bold">
-                Comprar Stand por ${product.price.toFixed(2)}
+                Comprar Placa por ${product.price.toFixed(2)}
               </button>
             </div>
             <div className="flex items-center gap-4 text-sm font-semibold text-brand-500 pt-4">
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-green-500"/> Pago único</span>
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-green-500"/> Sin Apps</span>
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-green-500"/> Envío a todo Panamá</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-green-500"/> Adhesivo 3M Incluido</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-green-500"/> Acrílico 3mm</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-green-500"/> Sin Mensualidad</span>
             </div>
           </div>
           
@@ -93,7 +92,7 @@ export default function StandLanding({ product }: StandLandingProps) {
               <div className="w-full h-full bg-brand-50 rounded-2xl border-2 border-dashed border-brand-300 flex flex-col items-center justify-center opacity-70 p-4">
                 <span className="text-brand-400 font-bold mb-2 uppercase tracking-widest text-sm">Espacio para Imagen</span>
                 <p className="text-xs text-brand-500">
-                  [IMAGEN REFERENCIA: Foto profesional del Stand NFC real sobre un mostrador de madera o mármol, viéndose muy elegante]
+                  [IMAGEN REFERENCIA: Foto de alta calidad de la Placa Acrílica pegada en la mesa de un restaurante o en la puerta de entrada de una tienda]
                 </p>
               </div>
             </div>
@@ -109,16 +108,16 @@ export default function StandLanding({ product }: StandLandingProps) {
             <div className="aspect-square bg-brand-50 rounded-3xl border-2 border-dashed border-brand-300 flex flex-col items-center justify-center p-8 text-center opacity-70">
                 <span className="text-brand-400 font-bold mb-2 uppercase tracking-widest text-sm">Espacio para Imagen</span>
                 <p className="text-xs text-brand-500">
-                  [IMAGEN REFERENCIA: Una mano sosteniendo un celular acercándolo al Stand para mostrar la rapidez y tecnología NFC]
+                  [IMAGEN REFERENCIA: Detalle del pegado con cinta 3M sin taladro ni herramientas]
                 </p>
             </div>
             <div className="space-y-6">
               <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center text-accent-500 mb-6">
-                <Zap className="w-6 h-6" />
+                <Layers className="w-6 h-6" />
               </div>
-              <h2 className="text-3xl font-black text-brand-950">Más rápido que un QR de papel. Más premium que nunca.</h2>
+              <h2 className="text-3xl font-black text-brand-950">Fácil Instalación sin Taladrar ni Romper Paredes</h2>
               <p className="text-lg text-brand-600 leading-relaxed">
-                Olvídate de pedirle al cliente que abra la cámara y enfoque un código arrugado. Con tecnología NFC de última generación (como la que usas para pagar con el móvil), tu cliente solo debe acercar su teléfono al Stand y un pop-up aparecerá mágicamente en su pantalla pidiéndole la reseña.
+                Cada Placa viene con adhesivo industrial ultra resistente premontado. Simplemente retira el papel protector y pégala en cualquier superficie lisa (madera, vidrio, metal, azulejo) en menos de 10 segundos.
               </p>
             </div>
           </div>
@@ -128,15 +127,15 @@ export default function StandLanding({ product }: StandLandingProps) {
               <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center text-accent-500 mb-6">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <h2 className="text-3xl font-black text-brand-950">Fabricado en Acrílico de Alta Resistencia</h2>
+              <h2 className="text-3xl font-black text-brand-950">Impermeable y Resistente al Tráfico Constante</h2>
               <p className="text-lg text-brand-600 leading-relaxed">
-                Diseñamos el Stand pensando en el tráfico constante de comercios, restaurantes y clínicas. Soporta rayones, líquidos y caídas ligeras. Su base pesada evita que se caiga con facilidad en mostradores concurridos. Una inversión que dura años.
+                Diseñada en acrílico de alta densidad lavable. Los clientes pueden apoyar bebidas o comida sin dañar el chip interno ni la impresión láser de alta definición.
               </p>
             </div>
             <div className="aspect-square bg-brand-50 rounded-3xl border-2 border-dashed border-brand-300 flex flex-col items-center justify-center p-8 text-center opacity-70 order-1 lg:order-2">
                 <span className="text-brand-400 font-bold mb-2 uppercase tracking-widest text-sm">Espacio para Imagen</span>
                 <p className="text-xs text-brand-500">
-                  [IMAGEN REFERENCIA: Detalle macro (zoom) al material del Stand, mostrando el acabado brillante y premium, o resistiendo alguna salpicadura de agua]
+                  [IMAGEN REFERENCIA: Foto de la placa resistiendo la limpieza diaria con un trapo húmedo en un local comercial]
                 </p>
             </div>
           </div>
@@ -152,15 +151,15 @@ export default function StandLanding({ product }: StandLandingProps) {
               <span>Software starTAP Cloud Incluido</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-brand-950">
-              Control Total en Tiempo Real de tus Enlaces y Estadísticas
+              Gestiona Múltiples Placas y Cambia el Destino cuando Quieras
             </h2>
             <p className="text-brand-600 leading-relaxed">
-              Cada Stand NFC viene respaldado por tu propia plataforma web sin costo mensual. Podrás reclamar tu equipo en tu panel, actualizar el enlace hacia donde dirige (Google Maps, WhatsApp, Instagram) en segundos y medir cuántas veces es escaneado por tus clientes.
+              Incluso si pegas 10 placas en diferentes mesas o sucursales, no tendrás que despegarlas si cambias de estrategia. Desde tu panel de usuario podrás redirigir todas tus placas al nuevo enlace en un solo clic.
             </p>
             <ul className="space-y-3 text-sm font-semibold text-brand-700">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-500" /> Cambio de enlace instantáneo sin reprogramar físicamente</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-500" /> Panel de estadísticas en vivo (Escaneos por día y tipo de celular)</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-500" /> Asigna dispositivos a distintos locales o empleados</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-500" /> Redirección instantánea sin cambiar el material físico</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-500" /> Medición de escaneos individuales por cada mesa o sucursal</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-accent-500" /> Licencia de software permanente sin mensualidad</li>
             </ul>
           </div>
 
@@ -172,46 +171,46 @@ export default function StandLanding({ product }: StandLandingProps) {
               </div>
               <div>
                 <p className="text-xs text-brand-400">Dispositivo vinculado:</p>
-                <p className="font-bold text-sm text-white">Stand Mostrador Principal (#TAP-1001)</p>
+                <p className="font-bold text-sm text-white">Placa Mesa #4 (#TAP-3012)</p>
               </div>
               <div className="bg-brand-900 p-3 rounded-lg flex justify-between items-center text-xs">
                 <span>Enlace actual:</span>
-                <span className="font-mono text-accent-300 truncate max-w-[180px]">g.page/r/reseñas-google</span>
+                <span className="font-mono text-accent-300 truncate max-w-[180px]">g.page/r/reseñas-restaurante</span>
               </div>
             </div>
             <div className="aspect-[16/9] bg-brand-50 rounded-2xl border-2 border-dashed border-brand-300 flex flex-col items-center justify-center p-4 text-center">
               <span className="text-brand-400 font-bold text-xs uppercase tracking-widest mb-1">Espacio para Capture</span>
               <p className="text-[11px] text-brand-500 max-w-[250px]">
-                [IMAGEN REFERENCIA: Captura de pantalla del dashboard de control mostrando gráficas de escaneos y el botón de editar enlace]
+                [IMAGEN REFERENCIA: Captura de pantalla de la sección de analíticas del panel web mostrando escaneos de la Placa]
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. HOW IT WORKS (3 STEPS) */}
+      {/* 3. HOW IT WORKS */}
       <section className="py-20 bg-brand-950 text-white px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-black text-white">Consigue reseñas en 3 simples pasos</h2>
-            <p className="text-brand-300 text-lg">Es tan fácil que tus clientes lo harán por instinto.</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white">Consigue opiniones en 3 sencillos pasos</h2>
+            <p className="text-brand-300 text-lg">Sin descargas de aplicaciones ni complicadas instrucciones.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-brand-900 rounded-2xl p-8 border border-brand-800 text-center space-y-4">
               <div className="w-12 h-12 bg-accent-500 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold mb-6">1</div>
-              <h3 className="text-xl font-bold text-white">Colócalo a la vista</h3>
-              <p className="text-brand-300 text-sm">Pon el Stand en tu caja registradora, recepción o mesas. Su diseño llamará la atención.</p>
+              <h3 className="text-xl font-bold text-white">Pégala donde quieras</h3>
+              <p className="text-brand-300 text-sm">Fíjala en mostradores, mesas de tu restaurante, puerta o recepción.</p>
             </div>
             <div className="bg-brand-900 rounded-2xl p-8 border border-brand-800 text-center space-y-4">
               <div className="w-12 h-12 bg-accent-500 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold mb-6">2</div>
               <h3 className="text-xl font-bold text-white">El cliente acerca su móvil</h3>
-              <p className="text-brand-300 text-sm">Con un solo toque (tecnología NFC), el celular reaccionará al instante, sin bajar ninguna App.</p>
+              <p className="text-brand-300 text-sm">El sensor NFC del celular reacciona al instante al rozar la placa.</p>
             </div>
             <div className="bg-brand-900 rounded-2xl p-8 border border-brand-800 text-center space-y-4">
               <div className="w-12 h-12 bg-accent-500 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold mb-6">3</div>
-              <h3 className="text-xl font-bold text-white">Recibes tus 5 Estrellas</h3>
-              <p className="text-brand-300 text-sm">El cliente es enviado directo a tu página de Google Maps con las estrellas listas para enviar.</p>
+              <h3 className="text-xl font-bold text-white">¡Reseña de 5 Estrellas!</h3>
+              <p className="text-brand-300 text-sm">Se despliega automáticamente tu pantalla de Google Maps lista para calificar.</p>
             </div>
           </div>
         </div>
@@ -226,36 +225,36 @@ export default function StandLanding({ product }: StandLandingProps) {
             <div className="bg-brand-100 flex flex-col items-center justify-center p-8 text-center min-h-[300px]">
                 <span className="text-brand-400 font-bold mb-2 uppercase tracking-widest text-sm">Espacio para Imagen</span>
                 <p className="text-xs text-brand-500 max-w-[200px]">
-                  [IMAGEN REFERENCIA: Foto del producto solo, fondo blanco o transparente, como en un e-commerce tradicional]
+                  [IMAGEN REFERENCIA: Foto de la Placa Acrílica con fondo transparente o blanco limpia]
                 </p>
             </div>
             
             {/* Form Fields */}
             <div className="p-8 md:p-12 space-y-8">
               <div>
-                <h2 className="text-2xl font-black text-brand-950 mb-2">Configura tu Stand</h2>
-                <p className="text-sm text-brand-500">Nosotros lo programamos, tú solo nos das los datos.</p>
+                <h2 className="text-2xl font-black text-brand-950 mb-2">Configura tu Placa</h2>
+                <p className="text-sm text-brand-500">Nosotros programamos tu chip NFC antes del envío.</p>
               </div>
               
               <form onSubmit={handleAddToCart} className="space-y-6">
                 
                 {/* Nombre de Negocio */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-brand-950 block">Nombre del Negocio (Como aparece en Google)</label>
+                  <label className="text-sm font-bold text-brand-950 block">Nombre del Negocio (Google Maps)</label>
                   <input
                     type="text"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
-                    placeholder="Ej. Restaurante El Bodegón"
+                    placeholder="Ej. Barbería El Barón / Odontología Panamá"
                     required
                     className="shopify-input"
                   />
-                  <p className="text-xs text-brand-400">Lo buscaremos para encriptar tu enlace NFC de forma segura.</p>
+                  <p className="text-xs text-brand-400">Direccionaremos tu chip a la ficha oficial de tu negocio.</p>
                 </div>
 
                 {/* Color */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-brand-950 block">Color del Stand</label>
+                  <label className="text-sm font-bold text-brand-950 block">Color de la Placa</label>
                   <div className="grid grid-cols-2 gap-2">
                     {colors.map((c) => (
                       <button
@@ -298,7 +297,7 @@ export default function StandLanding({ product }: StandLandingProps) {
                       ¡Agregado con éxito! <CheckCircle2 className="inline-block ml-2 w-5 h-5" />
                     </span>
                   </button>
-                  <p className="text-center text-xs text-brand-400 mt-4">Compra 100% segura. Envío a todo Panamá.</p>
+                  <p className="text-center text-xs text-brand-400 mt-4">Incluye cinta 3M ultrarresistente y software de gestión.</p>
                 </div>
               </form>
             </div>
@@ -306,12 +305,12 @@ export default function StandLanding({ product }: StandLandingProps) {
         </div>
       </section>
 
-      {/* 5. SEO FAQs (Hidden from main visual flow to prioritize sales) */}
+      {/* 5. SEO FAQs */}
       <section className="py-20 px-4 bg-white border-t border-brand-100">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-black text-brand-950">Preguntas Frecuentes</h2>
-            <p className="text-sm text-brand-500 mt-2">Todo lo que necesitas saber sobre cómo mejorar tu SEO Local en Panamá.</p>
+            <p className="text-sm text-brand-500 mt-2">Dudas habituales sobre la Placa Acrílica Adhesiva NFC.</p>
           </div>
           
           <div className="space-y-4">

@@ -10,9 +10,14 @@ export async function GET(
   // Buscar tarjeta en la base de datos local / Supabase
   const card = dbLocal.getCardById(cardId);
   
-  if (!card || !card.is_active) {
-    // Si la tarjeta no existe o está inactiva, redirigir al catálogo de PanaCards
-    return NextResponse.redirect(new URL(`/shop?err=not-found&card=${cardId}`, request.url));
+  if (!card) {
+    // Si la tarjeta no existe aún en la base de datos, redirigir al portal para que la active el comprador
+    return NextResponse.redirect(new URL(`/dashboard?claim=${cardId}`, request.url));
+  }
+
+  if (card.claimed === false || !card.is_active) {
+    // Si el dispositivo existe pero aún no ha sido reclamado, invitar al cliente a vincular su cuenta
+    return NextResponse.redirect(new URL(`/dashboard?claim=${cardId}`, request.url));
   }
 
   // Capturar información de dispositivo mediante User-Agent

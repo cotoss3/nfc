@@ -19,14 +19,25 @@ function DashboardContent() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
+  // Claim states
+  const [claimInput, setClaimInput] = useState('');
+  const [claimMessage, setClaimMessage] = useState<{ success: boolean; text: string } | null>(null);
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+
   // Analytics states
   const [scans, setScans] = useState<ScanRecord[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const queryEmail = searchParams.get('email');
+      const claimCode = searchParams.get('claim');
       const sessionEmail = sessionStorage.getItem('current_user_email');
       const activeEmail = queryEmail || sessionEmail;
+
+      if (claimCode) {
+        setClaimInput(claimCode);
+        setIsClaimModalOpen(true);
+      }
 
       if (activeEmail) {
         setUserEmail(activeEmail);
@@ -137,10 +148,70 @@ function DashboardContent() {
 
   const totalScans = scans.length;
 
+  const handleClaimTap = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!claimInput || !userEmail) return;
+
+    const res = dbLocal.claimCard(claimInput, userEmail);
+    setClaimMessage({ success: res.success, text: res.message });
+
+    if (res.success) {
+      const updatedCards = dbLocal.getCardsByOwner(userEmail);
+      setCards(updatedCards);
+      if (res.card) {
+        handleSelectCard(res.card);
+      }
+      setClaimInput('');
+      setTimeout(() => {
+        setIsClaimModalOpen(false);
+        setClaimMessage(null);
+      }, 1500);
+    }
+  };
+
   return (
-    <div className="shopify-container max-w-6xl py-12 space-y-10 bg-brand-50">
+    <div className="shopify-container max-w-6xl py-10">
+      {/* Header & Claim Modal */}
+      {isClaimModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl border border-brand-200 animate-in fade-in">
+            <div className="flex justify-between items-center border-b border-brand-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-brand-950 uppercase tracking-tight">Activar / Reclamar Dispositivo TAP</h3>
+                <p className="text-xs text-brand-500">Ingresa el código impreso o serial de tu tarjeta o placa.</p>
+              </div>
+              <button onClick={() => setIsClaimModalOpen(false)} className="text-brand-400 hover:text-brand-950 text-xl font-bold">✕</button>
+            </div>
+
+            <form onSubmit={handleClaimTap} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-brand-700 block">Código o Serial del Dispositivo</label>
+                <input
+                  type="text"
+                  required
+                  value={claimInput}
+                  onChange={(e) => setClaimInput(e.target.value)}
+                  placeholder="Ej. TAP-9821 o cafe-panama-nfc"
+                  className="shopify-input text-base uppercase font-mono"
+                />
+              </div>
+
+              {claimMessage && (
+                <div className={`p-3 rounded text-xs font-bold ${claimMessage.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                  {claimMessage.text}
+                </div>
+              )}
+
+              <button type="submit" className="w-full shopify-btn-primary py-3 font-bold uppercase tracking-wider text-xs">
+                Vincular a Mi Cuenta
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {!userEmail ? (
-        /* Login Screen */
+        /* Login Form */
         <div className="max-w-md mx-auto bg-white border border-brand-200 rounded p-8 shadow-premium space-y-6">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold tracking-widest text-brand-400 uppercase block">Acceso Clientes</span>
@@ -187,12 +258,20 @@ function DashboardContent() {
               <h1 className="text-2xl font-black text-brand-950 uppercase tracking-wide">Tus Tarjetas y Placas NFC</h1>
               <p className="text-xs text-brand-500">Sesión iniciada como: <span className="font-bold text-brand-800">{userEmail}</span></p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="shopify-btn-secondary py-2 px-4 text-xs font-bold uppercase tracking-wider border-brand-300"
-            >
-              Cerrar Sesión
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsClaimModalOpen(true)}
+                className="shopify-btn-primary py-2 px-4 text-xs font-bold uppercase tracking-wider bg-accent-500 hover:bg-accent-600 text-white"
+              >
+                + Activar / Reclamar TAP
+              </button>
+              <button
+                onClick={handleLogout}
+                className="shopify-btn-secondary py-2 px-4 text-xs font-bold uppercase tracking-wider border-brand-300"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
 
           {cards.length === 0 ? (
