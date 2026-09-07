@@ -218,7 +218,7 @@ export const DEFAULT_SEED_CARDS: NfcCard[] = [
     owner_name: 'Carlos Mendoza',
     owner_email: 'carlos.mendoza@gmail.com',
     label: 'Placa de Mostrador (STT-1001)',
-    target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
+    target_url: 'https://google.com',
     is_active: true,
     claimed: true,
     type: 'google',
@@ -530,7 +530,7 @@ class LocalDbService {
       owner_name: 'Cliente TapStar',
       owner_email: 'cliente@tapstar.es',
       label: `Dispositivo TAP (${cleanCode})`,
-      target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
+      target_url: 'https://google.com',
       is_active: true,
       claimed: true,
       type: 'google',
@@ -545,18 +545,35 @@ class LocalDbService {
   updateCardRedirect(cardId: string, targetUrl: string, label: string): boolean {
     const cards = this.getCards();
     const resolvedId = this.resolveCardId(cardId, cards);
+    const cleanUrl = targetUrl.trim();
 
     const index = cards.findIndex(c => 
       c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
       (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
     );
+
     if (index !== -1) {
-      cards[index].target_url = targetUrl;
-      cards[index].label = label;
-      this.setStorageItem('nfc_cards', cards);
-      return true;
+      cards[index].target_url = cleanUrl;
+      if (label) cards[index].label = label;
+    } else {
+      const cleanCode = resolvedId.toUpperCase();
+      cards.push({
+        card_id: cleanCode,
+        activation_code: cleanCode,
+        owner_id: 'user-auto',
+        owner_name: 'Cliente TapStar',
+        owner_email: 'cliente@tapstar.es',
+        label: label || `Dispositivo TAP (${cleanCode})`,
+        target_url: cleanUrl,
+        is_active: true,
+        claimed: true,
+        type: 'google',
+        created_at: new Date().toISOString()
+      });
     }
-    return false;
+
+    this.setStorageItem('nfc_cards', cards);
+    return true;
   }
 
   claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = ''): { success: boolean; message: string; card?: NfcCard } {

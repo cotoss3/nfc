@@ -39,7 +39,7 @@ export async function GET(
 
   // Sanitizar cualquier placeholder con "..." o cadena vacía
   if (!targetUrl || targetUrl.includes('...')) {
-    targetUrl = 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU';
+    targetUrl = 'https://google.com';
   }
 
   // Sanitizar protocolo http/https
