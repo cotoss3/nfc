@@ -902,6 +902,53 @@ function DashboardContent() {
                   </div>
                 </div>
 
+                {/* Device Performance Breakdown */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Rendimiento por Nombre de Dispositivo</h3>
+                  {cards.length === 0 ? (
+                    <p className="text-xs text-slate-400 italic text-center py-4">No tienes dispositivos registrados.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider">
+                            <th className="pb-3">Nombre del Dispositivo</th>
+                            <th className="pb-3">Código ID</th>
+                            <th className="pb-3">Grupo / Sucursal</th>
+                            <th className="pb-3 text-center">Escaneos NFC</th>
+                            <th className="pb-3 text-center">Escaneos QR</th>
+                            <th className="pb-3 text-right">Total Escaneos</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-slate-700">
+                          {cards.map(card => {
+                            const deviceScans = allScans.filter(s => s.card_id === card.card_id);
+                            const nfc = deviceScans.filter(s => s.scan_type === 'nfc' || (s.referrer && s.referrer.toLowerCase().includes('nfc'))).length;
+                            const qr = deviceScans.filter(s => s.scan_type === 'qr' || (s.referrer && s.referrer.toLowerCase().includes('qr'))).length;
+                            return (
+                              <tr key={card.card_id} className="hover:bg-slate-50">
+                                <td className="py-3 font-bold text-slate-900 flex items-center gap-2">
+                                  <Smartphone className="w-4 h-4 text-amber-500 shrink-0" />
+                                  <span>{card.label}</span>
+                                </td>
+                                <td className="py-3 font-mono text-amber-700 font-bold">{card.card_id}</td>
+                                <td className="py-3">
+                                  <span className="px-2 py-0.5 bg-slate-100 rounded-md text-[11px] font-medium text-slate-600">
+                                    {card.group_name || 'General'}
+                                  </span>
+                                </td>
+                                <td className="py-3 text-center font-semibold text-emerald-600">{nfc}</td>
+                                <td className="py-3 text-center font-semibold text-blue-600">{qr}</td>
+                                <td className="py-3 text-right font-black text-slate-900">{deviceScans.length}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
                 {/* Scan Logs Table */}
                 <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Registro Reciente de Actividad</h3>
@@ -912,7 +959,8 @@ function DashboardContent() {
                       <table className="w-full text-left text-xs">
                         <thead>
                           <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider">
-                            <th className="pb-3">Dispositivo ID</th>
+                            <th className="pb-3">Nombre del Dispositivo</th>
+                            <th className="pb-3">Código ID</th>
                             <th className="pb-3">Grupo</th>
                             <th className="pb-3">Canal</th>
                             <th className="pb-3">Teléfono / OS</th>
@@ -920,21 +968,27 @@ function DashboardContent() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 text-slate-700">
-                          {allScans.slice(-15).reverse().map((scan) => (
-                            <tr key={scan.id} className="hover:bg-slate-50">
-                              <td className="py-2.5 font-mono text-amber-700 font-bold">{scan.card_id}</td>
-                              <td className="py-2.5">{scan.group_name || 'General'}</td>
-                              <td className="py-2.5">
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${scan.scan_type === 'qr' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
-                                  {scan.scan_type === 'qr' ? 'QR Code' : 'NFC Scan'}
-                                </span>
-                              </td>
-                              <td className="py-2.5">{scan.device}</td>
-                              <td className="py-2.5 text-slate-400">
-                                {new Date(scan.created_at).toLocaleString('es-PA')}
-                              </td>
-                            </tr>
-                          ))}
+                          {allScans.slice(-15).reverse().map((scan) => {
+                            const matchingCard = cards.find(c => c.card_id === scan.card_id);
+                            return (
+                              <tr key={scan.id} className="hover:bg-slate-50">
+                                <td className="py-2.5 font-bold text-slate-900">
+                                  {matchingCard ? matchingCard.label : 'Dispositivo TapStar'}
+                                </td>
+                                <td className="py-2.5 font-mono text-amber-700 font-bold">{scan.card_id}</td>
+                                <td className="py-2.5">{scan.group_name || 'General'}</td>
+                                <td className="py-2.5">
+                                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${scan.scan_type === 'qr' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
+                                    {scan.scan_type === 'qr' ? 'QR Code' : 'NFC Scan'}
+                                  </span>
+                                </td>
+                                <td className="py-2.5">{scan.device}</td>
+                                <td className="py-2.5 text-slate-400">
+                                  {new Date(scan.created_at).toLocaleString('es-PA')}
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
