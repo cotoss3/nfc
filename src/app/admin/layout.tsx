@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import AdminAuthGuard from '@/components/AdminAuthGuard';
 
 export const metadata: Metadata = {
   title: 'starTAP Admin - Panamá Master',
@@ -23,8 +24,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="admin-root min-h-screen bg-slate-50">
-      {children}
-    </div>
+    <AdminAuthGuard>
+      <div className="admin-root min-h-screen bg-slate-50">
+        {children}
+      </div>
+    </AdminAuthGuard>
   );
 }
