@@ -223,6 +223,19 @@ export const DEFAULT_SEED_CARDS: NfcCard[] = [
     claimed: true,
     type: 'google',
     created_at: new Date(Date.now() - 3600000 * 48).toISOString()
+  },
+  {
+    card_id: 'STT-1002',
+    activation_code: 'STT-1002',
+    owner_id: 'user-carlos',
+    owner_name: 'Carlos Mendoza',
+    owner_email: 'carlos.mendoza@gmail.com',
+    label: 'Dispositivo TAP (STT-1002)',
+    target_url: 'https://datakorex.com',
+    is_active: true,
+    claimed: true,
+    type: 'google',
+    created_at: new Date().toISOString()
   }
 ];
 

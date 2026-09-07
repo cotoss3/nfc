@@ -109,7 +109,7 @@ function DashboardContent() {
     setScans(cardScans);
   };
 
-  const handleUpdateCard = (e: React.FormEvent) => {
+  const handleUpdateCard = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCard) return;
 
@@ -119,23 +119,34 @@ function DashboardContent() {
     }
 
     setIsUpdating(true);
-    setTimeout(() => {
-      const success = dbLocal.updateCardRedirect(selectedCard.card_id, cleanUrl, editLabel);
-      if (success) {
-        setUpdateSuccess(true);
-        setEditUrl(cleanUrl);
-        const updatedCards = cards.map(c => 
-          c.card_id === selectedCard.card_id 
-            ? { ...c, label: editLabel, target_url: cleanUrl } 
-            : c
-        );
-        setCards(updatedCards);
-        setSelectedCard({ ...selectedCard, label: editLabel, target_url: cleanUrl });
-        
-        setTimeout(() => setUpdateSuccess(false), 2000);
-      }
-      setIsUpdating(false);
-    }, 600);
+    const success = dbLocal.updateCardRedirect(selectedCard.card_id, cleanUrl, editLabel);
+    
+    // Sincronización explícita y garantizada con el servidor Node.js
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error sincronizando tarjetas:', err);
+    }
+
+    if (success) {
+      setUpdateSuccess(true);
+      setEditUrl(cleanUrl);
+      const updatedCards = cards.map(c => 
+        c.card_id === selectedCard.card_id 
+          ? { ...c, label: editLabel, target_url: cleanUrl } 
+          : c
+      );
+      setCards(updatedCards);
+      setSelectedCard({ ...selectedCard, label: editLabel, target_url: cleanUrl });
+      
+      setTimeout(() => setUpdateSuccess(false), 2000);
+    }
+    setIsUpdating(false);
   };
 
   const simulateScan = (m: 'nfc' | 'qr') => {
@@ -179,11 +190,24 @@ function DashboardContent() {
 
   const totalScans = scans.length;
 
-  const handleClaimTap = (e: React.FormEvent) => {
+  const handleClaimTap = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!claimInput || !userEmail) return;
 
     const res = dbLocal.claimCard(claimInput, userEmail);
+
+    // Sincronización explícita y garantizada con el servidor Node.js
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error sincronizando reclamo de tarjeta:', err);
+    }
+
     setClaimMessage({ success: res.success, text: res.message });
 
     if (res.success) {
