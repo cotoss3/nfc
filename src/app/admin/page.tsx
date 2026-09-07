@@ -7,7 +7,20 @@ import { ShieldCheck, Package, Link as LinkIcon, RefreshCw, CheckCircle } from '
 export default function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [cards, setCards] = useState<NfcCard[]>([]);
-  const [activeTab, setActiveTab] = useState<'orders' | 'cards'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'cards' | 'stickers'>('orders');
+  const [stickerQuantity, setStickerQuantity] = useState(5);
+  const [generatedStickers, setGeneratedStickers] = useState<string[]>([]);
+
+  const handleGenerateStickers = () => {
+    const list: string[] = [];
+    const baseCode = dbLocal.getNextStickerCode();
+    let num = parseInt(baseCode.replace('STT-', ''), 10) || 1001;
+
+    for (let i = 0; i < stickerQuantity; i++) {
+      list.push(`STT-${num + i}`);
+    }
+    setGeneratedStickers(list);
+  };
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,6 +84,16 @@ export default function AdminPage() {
           }`}
         >
           Registros NFC ({cards.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('stickers')}
+          className={`pb-3 px-4 font-bold text-xs uppercase tracking-wider border-b-2 transition-all ${
+            activeTab === 'stickers'
+              ? 'border-brand-950 text-brand-950'
+              : 'border-transparent text-brand-400 hover:text-brand-650'
+          }`}
+        >
+          Generador de Etiquetas STT
         </button>
       </div>
 
@@ -198,7 +221,7 @@ export default function AdminPage() {
             </div>
           )}
         </div>
-      ) : (
+      ) : activeTab === 'cards' ? (
         /* Active chip links */
         <div className="bg-white border border-brand-200 rounded shadow-premium overflow-hidden">
           <div className="overflow-x-auto">
@@ -236,6 +259,60 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      ) : (
+        /* Stickers Tab */
+        <div className="bg-white border border-brand-200 rounded p-8 space-y-6 shadow-premium">
+          <div className="border-b border-brand-100 pb-4">
+            <h2 className="text-lg font-black text-brand-950 uppercase tracking-tight">Generador de Etiquetas Secuenciales STT</h2>
+            <p className="text-xs text-brand-500">Crea nuevos códigos únicos para grabar en chips NFC o imprimir en stickers físicos (Formato: STT-1001, STT-1002...).</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-end gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-brand-700 block">Cantidad de Etiquetas a Generar</label>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={stickerQuantity}
+                onChange={(e) => setStickerQuantity(parseInt(e.target.value, 10) || 1)}
+                className="shopify-input w-40"
+              />
+            </div>
+            <button
+              onClick={handleGenerateStickers}
+              className="shopify-btn-primary py-2.5 px-6 font-bold uppercase tracking-wider text-xs"
+            >
+              Generar Lote STT
+            </button>
+          </div>
+
+          {generatedStickers.length > 0 && (
+            <div className="space-y-4 pt-4 border-t border-brand-100">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-brand-800">Lote Generado Listo para Imprimir / Grabar</h3>
+                <button
+                  onClick={() => window.print()}
+                  className="shopify-btn-secondary py-1.5 px-3 text-xs font-bold"
+                >
+                  🖨️ Imprimir Etiquetas
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {generatedStickers.map((code) => (
+                  <div key={code} className="border-2 border-brand-950 rounded-xl p-4 bg-white shadow-sm flex flex-col items-center justify-center space-y-2 text-center">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-400">starTAP Panamá</span>
+                    <span className="font-mono text-xl font-black text-brand-950 tracking-wider">{code}</span>
+                    <span className="text-[9px] font-mono text-brand-500 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">
+                      startap.com.pa/r/{code}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

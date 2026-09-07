@@ -268,20 +268,22 @@ class LocalDbService {
     if (!localStorage.getItem('nfc_cards')) {
       this.setStorageItem('nfc_cards', [
         {
-          card_id: 'cafe-panama-nfc',
+          card_id: 'STT-1001',
+          activation_code: 'STT-1001',
           owner_id: 'user-carlos',
           owner_name: 'Carlos Mendoza',
           owner_email: 'carlos.mendoza@gmail.com',
-          label: 'Placa de Mostrador Principal',
+          label: 'Placa de Mostrador (STT-1001)',
           target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
           is_active: true,
+          claimed: true,
           type: 'google',
           created_at: new Date(Date.now() - 3600000 * 48).toISOString()
         }
       ]);
     }
     if (!localStorage.getItem('nfc_scans')) {
-      const cardId = 'cafe-panama-nfc';
+      const cardId = 'STT-1001';
       const mockScans: ScanRecord[] = [];
       // Generar escaneos en los últimos 7 días
       for (let i = 0; i < 45; i++) {
@@ -324,6 +326,25 @@ class LocalDbService {
     return this.getOrders().find(o => o.id === id);
   }
 
+  // Generador de Códigos Secuenciales para Etiquetas de Sticker STT-XXXX
+  getNextStickerCode(): string {
+    const cards = this.getCards();
+    let maxNumber = 1000;
+
+    cards.forEach(c => {
+      const codeMatch = (c.activation_code || c.card_id).match(/STT-(\d+)/i);
+      if (codeMatch && codeMatch[1]) {
+        const num = parseInt(codeMatch[1], 10);
+        if (!isNaN(num) && num > maxNumber) {
+          maxNumber = num;
+        }
+      }
+    });
+
+    const nextNum = maxNumber + 1;
+    return `STT-${nextNum}`;
+  }
+
   createOrder(orderData: Omit<Order, 'id' | 'created_at'>): Order {
     const orders = this.getOrders();
     const newOrder: Order = {
@@ -334,19 +355,21 @@ class LocalDbService {
     orders.unshift(newOrder);
     this.setStorageItem('nfc_orders', orders);
 
-    // Crear tarjetas NFC asociadas a este pedido de forma automática para simular el fulfillment
+    // Crear tarjetas NFC asociadas a este pedido con etiquetas STT-XXXX
     const cards = this.getCards();
-    newOrder.items.forEach((item, index) => {
+    newOrder.items.forEach((item) => {
       for (let i = 0; i < item.quantity; i++) {
-        const customId = `${item.product_id}-${Math.floor(100000 + Math.random() * 900000)}`;
+        const sttCode = this.getNextStickerCode();
         cards.push({
-          card_id: customId,
-          owner_id: 'user-session', // Asignar al usuario actual de prueba
+          card_id: sttCode,
+          activation_code: sttCode,
+          owner_id: 'user-session',
           owner_name: newOrder.customer_name,
           owner_email: newOrder.customer_email,
-          label: `${item.product_name} (${i + 1})`,
-          target_url: item.initial_redirect_url || 'https://google.com',
+          label: `${item.product_name} (${sttCode})`,
+          target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
           is_active: true,
+          claimed: true,
           type: item.product_id.includes('google') ? 'google' : item.product_id.includes('tripadvisor') ? 'tripadvisor' : item.product_id.includes('instagram') ? 'instagram' : 'vcard',
           created_at: new Date().toISOString()
         });
