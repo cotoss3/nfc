@@ -223,30 +223,17 @@ export const DEFAULT_SEED_CARDS: NfcCard[] = [
     claimed: true,
     type: 'google',
     created_at: new Date(Date.now() - 3600000 * 48).toISOString()
-  },
-  {
-    card_id: 'STT-1002',
-    activation_code: 'STT-1002',
-    owner_id: 'user-carlos',
-    owner_name: 'Carlos Mendoza',
-    owner_email: 'carlos.mendoza@gmail.com',
-    label: 'Dispositivo TAP (STT-1002)',
-    target_url: 'https://datakorex.com',
-    is_active: true,
-    claimed: true,
-    type: 'google',
-    created_at: new Date().toISOString()
   }
 ];
 
 // MOTOR DE BASE DE DATOS LOCAL (Fallback & Sync)
 class LocalDbService {
-  private getStorageItem<T>(key: string, defaultValue: T): T {
+  public getStorageItem<T>(key: string, defaultValue: T): T {
     if (typeof window !== 'undefined') {
       const data = localStorage.getItem(key);
       if (data) return JSON.parse(data);
     } else {
-      // Server-side Node.js file fallback
+      // Leer SIEMPRE la versión más fresca desde el archivo de disco db_store.json en cada petición
       try {
         const fsModule = eval("require('fs')");
         const pathModule = eval("require('path')");
@@ -255,21 +242,18 @@ class LocalDbService {
         if (fsModule.existsSync(storeFile)) {
           const fileContent = fsModule.readFileSync(storeFile, 'utf-8');
           const store = JSON.parse(fileContent);
-          if (store[key] !== undefined) return store[key];
-        } else {
-          // Inicializar db_store.json inmediatamente en servidor
-          const initialStore: Record<string, any> = { [key]: defaultValue };
-          fsModule.writeFileSync(storeFile, JSON.stringify(initialStore, null, 2), 'utf-8');
-          return defaultValue;
+          if (store[key] !== undefined) {
+            return store[key];
+          }
         }
       } catch (e) {
-        // Fallback silencioso en servidor
+        console.error('Error leyendo db_store.json:', e);
       }
     }
     return defaultValue;
   }
 
-  private setStorageItem<T>(key: string, value: T): void {
+  public setStorageItem<T>(key: string, value: T): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem(key, JSON.stringify(value));
       // Notificar al servidor Next.js para sincronizar el archivo de almacenamiento
@@ -281,7 +265,7 @@ class LocalDbService {
       return;
     }
 
-    // Server-side Node.js file fallback
+    // Persistir DIRECTAMENTE en el archivo de disco db_store.json
     try {
       const fsModule = eval("require('fs')");
       const pathModule = eval("require('path')");

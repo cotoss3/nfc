@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { dbLocal } from '@/lib/db';
 import fs from 'fs';
 import path from 'path';
 
@@ -34,17 +35,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing key or value' }, { status: 400 });
     }
 
-    let store: Record<string, any> = {};
-    if (fs.existsSync(STORE_FILE)) {
-      try {
-        store = JSON.parse(fs.readFileSync(STORE_FILE, 'utf-8'));
-      } catch {
-        store = {};
-      }
-    }
-
-    store[key] = value;
-    fs.writeFileSync(STORE_FILE, JSON.stringify(store, null, 2), 'utf-8');
+    // Actualizar memoria e ingresar al archivo local mediante dbLocal
+    dbLocal.setStorageItem(key, value);
 
     return NextResponse.json({ success: true, key }, {
       headers: {
