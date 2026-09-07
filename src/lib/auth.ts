@@ -13,7 +13,7 @@ export const authService = {
       throw new Error('Supabase no está configurado');
     }
     const isLocal = typeof window !== 'undefined' && window.location.hostname.includes('localhost');
-    const origin = isLocal ? window.location.origin : 'https://startap.pa';
+    const origin = isLocal ? window.location.origin : 'https://startap.com.pa';
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -59,7 +59,7 @@ export const authService = {
       return { success: true };
     }
     const isLocal = typeof window !== 'undefined' && window.location.hostname.includes('localhost');
-    const origin = isLocal ? window.location.origin : 'https://startap.pa';
+    const origin = isLocal ? window.location.origin : 'https://startap.com.pa';
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${origin}/dashboard/reset-password`
     });

@@ -1278,7 +1278,7 @@ function DashboardContent() {
             </span>
             <div className="bg-white p-4 rounded-2xl mx-auto inline-block border border-slate-200 shadow-sm">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`${typeof window !== 'undefined' ? window.location.origin : 'https://startap.pa'}/r/${qrModalCard.card_id}?m=qr`)}`}
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`${typeof window !== 'undefined' ? window.location.origin : 'https://startap.com.pa'}/r/${qrModalCard.card_id}?m=qr`)}`}
                 alt="QR Code"
                 className="w-44 h-44 mx-auto"
               />
