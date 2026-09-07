@@ -440,7 +440,11 @@ export default function CheckoutPage() {
                     </div>
                     <div className="truncate">
                       <span className="font-bold text-brand-950 uppercase tracking-wide block truncate">{item.product_name}</span>
-                      <span className="text-[9px] text-brand-400 block truncate">{item.selected_color} • {item.business_name}</span>
+                      <span className="text-[9px] text-brand-400 block truncate">
+                        {item.selected_color} • {item.business_name}
+                        {item.has_custom_logo ? ' • Logo (+ $5)' : ''}
+                        {item.has_qr_code ? ' • QR (+ $3)' : ''}
+                      </span>
                     </div>
                   </div>
                   <span className="font-black text-brand-950 flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</span>

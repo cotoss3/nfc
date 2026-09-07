@@ -5,24 +5,26 @@ import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, Upload, Check, Info } from 'lucide-react';
+import { ArrowLeft, Upload, Check, Info, Zap, QrCode, Image as ImageIcon } from 'lucide-react';
 import StandLanding from '@/components/landings/StandLanding';
 import TarjetaLanding from '@/components/landings/TarjetaLanding';
 import PlacaLanding from '@/components/landings/PlacaLanding';
+import AutoConfigGuide from '@/components/AutoConfigGuide';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   
-  // Customization States
+  // Customization & Add-on States
   const [color, setColor] = useState('Negro Premium');
   const [businessName, setBusinessName] = useState('');
-  const [redirectUrl, setRedirectUrl] = useState('');
+  const [hasCustomLogo, setHasCustomLogo] = useState(false);
+  const [hasQrCode, setHasQrCode] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [logoFile, setLogoFile] = useState<string>('');
 
   const [selectedImage, setSelectedImage] = useState('');
 
@@ -38,16 +40,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         ? ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'] 
         : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado']);
       setColor(defaultColors[0]);
-
-      if (found.type === 'google') {
-        setRedirectUrl('https://search.google.com/local/writereview?placeid=...');
-      } else if (found.type === 'tripadvisor') {
-        setRedirectUrl('https://www.tripadvisor.com/UserReview-...');
-      } else if (found.type === 'instagram') {
-        setRedirectUrl('https://instagram.com/mi_negocio');
-      } else if (found.type === 'airbnb') {
-        setRedirectUrl('https://www.airbnb.com/rooms/...');
-      }
     }
   }, [params.id]);
 
@@ -71,6 +63,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     ? ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'] 
     : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado']);
 
+  const logoPrice = hasCustomLogo ? 5 : 0;
+  const qrPrice = hasQrCode ? 3 : 0;
+  const unitPrice = product.price + logoPrice + qrPrice;
+  const totalPrice = unitPrice * quantity;
+
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -90,14 +87,23 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       return;
     }
 
+    if (hasCustomLogo && !logoPreview) {
+      alert('Por favor sube el archivo de tu logo personalizado para continuar');
+      return;
+    }
+
     addToCart({
       product_id: product.id,
       product_name: product.name,
-      price: product.price,
+      price: unitPrice,
+      unit_price_base: product.price,
+      has_custom_logo: hasCustomLogo,
+      has_qr_code: hasQrCode,
+      logo_price: logoPrice,
+      qr_price: qrPrice,
       quantity,
       selected_color: color,
       business_name: businessName,
-      initial_redirect_url: redirectUrl,
       logo_url: logoPreview || undefined
     });
 
@@ -164,8 +170,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest block">Colección Oficial</span>
               <h2 className="text-2xl font-black text-brand-950 uppercase tracking-wide">{product.name}</h2>
               <div className="flex items-center space-x-2">
-                <span className="text-lg font-black text-brand-950">${product.price.toFixed(2)}</span>
-                <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 font-bold uppercase rounded">Pago único</span>
+                <span className="text-lg font-black text-brand-950">${unitPrice.toFixed(2)}</span>
+                <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 font-bold uppercase rounded">Pago único • Sin Suscripción</span>
               </div>
               {product.description && (
                 <p className="text-sm text-brand-600 pt-2 leading-relaxed">
@@ -213,45 +219,90 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 />
               </div>
 
-              {/* Option: Logo */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-brand-900 block">Subir Vector de Logotipo</label>
-                <div className="border border-dashed border-brand-300 rounded p-4 text-center cursor-pointer hover:border-brand-950 transition-colors relative bg-brand-50">
-                  <input
-                    type="file"
-                    id="logoUpload"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <Upload className="h-5 w-5 text-brand-400 mx-auto mb-1.5 stroke-[1.8]" />
-                  <span className="text-[11px] text-brand-500 font-bold block">
-                    {logoFile ? `Archivo cargado: ${logoFile}` : 'Arrastra tu archivo logo (SVG, PNG, JPG)'}
-                  </span>
+              {/* Auto-Configurable Notice Box */}
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-1.5">
+                <div className="flex items-center space-x-2 text-amber-900 font-bold text-xs">
+                  <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                  <span>100% Auto-Configurable</span>
+                </div>
+                <p className="text-[11px] text-amber-800 leading-relaxed">
+                  Tu dispositivo llega listo y pre-programado. En tu primer toque lo vinculas a tu negocio en 30 segundos sin necesidad de ingresar URLs complicadas ahora.
+                </p>
+              </div>
+
+              {/* Add-ons Checkboxes */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-brand-900 block">Personalización Opcional</label>
+                
+                {/* Logo Checkbox */}
+                <div className={`border rounded-lg p-4 transition-all ${hasCustomLogo ? 'border-brand-950 bg-brand-50/50' : 'border-brand-200 bg-white'}`}>
+                  <label className="flex items-start space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={hasCustomLogo}
+                      onChange={(e) => setHasCustomLogo(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-brand-950 rounded cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-brand-950 uppercase flex items-center gap-1.5">
+                          <ImageIcon className="h-3.5 w-3.5 text-brand-600" />
+                          Agregar Logo Personalizado
+                        </span>
+                        <span className="text-xs font-black text-brand-950">+ $5.00 USD</span>
+                      </div>
+                      <p className="text-[11px] text-brand-500 mt-0.5">Grabamos el logo vectorizado de tu marca en el frontal del producto.</p>
+                    </div>
+                  </label>
+
+                  {hasCustomLogo && (
+                    <div className="mt-4 pt-3 border-t border-brand-200 space-y-2">
+                      <label className="text-[11px] font-bold text-brand-800 uppercase block">Subir Archivo de Logo (Obligatorio)</label>
+                      <div className="border border-dashed border-brand-300 rounded p-3 text-center cursor-pointer hover:border-brand-950 transition-colors relative bg-white">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <Upload className="h-4 w-4 text-brand-400 mx-auto mb-1 stroke-[1.8]" />
+                        <span className="text-[11px] text-brand-600 font-bold block">
+                          {logoFile ? `Logo cargado: ${logoFile}` : 'Selecciona o arrastra tu logo (PNG, SVG, JPG)'}
+                        </span>
+                      </div>
+                      {logoPreview && (
+                        <div className="mt-2 flex items-center space-x-3 bg-white p-2 rounded border border-brand-200">
+                          <img src={logoPreview} alt="Logo Preview" className="h-8 w-8 object-contain rounded border" />
+                          <span className="text-[10px] text-green-600 font-bold">✓ Vista previa de logo cargada</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* QR Checkbox */}
+                <div className={`border rounded-lg p-4 transition-all ${hasQrCode ? 'border-brand-950 bg-brand-50/50' : 'border-brand-200 bg-white'}`}>
+                  <label className="flex items-start space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={hasQrCode}
+                      onChange={(e) => setHasQrCode(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-brand-950 rounded cursor-pointer"
+                    />
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-brand-950 uppercase flex items-center gap-1.5">
+                          <QrCode className="h-3.5 w-3.5 text-brand-600" />
+                          Agregar Código QR Grabado
+                        </span>
+                        <span className="text-xs font-black text-brand-950">+ $3.00 USD</span>
+                      </div>
+                      <p className="text-[11px] text-brand-500 mt-0.5">Grabado láser de respaldo para teléfonos sin lector NFC.</p>
+                    </div>
+                  </label>
                 </div>
               </div>
 
-              {/* Option: Redirect Url */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label htmlFor="redirectUrl" className="text-xs font-bold uppercase tracking-wider text-brand-900">Enlace de Redirección Inicial</label>
-                </div>
-                <input
-                  type="text"
-                  id="redirectUrl"
-                  value={redirectUrl}
-                  onChange={(e) => setRedirectUrl(e.target.value)}
-                  placeholder="google.com, instagram.com/mi_negocio, etc."
-                  className="shopify-input font-mono text-xs"
-                  required
-                />
-                <div className="flex items-start space-x-2 text-[10px] text-brand-400 bg-brand-50 p-2.5 rounded border border-brand-200">
-                  <Info className="h-4 w-4 text-brand-500 flex-shrink-0 mt-0.5" />
-                  <span>
-                    No te preocupes si no tienes el link definitivo ahora. Podrás editar el destino en tiempo real las veces que quieras desde tu portal administrativo.
-                  </span>
-                </div>
-              </div>
             </div>
 
             <hr className="border-brand-200" />
@@ -291,12 +342,17 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <span>¡Agregado al Carrito!</span>
                   </>
                 ) : (
-                  <span>Añadir al Carrito • ${(product.price * quantity).toFixed(2)}</span>
+                  <span>Añadir al Carrito • ${totalPrice.toFixed(2)}</span>
                 )}
               </button>
             </div>
           </form>
         </div>
+      </div>
+
+      {/* AutoConfigGuide 3 Step Visual Component */}
+      <div className="mt-16">
+        <AutoConfigGuide />
       </div>
 
       {/* SEO & Extra Information Block */}

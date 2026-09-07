@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
-import { Star, CheckCircle2, ChevronDown, ChevronUp, ArrowRight, CreditCard, ShieldCheck, Zap, Users } from 'lucide-react';
+import { Star, CheckCircle2, ChevronDown, ChevronUp, ArrowRight, CreditCard, ShieldCheck, Zap, Users, Upload, QrCode, Image as ImageIcon } from 'lucide-react';
+import AutoConfigGuide from '@/components/AutoConfigGuide';
 
 interface TarjetaLandingProps {
   product: Product;
@@ -17,11 +18,32 @@ export default function TarjetaLanding({ product }: TarjetaLandingProps) {
   // Customization States for Checkout Section
   const [color, setColor] = useState('Negro Premium');
   const [businessName, setBusinessName] = useState('');
+  const [hasCustomLogo, setHasCustomLogo] = useState(false);
+  const [hasQrCode, setHasQrCode] = useState(false);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [isSuccess, setIsSuccess] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const colors = product.colors || ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'];
+
+  const logoPrice = hasCustomLogo ? 5 : 0;
+  const qrPrice = hasQrCode ? 3 : 0;
+  const unitPrice = product.price + logoPrice + qrPrice;
+  const totalPrice = unitPrice * quantity;
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+        setLogoFile(file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,14 +52,24 @@ export default function TarjetaLanding({ product }: TarjetaLandingProps) {
       return;
     }
 
+    if (hasCustomLogo && !logoPreview) {
+      alert('Por favor sube el archivo de tu logo personalizado');
+      return;
+    }
+
     addToCart({
       product_id: product.id,
       product_name: product.name,
-      price: product.price,
+      price: unitPrice,
+      unit_price_base: product.price,
+      has_custom_logo: hasCustomLogo,
+      has_qr_code: hasQrCode,
+      logo_price: logoPrice,
+      qr_price: qrPrice,
       quantity,
       selected_color: color,
       business_name: businessName,
-      initial_redirect_url: 'https://search.google.com/local/writereview?placeid=...',
+      logo_url: logoPreview || undefined
     });
 
     setIsSuccess(true);
@@ -216,6 +248,13 @@ export default function TarjetaLanding({ product }: TarjetaLandingProps) {
         </div>
       </section>
 
+      {/* 3.5 AUTO CONFIG GUIDE */}
+      <section className="py-12 px-4 bg-white border-b border-brand-200">
+        <div className="max-w-5xl mx-auto">
+          <AutoConfigGuide />
+        </div>
+      </section>
+
       {/* 4. CHECKOUT / BUY SECTION */}
       <section id="checkout-section" className="py-24 px-4 bg-brand-50">
         <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-card border border-brand-200 overflow-hidden">
@@ -249,7 +288,17 @@ export default function TarjetaLanding({ product }: TarjetaLandingProps) {
                     required
                     className="shopify-input"
                   />
-                  <p className="text-xs text-brand-400">Saber qué grabado y enlace debemos programar en el chip.</p>
+                </div>
+
+                {/* Auto-Configurable Notice Box */}
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1.5">
+                  <div className="flex items-center space-x-2 text-amber-900 font-bold text-xs">
+                    <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                    <span>⚡ 100% Auto-Configurable</span>
+                  </div>
+                  <p className="text-[11px] text-amber-800 leading-relaxed">
+                    Tu Tarjeta llega lista y pre-programada. En tu primer toque la vinculas a tu perfil o negocio en 30 segundos sin necesidad de ingresar URLs previas.
+                  </p>
                 </div>
 
                 {/* Acabado / Color */}
@@ -273,6 +322,79 @@ export default function TarjetaLanding({ product }: TarjetaLandingProps) {
                   </div>
                 </div>
 
+                {/* Add-ons Checkboxes */}
+                <div className="space-y-3 pt-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-brand-900 block">Personalización Opcional</label>
+                  
+                  {/* Logo Checkbox */}
+                  <div className={`border rounded-xl p-4 transition-all ${hasCustomLogo ? 'border-brand-950 bg-brand-50/50' : 'border-brand-200 bg-white'}`}>
+                    <label className="flex items-start space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={hasCustomLogo}
+                        onChange={(e) => setHasCustomLogo(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 accent-brand-950 rounded cursor-pointer"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold text-brand-950 uppercase flex items-center gap-1.5">
+                            <ImageIcon className="h-3.5 w-3.5 text-brand-600" />
+                            Agregar Logo Personalizado
+                          </span>
+                          <span className="text-xs font-black text-brand-950">+ $5.00 USD</span>
+                        </div>
+                        <p className="text-[11px] text-brand-500 mt-0.5">Grabado láser de tu logo oficial en la tarjeta.</p>
+                      </div>
+                    </label>
+
+                    {hasCustomLogo && (
+                      <div className="mt-4 pt-3 border-t border-brand-200 space-y-2">
+                        <label className="text-[11px] font-bold text-brand-800 uppercase block">Subir Archivo de Logo (Obligatorio)</label>
+                        <div className="border border-dashed border-brand-300 rounded-lg p-3 text-center cursor-pointer hover:border-brand-950 transition-colors relative bg-white">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoUpload}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                          <Upload className="h-4 w-4 text-brand-400 mx-auto mb-1 stroke-[1.8]" />
+                          <span className="text-[11px] text-brand-600 font-bold block">
+                            {logoFile ? `Logo cargado: ${logoFile}` : 'Selecciona tu logo (PNG, SVG, JPG)'}
+                          </span>
+                        </div>
+                        {logoPreview && (
+                          <div className="mt-2 flex items-center space-x-3 bg-white p-2 rounded border border-brand-200">
+                            <img src={logoPreview} alt="Logo Preview" className="h-8 w-8 object-contain rounded border" />
+                            <span className="text-[10px] text-green-600 font-bold">✓ Logo adjuntado correctamente</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* QR Checkbox */}
+                  <div className={`border rounded-xl p-4 transition-all ${hasQrCode ? 'border-brand-950 bg-brand-50/50' : 'border-brand-200 bg-white'}`}>
+                    <label className="flex items-start space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={hasQrCode}
+                        onChange={(e) => setHasQrCode(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 accent-brand-950 rounded cursor-pointer"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold text-brand-950 uppercase flex items-center gap-1.5">
+                            <QrCode className="h-3.5 w-3.5 text-brand-600" />
+                            Agregar Código QR Grabado
+                          </span>
+                          <span className="text-xs font-black text-brand-950">+ $3.00 USD</span>
+                        </div>
+                        <p className="text-[11px] text-brand-500 mt-0.5">Grabado de respaldo para teléfonos sin NFC.</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
                 {/* Cantidad */}
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-brand-950 block">Cantidad</label>
@@ -287,7 +409,7 @@ export default function TarjetaLanding({ product }: TarjetaLandingProps) {
                 <div className="pt-4 border-t border-brand-100">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-brand-500 text-sm">Total a pagar:</span>
-                    <span className="text-2xl font-black text-brand-950">${(product.price * quantity).toFixed(2)}</span>
+                    <span className="text-2xl font-black text-brand-950">${totalPrice.toFixed(2)}</span>
                   </div>
                   <button type="submit" className="shopify-btn-primary w-full text-lg py-4 rounded-xl shadow-lg relative overflow-hidden group">
                     <span className={`transition-opacity duration-300 ${isSuccess ? 'opacity-0' : 'opacity-100'}`}>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { ShieldCheck, Truck, RotateCcw, ArrowRight, Star, MapPin, Smartphone, Award, CheckCircle2, ChevronDown, ChevronUp, Check, Zap } from 'lucide-react';
+import AutoConfigGuide from '@/components/AutoConfigGuide';
 
 const HoverableImage = ({ product }: { product: Product }) => {
   const [imgSrc, setImgSrc] = useState(product.image);
@@ -166,6 +167,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Auto-Configurable 3-Step Guide */}
+      <div className="shopify-container max-w-6xl mx-auto px-4">
+        <AutoConfigGuide />
+      </div>
 
       {/* SEO Text Block Optimized for Panama */}
       <section className="py-16 bg-white border-t border-brand-100">

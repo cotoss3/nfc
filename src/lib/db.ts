@@ -20,10 +20,15 @@ export interface OrderItem {
   product_name: string;
   quantity: number;
   price: number;
+  unit_price_base?: number;
+  has_custom_logo?: boolean;
+  has_qr_code?: boolean;
   logo_url?: string;
-  initial_redirect_url?: string;
+  logo_price?: number;
+  qr_price?: number;
   selected_color?: string;
   business_name?: string;
+  initial_redirect_url?: string;
 }
 
 export interface Order {

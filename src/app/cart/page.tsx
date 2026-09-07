@@ -69,6 +69,16 @@ export default function CartPage() {
                     <div className="text-[10px] text-brand-500 space-y-0.5">
                       <p>Acabado: <span className="font-bold text-brand-800 uppercase">{item.selected_color}</span></p>
                       <p>Grabado: <span className="font-bold text-brand-800 uppercase">{item.business_name}</span></p>
+                      {item.has_custom_logo && (
+                        <p className="flex items-center gap-1 text-green-700 font-bold">
+                          <span>✓ Logo Personalizado (+ $5.00)</span>
+                        </p>
+                      )}
+                      {item.has_qr_code && (
+                        <p className="flex items-center gap-1 text-green-700 font-bold">
+                          <span>✓ Código QR Grabado (+ $3.00)</span>
+                        </p>
+                      )}
                       {item.initial_redirect_url && (
                         <p className="truncate max-w-[180px] sm:max-w-[280px]">
                           Destino: <span className="font-bold text-brand-800 font-mono">{item.initial_redirect_url}</span>
