@@ -49,6 +49,9 @@ export interface NfcCard {
   owner_email: string;
   label: string;
   target_url: string;
+  nfc_target_url?: string;
+  qr_target_url?: string;
+  group_name?: string;
   is_active: boolean;
   type: string;
   claimed?: boolean;
@@ -61,6 +64,8 @@ export interface ScanRecord {
   card_id: string;
   device: string;
   referrer: string;
+  scan_type?: 'nfc' | 'qr';
+  group_name?: string;
   created_at: string;
 }
 
@@ -539,10 +544,12 @@ class LocalDbService {
     return autoCard;
   }
 
-  updateCardRedirect(cardId: string, targetUrl: string, label: string): boolean {
+  updateCardRedirect(cardId: string, nfcUrl: string, qrUrl: string, label: string, groupName: string = 'General'): boolean {
     const cards = this.getCards();
     const resolvedId = this.resolveCardId(cardId, cards);
-    const cleanUrl = targetUrl.trim();
+    const cleanNfcUrl = nfcUrl.trim();
+    const cleanQrUrl = qrUrl.trim();
+    const primaryUrl = cleanNfcUrl || cleanQrUrl || 'https://google.com';
 
     const index = cards.findIndex(c => 
       c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
@@ -550,7 +557,10 @@ class LocalDbService {
     );
 
     if (index !== -1) {
-      cards[index].target_url = cleanUrl;
+      cards[index].target_url = primaryUrl;
+      cards[index].nfc_target_url = cleanNfcUrl;
+      cards[index].qr_target_url = cleanQrUrl;
+      cards[index].group_name = groupName || 'General';
       if (label) cards[index].label = label;
     } else {
       const cleanCode = resolvedId.toUpperCase();
@@ -561,7 +571,10 @@ class LocalDbService {
         owner_name: 'Cliente TapStar',
         owner_email: 'cliente@tapstar.es',
         label: label || `Dispositivo TAP (${cleanCode})`,
-        target_url: cleanUrl,
+        target_url: primaryUrl,
+        nfc_target_url: cleanNfcUrl,
+        qr_target_url: cleanQrUrl,
+        group_name: groupName || 'General',
         is_active: true,
         claimed: true,
         type: 'google',
@@ -574,17 +587,36 @@ class LocalDbService {
     // Sincronizar en tiempo real con Supabase si está disponible
     if (supabase) {
       const cleanCode = resolvedId.toUpperCase();
-      supabase.from('nfc_cards').upsert({
+      const cardObj = cards.find(c => c.card_id === cleanCode) || {
         card_id: cleanCode,
         activation_code: cleanCode,
         owner_id: 'user-auto',
         owner_name: 'Cliente TapStar',
         owner_email: 'cliente@tapstar.es',
         label: label || `Dispositivo TAP (${cleanCode})`,
-        target_url: cleanUrl,
+        target_url: primaryUrl,
+        nfc_target_url: cleanNfcUrl,
+        qr_target_url: cleanQrUrl,
+        group_name: groupName || 'General',
         is_active: true,
         claimed: true,
         type: 'google'
+      };
+
+      supabase.from('nfc_cards').upsert({
+        card_id: cardObj.card_id,
+        activation_code: cardObj.activation_code,
+        owner_id: cardObj.owner_id,
+        owner_name: cardObj.owner_name,
+        owner_email: cardObj.owner_email,
+        label: cardObj.label,
+        target_url: primaryUrl,
+        nfc_target_url: cleanNfcUrl,
+        qr_target_url: cleanQrUrl,
+        group_name: groupName || 'General',
+        is_active: true,
+        claimed: true,
+        type: cardObj.type || 'google'
       }).then(({ error }) => {
         if (error) console.error('Error guardando tarjeta en Supabase:', error);
       });
@@ -674,21 +706,54 @@ class LocalDbService {
   }
 
   // Analíticas de Escaneo
-  registerScan(cardId: string, device: string, referrer: string): void {
+  registerScan(cardId: string, device: string, referrer: string, scanType: 'nfc' | 'qr' = 'nfc', groupName: string = 'General'): void {
     const scans = this.getStorageItem<ScanRecord[]>('nfc_scans', []);
-    scans.push({
+    const newScan: ScanRecord = {
       id: `scan-${Date.now()}-${Math.random()}`,
       card_id: cardId,
       device,
       referrer,
+      scan_type: scanType,
+      group_name: groupName,
       created_at: new Date().toISOString()
-    });
+    };
+    scans.push(newScan);
     this.setStorageItem('nfc_scans', scans);
+
+    if (supabase) {
+      supabase.from('scans').insert({
+        id: newScan.id,
+        card_id: cardId,
+        device,
+        referrer,
+        scan_type: scanType,
+        group_name: groupName
+      }).then(({ error }) => {
+        if (error) console.error('Error insertando escaneo en Supabase:', error);
+      });
+    }
   }
 
   getScansForCard(cardId: string): ScanRecord[] {
     const scans = this.getStorageItem<ScanRecord[]>('nfc_scans', []);
     return scans.filter(s => s.card_id === cardId);
+  }
+
+  getScansForOwner(emailOrId: string): ScanRecord[] {
+    const ownerCards = this.getCardsByOwner(emailOrId);
+    const cardIds = new Set(ownerCards.map(c => c.card_id));
+    const scans = this.getStorageItem<ScanRecord[]>('nfc_scans', []);
+    return scans.filter(s => cardIds.has(s.card_id));
+  }
+
+  getGroupsForOwner(emailOrId: string): string[] {
+    const ownerCards = this.getCardsByOwner(emailOrId);
+    const groups = new Set<string>();
+    groups.add('General');
+    ownerCards.forEach(c => {
+      if (c.group_name) groups.add(c.group_name);
+    });
+    return Array.from(groups);
   }
 }
 

@@ -41,11 +41,19 @@ CREATE TABLE IF NOT EXISTS public.nfc_cards (
   owner_email TEXT NOT NULL,
   label TEXT NOT NULL,
   target_url TEXT NOT NULL,
+  nfc_target_url TEXT,
+  qr_target_url TEXT,
+  group_name TEXT DEFAULT 'General',
   is_active BOOLEAN DEFAULT true,
   claimed BOOLEAN DEFAULT false,
   type TEXT NOT NULL DEFAULT 'google',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Migraciones seguras para agregar columnas si la tabla ya existía
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS nfc_target_url TEXT;
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS qr_target_url TEXT;
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS group_name TEXT DEFAULT 'General';
 
 -- 4. Tabla de Escaneos y Analíticas
 CREATE TABLE IF NOT EXISTS public.scans (
@@ -53,8 +61,14 @@ CREATE TABLE IF NOT EXISTS public.scans (
   card_id TEXT REFERENCES public.nfc_cards(card_id) ON DELETE CASCADE,
   device TEXT NOT NULL,
   referrer TEXT NOT NULL,
+  scan_type TEXT DEFAULT 'nfc',
+  group_name TEXT DEFAULT 'General',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Migraciones seguras para tabla de escaneos
+ALTER TABLE public.scans ADD COLUMN IF NOT EXISTS scan_type TEXT DEFAULT 'nfc';
+ALTER TABLE public.scans ADD COLUMN IF NOT EXISTS group_name TEXT DEFAULT 'General';
 
 -- Políticas de Seguridad RLS
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
@@ -62,7 +76,13 @@ ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nfc_cards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.scans ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Permitir lectura publica de productos" ON public.products;
+DROP POLICY IF EXISTS "Permitir lectura publica de nfc_cards para redireccion" ON public.nfc_cards;
+DROP POLICY IF EXISTS "Permitir escritura y actualizacion publica de nfc_cards" ON public.nfc_cards;
+DROP POLICY IF EXISTS "Permitir insercion publica de escaneos" ON public.scans;
+
 CREATE POLICY "Permitir lectura publica de productos" ON public.products FOR SELECT USING (true);
 CREATE POLICY "Permitir lectura publica de nfc_cards para redireccion" ON public.nfc_cards FOR SELECT USING (true);
 CREATE POLICY "Permitir escritura y actualizacion publica de nfc_cards" ON public.nfc_cards FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Permitir insercion publica de escaneos" ON public.scans FOR INSERT WITH CHECK (true);
+

@@ -9,13 +9,20 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const cardId = params.id;
-  let targetUrl = '';
+  const urlObj = new URL(request.url);
+  const medium = (urlObj.searchParams.get('m') || 'nfc').toLowerCase(); 
+  const isQr = medium === 'qr';
+
+  let nfcTargetUrl = '';
+  let qrTargetUrl = '';
+  let legacyTargetUrl = '';
+  let groupName = 'General';
+  let cardLabel = 'Dispositivo TAP';
   let resolvedCardId = cardId;
 
   // 1. Intentar consulta en tiempo real desde Supabase si está configurado
   if (supabase) {
     try {
-      // Normalizar alias habituales (STT-1 -> STT-1001, 1002 -> STT-1002)
       let clean = cardId.trim().toLowerCase();
       let searchCode = clean;
       const sttMatch = clean.match(/^stt-(\d+)$/i);
@@ -29,12 +36,16 @@ export async function GET(
 
       const { data, error } = await supabase
         .from('nfc_cards')
-        .select('card_id, target_url')
+        .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label')
         .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode}`)
         .maybeSingle();
 
-      if (!error && data && data.target_url) {
-        targetUrl = data.target_url.trim();
+      if (!error && data) {
+        nfcTargetUrl = data.nfc_target_url ? data.nfc_target_url.trim() : '';
+        qrTargetUrl = data.qr_target_url ? data.qr_target_url.trim() : '';
+        legacyTargetUrl = data.target_url ? data.target_url.trim() : '';
+        groupName = data.group_name || 'General';
+        cardLabel = data.label || 'Dispositivo TAP';
         resolvedCardId = data.card_id;
       }
     } catch (e) {
@@ -42,17 +53,22 @@ export async function GET(
     }
   }
 
-  // 2. Si no se encontró en Supabase o no está configurado, usar motor local/archivo
-  if (!targetUrl) {
+  // 2. Si no se encontró en Supabase o no está configurado, usar motor local
+  if (!nfcTargetUrl && !qrTargetUrl && !legacyTargetUrl) {
     const card = dbLocal.getCardById(cardId);
-    targetUrl = card?.target_url ? card.target_url.trim() : '';
-    resolvedCardId = card?.card_id || cardId;
+    if (card) {
+      nfcTargetUrl = card.nfc_target_url ? card.nfc_target_url.trim() : '';
+      qrTargetUrl = card.qr_target_url ? card.qr_target_url.trim() : '';
+      legacyTargetUrl = card.target_url ? card.target_url.trim() : '';
+      groupName = card.group_name || 'General';
+      cardLabel = card.label || 'Dispositivo TAP';
+      resolvedCardId = card.card_id || cardId;
+    }
   }
 
   // Capturar información de dispositivo mediante User-Agent
   const userAgent = request.headers.get('user-agent') || '';
   let device = 'Desktop (Web)';
-  
   if (/iphone|ipad|ipod/i.test(userAgent)) {
     device = 'iPhone (iOS)';
   } else if (/android/i.test(userAgent)) {
@@ -61,31 +77,74 @@ export async function GET(
     device = 'Smart Phone';
   }
 
-  // Capturar referer (ej. escaneo NFC vs Código QR manual)
-  const urlObj = new URL(request.url);
-  const medium = urlObj.searchParams.get('m') || 'NFC Scan'; 
-  const referrer = medium === 'qr' ? 'QR Code' : 'NFC Scan';
+  const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
+  const referrer = isQr ? 'QR Code' : 'NFC Scan';
 
-  // Registrar analíticas de manera asíncrona
+  // Registrar analítica de escaneo
   try {
-    dbLocal.registerScan(resolvedCardId, device, referrer);
+    dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
   } catch (err) {
     console.error('Error registrando analítica:', err);
   }
 
-  // Sanitizar cualquier placeholder con "..." o cadena vacía
-  if (!targetUrl || targetUrl.includes('...')) {
-    targetUrl = 'https://google.com';
+  // Determinar URL de destino según el medio utilizado
+  let selectedUrl = isQr 
+    ? qrTargetUrl 
+    : (nfcTargetUrl || legacyTargetUrl);
+
+  // Si se escaneó por QR pero la URL de QR está en blanco (o viceversa)
+  if (!selectedUrl || selectedUrl.includes('...')) {
+    const channelName = isQr ? 'Código QR' : 'Chip NFC';
+    
+    return new NextResponse(`
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Enlace no configurado | starTAP Panamá</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
+          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+            ⚠️
+          </div>
+          <div>
+            <span class="inline-block px-3 py-1 bg-slate-800 text-slate-400 text-xs font-semibold rounded-full mb-3 uppercase tracking-wider">
+              ${resolvedCardId} • ${groupName}
+            </span>
+            <h1 class="text-2xl font-bold text-slate-100">${cardLabel}</h1>
+            <p class="text-slate-400 text-sm mt-2">
+              Este dispositivo no tiene un enlace asignado para escaneo mediante <strong class="text-amber-400 font-semibold">${channelName}</strong>.
+            </p>
+          </div>
+          <div class="bg-slate-950/60 p-4 rounded-xl text-xs text-slate-400 border border-slate-800 text-left space-y-1">
+            <p class="font-semibold text-slate-300">💡 ¿Eres el administrador?</p>
+            <p>Puedes configurar y cambiar este enlace en cualquier momento desde tu panel de control.</p>
+          </div>
+          <a href="/dashboard" class="block w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20">
+            Ir al Dashboard de Administración
+          </a>
+        </div>
+      </body>
+      </html>
+    `, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0'
+      }
+    });
   }
 
   // Sanitizar protocolo http/https
-  if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-    targetUrl = `https://${targetUrl}`;
+  if (!selectedUrl.startsWith('http://') && !selectedUrl.startsWith('https://')) {
+    selectedUrl = `https://${selectedUrl}`;
   }
 
   try {
-    // Redirección DIRECTA E INSTANTÁNEA sin almacenamiento en caché
-    return NextResponse.redirect(new URL(targetUrl), {
+    return NextResponse.redirect(new URL(selectedUrl), {
       status: 307,
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private',
@@ -107,3 +166,4 @@ export async function GET(
     });
   }
 }
+
