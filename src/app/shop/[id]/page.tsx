@@ -5,6 +5,7 @@ import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
+import { ArrowLeft, Upload, Check, Info } from 'lucide-react';
 import StandLanding from '@/components/landings/StandLanding';
 import TarjetaLanding from '@/components/landings/TarjetaLanding';
 import PlacaLanding from '@/components/landings/PlacaLanding';
