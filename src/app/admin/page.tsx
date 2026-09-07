@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { dbLocal, Order, NfcCard, Product, ScanRecord } from '@/lib/db';
 import { 
   ShieldCheck, Package, RefreshCw, CheckCircle, Search, 
@@ -12,6 +13,7 @@ import {
 type AdminTab = 'cards' | 'orders' | 'products' | 'analytics' | 'stickers';
 
 export default function AdminPage() {
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [cards, setCards] = useState<NfcCard[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -934,20 +936,30 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Products Table */}
+                {/* Products Table Card */}
                 <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-                  <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-                      Productos del Catálogo ({filteredProducts.length})
-                    </h3>
-                    <span className="text-[10px] text-slate-400">Edición Completa Habilitada</span>
+                  <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                        Productos del Catálogo ({filteredProducts.length})
+                      </h3>
+                      <p className="text-[10px] text-slate-400">Sincronización en tiempo real con Supabase Storage (S3)</p>
+                    </div>
+
+                    <button
+                      onClick={() => router.push('/admin/products/new')}
+                      className="py-2 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center gap-1.5 shrink-0"
+                    >
+                      <Plus className="w-4 h-4 text-amber-400" />
+                      <span>+ Nuevo Producto</span>
+                    </button>
                   </div>
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
                         <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                          <th className="p-3.5">Imagen</th>
+                          <th className="p-3.5">Imagen & Galería</th>
                           <th className="p-3.5">Nombre & Descripción</th>
                           <th className="p-3.5">Categoría / Tipo</th>
                           <th className="p-3.5">Material</th>
@@ -959,11 +971,18 @@ export default function AdminPage() {
                         {filteredProducts.map((p) => (
                           <tr key={p.id} className="hover:bg-slate-50">
                             <td className="p-3.5">
-                              <img
-                                src={p.image}
-                                alt={p.name}
-                                className="w-12 h-12 object-cover rounded-xl border border-slate-200 bg-slate-50"
-                              />
+                              <div className="relative inline-block">
+                                <img
+                                  src={p.image}
+                                  alt={p.name}
+                                  className="w-12 h-12 object-cover rounded-xl border border-slate-200 bg-slate-50"
+                                />
+                                {(p.images && p.images.length > 1) && (
+                                  <span className="absolute -bottom-1 -right-1 bg-amber-500 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full shadow border border-white">
+                                    {p.images.length}
+                                  </span>
+                                )}
+                              </div>
                             </td>
                             <td className="p-3.5 max-w-xs">
                               <p className="font-bold text-slate-900">{p.name}</p>
@@ -994,17 +1013,17 @@ export default function AdminPage() {
                               <div className="flex items-center justify-center gap-1.5">
                                 <button
                                   onClick={() => handleQuickPriceSave(p.id)}
-                                  title="Guardar solo precio rápido"
+                                  title="Guardar precio rápido"
                                   className="py-1.5 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[10px] uppercase tracking-wider rounded-lg border border-slate-300 transition"
                                 >
                                   {priceSuccess[p.id] ? '¡Precio OK!' : 'Precio'}
                                 </button>
                                 <button
-                                  onClick={() => handleOpenProductEditModal(p)}
+                                  onClick={() => router.push(`/admin/products/edit/${p.id}`)}
                                   className="py-1.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm transition flex items-center gap-1"
                                 >
                                   <Edit2 className="w-3 h-3 text-amber-400" />
-                                  <span>Editar Todo</span>
+                                  <span>Editar Producto</span>
                                 </button>
                               </div>
                             </td>
@@ -1196,137 +1215,7 @@ export default function AdminPage() {
 
       </main>
 
-      {/* ---------------- FULL PRODUCT EDIT MODAL ---------------- */}
-      {editingProduct && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="max-w-lg w-full bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-mono text-amber-600 font-bold uppercase tracking-widest">Edición de Catálogo</span>
-                <h3 className="font-black text-slate-900 text-base">{editingProduct.id}</h3>
-              </div>
-              <button
-                onClick={() => setEditingProduct(null)}
-                className="text-slate-400 hover:text-slate-900 text-xs font-bold"
-              >
-                ✕
-              </button>
-            </div>
 
-            <form onSubmit={handleSaveFullProduct} className="space-y-4 text-xs">
-              {fullEditSuccess && (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-xl flex items-center gap-2">
-                  <Check className="w-4 h-4" />
-                  <span>¡Producto guardado y actualizado en Supabase!</span>
-                </div>
-              )}
-
-              <div>
-                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Nombre del Producto</label>
-                <input
-                  type="text"
-                  required
-                  value={editProductName}
-                  onChange={(e) => setEditProductName(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 font-semibold focus:outline-none focus:border-slate-900"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Precio ($ USD)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    value={editProductPrice}
-                    onChange={(e) => setEditProductPrice(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 font-mono font-bold focus:outline-none focus:border-slate-900"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Material</label>
-                  <input
-                    type="text"
-                    value={editProductMaterial}
-                    onChange={(e) => setEditProductMaterial(e.target.value)}
-                    placeholder="Ej. Acrílico 3mm / PVC Mate"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-slate-900"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Categoría</label>
-                  <select
-                    value={editProductCategory}
-                    onChange={(e) => setEditProductCategory(e.target.value as any)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 font-semibold focus:outline-none"
-                  >
-                    <option value="plates">Placas (Plates)</option>
-                    <option value="cards">Tarjetas (Cards)</option>
-                    <option value="accessories">Accesorios (Stands / Llaveros)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Tipo de Servicio</label>
-                  <select
-                    value={editProductType}
-                    onChange={(e) => setEditProductType(e.target.value as any)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 font-semibold focus:outline-none"
-                  >
-                    <option value="google">Google Reviews</option>
-                    <option value="tripadvisor">TripAdvisor</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="vcard">vCard Presentación</option>
-                    <option value="airbnb">Airbnb</option>
-                    <option value="custom">Personalizado</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">Descripción del Producto</label>
-                <textarea
-                  rows={3}
-                  value={editProductDescription}
-                  onChange={(e) => setEditProductDescription(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 uppercase tracking-wider mb-1">URL de Imagen Principal</label>
-                <input
-                  type="text"
-                  value={editProductImage}
-                  onChange={(e) => setEditProductImage(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 font-mono text-[11px] focus:outline-none focus:border-slate-900"
-                />
-              </div>
-
-              <div className="pt-2 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setEditingProduct(null)}
-                  className="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="py-2.5 px-5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-md uppercase tracking-wider"
-                >
-                  Guardar Cambios del Producto
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* ---------------- MOBILE APP STICKY BOTTOM NAVIGATION BAR ---------------- */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 px-1 shadow-lg shadow-slate-900/10">

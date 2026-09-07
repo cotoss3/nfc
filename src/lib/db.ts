@@ -417,11 +417,30 @@ class LocalDbService {
       };
       this.setStorageItem('nfc_products', products);
       if (supabase) {
-        supabase.from('products').upsert(products[index]).then();
+        supabase.from('products').upsert(products[index]).then(({ error }) => {
+          if (error) console.error('Error actualizando producto en Supabase:', error);
+        });
       }
       return true;
     }
     return false;
+  }
+
+  createProduct(product: Product): boolean {
+    const products = this.getProducts();
+    const existingIndex = products.findIndex(p => p.id === product.id);
+    if (existingIndex !== -1) {
+      products[existingIndex] = product;
+    } else {
+      products.unshift(product);
+    }
+    this.setStorageItem('nfc_products', products);
+    if (supabase) {
+      supabase.from('products').upsert(product).then(({ error }) => {
+        if (error) console.error('Error insertando producto en Supabase:', error);
+      });
+    }
+    return true;
   }
 
   // Métodos de Pedidos
