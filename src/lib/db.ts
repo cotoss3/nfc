@@ -393,6 +393,20 @@ class LocalDbService {
     return this.getProducts().find(p => p.id === id);
   }
 
+  updateProductPrice(id: string, newPrice: number): boolean {
+    const products = this.getProducts();
+    const index = products.findIndex(p => p.id === id);
+    if (index !== -1) {
+      products[index].price = newPrice;
+      this.setStorageItem('nfc_products', products);
+      if (supabase) {
+        supabase.from('products').update({ price: newPrice }).eq('id', id).then();
+      }
+      return true;
+    }
+    return false;
+  }
+
   // Métodos de Pedidos
   getOrders(): Order[] {
     return this.getStorageItem('nfc_orders', []);
