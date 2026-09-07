@@ -22,9 +22,19 @@ export default function AdminPage() {
   // Search & Filter States
   const [cardSearch, setCardSearch] = useState('');
   const [cardClaimFilter, setCardClaimFilter] = useState<'all' | 'claimed' | 'unclaimed'>('all');
+  const [cardActiveFilter, setCardActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [cardChannelFilter, setCardChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
+
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
+  const [orderPaymentFilter, setOrderPaymentFilter] = useState<string>('all');
+
   const [productSearch, setProductSearch] = useState('');
+  const [productCategoryFilter, setProductCategoryFilter] = useState<string>('all');
+  const [productTypeFilter, setProductTypeFilter] = useState<string>('all');
+
+  const [analyticsSearch, setAnalyticsSearch] = useState('');
+  const [analyticsSort, setAnalyticsSort] = useState<'scans' | 'cards'>('scans');
 
   // Admin Single Card Creation
   const [newCardIdInput, setNewCardIdInput] = useState('');
@@ -192,14 +202,20 @@ export default function AdminPage() {
   // Filtered Cards
   const filteredCards = cards.filter(c => {
     const query = cardSearch.toLowerCase().trim();
-    const matchesSearch = c.card_id.toLowerCase().includes(query) ||
+    const matchesSearch = !query || 
+                          c.card_id.toLowerCase().includes(query) ||
                           c.label.toLowerCase().includes(query) ||
                           c.owner_name.toLowerCase().includes(query) ||
                           c.owner_email.toLowerCase().includes(query);
     const matchesClaim = cardClaimFilter === 'all' ||
                          (cardClaimFilter === 'claimed' && c.claimed === true) ||
                          (cardClaimFilter === 'unclaimed' && !c.claimed);
-    return matchesSearch && matchesClaim;
+    const matchesActive = cardActiveFilter === 'all' ||
+                          (cardActiveFilter === 'active' && c.is_active === true) ||
+                          (cardActiveFilter === 'inactive' && !c.is_active);
+    const matchesChannel = cardChannelFilter === 'all' ||
+                           (c.channels || 'both') === cardChannelFilter;
+    return matchesSearch && matchesClaim && matchesActive && matchesChannel;
   });
 
   const totalCardsCount = cards.length;
@@ -210,19 +226,26 @@ export default function AdminPage() {
   // Filtered Orders
   const filteredOrders = orders.filter(o => {
     const query = orderSearch.toLowerCase().trim();
-    const matchesSearch = o.id.toLowerCase().includes(query) ||
+    const matchesSearch = !query ||
+                          o.id.toLowerCase().includes(query) ||
                           o.customer_name.toLowerCase().includes(query) ||
-                          o.customer_email.toLowerCase().includes(query);
+                          o.customer_email.toLowerCase().includes(query) ||
+                          (o.shipping_province && o.shipping_province.toLowerCase().includes(query));
     const matchesStatus = orderStatusFilter === 'all' || o.status === orderStatusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesPayment = orderPaymentFilter === 'all' || (o.payment_method && o.payment_method.toLowerCase() === orderPaymentFilter.toLowerCase());
+    return matchesSearch && matchesStatus && matchesPayment;
   });
 
   // Filtered Products
   const filteredProducts = products.filter(p => {
     const query = productSearch.toLowerCase().trim();
-    return p.name.toLowerCase().includes(query) ||
-           p.id.toLowerCase().includes(query) ||
-           p.category.toLowerCase().includes(query);
+    const matchesSearch = !query ||
+                          p.name.toLowerCase().includes(query) ||
+                          p.id.toLowerCase().includes(query) ||
+                          p.description.toLowerCase().includes(query);
+    const matchesCategory = productCategoryFilter === 'all' || p.category === productCategoryFilter;
+    const matchesType = productTypeFilter === 'all' || p.type === productTypeFilter;
+    return matchesSearch && matchesCategory && matchesType;
   });
 
   // Aggregate user analytics
@@ -258,7 +281,17 @@ export default function AdminPage() {
     }
   });
 
-  const userMetricsList = Object.values(userMetricsMap);
+  const userMetricsList = Object.values(userMetricsMap)
+    .filter(u => {
+      const query = analyticsSearch.toLowerCase().trim();
+      return !query || u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query);
+    })
+    .sort((a, b) => {
+      if (analyticsSort === 'cards') {
+        return b.cardCount - a.cardCount;
+      }
+      return b.scanCount - a.scanCount;
+    });
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row pb-20 md:pb-0">
@@ -441,36 +474,69 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Search & Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
-                  <div>
-                    <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                      <Smartphone className="w-5 h-5 text-amber-500" />
-                      Inventario & Control de Habilitación TAP
-                    </h2>
-                    <p className="text-xs text-slate-500">Busca, activa, bloquea y asigna canales a placas físicas de clientes.</p>
+                {/* Multi-Criteria Filters Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                      <Filter className="w-4 h-4 text-amber-500" />
+                      <span>Filtros Multicriterio de Dispositivos TAP</span>
+                    </div>
+                    {(cardSearch || cardClaimFilter !== 'all' || cardActiveFilter !== 'all' || cardChannelFilter !== 'all') && (
+                      <button
+                        onClick={() => {
+                          setCardSearch('');
+                          setCardClaimFilter('all');
+                          setCardActiveFilter('all');
+                          setCardChannelFilter('all');
+                        }}
+                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" /> Limpiar Filtros
+                      </button>
+                    )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-2">
-                    <div className="relative w-full sm:w-64">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                    <div className="relative">
                       <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                       <input
                         type="text"
                         value={cardSearch}
                         onChange={(e) => setCardSearch(e.target.value)}
-                        placeholder="Buscar por ID, usuario, correo..."
-                        className="w-full bg-white border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
+                        placeholder="Buscar ID, usuario, correo..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
                       />
                     </div>
 
                     <select
                       value={cardClaimFilter}
                       onChange={(e) => setCardClaimFilter(e.target.value as any)}
-                      className="w-full sm:w-auto bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-700 font-semibold"
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
                     >
-                      <option value="all">Todos los Dispositivos ({totalCardsCount})</option>
-                      <option value="claimed">🟢 Reclamados (En uso por Comercio)</option>
-                      <option value="unclaimed">⚪ Sin Reclamar (Disponibles)</option>
+                      <option value="all">Vinculación: Todos ({totalCardsCount})</option>
+                      <option value="claimed">🟢 Reclamados ({claimedCardsCount})</option>
+                      <option value="unclaimed">⚪ Sin Reclamar ({unclaimedCardsCount})</option>
+                    </select>
+
+                    <select
+                      value={cardActiveFilter}
+                      onChange={(e) => setCardActiveFilter(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Estado: Todos ({totalCardsCount})</option>
+                      <option value="active">🟢 Solo Activos ({activeCardsCount})</option>
+                      <option value="inactive">🔴 Solo Inactivos ({totalCardsCount - activeCardsCount})</option>
+                    </select>
+
+                    <select
+                      value={cardChannelFilter}
+                      onChange={(e) => setCardChannelFilter(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Canales: Todos</option>
+                      <option value="both">📻 NFC + QR</option>
+                      <option value="nfc">⚡ Solo NFC</option>
+                      <option value="qr">📷 Solo QR</option>
                     </select>
                   </div>
                 </div>
@@ -652,38 +718,63 @@ export default function AdminPage() {
             {activeTab === 'orders' && (
               <div className="space-y-6">
 
-                {/* Filter & Search Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
-                  <div>
-                    <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                      <Package className="w-5 h-5 text-blue-500" />
-                      Gestión & Fulfillment de Pedidos
-                    </h2>
-                    <p className="text-xs text-slate-500">Administra el estado de preparación, grabación NFC y despacho en Panamá.</p>
+                {/* Filter & Search Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <Package className="w-5 h-5 text-blue-500" />
+                        Gestión & Fulfillment de Pedidos
+                      </h2>
+                      <p className="text-xs text-slate-500">Administra el estado de preparación, grabación NFC y despacho en Panamá.</p>
+                    </div>
+                    {(orderSearch || orderStatusFilter !== 'all' || orderPaymentFilter !== 'all') && (
+                      <button
+                        onClick={() => {
+                          setOrderSearch('');
+                          setOrderStatusFilter('all');
+                          setOrderPaymentFilter('all');
+                        }}
+                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" /> Limpiar Filtros
+                      </button>
+                    )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-2">
-                    <div className="relative w-full sm:w-64">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                    <div className="relative">
                       <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                       <input
                         type="text"
                         value={orderSearch}
                         onChange={(e) => setOrderSearch(e.target.value)}
-                        placeholder="Buscar pedido PED-XXXX o cliente..."
-                        className="w-full bg-white border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
+                        placeholder="Buscar ID, cliente, provincia..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
                       />
                     </div>
 
                     <select
                       value={orderStatusFilter}
                       onChange={(e) => setOrderStatusFilter(e.target.value)}
-                      className="w-full sm:w-auto bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-700 font-semibold"
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
                     >
-                      <option value="all">Todos los Estados</option>
+                      <option value="all">Estado: Todos</option>
                       <option value="pending">Pendientes</option>
                       <option value="processing">En Grabación NFC</option>
                       <option value="shipped">Despachados (🇵🇦)</option>
                       <option value="delivered">Entregados</option>
+                    </select>
+
+                    <select
+                      value={orderPaymentFilter}
+                      onChange={(e) => setOrderPaymentFilter(e.target.value)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Medio de Pago: Todos</option>
+                      <option value="yappy">Yappy Panamá</option>
+                      <option value="card">Tarjeta de Crédito / Débito</option>
+                      <option value="transfer">Transferencia Bancaria</option>
                     </select>
                   </div>
                 </div>
@@ -780,25 +871,66 @@ export default function AdminPage() {
             {activeTab === 'products' && (
               <div className="space-y-6">
 
-                {/* Header & Product Search */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
-                  <div>
-                    <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                      <Tag className="w-5 h-5 text-emerald-500" />
-                      Catálogo de Productos & Edición Completa
-                    </h2>
-                    <p className="text-xs text-slate-500">Edita precios, nombres, descripciones, materiales y tipos en tiempo real.</p>
+                {/* Filter & Search Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <Tag className="w-5 h-5 text-emerald-500" />
+                        Catálogo de Productos & Edición Completa
+                      </h2>
+                      <p className="text-xs text-slate-500">Edita precios, nombres, descripciones, materiales y tipos en tiempo real.</p>
+                    </div>
+                    {(productSearch || productCategoryFilter !== 'all' || productTypeFilter !== 'all') && (
+                      <button
+                        onClick={() => {
+                          setProductSearch('');
+                          setProductCategoryFilter('all');
+                          setProductTypeFilter('all');
+                        }}
+                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" /> Limpiar Filtros
+                      </button>
+                    )}
                   </div>
 
-                  <div className="relative w-full md:w-80">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                    <input
-                      type="text"
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                      placeholder="Buscar producto..."
-                      className="w-full bg-white border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="text"
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                        placeholder="Buscar por nombre, ID o palabra clave..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
+                      />
+                    </div>
+
+                    <select
+                      value={productCategoryFilter}
+                      onChange={(e) => setProductCategoryFilter(e.target.value)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Categoría: Todas</option>
+                      <option value="plates">Placas TAP (plates)</option>
+                      <option value="cards">Tarjetas Inteligentes (cards)</option>
+                      <option value="accessories">Accesorios & Stand (accessories)</option>
+                    </select>
+
+                    <select
+                      value={productTypeFilter}
+                      onChange={(e) => setProductTypeFilter(e.target.value)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Tipo de Redirección: Todos</option>
+                      <option value="google">Google Reviews ⭐</option>
+                      <option value="tripadvisor">TripAdvisor 🦉</option>
+                      <option value="instagram">Instagram 📸</option>
+                      <option value="vcard">vCard / Contacto 👤</option>
+                      <option value="airbnb">Airbnb 🏠</option>
+                      <option value="custom">Personalizado / Link 🔗</option>
+                    </select>
                   </div>
                 </div>
 
@@ -890,12 +1022,47 @@ export default function AdminPage() {
             {activeTab === 'analytics' && (
               <div className="space-y-6">
 
-                <div className="pb-2">
-                  <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                    <BarChart2 className="w-5 h-5 text-purple-500" />
-                    Analíticas por Comercio / Usuario
-                  </h2>
-                  <p className="text-xs text-slate-500">Métricas consolidadas de escaneos NFC y QR agrupadas por correo de propietario.</p>
+                {/* Filter & Search Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <BarChart2 className="w-5 h-5 text-purple-500" />
+                        Analíticas por Comercio / Usuario
+                      </h2>
+                      <p className="text-xs text-slate-500">Métricas consolidadas de escaneos NFC y QR agrupadas por correo de propietario.</p>
+                    </div>
+                    {analyticsSearch && (
+                      <button
+                        onClick={() => setAnalyticsSearch('')}
+                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" /> Limpiar Buscador
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="text"
+                        value={analyticsSearch}
+                        onChange={(e) => setAnalyticsSearch(e.target.value)}
+                        placeholder="Buscar por usuario o correo de comercio..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
+                      />
+                    </div>
+
+                    <select
+                      value={analyticsSort}
+                      onChange={(e) => setAnalyticsSort(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="scans">Ordenar por: Mayor N° de Escaneos Totales 📈</option>
+                      <option value="cards">Ordenar por: Mayor N° de Dispositivos TAP 📱</option>
+                    </select>
+                  </div>
                 </div>
 
                 {/* User Metrics Table */}
