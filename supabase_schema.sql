@@ -64,4 +64,5 @@ ALTER TABLE public.scans ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Permitir lectura publica de productos" ON public.products FOR SELECT USING (true);
 CREATE POLICY "Permitir lectura publica de nfc_cards para redireccion" ON public.nfc_cards FOR SELECT USING (true);
+CREATE POLICY "Permitir escritura y actualizacion publica de nfc_cards" ON public.nfc_cards FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Permitir insercion publica de escaneos" ON public.scans FOR INSERT WITH CHECK (true);
