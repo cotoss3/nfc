@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { dbLocal, NfcCard, ScanRecord } from '@/lib/db';
 import { authService } from '@/lib/auth';
+import { rateLimiter } from '@/lib/rateLimiter';
 import Link from 'next/link';
 import { 
   Edit2, QrCode, Smartphone, Eye, EyeOff, Check, ExternalLink, BarChart2, 
@@ -137,33 +138,25 @@ function DashboardContent() {
       return;
     }
 
+    // Verificar límite de tasa de seguridad (máximo 5 intentos en 30 minutos)
+    const limitCheck = rateLimiter.checkLimit(email);
+    if (!limitCheck.allowed) {
+      setAuthError(limitCheck.message || 'Demasiados intentos fallidos. Inténtalo más tarde.');
+      return;
+    }
+
     setAuthLoading(true);
     const name = nameInput.trim() || email.split('@')[0];
 
     try {
       if (authMode === 'register') {
-        const res = await authService.signUpWithEmail(email, passwordInput, name);
-        dbLocal.registerUser(name, email);
-        setUserEmail(email);
-        setUserName(name);
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('current_user_email', email);
-          sessionStorage.setItem('current_user_name', name);
-        }
-        loadUserData(email);
+        await authService.signUpWithEmail(email, passwordInput, name);
       } else {
         await authService.signInWithEmail(email, passwordInput);
-        dbLocal.registerUser(name, email);
-        setUserEmail(email);
-        setUserName(name);
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('current_user_email', email);
-          sessionStorage.setItem('current_user_name', name);
-        }
-        loadUserData(email);
       }
-    } catch (err: any) {
-      // Si falla autenticación estricta por ser cuenta nueva local, permitir autenticación local
+
+      // Si la autenticación es exitosa, limpiar los intentos fallidos
+      rateLimiter.clearAttempts(email);
       dbLocal.registerUser(name, email);
       setUserEmail(email);
       setUserName(name);
@@ -172,6 +165,10 @@ function DashboardContent() {
         sessionStorage.setItem('current_user_name', name);
       }
       loadUserData(email);
+    } catch (err: any) {
+      // Registrar intento fallido
+      const attemptRes = rateLimiter.recordFailedAttempt(email);
+      setAuthError(`${err.message || 'Error de autenticación.'} ${attemptRes.message}`);
     } finally {
       setAuthLoading(false);
     }
@@ -180,19 +177,32 @@ function DashboardContent() {
   const handleResetPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setResetMessage(null);
-    if (!resetEmailInput.trim()) return;
+    const email = resetEmailInput.trim().toLowerCase();
+    if (!email) return;
+
+    // Verificar límite de 5 intentos en 30 minutos
+    const limitCheck = rateLimiter.checkLimit(email);
+    if (!limitCheck.allowed) {
+      setResetMessage({
+        success: false,
+        text: limitCheck.message || 'Has superado el límite de 5 intentos en 30 minutos.'
+      });
+      return;
+    }
 
     setIsResetting(true);
     try {
-      await authService.resetPassword(resetEmailInput.trim());
+      await authService.resetPassword(email);
+      rateLimiter.clearAttempts(email);
       setResetMessage({
         success: true,
         text: '¡Enlace enviado! Revisa tu bandeja de entrada o spam para restablecer tu contraseña.'
       });
     } catch (err: any) {
+      const attemptRes = rateLimiter.recordFailedAttempt(email);
       setResetMessage({
         success: false,
-        text: err.message || 'Error enviando correo de restablecimiento.'
+        text: `${err.message || 'Error enviando correo de restablecimiento.'} ${attemptRes.message}`
       });
     } finally {
       setIsResetting(false);
