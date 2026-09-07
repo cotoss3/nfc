@@ -229,10 +229,13 @@ function DashboardContent() {
     setEditGroup(card.group_name || 'General');
   };
 
+  const [updateError, setUpdateError] = useState<string | null>(null);
+
   const handleUpdateCard = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCard) return;
 
+    setUpdateError(null);
     let cleanNfc = editNfcUrl.trim();
     if (cleanNfc && !cleanNfc.startsWith('http://') && !cleanNfc.startsWith('https://')) {
       cleanNfc = `https://${cleanNfc}`;
@@ -244,13 +247,20 @@ function DashboardContent() {
     }
 
     setIsUpdating(true);
-    const success = dbLocal.updateCardRedirect(
+    const result = dbLocal.updateCardRedirect(
       selectedCard.card_id, 
       cleanNfc, 
       cleanQr, 
       editLabel, 
-      editGroup
+      editGroup,
+      userEmail || undefined
     );
+
+    if (!result.success) {
+      setUpdateError(result.message);
+      setIsUpdating(false);
+      return;
+    }
     
     // Sync with backend API
     try {
@@ -264,40 +274,60 @@ function DashboardContent() {
       console.error('Error sincronizando tarjetas:', err);
     }
 
-    if (success) {
-      setUpdateSuccess(true);
-      setEditNfcUrl(cleanNfc);
-      setEditQrUrl(cleanQr);
+    setUpdateSuccess(true);
+    setEditNfcUrl(cleanNfc);
+    setEditQrUrl(cleanQr);
 
-      const updatedCards = cards.map(c => 
-        c.card_id === selectedCard.card_id 
-          ? { 
-              ...c, 
-              label: editLabel, 
-              target_url: cleanNfc || cleanQr || c.target_url, 
-              nfc_target_url: cleanNfc, 
-              qr_target_url: cleanQr, 
-              group_name: editGroup 
-            } 
-          : c
-      );
-      setCards(updatedCards);
-      setSelectedCard({ 
-        ...selectedCard, 
-        label: editLabel, 
-        target_url: cleanNfc || cleanQr || selectedCard.target_url, 
-        nfc_target_url: cleanNfc, 
-        qr_target_url: cleanQr, 
-        group_name: editGroup 
-      });
+    const updatedCards = cards.map(c => 
+      c.card_id === selectedCard.card_id 
+        ? { 
+            ...c, 
+            label: editLabel, 
+            target_url: cleanNfc || cleanQr || c.target_url, 
+            nfc_target_url: cleanNfc, 
+            qr_target_url: cleanQr, 
+            group_name: editGroup 
+          } 
+        : c
+    );
+    setCards(updatedCards);
+    setSelectedCard({ 
+      ...selectedCard, 
+      label: editLabel, 
+      target_url: cleanNfc || cleanQr || selectedCard.target_url, 
+      nfc_target_url: cleanNfc, 
+      qr_target_url: cleanQr, 
+      group_name: editGroup 
+    });
 
-      if (userEmail) {
-        setGroupsList(dbLocal.getGroupsForOwner(userEmail));
-      }
-      
-      setTimeout(() => setUpdateSuccess(false), 2000);
+    if (userEmail) {
+      setGroupsList(dbLocal.getGroupsForOwner(userEmail));
     }
+    
+    setTimeout(() => setUpdateSuccess(false), 2000);
     setIsUpdating(false);
+  };
+
+  const handleDeleteCard = async (cardId: string) => {
+    if (!userEmail) return;
+    if (!confirm(`¿Estás seguro de que deseas desvincular el dispositivo ${cardId} de tu cuenta comercial (${userEmail})?`)) return;
+
+    const res = dbLocal.deleteCard(cardId, userEmail);
+    if (res.success) {
+      try {
+        const allCards = dbLocal.getCards();
+        await fetch('/api/cards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+        });
+      } catch (err) {
+        console.error('Error sincronizando al desvincular:', err);
+      }
+      loadUserData(userEmail);
+    } else {
+      alert(res.message);
+    }
   };
 
   const handleToggleCardActive = async (cardId: string, currentActiveStatus: boolean) => {
@@ -1004,22 +1034,39 @@ function DashboardContent() {
                             </div>
                           </div>
 
-                          {/* Submit & Status */}
-                          <div className="flex items-center justify-between pt-2">
+                          {updateError && (
+                            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl flex items-center gap-2">
+                              <AlertTriangle className="w-4 h-4 shrink-0" />
+                              <span>{updateError}</span>
+                            </div>
+                          )}
+
+                          {/* Submit & Status & Delete */}
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
                             <button
                               type="submit"
                               disabled={isUpdating}
-                              className="py-3 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center gap-2"
+                              className="py-3 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
                             >
                               {isUpdating ? 'Guardando en Supabase...' : 'Guardar Cambios de Redirección'}
                             </button>
 
-                            {updateSuccess && (
-                              <span className="text-xs text-emerald-600 font-bold flex items-center gap-1.5 animate-pulse">
-                                <Check className="w-4 h-4" />
-                                ¡Sincronizado en tiempo real!
-                              </span>
-                            )}
+                            <div className="flex items-center justify-between sm:justify-end gap-3">
+                              {updateSuccess && (
+                                <span className="text-xs text-emerald-600 font-bold flex items-center gap-1.5 animate-pulse">
+                                  <Check className="w-4 h-4" />
+                                  ¡Sincronizado!
+                                </span>
+                              )}
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteCard(selectedCard.card_id)}
+                                className="py-2.5 px-3 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 border border-slate-200 hover:border-rose-300 font-bold text-[11px] rounded-xl transition uppercase tracking-wider flex items-center gap-1"
+                              >
+                                🗑️ Desvincular Dispositivo
+                              </button>
+                            </div>
                           </div>
                         </form>
                       </div>

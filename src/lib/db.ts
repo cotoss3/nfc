@@ -622,7 +622,7 @@ class LocalDbService {
     return newCard;
   }
 
-  updateCardRedirect(cardId: string, nfcUrl: string, qrUrl: string, label: string, groupName: string = 'General'): boolean {
+  updateCardRedirect(cardId: string, nfcUrl: string, qrUrl: string, label: string, groupName: string = 'General', requestingEmail?: string): { success: boolean; message: string } {
     const cards = this.getCards();
     const resolvedId = this.resolveCardId(cardId, cards);
     const cleanNfcUrl = nfcUrl.trim();
@@ -635,19 +635,26 @@ class LocalDbService {
     );
 
     if (index !== -1) {
+      const card = cards[index];
+      // Verificación de Seguridad Multi-Tenant
+      if (requestingEmail && card.claimed && card.owner_email && card.owner_email.trim().toLowerCase() !== requestingEmail.trim().toLowerCase()) {
+        return { success: false, message: 'Acceso Denegado: Este dispositivo está asignado a otra cuenta comercial.' };
+      }
+
       cards[index].target_url = primaryUrl;
       cards[index].nfc_target_url = cleanNfcUrl;
       cards[index].qr_target_url = cleanQrUrl;
       cards[index].group_name = groupName || 'General';
       if (label) cards[index].label = label;
+      if (requestingEmail) cards[index].owner_email = requestingEmail.trim().toLowerCase();
     } else {
       const cleanCode = resolvedId.toUpperCase();
       cards.push({
         card_id: cleanCode,
         activation_code: cleanCode,
         owner_id: 'user-auto',
-        owner_name: 'Cliente TapStar',
-        owner_email: 'cliente@tapstar.es',
+        owner_name: requestingEmail ? requestingEmail.split('@')[0] : 'Cliente TapStar',
+        owner_email: requestingEmail ? requestingEmail.trim().toLowerCase() : 'cliente@tapstar.es',
         label: label || `Dispositivo TAP (${cleanCode})`,
         target_url: primaryUrl,
         nfc_target_url: cleanNfcUrl,
@@ -664,7 +671,7 @@ class LocalDbService {
 
     if (supabase) {
       const cleanCode = resolvedId.toUpperCase();
-      const cardObj = cards.find(c => c.card_id === cleanCode);
+      const cardObj = cards.find(c => c.card_id === cleanCode || c.card_id === resolvedId);
       if (cardObj) {
         supabase.from('nfc_cards').upsert({
           card_id: cardObj.card_id,
@@ -686,7 +693,40 @@ class LocalDbService {
       }
     }
 
-    return true;
+    return { success: true, message: '¡Configuración guardada exitosamente!' };
+  }
+
+  deleteCard(cardId: string, requestingEmail: string): { success: boolean; message: string } {
+    const cards = this.getCards();
+    const resolvedId = this.resolveCardId(cardId, cards);
+    const cleanEmail = requestingEmail.trim().toLowerCase();
+    
+    const cardIndex = cards.findIndex(c => 
+      c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
+      (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
+    );
+
+    if (cardIndex === -1) {
+      return { success: false, message: 'El dispositivo no fue encontrado.' };
+    }
+
+    const card = cards[cardIndex];
+    const isAdmin = cleanEmail === 'admin@startap.com.pa' || cleanEmail.includes('admin');
+    
+    if (!isAdmin && card.owner_email && card.owner_email.trim().toLowerCase() !== cleanEmail) {
+      return { success: false, message: 'Acceso Denegado: No tienes permisos para desvincular un dispositivo de otro comercio.' };
+    }
+
+    cards.splice(cardIndex, 1);
+    this.setStorageItem('nfc_cards', cards);
+
+    if (supabase) {
+      supabase.from('nfc_cards').delete().eq('card_id', card.card_id).then(({ error }) => {
+        if (error) console.error('Error eliminando tarjeta en Supabase:', error);
+      });
+    }
+
+    return { success: true, message: 'Dispositivo desvinculado exitosamente de tu cuenta.' };
   }
 
   claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = ''): { success: boolean; message: string; card?: NfcCard } {
@@ -702,7 +742,7 @@ class LocalDbService {
     if (cardIndex !== -1) {
       const card = cards[cardIndex];
       if (card.claimed && card.owner_email && card.owner_email.trim().toLowerCase() !== cleanEmail) {
-        return { success: false, message: 'Este dispositivo ya ha sido reclamado por otra cuenta.' };
+        return { success: false, message: '⚠️ Este dispositivo ya está registrado y pertenece a otra cuenta de comercio.' };
       }
       
       cards[cardIndex] = {
@@ -712,7 +752,16 @@ class LocalDbService {
         claimed: true
       };
       this.setStorageItem('nfc_cards', cards);
-      return { success: true, message: '¡Dispositivo TAP reclamado con éxito!', card: cards[cardIndex] };
+
+      if (supabase) {
+        supabase.from('nfc_cards').update({
+          owner_email: cleanEmail,
+          owner_name: ownerName || cleanEmail.split('@')[0],
+          claimed: true
+        }).eq('card_id', card.card_id).then();
+      }
+
+      return { success: true, message: '¡Dispositivo TAP vinculado exitosamente a tu negocio!', card: cards[cardIndex] };
     }
 
     const rawCode = codeOrCardId.trim().toUpperCase();
@@ -732,7 +781,12 @@ class LocalDbService {
 
     cards.unshift(newCard);
     this.setStorageItem('nfc_cards', cards);
-    return { success: true, message: '¡Dispositivo vinculado a tu cuenta! (Pendiente de activación por Administrador)', card: newCard };
+
+    if (supabase) {
+      supabase.from('nfc_cards').upsert(newCard).then();
+    }
+
+    return { success: true, message: '¡Dispositivo vinculado a tu negocio! (Pendiente de activación por Administrador)', card: newCard };
   }
 
   // Métodos de Usuarios
