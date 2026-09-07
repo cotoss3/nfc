@@ -20,8 +20,9 @@ export async function GET(
   let cardLabel = 'Dispositivo TAP';
   let resolvedCardId = cardId;
 
-  let isActive = true;
+  let isActive = false;
   let allowedChannels: 'both' | 'nfc' | 'qr' = 'both';
+  let cardFoundInSupabase = false;
 
   // 1. Intentar consulta en tiempo real desde Supabase si está configurado
   if (supabase) {
@@ -44,13 +45,14 @@ export async function GET(
         .maybeSingle();
 
       if (!error && data) {
+        cardFoundInSupabase = true;
         nfcTargetUrl = data.nfc_target_url ? data.nfc_target_url.trim() : '';
         qrTargetUrl = data.qr_target_url ? data.qr_target_url.trim() : '';
         legacyTargetUrl = data.target_url ? data.target_url.trim() : '';
         groupName = data.group_name || 'General';
         cardLabel = data.label || 'Dispositivo TAP';
         resolvedCardId = data.card_id;
-        if (data.is_active !== undefined) isActive = data.is_active;
+        isActive = data.is_active === true;
         if (data.channels) allowedChannels = data.channels;
       }
     } catch (e) {
@@ -59,18 +61,20 @@ export async function GET(
   }
 
   // 2. Si no se encontró en Supabase o no está configurado, usar motor local
-  const card = dbLocal.getCardById(cardId);
-  if (card) {
-    if (!nfcTargetUrl && !qrTargetUrl && !legacyTargetUrl) {
+  if (!cardFoundInSupabase) {
+    const card = dbLocal.findCardById(cardId);
+    if (card) {
       nfcTargetUrl = card.nfc_target_url ? card.nfc_target_url.trim() : '';
       qrTargetUrl = card.qr_target_url ? card.qr_target_url.trim() : '';
       legacyTargetUrl = card.target_url ? card.target_url.trim() : '';
       groupName = card.group_name || 'General';
       cardLabel = card.label || 'Dispositivo TAP';
       resolvedCardId = card.card_id || cardId;
+      isActive = card.is_active === true;
+      if (card.channels) allowedChannels = card.channels;
+    } else {
+      isActive = false;
     }
-    isActive = card.is_active;
-    if (card.channels) allowedChannels = card.channels;
   }
 
   // 3. BLOQUEO: Si la ID no está activa habilitada por el Administrador

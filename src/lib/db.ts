@@ -513,7 +513,7 @@ class LocalDbService {
     return clean;
   }
 
-  getCardById(cardId: string): NfcCard {
+  findCardById(cardId: string): NfcCard | null {
     const cards = this.getCards();
     const resolvedId = this.resolveCardId(cardId, cards);
     
@@ -522,19 +522,25 @@ class LocalDbService {
       (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
     );
 
+    return found || null;
+  }
+
+  getCardById(cardId: string): NfcCard {
+    const found = this.findCardById(cardId);
     if (found) return found;
 
-    // Si la tarjeta no ha sido habilitada por el Admin, se registra inactiva por defecto
+    const cards = this.getCards();
+    const resolvedId = this.resolveCardId(cardId, cards);
     const cleanCode = resolvedId.toUpperCase();
     const autoCard: NfcCard = {
       card_id: cleanCode,
       activation_code: cleanCode,
       owner_id: 'unassigned',
       owner_name: 'Pendiente de Habilitación',
-      owner_email: 'admin@startap.pa',
+      owner_email: 'admin@startap.com.pa',
       label: `Dispositivo TAP (${cleanCode})`,
       target_url: 'https://google.com',
-      is_active: false, // Inactivo hasta que el Admin lo habilite
+      is_active: false, // INACTIVO HASTA QUE EL ADMIN LO HABILITE
       channels: 'both',
       claimed: false,
       type: 'google',
@@ -596,7 +602,7 @@ class LocalDbService {
       activation_code: cleanCode,
       owner_id: 'admin',
       owner_name: 'Administrador starTAP',
-      owner_email: 'admin@startap.pa',
+      owner_email: 'admin@startap.com.pa',
       label: label || `Placa TAP (${cleanCode})`,
       target_url: 'https://google.com',
       is_active: isActive,
@@ -647,7 +653,7 @@ class LocalDbService {
         nfc_target_url: cleanNfcUrl,
         qr_target_url: cleanQrUrl,
         group_name: groupName || 'General',
-        is_active: true,
+        is_active: false, // REQUIERE HABILITACIÓN DE ADMIN
         claimed: true,
         type: 'google',
         created_at: new Date().toISOString()
@@ -656,42 +662,28 @@ class LocalDbService {
 
     this.setStorageItem('nfc_cards', cards);
 
-    // Sincronizar en tiempo real con Supabase si está disponible
     if (supabase) {
       const cleanCode = resolvedId.toUpperCase();
-      const cardObj = cards.find(c => c.card_id === cleanCode) || {
-        card_id: cleanCode,
-        activation_code: cleanCode,
-        owner_id: 'user-auto',
-        owner_name: 'Cliente TapStar',
-        owner_email: 'cliente@tapstar.es',
-        label: label || `Dispositivo TAP (${cleanCode})`,
-        target_url: primaryUrl,
-        nfc_target_url: cleanNfcUrl,
-        qr_target_url: cleanQrUrl,
-        group_name: groupName || 'General',
-        is_active: true,
-        claimed: true,
-        type: 'google'
-      };
-
-      supabase.from('nfc_cards').upsert({
-        card_id: cardObj.card_id,
-        activation_code: cardObj.activation_code,
-        owner_id: cardObj.owner_id,
-        owner_name: cardObj.owner_name,
-        owner_email: cardObj.owner_email,
-        label: cardObj.label,
-        target_url: primaryUrl,
-        nfc_target_url: cleanNfcUrl,
-        qr_target_url: cleanQrUrl,
-        group_name: groupName || 'General',
-        is_active: true,
-        claimed: true,
-        type: cardObj.type || 'google'
-      }).then(({ error }) => {
-        if (error) console.error('Error guardando tarjeta en Supabase:', error);
-      });
+      const cardObj = cards.find(c => c.card_id === cleanCode);
+      if (cardObj) {
+        supabase.from('nfc_cards').upsert({
+          card_id: cardObj.card_id,
+          activation_code: cardObj.activation_code,
+          owner_id: cardObj.owner_id,
+          owner_name: cardObj.owner_name,
+          owner_email: cardObj.owner_email,
+          label: cardObj.label,
+          target_url: primaryUrl,
+          nfc_target_url: cleanNfcUrl,
+          qr_target_url: cleanQrUrl,
+          group_name: groupName || 'General',
+          is_active: cardObj.is_active,
+          claimed: cardObj.claimed,
+          type: cardObj.type || 'google'
+        }).then(({ error }) => {
+          if (error) console.error('Error guardando tarjeta en Supabase:', error);
+        });
+      }
     }
 
     return true;
@@ -702,7 +694,6 @@ class LocalDbService {
     const resolvedId = this.resolveCardId(codeOrCardId, cards);
     const cleanEmail = ownerEmail.trim().toLowerCase();
     
-    // Buscar si ya existe la tarjeta por ID o por código de activación
     let cardIndex = cards.findIndex(c => 
       c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
       (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
@@ -718,14 +709,12 @@ class LocalDbService {
         ...card,
         owner_email: cleanEmail,
         owner_name: ownerName || cleanEmail.split('@')[0],
-        claimed: true,
-        is_active: true
+        claimed: true
       };
       this.setStorageItem('nfc_cards', cards);
       return { success: true, message: '¡Dispositivo TAP reclamado con éxito!', card: cards[cardIndex] };
     }
 
-    // Si es un código nuevo no registrado previamente, crearlo automáticamente para el usuario
     const rawCode = codeOrCardId.trim().toUpperCase();
     const newCard: NfcCard = {
       card_id: rawCode.startsWith('STT-') || rawCode.startsWith('TAP-') ? rawCode : `STT-${rawCode}`,
@@ -734,8 +723,8 @@ class LocalDbService {
       owner_name: ownerName || cleanEmail.split('@')[0],
       owner_email: cleanEmail,
       label: `Dispositivo TAP (${rawCode})`,
-      target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
-      is_active: true,
+      target_url: 'https://google.com',
+      is_active: false, // REQUIERE HABILITACIÓN DE ADMIN
       claimed: true,
       type: 'google',
       created_at: new Date().toISOString()
@@ -743,7 +732,7 @@ class LocalDbService {
 
     cards.unshift(newCard);
     this.setStorageItem('nfc_cards', cards);
-    return { success: true, message: '¡Dispositivo TAP activado y vinculado a tu cuenta!', card: newCard };
+    return { success: true, message: '¡Dispositivo vinculado a tu cuenta! (Pendiente de activación por Administrador)', card: newCard };
   }
 
   // Métodos de Usuarios
