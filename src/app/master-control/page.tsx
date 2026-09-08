@@ -79,15 +79,15 @@ export default function AdminPage() {
     loadData();
   }, []);
 
-  const loadData = () => {
+  const loadData = async () => {
     setLoading(true);
     const dbOrders = dbLocal.getOrders();
-    const dbCards = dbLocal.getCards();
+    const initialCards = dbLocal.getCards();
     const dbProducts = dbLocal.getProducts();
     const dbScans = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
 
     setOrders(dbOrders);
-    setCards(dbCards);
+    setCards(initialCards);
     setProducts(dbProducts);
     setScans(dbScans);
 
@@ -98,7 +98,14 @@ export default function AdminPage() {
     });
     setPriceInputs(initPrices);
 
-    setLoading(false);
+    try {
+      const remoteCards = await dbLocal.getCardsAsync();
+      setCards(remoteCards);
+    } catch (err) {
+      console.error('Error cargando tarjetas en Master Control:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreateOrEnableCard = (e: React.FormEvent) => {

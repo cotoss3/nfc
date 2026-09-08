@@ -129,9 +129,27 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
   y renderiza un `<XClient />` con el `'use client'`. NO poner `'use client'` en `page.tsx`,
   porque entonces la página no puede exportar metadata y hereda el título del layout.
   Aplicado en: `/`, `/shop`, `/shop/[id]`, `/corporativo`, `/app`.
+* `/resenas-google` (hub) y `/resenas-google/[industria]` — páginas por tipo de negocio
+  (restaurantes, clínicas, barberías-y-salones, talleres-y-mecanicas, hoteles-y-hospedajes,
+  tiendas-y-comercios). Todo el contenido vive en `src/lib/industrias.ts`: para añadir una
+  industria nueva basta agregar un objeto ahí, la ruta y el sitemap se generan solos.
+  Emiten JSON-LD `FAQPage` + `BreadcrumbList`.
 * `/shop/[id]` usa `generateMetadata` + JSON-LD `Product` leyendo `db_store.json` en servidor.
 
-## 📎 9. Documentos hermanos
+## 🛒 9. Landings de producto (refactor sep 2026)
+
+* Las 3 landings duplicadas (Stand/Tarjeta/Placa, ~467 líneas c/u) se unificaron en
+  `src/components/landings/ProductLanding.tsx`, alimentado por `src/lib/landings.ts`.
+* Para cambiar textos, FAQs, colores o beneficios de una landing NO se toca el componente:
+  se edita `src/lib/landings.ts`. Para añadir un producto con landing propia, se agrega
+  una entrada nueva a `LANDINGS` con sus `ids`.
+* `CONDICIONES` (envío, garantía, pago, soporte) y `TESTIMONIOS` viven ahí también.
+  `TESTIMONIOS` está vacío a propósito: la sección solo se renderiza con testimonios reales.
+* Las fotos salen de `product.images` / `product.image`. Si no hay foto, se muestra un
+  marcador discreto. Al cargar las fotos al catálogo aparecen solas, sin tocar código.
+* Los archivos viejos quedaron en `_to_delete/landings-viejas/` (borrar a mano).
+
+## 📎 10. Documentos hermanos
 * `CLAUDE.md` — reglas de trabajo para sesiones de IA (ahorro de tokens). Leerlo primero.
 * `AUDIT.md` — auditoría de seguridad y deuda técnica vigente (2026-09-08).
 

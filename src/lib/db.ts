@@ -519,12 +519,55 @@ class LocalDbService {
     return this.getStorageItem('nfc_cards', DEFAULT_SEED_CARDS);
   }
 
+  async getCardsAsync(): Promise<NfcCard[]> {
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.from('nfc_cards').select('*').order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          this.setStorageItem('nfc_cards', data);
+          return data;
+        }
+      } catch (err) {
+        console.error('Error cargando tarjetas desde Supabase:', err);
+      }
+    }
+    return this.getCards();
+  }
+
   getCardsByOwner(emailOrId: string): NfcCard[] {
     const cleanEmail = emailOrId.trim().toLowerCase();
     return this.getCards().filter(c => 
       c.owner_email.trim().toLowerCase() === cleanEmail || 
       c.owner_id === emailOrId
     );
+  }
+
+  async getCardsByOwnerAsync(emailOrId: string): Promise<NfcCard[]> {
+    const cleanEmail = emailOrId.trim().toLowerCase();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('nfc_cards')
+          .select('*')
+          .or(`owner_email.ilike.${cleanEmail},owner_id.eq.${emailOrId}`);
+        if (!error && data && data.length > 0) {
+          const currentCards = this.getCards();
+          data.forEach(remoteCard => {
+            const idx = currentCards.findIndex(c => c.card_id === remoteCard.card_id);
+            if (idx !== -1) {
+              currentCards[idx] = remoteCard;
+            } else {
+              currentCards.unshift(remoteCard);
+            }
+          });
+          this.setStorageItem('nfc_cards', currentCards);
+          return data;
+        }
+      } catch (err) {
+        console.error('Error cargando tarjetas por usuario desde Supabase:', err);
+      }
+    }
+    return this.getCardsByOwner(emailOrId);
   }
 
   private resolveCardId(cardId: string, cards: NfcCard[]): string {

@@ -6,9 +6,8 @@ import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
 import { ArrowLeft, Upload, Check, Info, Zap, QrCode, Image as ImageIcon } from 'lucide-react';
-import StandLanding from '@/components/landings/StandLanding';
-import TarjetaLanding from '@/components/landings/TarjetaLanding';
-import PlacaLanding from '@/components/landings/PlacaLanding';
+import ProductLanding from '@/components/landings/ProductLanding';
+import { getLandingCopy } from '@/lib/landings';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 
 export default function ProductDetailClient({ params }: { params: { id: string } }) {
@@ -47,16 +46,8 @@ export default function ProductDetailClient({ params }: { params: { id: string }
     return <div className="max-w-7xl mx-auto px-4 py-20 text-center text-sm text-brand-400">Cargando producto...</div>;
   }
 
-  if (product.id === 'stand-nfc') {
-    return <StandLanding product={product} />;
-  }
-
-  if (product.id === 'tarjeta-nfc' || product.id === 'placa-google') {
-    return <TarjetaLanding product={product} />;
-  }
-
-  if (product.id === 'placa-acrilica-nfc' || product.id === 'NFC_10001') {
-    return <PlacaLanding product={product} />;
+  if (getLandingCopy(product.id)) {
+    return <ProductLanding product={product} />;
   }
 
   const colors = product.colors || (product.category === 'cards' 

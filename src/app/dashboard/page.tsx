@@ -98,17 +98,29 @@ function DashboardContent() {
     }
   }, [searchParams]);
 
-  const loadUserData = (email: string) => {
-    const userCards = dbLocal.getCardsByOwner(email);
+  const loadUserData = async (email: string) => {
+    // Carga síncrona inmediata (local)
+    const initialCards = dbLocal.getCardsByOwner(email);
     const userScans = dbLocal.getScansForOwner(email);
     const groups = dbLocal.getGroupsForOwner(email);
 
-    setCards(userCards);
+    setCards(initialCards);
     setAllScans(userScans);
     setGroupsList(groups);
 
-    if (userCards.length > 0) {
-      handleSelectCard(userCards[0]);
+    if (initialCards.length > 0) {
+      handleSelectCard(initialCards[0]);
+    }
+
+    // Sincronización en tiempo real desde Supabase
+    try {
+      const remoteCards = await dbLocal.getCardsByOwnerAsync(email);
+      setCards(remoteCards);
+      if (remoteCards.length > 0) {
+        handleSelectCard(remoteCards[0]);
+      }
+    } catch (e) {
+      console.error('Error sincronizando tarjetas de usuario:', e);
     }
   };
 
