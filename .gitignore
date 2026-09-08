@@ -28,3 +28,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# graphify cache
+graphify-out/cache/
+graphify-out/.graphify_ast.json

@@ -6,9 +6,21 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/admin', '/master-control/', '/master-control', '/api/'],
+        disallow: [
+          '/master-control',
+          '/master-control/',
+          '/admin',
+          '/admin/',
+          '/api/',
+          '/dashboard',
+          '/dashboard/',
+          '/cart',
+          '/checkout',
+          '/r/',
+        ],
       },
     ],
     sitemap: 'https://startap.com.pa/sitemap.xml',
+    host: 'https://startap.com.pa',
   };
 }

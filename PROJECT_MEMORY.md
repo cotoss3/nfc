@@ -43,8 +43,13 @@ src/
 │   │       └── page.tsx       # Enrutador dinámico a Landings específicas
 │   ├── dashboard/
 │   │   └── page.tsx           # Panel de Clientes (Gestión, Reclamar TAP, Métricas)
-│   ├── admin/
-│   │   └── page.tsx           # Panel de Control Administrativo & Generador STT
+│   ├── master-control/        # Panel Admin real (layout + page + products/new + products/edit/[id])
+│   ├── app/                   # Landing unificada de funciones/app pro
+│   ├── cart/ · checkout/      # Carrito y checkout
+│   ├── corporativo/ · funciones/
+│   ├── api/
+│   │   ├── cards/route.ts     # Lectura/escritura de db_store.json (SIN AUTH - ver AUDIT.md)
+│   │   └── upload/route.ts    # Subida a Supabase Storage (SIN AUTH - ver AUDIT.md)
 │   └── r/
 │       └── [id]/
 │           └── route.ts       # Microservicio de redirección rápida NFC/QR
@@ -57,8 +62,11 @@ src/
 │       └── PlacaLanding.tsx   # Landing de la Placa Acrílica (/shop/placa-acrilica-nfc)
 ├── context/
 │   └── CartContext.tsx        # Estado global del carrito de compras
-└── lib/
-    └── db.ts                  # Capa de datos (Supabase + LocalDbService Fallback)
+├── lib/
+│   ├── db.ts                  # Capa de datos (Supabase + LocalDbService Fallback)
+│   ├── auth.ts                # Supabase Auth (Google OAuth, email/pass, reset)
+│   └── rateLimiter.ts         # Definido pero NO aplicado aún
+└── components/AdminAuthGuard.tsx  # Whitelist de super admins (solo cliente)
 ```
 
 ---
@@ -69,7 +77,7 @@ src/
 * **Redireccionamiento Inteligente (`/r/[id]`):**
   * Si un dispositivo `STT-XXXX` **no ha sido reclamado aún**, al escanearse redirigirá a `startap.com.pa/dashboard?claim=STT-XXXX` para guiar al comprador a crear su cuenta e ingresar su link.
   * Si el dispositivo **ya fue activado**, el microservicio registra la analítica (iOS/Android/Web, NFC vs QR) y redirige de inmediato a la URL de Google Maps/WhatsApp guardada en la nube.
-* **Administrador de Etiquetas (`/admin`):**
+* **Administrador de Etiquetas (`/master-control`):**
   * La pestaña *"Generador de Etiquetas STT"* permite a los administradores generar e imprimir lotes de etiquetas secuenciales para producción.
 
 ---
@@ -111,4 +119,20 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 * **Desplegar a GitHub:** `git add . ; git commit -m "..." ; git push`
 
 ---
-*Última actualización:* 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)
+## 🔍 8. SEO (implementado sep 2026)
+
+* `src/app/sitemap.ts` — sitemap dinámico (estáticas + productos del catálogo).
+* `src/app/robots.ts` — bloquea /master-control, /api, /dashboard, /cart, /checkout, /r.
+* `src/components/StructuredData.tsx` — JSON-LD Organization + WebSite + ProfessionalService
+  (negocio de ZONA DE SERVICIO: sin dirección de calle, areaServed = Panamá).
+* **Patrón obligatorio de páginas:** cada `page.tsx` es Server Component que exporta `metadata`
+  y renderiza un `<XClient />` con el `'use client'`. NO poner `'use client'` en `page.tsx`,
+  porque entonces la página no puede exportar metadata y hereda el título del layout.
+  Aplicado en: `/`, `/shop`, `/shop/[id]`, `/corporativo`, `/app`.
+* `/shop/[id]` usa `generateMetadata` + JSON-LD `Product` leyendo `db_store.json` en servidor.
+
+## 📎 9. Documentos hermanos
+* `CLAUDE.md` — reglas de trabajo para sesiones de IA (ahorro de tokens). Leerlo primero.
+* `AUDIT.md` — auditoría de seguridad y deuda técnica vigente (2026-09-08).
+
+*Última actualización:* 2026-09-08 (auditoría + CLAUDE.md; anterior: 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)
