@@ -5,10 +5,10 @@
       "name": "Stand NFC para Reseñas de Google",
       "description": "Stand NFC optimizado para SEO local. Perfecto para capturar reseñas para restaurante y comercios. Mejora tu posicionamiento en Google Maps al instante y vende más en Panamá. Elegante, sin apps y listo para usar.",
       "price": 35,
-      "image": "https://tapreview.es/wp-content/uploads/2025/01/stand-nfc-tapreview.webp",
+      "image": "/products/NFC10002/NFC_10002_Stan.webp",
       "images": [
-        "https://tapreview.es/wp-content/uploads/2025/01/stand-nfc-tapreview.webp",
-        "https://tapreview.es/wp-content/uploads/2025/01/StandNFC-Google.webp"
+        "/products/NFC10002/NFC_10002_Stan.webp",
+        "/products/NFC10002/NFC_10002_Stan.png"
       ],
       "material": "PVC Técnico",
       "category": "accessories",
@@ -33,10 +33,10 @@
       "name": "Placa NFC para Reseñas de Google",
       "description": "Placa NFC de instalación permanente. La herramienta definitiva de SEO local para conseguir reseñas para restaurante, recepción o local comercial. Domina las búsquedas orgánicas y vende más en Panamá.",
       "price": 30,
-      "image": "https://tapreview.es/wp-content/uploads/2025/01/Placa-nfc-tapreview.webp",
+      "image": "/products/NFC_10001/NFC_10001_Placa.webp",
       "images": [
-        "https://tapreview.es/wp-content/uploads/2025/01/Placa-nfc-tapreview.webp",
-        "https://tapreview.es/wp-content/uploads/2025/01/Placa2-nfc-tapreview.webp"
+        "/products/NFC_10001/NFC_10001_Placa.webp",
+        "/products/NFC_10001/NFC_10001_Placa.png"
       ],
       "material": "PVC de alta densidad",
       "category": "plates",
@@ -47,13 +47,10 @@
       "name": "Placa NFC Google Reviews Elite (Acrílico Blanco)",
       "description": "Aumenta tus reseñas de Google Maps de forma rápida y mejora tu SEO local en Panamá. Diseñada en elegante acrílico blanco pulido de 3mm, perfecta para capturar reseñas para restaurante o clínica. Pago único de por vida y vende más en Panamá sin mensualidades.",
       "price": 34.99,
-      "image": "/products/NFC_10001/NFC_10001_white_1.png",
+      "image": "/products/NFC_10001/NFC_10001_Placa.webp",
       "images": [
-        "/products/NFC_10001/NFC_10001_white_1.png",
-        "/products/NFC_10001/NFC_10001_white_0.png",
-        "/products/NFC_10001/NFC_10001_white_2.png",
-        "/products/NFC_10001/NFC_10001_white_3.png",
-        "/products/NFC_10001/NFC_10001_white_4.png"
+        "/products/NFC_10001/NFC_10001_Placa.webp",
+        "/products/NFC_10001/NFC_10001_Placa.png"
       ],
       "category": "plates",
       "type": "google"

@@ -302,7 +302,7 @@ class LocalDbService {
     const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
     const isGooglePlacaPVC = storedProducts.some(p => p.id === 'placa-google' && p.name.includes('PVC'));
     const hasAirbnb = storedProducts.some(p => p.id === 'placa-airbnb');
-    const isNFC10001ImageUpdated = storedProducts.some(p => p.id === 'NFC_10001' && p.image.includes('white_1.png'));
+    const isWebpImagesUpdated = storedProducts.some(p => (p.id === 'NFC_10001' || p.id === 'stand-nfc') && p.image.includes('/products/') && p.image.includes('.webp'));
     const hasStandNFC = storedProducts.some(p => p.id === 'stand-nfc');
     const hasTarjetaNFC = storedProducts.some(p => p.id === 'tarjeta-nfc');
     const hasPlacaNFC = storedProducts.some(p => p.id === 'placa-acrilica-nfc');
@@ -310,7 +310,7 @@ class LocalDbService {
     const hasAllSEO = storedProducts.some(p => p.id === 'llavero-google' && p.description.includes('SEO local'));
     const hasCorrectPrices = storedProducts.some(p => p.id === 'stand-nfc' && p.price === 35.00);
     
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isNFC10001ImageUpdated || !hasStandNFC || !hasTarjetaNFC || !hasPlacaNFC || !hasSEO || !hasAllSEO || !hasCorrectPrices) {
+    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isWebpImagesUpdated || !hasStandNFC || !hasTarjetaNFC || !hasPlacaNFC || !hasSEO || !hasAllSEO || !hasCorrectPrices) {
       this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
     }
     if (!localStorage.getItem('nfc_orders')) {
