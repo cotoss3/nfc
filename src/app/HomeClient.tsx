@@ -388,7 +388,15 @@ export default function HomeClient() {
             </p>
           </div>
           <div className="rounded-3xl shadow-2xl overflow-hidden border border-brand-200 bg-white">
-            <img src="/images/startap_negocio_resenas.webp" alt="Conviértete en la primera opción en Google Maps Panamá" className="w-full h-auto object-cover" />
+            <img 
+              src="/images/posicionamiento-seo-google-maps-panama-startap.webp" 
+              alt="Conviértete en la primera opción de tu zona en Google Maps Panamá superando a tu competencia en Casco Viejo, Calle 50 y San Francisco" 
+              title="Aumenta tus reseñas de Google Maps en Panamá con tecnología NFC y QR de starTAP"
+              width={1024}
+              height={1024}
+              loading="lazy"
+              className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" 
+            />
           </div>
         </div>
       </section>
