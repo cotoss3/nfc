@@ -340,11 +340,16 @@ export default function HomeClient() {
       <section className="py-24 bg-brand-50 space-y-24">
         {/* Section 1 */}
         <div className="shopify-container max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="order-2 lg:order-1 bg-white p-8 rounded-3xl shadow-lg border border-brand-200 aspect-square flex items-center justify-center">
-             <div className="text-center">
-                <Zap className="w-24 h-24 text-accent-500 mx-auto mb-6" />
-                <h3 className="text-2xl font-black text-brand-950 uppercase">Tecnología Contactless</h3>
-             </div>
+          <div className="order-2 lg:order-1 rounded-3xl shadow-2xl overflow-hidden border border-brand-200 bg-white">
+            <img 
+              src="/images/como-funciona-tecnologia-nfc-resenas-google-panama-startap.webp" 
+              alt="Cómo funciona la tecnología NFC de starTAP para capturar reseñas de Google al instante en Panamá" 
+              title="Tecnología Contactless NFC y código QR de starTAP para reseñas de Google Maps en Panamá"
+              width={1024}
+              height={1024}
+              loading="lazy"
+              className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" 
+            />
           </div>
           <div className="order-1 lg:order-2 space-y-6">
             <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">¿Qué es y cómo funciona?</h2>
