@@ -6,7 +6,7 @@ import { dbLocal, Product } from '@/lib/db';
 import { ShieldCheck, Truck, RotateCcw, ArrowRight, Star, MapPin, Smartphone, Award, CheckCircle2, ChevronDown, ChevronUp, Check, Zap } from 'lucide-react';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 
-const HoverableImage = ({ product }: { product: Product }) => {
+const HoverableImage = ({ product, altText }: { product: Product; altText?: string }) => {
   const [imgSrc, setImgSrc] = useState(product.image);
 
   useEffect(() => {
@@ -26,7 +26,11 @@ const HoverableImage = ({ product }: { product: Product }) => {
   return (
     <img
       src={imgSrc}
-      alt={product.name}
+      alt={altText || product.name}
+      width={600}
+      height={600}
+      loading="lazy"
+      decoding="async"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className="w-full h-full object-cover transition-all duration-500 hover:scale-105"
@@ -87,9 +91,12 @@ export default function HomeClient() {
               <Star className="fill-current w-5 h-5" />
               <span className="text-brand-600 text-sm font-bold ml-2">Más de 500 comercios confían en nosotros</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-950 leading-[1.1] tracking-tight">
-              Más reseñas en Google.<br className="hidden sm:block"/> Más clientes.<br className="hidden sm:block"/> Más ventas.
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-950 leading-[1.15] tracking-tight">
+              Placas y Tarjetas NFC para Reseñas de Google en Panamá
             </h1>
+            <p className="text-xl sm:text-2xl font-extrabold text-brand-800 leading-snug">
+              Más reseñas en Google. Más clientes. Más ventas.
+            </p>
             <p className="text-base sm:text-lg text-brand-600 max-w-lg leading-relaxed">
               La forma más rápida y elegante de conseguir opiniones de 5 estrellas para tu negocio en Panamá. Con solo un toque, tus clientes dejarán una reseña en segundos.
             </p>
@@ -106,7 +113,17 @@ export default function HomeClient() {
           </div>
           <div className="relative order-1 lg:order-2">
             <div className="aspect-square bg-brand-100 rounded-3xl overflow-hidden shadow-2xl border border-brand-200">
-              <img src="/images/startap_negocio_resenas.webp" alt="Conviértete en la primera opción en Google Maps Panamá" className="w-full h-full object-cover" />
+              <img 
+                src="/images/startap_negocio_resenas.webp" 
+                alt="Empresario usando placa NFC StarTAP para conseguir reseñas en Google Maps" 
+                title="Placas y Tarjetas NFC para Reseñas de Google en Panamá | StarTAP"
+                width={1024}
+                height={1024}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                className="w-full h-full object-cover" 
+              />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-brand-100 hidden md:block animate-bounce-slow">
                <div className="flex items-center gap-4">
@@ -128,15 +145,22 @@ export default function HomeClient() {
       <section className="py-20 bg-brand-50">
         <div className="shopify-container max-w-6xl mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl sm:text-4xl font-black text-brand-950 uppercase tracking-tight">Nuestros Productos</h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-brand-950 uppercase tracking-tight">Nuestros Dispositivos NFC y QR para Negocios</h2>
             <p className="text-brand-600 text-lg">Elige la solución que mejor se adapte a tu negocio</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {products.map((product, idx) => {
+              const productAlts = [
+                'Dispositivo NFC StarTAP para mostrador y mesa de restaurante',
+                'Tarjeta PVC contactless NFC para Google Reviews',
+                'Placa de mesa acrílica NFC y código QR para reseñas de Google'
+              ];
+              const altText = productAlts[idx % 3];
+              return (
               <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-premium border border-brand-200 group flex flex-col">
                 <div className="aspect-[4/5] relative bg-brand-100 overflow-hidden cursor-pointer" onClick={() => window.location.href=`/shop/${product.id}`}>
-                  <HoverableImage product={product} />
+                  <HoverableImage product={product} altText={altText} />
                   {product.category === 'plates' && (
                     <div className="absolute top-4 left-4 bg-brand-950 text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full shadow-lg">
                       Acrílico Premium
@@ -161,7 +185,8 @@ export default function HomeClient() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
       </section>
@@ -352,7 +377,7 @@ export default function HomeClient() {
             />
           </div>
           <div className="order-1 lg:order-2 space-y-6">
-            <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">¿Qué es y cómo funciona?</h2>
+            <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">¿Cómo funciona la tecnología StarTAP Contactless?</h2>
             <p className="text-brand-600 text-lg leading-relaxed">
               Nuestras placas utilizan tecnología NFC (Near Field Communication), la misma que se usa para pagar con el móvil. Al acercar un smartphone a la placa, transmite instantáneamente tu enlace de reseñas.
             </p>
@@ -395,6 +420,7 @@ export default function HomeClient() {
               width={1024}
               height={1024}
               loading="lazy"
+              decoding="async"
               className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" 
             />
           </div>
@@ -415,7 +441,7 @@ export default function HomeClient() {
       <section className="py-24 bg-brand-50">
         <div className="shopify-container max-w-3xl mx-auto px-4 space-y-12">
           <div className="text-center space-y-4">
-            <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">Preguntas Frecuentes</h2>
+            <h2 className="text-3xl font-black text-brand-950 uppercase tracking-tight">Preguntas Frecuentes sobre las Placas NFC</h2>
             <p className="text-brand-600">Todo lo que necesitas saber antes de comprar.</p>
           </div>
 
@@ -426,8 +452,8 @@ export default function HomeClient() {
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                   className="w-full text-left font-bold text-sm sm:text-base tracking-wide text-brand-950 flex justify-between items-center focus:outline-none"
                 >
-                  <span className="pr-4">{faq.q}</span>
-                  <span className="text-brand-500 bg-brand-50 p-2 rounded-full">
+                  <h3 className="pr-4 font-bold text-sm sm:text-base tracking-wide text-brand-950">{faq.q}</h3>
+                  <span className="text-brand-500 bg-brand-50 p-2 rounded-full flex-shrink-0">
                     {activeFaq === index ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </span>
                 </button>
