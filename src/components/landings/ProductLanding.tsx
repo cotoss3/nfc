@@ -382,32 +382,41 @@ export default function ProductLanding({ product }: { product: Product }) {
       </section>
 
       {/* 4. CHECKOUT */}
-      <section id="checkout-section" className="py-24 px-4 bg-brand-50">
-        <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-card border border-brand-200 overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="bg-brand-100 flex items-center justify-center p-8 min-h-[300px]">
+      <section id="checkout-section" className="py-12 sm:py-20 px-4 sm:px-6 bg-brand-50">
+        <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-card border border-brand-200 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12">
+            {/* Left Column: Image / Gallery preview */}
+            <div className="lg:col-span-5 bg-brand-100/70 flex flex-col items-center justify-center p-6 sm:p-10 min-h-[280px] sm:min-h-[380px]">
               <Foto
                 src={fotos[fotos.length - 1]}
                 alt={`${product.name} de starTAP, vista de producto`}
                 ratio="aspect-square"
-                className="w-full"
+                className="w-full max-w-[340px] sm:max-w-[380px] mx-auto drop-shadow-md"
               />
+              <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-brand-600 bg-white/90 px-3.5 py-1.5 rounded-full border border-brand-200/80 shadow-sm backdrop-blur-sm">
+                <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0" />
+                <span>Listo para usar en Panamá</span>
+              </div>
             </div>
 
-            <div className="p-8 md:p-12 space-y-8">
-              <div>
-                <h2 className="text-2xl font-black text-brand-950 mb-2">
-                  Configura tu {copy.nombreCorto}
+            {/* Right Column: Checkout Config Form */}
+            <div className="lg:col-span-7 p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 border border-accent-200 text-[11px] font-extrabold uppercase tracking-wide">
+                  <Zap className="w-3.5 h-3.5" /> Configuración en 1 paso
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-brand-950 tracking-tight">
+                  Personaliza y pide tu {copy.nombreCorto}
                 </h2>
-                <p className="text-sm text-brand-500">
-                  Nosotros lo programamos, tú solo nos das los datos.
+                <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
+                  Nosotros lo grabamos y programamos. Tú solo ingresas el nombre de tu negocio.
                 </p>
               </div>
 
               <form onSubmit={handleAddToCart} className="space-y-6">
                 <div className="space-y-2">
-                  <label htmlFor="businessName" className="text-sm font-bold text-brand-950 block">
-                    Nombre del negocio (como aparece en Google)
+                  <label htmlFor="businessName" className="text-xs sm:text-sm font-bold text-brand-950 block">
+                    Nombre del negocio <span className="text-brand-400 font-normal">(como aparece en Google Maps)</span>
                   </label>
                   <input
                     id="businessName"
@@ -416,38 +425,46 @@ export default function ProductLanding({ product }: { product: Product }) {
                     onChange={(e) => setBusinessName(e.target.value)}
                     placeholder="Ej. Restaurante El Bodegón"
                     required
-                    className="shopify-input"
+                    className="shopify-input text-base sm:text-sm py-3 px-4 rounded-xl border-brand-300 focus:border-brand-950 focus:ring-brand-950 w-full"
                   />
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1.5">
-                  <p className="flex items-center space-x-2 text-amber-900 font-bold text-xs">
+                <div className="bg-amber-50/90 border border-amber-200/80 rounded-2xl p-4 space-y-1.5">
+                  <p className="flex items-center space-x-2 text-amber-900 font-bold text-xs sm:text-sm">
                     <Zap className="h-4 w-4 text-amber-600 flex-shrink-0" aria-hidden="true" />
                     <span>100% auto-configurable</span>
                   </p>
-                  <p className="text-[11px] text-amber-800 leading-relaxed">
+                  <p className="text-xs text-amber-800 leading-relaxed">
                     Llega listo y pre-programado. En el primer toque lo vinculas a tu negocio en 30
                     segundos, sin tener que darnos URLs por adelantado.
                   </p>
                 </div>
 
-                <fieldset className="space-y-2">
-                  <legend className="text-sm font-bold text-brand-950 mb-2">
-                    Color del {copy.nombreCorto.toLowerCase()}
+                <fieldset className="space-y-2.5">
+                  <legend className="text-xs sm:text-sm font-bold text-brand-950 mb-1">
+                    Color o Acabado del {copy.nombreCorto.toLowerCase()}
                   </legend>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-wrap gap-2.5">
                     {colors.map((c) => (
                       <button
                         key={c}
                         type="button"
                         onClick={() => setColor(c)}
                         aria-pressed={color === c}
-                        className={`py-2 px-3 text-xs font-semibold rounded border transition-all ${
+                        className={`py-2.5 px-4 text-xs font-bold rounded-xl border transition-all flex items-center gap-2 ${
                           color === c
-                            ? 'border-accent-500 bg-accent-50 text-accent-700 ring-1 ring-accent-500'
-                            : 'border-brand-200 hover:border-brand-400 bg-white'
+                            ? 'border-brand-950 bg-brand-950 text-white shadow-md'
+                            : 'border-brand-200 hover:border-brand-400 bg-white text-brand-800 hover:bg-brand-50'
                         }`}
                       >
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                          c.toLowerCase().includes('negro') ? 'bg-black border border-white/20' :
+                          c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
+                          c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
+                          c.toLowerCase().includes('plata') ? 'bg-slate-300' :
+                          c.toLowerCase().includes('bambú') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
+                          c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
+                        }`} />
                         {c}
                       </button>
                     ))}
@@ -460,8 +477,8 @@ export default function ProductLanding({ product }: { product: Product }) {
                   </p>
 
                   <div
-                    className={`border rounded-xl p-4 transition-all ${
-                      hasCustomLogo ? 'border-brand-950 bg-brand-50/50' : 'border-brand-200 bg-white'
+                    className={`border rounded-2xl p-4 sm:p-5 transition-all ${
+                      hasCustomLogo ? 'border-brand-950 bg-brand-50/60 shadow-sm' : 'border-brand-200 bg-white'
                     }`}
                   >
                     <label className="flex items-start space-x-3 cursor-pointer">
@@ -472,15 +489,15 @@ export default function ProductLanding({ product }: { product: Product }) {
                         className="mt-0.5 h-4 w-4 accent-brand-950 rounded cursor-pointer"
                       />
                       <span className="flex-1">
-                        <span className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-brand-950 uppercase flex items-center gap-1.5">
-                            <ImageIcon className="h-3.5 w-3.5 text-brand-600" aria-hidden="true" />
+                        <span className="flex justify-between items-center flex-wrap gap-1">
+                          <span className="text-xs sm:text-sm font-bold text-brand-950 uppercase flex items-center gap-1.5">
+                            <ImageIcon className="h-4 w-4 text-brand-600" aria-hidden="true" />
                             Agregar logo personalizado
                           </span>
-                          <span className="text-xs font-black text-brand-950">+ $5.00 USD</span>
+                          <span className="text-xs font-black text-brand-950 bg-white px-2 py-0.5 rounded-md border border-brand-200">+ $5.00 USD</span>
                         </span>
-                        <span className="block text-[11px] text-brand-500 mt-0.5">
-                          Grabado láser de tu logo oficial.
+                        <span className="block text-xs text-brand-500 mt-1">
+                          Grabado láser de tu logo oficial en el frontal.
                         </span>
                       </span>
                     </label>
@@ -490,7 +507,7 @@ export default function ProductLanding({ product }: { product: Product }) {
                         <p className="text-[11px] font-bold text-brand-800 uppercase">
                           Subir archivo de logo (obligatorio)
                         </p>
-                        <div className="border border-dashed border-brand-300 rounded-lg p-3 text-center cursor-pointer hover:border-brand-950 transition-colors relative bg-white">
+                        <div className="border border-dashed border-brand-300 rounded-xl p-4 text-center cursor-pointer hover:border-brand-950 transition-colors relative bg-white">
                           <input
                             type="file"
                             accept="image/*"
@@ -498,21 +515,21 @@ export default function ProductLanding({ product }: { product: Product }) {
                             aria-label="Subir archivo de logo"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                           />
-                          <Upload className="h-4 w-4 text-brand-400 mx-auto mb-1 stroke-[1.8]" aria-hidden="true" />
-                          <span className="text-[11px] text-brand-600 font-bold block">
-                            {logoFile ? `Logo cargado: ${logoFile}` : 'Selecciona tu logo (PNG, SVG, JPG)'}
+                          <Upload className="h-5 w-5 text-brand-400 mx-auto mb-1 stroke-[1.8]" aria-hidden="true" />
+                          <span className="text-xs text-brand-600 font-bold block">
+                            {logoFile ? `Logo cargado: ${logoFile}` : 'Selecciona o arrastra tu logo (PNG, SVG, JPG)'}
                           </span>
                         </div>
                         {logoPreview && (
-                          <div className="mt-2 flex items-center space-x-3 bg-white p-2 rounded border border-brand-200">
+                          <div className="mt-2 flex items-center space-x-3 bg-white p-2.5 rounded-xl border border-brand-200">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={logoPreview}
                               alt="Vista previa del logo que subiste"
-                              className="h-8 w-8 object-contain rounded border"
+                              className="h-9 w-9 object-contain rounded border"
                             />
-                            <span className="text-[10px] text-green-600 font-bold">
-                              Logo adjuntado correctamente
+                            <span className="text-xs text-green-600 font-bold">
+                              ✓ Logo adjuntado correctamente
                             </span>
                           </div>
                         )}
@@ -521,8 +538,8 @@ export default function ProductLanding({ product }: { product: Product }) {
                   </div>
 
                   <div
-                    className={`border rounded-xl p-4 transition-all ${
-                      hasQrCode ? 'border-brand-950 bg-brand-50/50' : 'border-brand-200 bg-white'
+                    className={`border rounded-2xl p-4 sm:p-5 transition-all ${
+                      hasQrCode ? 'border-brand-950 bg-brand-50/60 shadow-sm' : 'border-brand-200 bg-white'
                     }`}
                   >
                     <label className="flex items-start space-x-3 cursor-pointer">
@@ -533,66 +550,69 @@ export default function ProductLanding({ product }: { product: Product }) {
                         className="mt-0.5 h-4 w-4 accent-brand-950 rounded cursor-pointer"
                       />
                       <span className="flex-1">
-                        <span className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-brand-950 uppercase flex items-center gap-1.5">
-                            <QrCode className="h-3.5 w-3.5 text-brand-600" aria-hidden="true" />
+                        <span className="flex justify-between items-center flex-wrap gap-1">
+                          <span className="text-xs sm:text-sm font-bold text-brand-950 uppercase flex items-center gap-1.5">
+                            <QrCode className="h-4 w-4 text-brand-600" aria-hidden="true" />
                             Agregar código QR grabado
                           </span>
-                          <span className="text-xs font-black text-brand-950">+ $3.00 USD</span>
+                          <span className="text-xs font-black text-brand-950 bg-white px-2 py-0.5 rounded-md border border-brand-200">+ $3.00 USD</span>
                         </span>
-                        <span className="block text-[11px] text-brand-500 mt-0.5">
-                          Respaldo para teléfonos sin NFC.
+                        <span className="block text-xs text-brand-500 mt-1">
+                          Respaldo grabado láser para teléfonos sin NFC.
                         </span>
                       </span>
                     </label>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm font-bold text-brand-950">Cantidad</p>
-                  <div className="flex items-center space-x-4">
+                <div className="space-y-2 pt-2">
+                  <p className="text-xs sm:text-sm font-bold text-brand-950">Cantidad</p>
+                  <div className="flex items-center space-x-3">
                     <button
                       type="button"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       aria-label="Reducir cantidad"
-                      className="w-10 h-10 flex items-center justify-center rounded border border-brand-200 hover:bg-brand-50"
+                      className="w-11 h-11 flex items-center justify-center rounded-xl border border-brand-200 hover:bg-brand-100 font-extrabold text-lg text-brand-800 transition-colors"
                     >
                       −
                     </button>
-                    <span className="font-bold text-brand-950 w-8 text-center" aria-live="polite">
+                    <span className="font-black text-lg text-brand-950 w-10 text-center" aria-live="polite">
                       {quantity}
                     </span>
                     <button
                       type="button"
                       onClick={() => setQuantity(quantity + 1)}
                       aria-label="Aumentar cantidad"
-                      className="w-10 h-10 flex items-center justify-center rounded border border-brand-200 hover:bg-brand-50"
+                      className="w-11 h-11 flex items-center justify-center rounded-xl border border-brand-200 hover:bg-brand-100 font-extrabold text-lg text-brand-800 transition-colors"
                     >
                       +
                     </button>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-brand-100">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-brand-500 text-sm">Total a pagar:</span>
-                    <span className="text-2xl font-black text-brand-950">
+                <div className="pt-6 border-t border-brand-200/80 space-y-4">
+                  <div className="flex justify-between items-baseline bg-brand-50/80 p-4 rounded-2xl border border-brand-100">
+                    <div>
+                      <span className="text-brand-500 text-xs sm:text-sm block">Total a pagar</span>
+                      <span className="text-[11px] text-green-700 font-semibold">Envío a Panamá incluido</span>
+                    </div>
+                    <span className="text-3xl font-black text-brand-950">
                       ${totalPrice.toFixed(2)}
                     </span>
                   </div>
                   <button
                     type="submit"
-                    className="shopify-btn-primary w-full text-lg py-4 rounded-xl shadow-lg relative overflow-hidden"
+                    className="shopify-btn-primary w-full text-base sm:text-lg py-4 rounded-2xl shadow-xl hover:shadow-2xl relative overflow-hidden transition-all transform active:scale-[0.99]"
                   >
-                    <span className={`transition-opacity duration-300 ${isSuccess ? 'opacity-0' : 'opacity-100'}`}>
-                      Añadir al carrito <ArrowRight className="inline-block ml-2 w-5 h-5" aria-hidden="true" />
+                    <span className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${isSuccess ? 'opacity-0' : 'opacity-100'}`}>
+                      Añadir al carrito <ArrowRight className="w-5 h-5" aria-hidden="true" />
                     </span>
                     <span
-                      className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+                      className={`absolute inset-0 flex items-center justify-center gap-2 transition-opacity duration-300 bg-accent-600 text-white font-bold ${
                         isSuccess ? 'opacity-100' : 'opacity-0'
                       }`}
                     >
-                      ¡Agregado! <CheckCircle2 className="inline-block ml-2 w-5 h-5" aria-hidden="true" />
+                      ¡Agregado! <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
                     </span>
                   </button>
 
