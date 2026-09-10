@@ -485,25 +485,55 @@ class LocalDbService {
 
     // Crear tarjetas NFC asociadas a este pedido con etiquetas STT-XXXX
     const cards = this.getCards();
+    const newCardsToSync: NfcCard[] = [];
+
     newOrder.items.forEach((item) => {
       for (let i = 0; i < item.quantity; i++) {
         const sttCode = this.getNextStickerCode();
-        cards.push({
+        const cardObj: NfcCard = {
           card_id: sttCode,
           activation_code: sttCode,
           owner_id: 'user-session',
           owner_name: newOrder.customer_name,
-          owner_email: newOrder.customer_email,
+          owner_email: newOrder.customer_email.trim().toLowerCase(),
           label: `${item.product_name} (${sttCode})`,
           target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
           is_active: true,
           claimed: true,
           type: item.product_id.includes('google') ? 'google' : item.product_id.includes('tripadvisor') ? 'tripadvisor' : item.product_id.includes('instagram') ? 'instagram' : 'vcard',
           created_at: new Date().toISOString()
-        });
+        };
+        cards.push(cardObj);
+        newCardsToSync.push(cardObj);
       }
     });
     this.setStorageItem('nfc_cards', cards);
+
+    // Sincronización Real-Time con Supabase
+    if (supabase) {
+      if (newCardsToSync.length > 0) {
+        supabase.from('nfc_cards').upsert(newCardsToSync).then(({ error }) => {
+          if (error) console.error('Error sincronizando tarjetas de orden en Supabase:', error);
+        });
+      }
+      supabase.from('orders').upsert([{
+        id: newOrder.id,
+        customer_name: newOrder.customer_name,
+        customer_email: newOrder.customer_email,
+        customer_phone: newOrder.customer_phone,
+        shipping_province: newOrder.shipping_province,
+        shipping_district: newOrder.shipping_district,
+        shipping_address: newOrder.shipping_address,
+        payment_method: newOrder.payment_method,
+        payment_status: newOrder.payment_status,
+        status: newOrder.status,
+        total: newOrder.total,
+        items: newOrder.items,
+        created_at: newOrder.created_at
+      }]).then(({ error }) => {
+        if (error) console.error('Error sincronizando orden en Supabase:', error);
+      });
+    }
 
     return newOrder;
   }
