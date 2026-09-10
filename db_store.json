@@ -133,6 +133,23 @@
   ],
   "nfc_cards": [
     {
+      "card_id": "STT-1005",
+      "activation_code": "STT-1005",
+      "owner_id": "user-1788789724579",
+      "owner_name": "cotoss3",
+      "owner_email": "cotoss3@gmail.com",
+      "label": "Dispositivo TAP (STT-1005)",
+      "target_url": "https://google.com",
+      "nfc_target_url": "https://google.com",
+      "qr_target_url": "",
+      "group_name": "General",
+      "is_active": true,
+      "claimed": true,
+      "type": "google",
+      "channels": "both",
+      "created_at": "2026-09-10T16:47:57.473Z"
+    },
+    {
       "card_id": "STT-1002",
       "activation_code": "STT-1002",
       "owner_id": "user-1788789724579",
