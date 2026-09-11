@@ -45,7 +45,7 @@ export default function Page() {
         '@type': 'Product',
         'name': 'Tarjeta NFC de Bolsillo',
         'description': 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
-        'image': 'https://startap.com.pa/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
+        'image': 'https://startap.com.pa/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp',
         'offers': {
           '@type': 'Offer',
           'price': '20.00',

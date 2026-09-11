@@ -5,11 +5,11 @@
       "name": "Tarjeta NFC de Bolsillo",
       "description": "Tarjeta de PVC tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.",
       "price": 20,
-      "image": "/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp",
+      "image": "/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp",
       "images": [
+        "/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp",
         "/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp",
-        "/products/tarjeta-nfc/tarjeta-nfc-contactless-google-maps-panama.webp",
-        "/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp"
+        "/products/tarjeta-nfc/tarjeta-nfc-contactless-google-maps-panama.webp"
       ],
       "material": "PVC CONTACTLESS 0.76MM | NFC + QR",
       "category": "cards",
