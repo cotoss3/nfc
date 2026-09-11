@@ -9,6 +9,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/shop',
+        destination: '/catalogo',
+        permanent: true,
+      },
+      {
+        source: '/shop/:path*',
+        destination: '/catalogo/:path*',
+        permanent: true,
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig

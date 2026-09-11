@@ -201,9 +201,9 @@ export default function HomeClient() {
           {/* Responsive Layout: Horizontal Touch Scroll on Mobile (<768px), 3-Column Grid on Desktop */}
           <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 px-4 -mx-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible md:pb-0 scrollbar-none">
             
-            {/* Item 1: Tarjeta NFC */}
+            {/* Item 1: Tarjeta NFC de Bolsillo */}
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/shop/tarjeta-nfc'}>
+              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
                 <img
                   src="https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp"
                   alt="Tarjeta NFC de Bolsillo para Reseñas de Google"
@@ -219,37 +219,36 @@ export default function HomeClient() {
                     Tarjeta NFC de Bolsillo
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    PVC ultrarresistente tamaño tarjeta de crédito. Llévala en la billetera para pedir reseñas en entregas a domicilio, eventos o ventas presenciales en Panamá.
+                    PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.
                   </p>
                 </div>
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">$15.00 USD</span>
+                    <span className="text-2xl font-black text-slate-900">$20.00 USD</span>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-semibold leading-tight">
                     Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
                   </p>
                   <Link
-                    href="/shop/tarjeta-nfc"
+                    href="/catalogo"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Comprar Tarjeta — $15.00
+                    Comprar Tarjeta — $20.00
                   </Link>
                 </div>
               </div>
             </div>
 
-            {/* Item 2: Placa Acrílica Estándar */}
+            {/* Item 2: Placa NFC para Reseñas de Google */}
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border-2 border-slate-950 flex flex-col justify-between relative">
-              {/* Badge offset correctly with -top-3 */}
               <div className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3.5 py-1 rounded-full shadow-md z-20">
                 Más Vendida
               </div>
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/shop/placa-acrilica-nfc'}>
+              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
                 <img
                   src="/products/NFC_10001/NFC_10001_Placa.webp"
-                  alt="Placa Acrílica de Mostrador Estándar para Reseñas"
+                  alt="Placa NFC para Reseñas de Google en Panamá"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
@@ -259,7 +258,7 @@ export default function HomeClient() {
               <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5">
-                    Placa Acrílica de Mostrador Estándar
+                    Placa NFC para Reseñas de Google
                   </h3>
                   <p className="text-xs text-slate-700 leading-relaxed font-medium">
                     Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.
@@ -267,56 +266,56 @@ export default function HomeClient() {
                 </div>
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">$25.00 USD</span>
+                    <span className="text-2xl font-black text-slate-900">$30.00 USD</span>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-600 font-semibold leading-tight">
                     Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
                   </p>
                   <Link
-                    href="/shop/placa-acrilica-nfc"
+                    href="/catalogo"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Comprar Placa — $25.00
+                    Comprar Placa — $30.00
                   </Link>
                 </div>
               </div>
             </div>
 
-            {/* Item 3: Placa Premium Personalizada con Logo */}
+            {/* Item 3: Stand NFC para Reseñas de Google */}
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/shop/stand-nfc'}>
+              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
                 <img
                   src="/products/NFC10002/NFC_10002_Stan.webp"
-                  alt="Placa Acrílica Premium Personalizada con Logo"
+                  alt="Stand NFC para Reseñas de Google"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
-                  Logo Grabado
+                  Stand de Mesa
                 </span>
               </div>
               <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5">
-                    Placa Acrílica Premium Personalizada
+                    Stand NFC para Reseñas de Google
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Grabado láser oficial de la marca de tu negocio en acrílico de alta densidad. Incluye chip NFC NTAG213 y código QR impreso de alta resolución.
+                    Estructura rígida autoportante con ángulo de lectura optimizado para mesas de restaurantes, cafeterías, escritorios y clínicas.
                   </p>
                 </div>
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">$29.99 USD</span>
+                    <span className="text-2xl font-black text-slate-900">$35.00 USD</span>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-semibold leading-tight">
                     Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
                   </p>
                   <Link
-                    href="/shop/stand-nfc"
+                    href="/catalogo"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Pedir Personalizada — $29.99
+                    Comprar Stand — $35.00
                   </Link>
                 </div>
               </div>
@@ -502,7 +501,7 @@ export default function HomeClient() {
           </p>
           <div className="pt-2 flex flex-col sm:flex-row gap-3.5 justify-center">
             <Link
-              href="/shop"
+              href="/catalogo"
               className="shopify-btn-primary py-4 px-8 uppercase font-bold tracking-wider text-xs inline-block rounded-xl bg-white text-slate-950 hover:bg-slate-100 shadow-lg"
             >
               Pedir mi Placa Ahora

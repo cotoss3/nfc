@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import { PRODUCTS, getProductById as getCentralProductById } from '@/config/products';
+
 
 // Tipos del sistema
 export interface Product {
@@ -82,131 +84,19 @@ export interface UserAccount {
   created_at: string;
 }
 
-// Productos semilla predeterminados
-const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: 'tarjeta-nfc',
-    name: 'Tarjeta NFC de Bolsillo para Reseñas',
-    description: 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en la billetera para pedir reseñas en entregas a domicilio, eventos o ventas presenciales en Panamá.',
-    price: 15.00,
-    image: 'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
-    images: [
-      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
-      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-Resenas-Google-funcionando.webp'
-    ],
-    material: 'PVC Premium',
-    category: 'cards',
-    type: 'google'
-  },
-  {
-    id: 'placa-acrilica-nfc',
-    name: 'Placa Acrílica de Mostrador Estándar',
-    description: 'Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.',
-    price: 25.00,
-    image: '/products/NFC_10001/NFC_10001_Placa.webp',
-    images: [
-      '/products/NFC_10001/NFC_10001_Placa.webp',
-      '/products/NFC_10001/NFC_10001_Placa.png'
-    ],
-    material: 'Acrílico Pulido 3mm',
-    category: 'plates',
-    type: 'google'
-  },
-  {
-    id: 'stand-nfc',
-    name: 'Placa Acrílica Premium Personalizada con Logo',
-    description: 'Grabado láser oficial de la marca de tu negocio en acrílico de alta densidad. Incluye chip NFC NTAG213 y código QR impreso de alta resolución.',
-    price: 29.99,
-    image: '/products/NFC10002/NFC_10002_Stan.webp',
-    images: [
-      '/products/NFC10002/NFC_10002_Stan.webp',
-      '/products/NFC10002/NFC_10002_Stan.png'
-    ],
-    material: 'Acrílico Alta Densidad + Grabado Láser',
-    category: 'accessories',
-    type: 'google'
-  },
-  {
-    id: 'NFC_10001',
-    name: 'Placa NFC Google Reviews Elite (Acrílico Blanco)',
-    description: 'Aumenta tus reseñas de Google Maps de forma rápida y mejora tu SEO local en Panamá. Diseñada en elegante acrílico blanco pulido de 3mm, perfecta para capturar reseñas para restaurante o clínica. Pago único de por vida y vende más en Panamá sin mensualidades.',
-    price: 34.99,
-    image: '/products/NFC_10001/NFC_10001_Placa.webp',
-    images: [
-      '/products/NFC_10001/NFC_10001_Placa.webp',
-      '/products/NFC_10001/NFC_10001_Placa.png'
-    ],
-    category: 'plates',
-    type: 'google'
-  },
-  {
-    id: 'placa-google',
-    name: 'Tarjeta NFC Google Reviews (PVC)',
-    description: 'Tarjeta inteligente de PVC premium para llevar tu estrategia de SEO local en el bolsillo. Consigue reseñas en Google Maps, recolecta reseñas para restaurante o atención a domicilio y vende más en Panamá con un solo toque.',
-    price: 24.99,
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
-    colors: ['Negro Mate', 'Blanco Mate'],
-    material: 'PVC Premium 0.76mm (Grado Tarjeta de Crédito)',
-    category: 'cards',
-    type: 'google'
-  },
-  {
-    id: 'placa-tripadvisor',
-    name: 'Placa NFC TripAdvisor (Acrílico)',
-    description: 'Ideal para hoteles, cafeterías y conseguir reseñas para restaurante turísticos. Impulsa tu reputación online, fortalece tu SEO local y vende más en Panamá logrando que los clientes te califiquen al instante.',
-    price: 34.99,
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=600',
-    category: 'plates',
-    type: 'tripadvisor'
-  },
-  {
-    id: 'placa-instagram',
-    name: 'Placa NFC Instagram Followers',
-    description: 'Aumenta tus seguidores orgánicamente en tu tienda o restaurante. Apoya tu estrategia de SEO local en redes sociales y vende más en Panamá redirigiendo a tu perfil de Instagram con un solo toque.',
-    price: 29.99,
-    image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=600',
-    category: 'plates',
-    type: 'instagram'
-  },
-  {
-    id: 'placa-airbnb',
-    name: 'Placa NFC Airbnb Connect (Acrílico)',
-    description: 'Placa premium para anfitriones. Permite a tus huéspedes conectarse al WiFi o dejar calificación 5 estrellas al instante. Mejora tu posicionamiento de SEO local en la plataforma de turismo y vende más en Panamá.',
-    price: 34.99,
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=600',
-    colors: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
-    material: 'Acrílico Premium 3mm',
-    category: 'plates',
-    type: 'airbnb'
-  },
-  {
-    id: 'tarjeta-pvc',
-    name: 'Tarjeta de Presentación NFC PVC',
-    description: 'Tarjeta inteligente de PVC mate. Potencia tu networking y contribuye a tu SEO local al compartir todos tus datos comerciales al instante. Vende más en Panamá con una presentación inolvidable.',
-    price: 24.99,
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
-    category: 'cards',
-    type: 'vcard'
-  },
-  {
-    id: 'tarjeta-madera',
-    name: 'Tarjeta de Presentación NFC Madera Ecológica',
-    description: 'Tarjeta inteligente fabricada en madera natural. Una primera impresión premium que apoya tu SEO local. Cierra más tratos y vende más en Panamá proyectando una imagen ecológica.',
-    price: 39.99,
-    image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=600',
-    category: 'cards',
-    type: 'vcard'
-  },
-  {
-    id: 'llavero-google',
-    name: 'Llavero NFC Google Reviews',
-    description: 'Llavero de resina ultra resistente. El accesorio ideal de SEO local para personal de entrega y captura de reseñas para restaurante a domicilio. Vende más en Panamá multiplicando tus reviews donde vayas.',
-    price: 14.99,
-    image: 'https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&q=80&w=600',
-    category: 'accessories',
-    type: 'google'
-  }
-];
+// Productos semilla predeterminados desde la constante central de productos
+const INITIAL_PRODUCTS: Product[] = PRODUCTS.map((p) => ({
+  id: p.id,
+  name: p.name,
+  description: p.description,
+  price: p.price,
+  image: p.image,
+  images: p.images,
+  material: p.material,
+  category: (p.category === 'cards' ? 'cards' : p.category === 'plates' ? 'plates' : 'accessories') as any,
+  type: 'google'
+}));
+
 
 // Inicializar cliente real de Supabase si existen variables de entorno
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';

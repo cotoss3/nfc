@@ -31,7 +31,7 @@ export default function Page() {
         'logo': 'https://startap.com.pa/images/logo.png',
         'image': 'https://startap.com.pa/images/startap_negocio_resenas.webp',
         'description': 'Placas y tarjetas NFC contactless para captar opiniones de Google Maps en comercios y restaurantes de Panamá.',
-        'priceRange': '$15.00 - $29.99',
+        'priceRange': '$20.00 - $60.00',
         'telephone': '+50765239821',
         'address': {
           '@type': 'PostalAddress',
@@ -43,41 +43,41 @@ export default function Page() {
       },
       {
         '@type': 'Product',
-        'name': 'Tarjeta NFC de Bolsillo para Reseñas',
-        'description': 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en la billetera para pedir reseñas en entregas a domicilio, eventos o ventas presenciales en Panamá.',
+        'name': 'Tarjeta NFC de Bolsillo',
+        'description': 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
         'image': 'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
         'offers': {
           '@type': 'Offer',
-          'price': '15.00',
+          'price': '20.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'url': 'https://startap.com.pa/shop/tarjeta-nfc'
+          'url': 'https://startap.com.pa/catalogo'
         }
       },
       {
         '@type': 'Product',
-        'name': 'Placa Acrílica de Mostrador Estándar',
+        'name': 'Placa NFC para Reseñas de Google',
         'description': 'Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.',
         'image': 'https://startap.com.pa/products/NFC_10001/NFC_10001_Placa.webp',
         'offers': {
           '@type': 'Offer',
-          'price': '25.00',
+          'price': '30.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'url': 'https://startap.com.pa/shop/placa-acrilica-nfc'
+          'url': 'https://startap.com.pa/catalogo'
         }
       },
       {
         '@type': 'Product',
-        'name': 'Placa Acrílica Premium Personalizada con Logo',
-        'description': 'Grabado láser oficial de la marca de tu negocio en acrílico de alta densidad. Incluye chip NFC NTAG213 y código QR impreso de alta resolución.',
+        'name': 'Stand NFC para Reseñas de Google',
+        'description': 'Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.',
         'image': 'https://startap.com.pa/products/NFC10002/NFC_10002_Stan.webp',
         'offers': {
           '@type': 'Offer',
-          'price': '29.99',
+          'price': '35.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'url': 'https://startap.com.pa/shop/stand-nfc'
+          'url': 'https://startap.com.pa/catalogo'
         }
       },
       {

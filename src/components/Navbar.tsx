@@ -20,7 +20,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Inicio', href: '/' },
-    { name: 'Catálogo', href: '/shop' },
+    { name: 'Catálogo', href: '/catalogo' },
     { name: 'Más Reseñas', href: '/resenas-google' },
     { name: 'Corporativo', href: '/corporativo' },
     { name: 'App Pro ⚡', href: '/app' },

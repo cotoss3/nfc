@@ -21,9 +21,9 @@ export default function Footer() {
           <div className="space-y-3">
             <h3 className="text-white font-bold text-xs uppercase tracking-wider">Productos & Plataforma</h3>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/shop" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
-              <li><Link href="/shop" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
-              <li><Link href="/shop" className="hover:text-white transition-colors">Placas Personalizadas con Logo</Link></li>
+              <li><Link href="/catalogo" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
+              <li><Link href="/catalogo" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
+              <li><Link href="/catalogo" className="hover:text-white transition-colors">Placas Personalizadas con Logo</Link></li>
               <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Pedidos Corporativos B2B</Link></li>
             </ul>
           </div>

@@ -1,57 +1,58 @@
 {
   "nfc_products": [
     {
-      "id": "tarjeta-nfc",
-      "name": "Tarjeta NFC de Bolsillo para Reseñas",
-      "description": "Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en la billetera para pedir reseñas en entregas a domicilio, eventos o ventas presenciales en Panamá.",
-      "price": 15,
+      "id": "tarjeta-nfc-bolsillo",
+      "name": "Tarjeta NFC de Bolsillo",
+      "description": "Tarjeta de PVC tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.",
+      "price": 20,
       "image": "https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp",
       "images": [
         "https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp",
         "https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-Resenas-Google-funcionando.webp"
       ],
-      "material": "PVC Premium",
+      "material": "PVC CONTACTLESS 0.76MM | NFC + QR",
       "category": "cards",
       "type": "google"
     },
     {
-      "id": "placa-acrilica-nfc",
-      "name": "Placa Acrílica de Mostrador Estándar",
-      "description": "Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.",
-      "price": 25,
+      "id": "placa-nfc-mostrador",
+      "name": "Placa NFC para Reseñas de Google",
+      "description": "Acrílico pulido de 3mm con adhesivo 3M listo para instalar en tu caja de cobro o pared de atención. Captura reseñas antes de que el cliente abandone tu local.",
+      "price": 30,
       "image": "/products/NFC_10001/NFC_10001_Placa.webp",
       "images": [
         "/products/NFC_10001/NFC_10001_Placa.webp",
         "/products/NFC_10001/NFC_10001_Placa.png"
       ],
-      "material": "Acrílico Pulido 3mm",
+      "material": "ACRÍLICO PREMIUM 3MM | NFC + QR",
       "category": "plates",
       "type": "google"
     },
     {
-      "id": "stand-nfc",
-      "name": "Placa Acrílica Premium Personalizada con Logo",
-      "description": "Grabado láser oficial de la marca de tu negocio en acrílico de alta densidad. Incluye chip NFC NTAG213 y código QR impreso de alta resolución.",
-      "price": 29.99,
+      "id": "stand-nfc-mesa",
+      "name": "Stand NFC para Reseñas de Google",
+      "description": "Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.",
+      "price": 35,
       "image": "/products/NFC10002/NFC_10002_Stan.webp",
       "images": [
         "/products/NFC10002/NFC_10002_Stan.webp",
         "/products/NFC10002/NFC_10002_Stan.png"
       ],
-      "material": "Acrílico Alta Densidad + Grabado Láser",
+      "material": "PVC TÉCNICO AUTOPORTANTE | NFC + QR",
       "category": "accessories",
       "type": "google"
     },
     {
-      "id": "NFC_10001",
-      "name": "Placa NFC Google Reviews Elite (Acrílico Blanco)",
-      "description": "Aumenta tus reseñas de Google Maps de forma rápida y mejora tu SEO local en Panamá. Diseñada en elegante acrílico blanco pulido de 3mm, perfecta para capturar reseñas para restaurante o clínica. Pago único de por vida y vende más en Panamá sin mensualidades.",
-      "price": 34.99,
+      "id": "pack-trio-comercial",
+      "name": "Pack Trío Comercial (1 Placa Mostrador + 2 Tarjetas de Bolsillo)",
+      "description": "Equipa tu punto fijo de cobro y tu personal móvil. Incluye 1 Placa de Mostrador para recepción y 2 Tarjetas de Bolsillo para tu equipo de ventas o entregas.",
+      "price": 60,
       "image": "/products/NFC_10001/NFC_10001_Placa.webp",
       "images": [
         "/products/NFC_10001/NFC_10001_Placa.webp",
-        "/products/NFC_10001/NFC_10001_Placa.png"
+        "https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp"
       ],
+      "material": "1 PLACA ACRÍLICA 3MM + 2 TARJETAS PVC 0.76MM | NFC + QR",
       "category": "plates",
       "type": "google"
     },
