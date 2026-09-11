@@ -205,8 +205,8 @@ export default function HomeClient() {
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
               <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
                 <img
-                  src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp"
-                  alt="Tarjeta NFC de Bolsillo para Reseñas de Google"
+                  src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
+                  alt="Tarjeta NFC de Bolsillo para Reseñas de Google Panamá"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">

@@ -32,11 +32,11 @@ export const PRODUCTS: ProductConfig[] = [
     badge: 'PVC Contactless 0.76mm',
     description: 'Tarjeta de PVC tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
     useCase: 'Meseros, técnicos en ruta, repartidores y eventos.',
-    image: '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp',
+    image: '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
     images: [
-      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp',
       '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
-      '/products/tarjeta-nfc/tarjeta-nfc-contactless-google-maps-panama.webp'
+      '/products/tarjeta-nfc/tarjeta-nfc-contactless-google-maps-panama.webp',
+      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp'
     ],
     spec: 'Impermeable HD + Impresión de Alta Durabilidad',
     type: 'google'
