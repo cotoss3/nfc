@@ -19,12 +19,13 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-3">
-            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Productos & Plataforma</h3>
+            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Productos & Legales</h3>
             <ul className="space-y-2 text-xs">
               <li><Link href="/catalogo" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
               <li><Link href="/catalogo" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
-              <li><Link href="/catalogo" className="hover:text-white transition-colors">Placas Personalizadas con Logo</Link></li>
               <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Pedidos Corporativos B2B</Link></li>
+              <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-300">Términos y Condiciones</Link></li>
+              <li><Link href="/privacidad" className="hover:text-white transition-colors text-gray-300">Política de Privacidad</Link></li>
             </ul>
           </div>
 
@@ -65,25 +66,26 @@ export default function Footer() {
             <ul className="space-y-2 text-xs">
               <li className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>San Francisco, Ciudad de Panamá</span>
+                <span>Ciudad de Panamá, Panamá</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>+507 6523-9821</span>
+                <span>+507 6713-4341</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>soporte@startap.com.pa</span>
+                <span>info@datakorex.com</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-gray-800 text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
-          <p>© {new Date().getFullYear()} StarTAP Panamá. Todos los derechos reservados.</p>
-          <p className="flex items-center">
-            Desarrollado para comercios y locales de Panamá.
-          </p>
+          <p>© {new Date().getFullYear()} StarTAP Panamá (KoreNet Cloud & Web - Fernando Contreras). Todos los derechos reservados.</p>
+          <div className="flex items-center space-x-4">
+            <Link href="/terminos" className="hover:text-gray-300 underline">Términos</Link>
+            <Link href="/privacidad" className="hover:text-gray-300 underline">Privacidad</Link>
+          </div>
         </div>
       </div>
     </footer>
