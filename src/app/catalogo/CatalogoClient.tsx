@@ -3,11 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { 
   Cpu, 
   Wifi, 
   QrCode, 
   Zap, 
+  ShoppingBag,
   MessageCircle, 
   CheckCircle2, 
   Truck, 
@@ -17,10 +19,25 @@ import {
   Tag
 } from 'lucide-react';
 import { ProductConfig, getMainHardwareProducts, getSpecialPacks } from '@/config/products';
+import { useCart } from '@/context/CartContext';
 
 export default function CatalogoClient() {
+  const router = useRouter();
+  const { addToCart } = useCart();
   const hardwareProducts = getMainHardwareProducts();
   const specialPacks = getSpecialPacks();
+
+  const handleAddToCartPack = (product: ProductConfig) => {
+    addToCart({
+      product_id: product.id,
+      product_name: product.name,
+      price: product.price,
+      quantity: 1,
+      selected_color: 'Acrílico 3mm + PVC 0.76mm',
+      business_name: 'Mi Negocio'
+    });
+    router.push('/checkout');
+  };
 
   const getWhatsAppLink = (productName: string) => {
     const text = encodeURIComponent(`Hola, me interesa pedir el producto: ${productName} de StarTAP.`);
@@ -62,7 +79,7 @@ export default function CatalogoClient() {
       {/* Main Container */}
       <div className="max-w-6xl mx-auto px-4 pt-10 space-y-12">
         
-        {/* Banner del Pack Especial (Upsell) */}
+        {/* Banner del Pack Especial (Upsell Directo al Carrito sin Landing) */}
         {specialPacks.length > 0 && (
           <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-800 relative overflow-hidden">
             <div className="absolute top-4 right-4 bg-amber-400 text-slate-950 font-black text-xs uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow">
@@ -75,11 +92,12 @@ export default function CatalogoClient() {
                   <Tag className="w-4 h-4" /> {specialPacks[0].categoryLabel}
                 </div>
                 
-                <Link href={`/shop/${specialPacks[0].id}`} className="block group">
-                  <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight group-hover:text-amber-400 transition-colors">
-                    {specialPacks[0].name}
-                  </h2>
-                </Link>
+                <h2 
+                  onClick={() => handleAddToCartPack(specialPacks[0])}
+                  className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight cursor-pointer hover:text-amber-400 transition-colors"
+                >
+                  {specialPacks[0].name}
+                </h2>
 
                 <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                   {specialPacks[0].description}
@@ -96,9 +114,9 @@ export default function CatalogoClient() {
                       <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
                       <span><strong>2 Tarjetas NFC de Bolsillo (PVC 0.76mm)</strong> para personal en movimiento</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Configuración previa incluida + Envíos sin costo en Ciudad de Panamá</span>
+                    <li className="flex items-center gap-2 text-emerald-400 font-bold">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Configuración previa incluida + ENVÍO GRATIS A TODO PANAMÁ</span>
                     </li>
                   </ul>
                 </div>
@@ -116,13 +134,13 @@ export default function CatalogoClient() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <Link
-                      href={`/shop/${specialPacks[0].id}`}
-                      className="flex-1 sm:flex-none bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm uppercase px-6 py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+                    <button
+                      onClick={() => handleAddToCartPack(specialPacks[0])}
+                      className="flex-1 sm:flex-none bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm uppercase px-6 py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>Ver Landing del Producto</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>Comprar Pack Ahora (Envío Gratis)</span>
+                    </button>
                     <a
                       href={getWhatsAppLink(specialPacks[0].name)}
                       target="_blank"
@@ -137,9 +155,9 @@ export default function CatalogoClient() {
               </div>
 
               <div className="md:col-span-5 flex justify-center">
-                <Link 
-                  href={`/shop/${specialPacks[0].id}`}
-                  className="relative w-full max-w-sm aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 p-4 block group"
+                <div 
+                  onClick={() => handleAddToCartPack(specialPacks[0])}
+                  className="relative w-full max-w-sm aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 p-4 cursor-pointer group"
                 >
                   <Image
                     src={specialPacks[0].image}
@@ -147,7 +165,7 @@ export default function CatalogoClient() {
                     fill
                     className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                   />
-                </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -183,7 +201,7 @@ export default function CatalogoClient() {
 
                   {/* Imagen del Producto redirige a la Landing */}
                   <Link 
-                    href={`/shop/${product.id}`}
+                    href={`/catalogo/${product.id}`}
                     className="aspect-square relative bg-slate-100 overflow-hidden block group"
                   >
                     <Image
@@ -196,7 +214,7 @@ export default function CatalogoClient() {
 
                   {/* Información del Producto */}
                   <div className="p-5 space-y-3">
-                    <Link href={`/shop/${product.id}`} className="block group">
+                    <Link href={`/catalogo/${product.id}`} className="block group">
                       <h3 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-amber-600 transition-colors">
                         {product.name}
                       </h3>
@@ -226,7 +244,7 @@ export default function CatalogoClient() {
 
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/shop/${product.id}`}
+                      href={`/catalogo/${product.id}`}
                       className="flex-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 text-center"
                     >
                       <span>Ver Producto</span>

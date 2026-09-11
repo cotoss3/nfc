@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { dbLocal } from '@/lib/db';
-import { ShieldCheck, Check, Info, CreditCard, AlertCircle, Lock } from 'lucide-react';
+import { ShieldCheck, Check, CheckCircle2, Info, CreditCard, AlertCircle, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function CheckoutPage() {
@@ -83,7 +83,15 @@ export default function CheckoutPage() {
     'Darién'
   ];
 
+  const isPackInCart = cart.some(
+    (item) =>
+      item.product_id === 'pack-trio-comercial' ||
+      item.product_id === 'pack-trio' ||
+      item.product_name.toLowerCase().includes('pack')
+  );
+
   const getShippingCost = () => {
+    if (isPackInCart) return 0;
     switch (shippingMethod) {
       case 'uno': return 6.50;
       case 'servi': return 7.50;
@@ -280,6 +288,12 @@ export default function CheckoutPage() {
               {/* Shipping Options */}
               <div className="space-y-4">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-2">Método de Envío</h3>
+                {isPackInCart && (
+                  <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded text-xs flex items-center space-x-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                    <span className="font-bold">¡Envío Gratis a todo Panamá incluido en tu Pack Recomendado!</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -292,7 +306,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Panamá Centro</span>
                       <span className="text-[10px] text-brand-400">Oficina o Residencia (1-2 días)</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$3.75</span>
+                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$3.75'}</span>
                   </button>
 
                   <button
@@ -306,7 +320,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Uno Express</span>
                       <span className="text-[10px] text-brand-400">Retiro en Sucursal Interior</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$6.50</span>
+                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$6.50'}</span>
                   </button>
 
                   <button
@@ -320,7 +334,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Servientrega</span>
                       <span className="text-[10px] text-brand-400">A Domicilio en Provincias</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$7.50</span>
+                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$7.50'}</span>
                   </button>
 
                   <button
@@ -334,7 +348,7 @@ export default function CheckoutPage() {
                       <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Retiro Oficina</span>
                       <span className="text-[10px] text-brand-400">San Francisco, Panamá</span>
                     </div>
-                    <span className="font-black text-xs text-brand-950">$3.00</span>
+                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$3.00'}</span>
                   </button>
                 </div>
               </div>
@@ -500,8 +514,14 @@ export default function CheckoutPage() {
                   <span className="font-semibold text-brand-950">${getCartTotal().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Envío ({shippingMethod === 'office' ? 'Retiro en oficina' : 'Provincial'})</span>
-                  <span className="font-semibold text-brand-950">${getShippingCost().toFixed(2)}</span>
+                  <span>Envío {isPackInCart ? '(Promoción Pack Recomendado)' : `(${shippingMethod === 'office' ? 'Retiro en oficina' : 'Provincial'})`}</span>
+                  <span className="font-semibold text-brand-950">
+                    {isPackInCart ? (
+                      <span className="text-emerald-600 font-bold uppercase">Gratis</span>
+                    ) : (
+                      `$${getShippingCost().toFixed(2)}`
+                    )}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Programación y Ruteo</span>
