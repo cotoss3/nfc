@@ -37,7 +37,7 @@ export default function CatalogoClient() {
 
   const getWhatsAppLink = (productName: string) => {
     const text = encodeURIComponent(`Hola, me interesa pedir el producto: ${productName} de StarTAP.`);
-    return `https://wa.me/50760000000?text=${text}`;
+    return `https://wa.me/50767134341?text=${text}`;
   };
 
   return (

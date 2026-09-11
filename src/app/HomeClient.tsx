@@ -43,7 +43,7 @@ export default function HomeClient() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const whatsappMessage = encodeURIComponent("Hola StarTAP, quiero pedir una placa NFC personalizada con el logo de mi negocio en Panamá.");
-  const whatsappUrl = `https://wa.me/50765239821?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/50767134341?text=${whatsappMessage}`;
 
   const faqs = [
     {

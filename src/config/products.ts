@@ -25,7 +25,7 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['tarjeta-nfc', 'placa-google'],
     name: 'Tarjeta NFC de Bolsillo',
     category: 'cards',
-    categoryLabel: 'TARJETA PORTÁTIL DE BOLSILLO',
+    categoryLabel: 'TARJETA DE BOLSILLO',
     material: 'PVC CONTACTLESS 0.76MM | NFC + QR',
     price: 20,
     priceFormatted: '$20.00',
