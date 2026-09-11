@@ -8,7 +8,6 @@ import {
   Wifi, 
   QrCode, 
   Zap, 
-  ShoppingBag, 
   MessageCircle, 
   CheckCircle2, 
   Truck, 
@@ -17,23 +16,11 @@ import {
   ArrowRight,
   Tag
 } from 'lucide-react';
-import { PRODUCTS, ProductConfig, getMainHardwareProducts, getSpecialPacks } from '@/config/products';
-import { useCart } from '@/context/CartContext';
+import { ProductConfig, getMainHardwareProducts, getSpecialPacks } from '@/config/products';
 
 export default function CatalogoClient() {
-  const { addToCart } = useCart();
   const hardwareProducts = getMainHardwareProducts();
   const specialPacks = getSpecialPacks();
-
-  const handleAddToCart = (product: ProductConfig) => {
-    addToCart({
-      product_id: product.id,
-      product_name: product.name,
-      price: product.price,
-      quantity: 1,
-    });
-    window.location.href = '/checkout';
-  };
 
   const getWhatsAppLink = (productName: string) => {
     const text = encodeURIComponent(`Hola, me interesa pedir el producto: ${productName} de StarTAP.`);
@@ -87,9 +74,13 @@ export default function CatalogoClient() {
                 <div className="inline-flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                   <Tag className="w-4 h-4" /> {specialPacks[0].categoryLabel}
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
-                  {specialPacks[0].name}
-                </h2>
+                
+                <Link href={`/shop/${specialPacks[0].id}`} className="block group">
+                  <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight group-hover:text-amber-400 transition-colors">
+                    {specialPacks[0].name}
+                  </h2>
+                </Link>
+
                 <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                   {specialPacks[0].description}
                 </p>
@@ -125,13 +116,13 @@ export default function CatalogoClient() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleAddToCart(specialPacks[0])}
+                    <Link
+                      href={`/shop/${specialPacks[0].id}`}
                       className="flex-1 sm:flex-none bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm uppercase px-6 py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
                     >
-                      <ShoppingBag className="w-4 h-4" />
-                      Comprar Pack Ahora
-                    </button>
+                      <span>Ver Landing del Producto</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
                     <a
                       href={getWhatsAppLink(specialPacks[0].name)}
                       target="_blank"
@@ -146,14 +137,17 @@ export default function CatalogoClient() {
               </div>
 
               <div className="md:col-span-5 flex justify-center">
-                <div className="relative w-full max-w-sm aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 p-4">
+                <Link 
+                  href={`/shop/${specialPacks[0].id}`}
+                  className="relative w-full max-w-sm aspect-square bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 p-4 block group"
+                >
                   <Image
                     src={specialPacks[0].image}
                     alt={specialPacks[0].name}
                     fill
-                    className="object-cover rounded-xl"
+                    className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                   />
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -187,21 +181,26 @@ export default function CatalogoClient() {
                     </span>
                   </div>
 
-                  {/* Imagen */}
-                  <div className="aspect-square relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => handleAddToCart(product)}>
+                  {/* Imagen del Producto redirige a la Landing */}
+                  <Link 
+                    href={`/shop/${product.id}`}
+                    className="aspect-square relative bg-slate-100 overflow-hidden block group"
+                  >
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
+                  </Link>
 
                   {/* Información del Producto */}
                   <div className="p-5 space-y-3">
-                    <h3 className="text-lg font-bold text-slate-900 leading-snug">
-                      {product.name}
-                    </h3>
+                    <Link href={`/shop/${product.id}`} className="block group">
+                      <h3 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-amber-600 transition-colors">
+                        {product.name}
+                      </h3>
+                    </Link>
                     <p className="text-xs text-slate-600 leading-relaxed min-h-[48px]">
                       {product.description}
                     </p>
@@ -213,7 +212,7 @@ export default function CatalogoClient() {
                   </div>
                 </div>
 
-                {/* Footer de Tarjeta con Precio y Botón */}
+                {/* Footer de Tarjeta con Precio y Botón a la Landing */}
                 <div className="p-5 pt-0 space-y-3">
                   <div className="flex items-baseline justify-between pt-3 border-t border-slate-100">
                     <div>
@@ -226,13 +225,13 @@ export default function CatalogoClient() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      className="flex-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                    <Link
+                      href={`/shop/${product.id}`}
+                      className="flex-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 text-center"
                     >
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      Pedir Ahora
-                    </button>
+                      <span>Ver Producto</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                     <a
                       href={getWhatsAppLink(product.name)}
                       target="_blank"
