@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { dbLocal } from '@/lib/db';
-import { ShieldCheck, Check, Info, CreditCard } from 'lucide-react';
+import { ShieldCheck, Check, Info, CreditCard, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function CheckoutPage() {
@@ -21,27 +21,38 @@ export default function CheckoutPage() {
   const [shippingMethod, setShippingMethod] = useState<'uno' | 'servi' | 'local' | 'office'>('local');
   const [paymentMethod, setPaymentMethod] = useState<'tarjeta' | 'yappy'>('tarjeta');
 
-  // Credit Card Simulation
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
-
   // Yappy Simulation
   const [yappyRef, setYappyRef] = useState('');
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('status');
+      if (status === 'success') {
+        setIsSuccess(true);
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+        clearCart();
+      } else if (status === 'failed') {
+        const reason = params.get('reason') || 'El pago no pudo ser completado o fue declinado por el emisor.';
+        setErrorMessage(reason);
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (mounted && cart.length === 0 && !isSuccess) {
-      router.push('/shop');
+      router.push('/catalogo');
     }
   }, [cart, isSuccess, router, mounted]);
 
@@ -81,13 +92,10 @@ export default function CheckoutPage() {
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+
     if (!name || !email || !phone || !address || !district) {
       alert('Por favor completa todos los campos del envío');
-      return;
-    }
-
-    if (paymentMethod === 'tarjeta' && (!cardNumber || !cardExpiry || !cardCvv)) {
-      alert('Por favor completa los detalles de tu tarjeta de crédito');
       return;
     }
 
@@ -98,6 +106,63 @@ export default function CheckoutPage() {
 
     setIsProcessing(true);
 
+    if (paymentMethod === 'tarjeta') {
+      try {
+        const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
+
+        const res = await fetch('/api/tilopay/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            province,
+            district,
+            address,
+            total: getGrandTotal(),
+            orderNumber,
+            items: cart
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.success && data.redirectUrl) {
+          // Registrar pedido local en estado pendiente
+          dbLocal.createOrder({
+            customer_name: name,
+            customer_email: email,
+            customer_phone: phone,
+            shipping_province: province,
+            shipping_district: district,
+            shipping_address: address,
+            payment_method: 'tarjeta',
+            payment_status: 'pending',
+            status: 'pending',
+            total: getGrandTotal(),
+            items: cart
+          });
+
+          sessionStorage.setItem('current_user_email', email);
+          sessionStorage.setItem('current_user_name', name);
+
+          // Redirigir a pasarela de Tilopay
+          window.location.href = data.redirectUrl;
+          return;
+        } else {
+          setErrorMessage(data.error || 'No se pudo conectar con la pasarela de Tilopay. Por favor intenta de nuevo.');
+          setIsProcessing(false);
+          return;
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'Error de conexión con la pasarela de pago.');
+        setIsProcessing(false);
+        return;
+      }
+    }
+
+    // Payment method Yappy
     setTimeout(() => {
       // Create order
       dbLocal.createOrder({
@@ -130,7 +195,7 @@ export default function CheckoutPage() {
       setTimeout(() => {
         router.push(`/dashboard?email=${encodeURIComponent(email)}`);
       }, 3000);
-    }, 2000);
+    }, 1500);
   };
 
   if (cart.length === 0 && !isSuccess) return null;
@@ -164,6 +229,16 @@ export default function CheckoutPage() {
               <span className="text-[10px] font-bold tracking-widest text-brand-400 uppercase block">PanaCards Checkout</span>
               <h1 className="text-xl font-extrabold text-brand-950 uppercase tracking-wide">Paso de Pago Seguro</h1>
             </div>
+
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded text-xs flex items-start space-x-2">
+                <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold">Error en la transacción</p>
+                  <p className="text-[11px]">{errorMessage}</p>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handlePayment} className="space-y-8">
               
@@ -323,7 +398,7 @@ export default function CheckoutPage() {
                     }`}
                   >
                     <CreditCard className="h-4 w-4" />
-                    <span>Tarjeta Crédito</span>
+                    <span>Tarjeta Crédito / Débito</span>
                   </button>
                   <button
                     type="button"
@@ -337,56 +412,16 @@ export default function CheckoutPage() {
                   </button>
                 </div>
 
-                {/* Card input forms */}
+                {/* Card payment info */}
                 {paymentMethod === 'tarjeta' && (
-                  <div className="bg-brand-50 p-4 border border-brand-200 rounded space-y-3">
-                    <div className="flex items-center space-x-2 text-[10px] text-brand-400 mb-2">
-                      <ShieldCheck className="h-4.5 w-4.5 text-accent-600" />
-                      <span>Pasarela PagueloFacil Simulada - Tarjetas de prueba aceptadas</span>
+                  <div className="bg-brand-50 p-5 border border-brand-200 rounded space-y-3">
+                    <div className="flex items-center space-x-2 text-[11px] text-brand-700 font-medium">
+                      <ShieldCheck className="h-5 w-5 text-accent-600 flex-shrink-0" />
+                      <span>Pasarela Segura Tilopay — Procesamiento encriptado Visa / Mastercard</span>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">Nombre del Tarjetahabiente</label>
-                      <input
-                        type="text"
-                        placeholder="Carlos Mendoza"
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value)}
-                        className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">Número de Tarjeta</label>
-                      <input
-                        type="text"
-                        placeholder="4000 1234 5678 9010"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                        className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">Vencimiento</label>
-                        <input
-                          type="text"
-                          placeholder="MM/AA"
-                          value={cardExpiry}
-                          onChange={(e) => setCardExpiry(e.target.value)}
-                          className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">CVV</label>
-                        <input
-                          type="password"
-                          placeholder="•••"
-                          maxLength={3}
-                          value={cardCvv}
-                          onChange={(e) => setCardCvv(e.target.value)}
-                          className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950"
-                        />
-                      </div>
-                    </div>
+                    <p className="text-[11px] text-brand-500 leading-relaxed">
+                      Al hacer clic en <strong>Confirmar Pago</strong>, serás redirigido de forma segura al portal de Tilopay para ingresar los datos de tu tarjeta de crédito o débito.
+                    </p>
                   </div>
                 )}
 
@@ -423,7 +458,7 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* Right Column: Order items summary (Classic Shopify split layout) */}
+          {/* Right Column: Order items summary */}
           <div className="lg:col-span-5 p-6 sm:p-10 bg-brand-100 space-y-8 border-t lg:border-t-0 lg:border-l border-brand-200">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-200 pb-3">Resumen de tu Pedido</h2>
             
@@ -486,7 +521,7 @@ export default function CheckoutPage() {
               {isProcessing ? (
                 <>
                   <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                  <span>Procesando pago seguro...</span>
+                  <span>Procesando con Tilopay...</span>
                 </>
               ) : (
                 <span>Confirmar Pago • ${getGrandTotal().toFixed(2)}</span>
