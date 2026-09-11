@@ -282,7 +282,25 @@ class LocalDbService {
   }
 
   getProductById(id: string): Product | undefined {
-    return this.getProducts().find(p => p.id === id);
+    const normalizedId = id.trim().toLowerCase();
+    const fromStorage = this.getProducts().find(p => p.id === normalizedId);
+    if (fromStorage) return fromStorage;
+
+    const central = getCentralProductById(normalizedId);
+    if (central) {
+      return {
+        id: central.id,
+        name: central.name,
+        description: central.description,
+        price: central.price,
+        image: central.image,
+        images: central.images,
+        material: central.material,
+        category: (central.category === 'cards' ? 'cards' : central.category === 'plates' ? 'plates' : 'accessories') as any,
+        type: 'google'
+      };
+    }
+    return undefined;
   }
 
   updateProductPrice(id: string, newPrice: number): boolean {

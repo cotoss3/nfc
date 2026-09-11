@@ -52,12 +52,6 @@ export const CONDICIONES = {
 export const WHATSAPP_URL = 'https://wa.me/50767134341';
 export const WHATSAPP_NUMERO = '+507 6713-4341';
 
-/**
- * Testimonios reales de clientes.
- * Se deja VACÍO a propósito: la sección solo aparece cuando hay testimonios de verdad.
- * Nunca inventar reseñas — va contra las políticas de Google y contra lo que vende starTAP.
- * Formato: { texto, autor, negocio, ciudad }
- */
 export const TESTIMONIOS: {
   texto: string;
   autor: string;
@@ -67,7 +61,7 @@ export const TESTIMONIOS: {
 
 export const LANDINGS: LandingCopy[] = [
   {
-    ids: ['stand-nfc'],
+    ids: ['stand-nfc-mesa', 'stand-nfc', 'NFC10002'],
     etiqueta: 'El más usado en mostradores',
     h1: 'Multiplica tus reseñas en Google.',
     h1Destacado: 'Sin esfuerzo.',
@@ -107,7 +101,7 @@ export const LANDINGS: LandingCopy[] = [
     coloresPorDefecto: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
   },
   {
-    ids: ['tarjeta-nfc', 'placa-google'],
+    ids: ['tarjeta-nfc-bolsillo', 'tarjeta-nfc', 'placa-google'],
     etiqueta: 'Para equipos y personal de servicio',
     h1: 'Cierra tratos y recolecta reseñas',
     h1Destacado: 'donde vayas.',
@@ -147,7 +141,7 @@ export const LANDINGS: LandingCopy[] = [
     coloresPorDefecto: ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'],
   },
   {
-    ids: ['placa-acrilica-nfc', 'NFC_10001'],
+    ids: ['placa-nfc-mostrador', 'placa-acrilica-nfc', 'NFC_10001'],
     etiqueta: 'Se instala sin taladrar',
     h1: 'Transforma cada rincón en',
     h1Destacado: 'reseñas de 5 estrellas.',
@@ -186,8 +180,47 @@ export const LANDINGS: LandingCopy[] = [
     ],
     coloresPorDefecto: ['Blanco Acrílico', 'Negro Mate', 'Dorado Espejo', 'Plata Pulido'],
   },
+  {
+    ids: ['pack-trio-comercial', 'pack-trio'],
+    etiqueta: 'Paquete Comercial Completo - 28% OFF',
+    h1: 'Equipa tu local fijo y tu personal móvil',
+    h1Destacado: 'en un solo paquete.',
+    subtitulo:
+      'Incluye 1 Placa NFC de Mostrador para tu caja registradora o recepción + 2 Tarjetas NFC de Bolsillo para tu personal en campo. Ahorra $20.00 con envío gratis en Ciudad de Panamá.',
+    nombreCorto: 'Pack Trío',
+    heroImagenAlt:
+      'Pack Trío Comercial NFC starTAP con 1 placa acrílica y 2 tarjetas de PVC',
+    beneficios: [
+      {
+        titulo: 'Cobertura total en el local y en movimiento',
+        texto:
+          'Captura reseñas en la caja de cobro con la placa fija y permite a tu equipo solicitar opiniones durante entregas, visitas o atención directa.',
+        icono: 'zap',
+        imagenAlt: 'Pack Trío Comercial desplegado en mostrador de ventas',
+      },
+      {
+        titulo: 'Ahorro de $20.00 en paquete empresarial',
+        texto:
+          'Obtén la combinación perfecta para tu negocio por solo $50.00 en pago único, con configuración previa lista para usar.',
+        icono: 'sparkles',
+        imagenAlt: 'Beneficio empresarial del Pack Trío starTAP Panamá',
+      },
+    ],
+    pasos: [
+      { titulo: 'Instala la placa en tu caja', texto: 'Adhiérela al mostrador de cobro con la cinta 3M industrial incluida.' },
+      { titulo: 'Entrega las tarjetas a tu equipo', texto: 'Tus vendedores o repartidores las llevan en la billetera o lanyard.' },
+      { titulo: 'Multiplica tus opiniones', texto: 'Captura reseñas desde múltiples puntos de contacto simultáneamente.' },
+    ],
+    faqs: [
+      { q: '¿Qué incluye exactamente el Pack Trío Comercial?', a: 'Incluye 1 Placa NFC de Mostrador en acrílico de 3mm y 2 Tarjetas NFC de Bolsillo en PVC técnico 0.76mm.' },
+      { q: '¿Vienen todas programadas al mismo perfil de Google?', a: 'Sí, todas vienen listos y programadas hacia tu negocio. Si deseas programarlas a enlaces diferentes, puedes modificar cada una de forma independiente en tu portal.' },
+      { q: '¿Incluye costo de envío?', a: 'El envío es totalmente gratuito en Ciudad de Panamá y Panamá Oeste. Para provincias enviamos por Uno Express o Servientrega.' },
+    ],
+    coloresPorDefecto: ['Negro Premium / Blanco Acrílico'],
+  }
 ];
 
 export function getLandingCopy(productId: string): LandingCopy | undefined {
-  return LANDINGS.find((l) => l.ids.includes(productId));
+  const normalized = productId.trim().toLowerCase();
+  return LANDINGS.find((l) => l.ids.includes(normalized));
 }

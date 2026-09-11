@@ -1,30 +1,20 @@
 import type { Metadata } from 'next';
-import fs from 'fs';
-import path from 'path';
 import ProductDetailClient from './ProductDetailClient';
+import { PRODUCTS, getProductById as getCentralProductById } from '@/config/products';
 
 const BASE_URL = 'https://startap.com.pa';
 
-interface StoredProduct {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image?: string;
-  images?: string[];
-  material?: string;
-}
-
-function getProduct(id: string): StoredProduct | null {
-  try {
-    const file = path.join(process.cwd(), 'db_store.json');
-    if (!fs.existsSync(file)) return null;
-    const store = JSON.parse(fs.readFileSync(file, 'utf-8'));
-    const products: StoredProduct[] = store.nfc_products || [];
-    return products.find((p) => p.id === id) || null;
-  } catch {
-    return null;
-  }
+export async function generateStaticParams() {
+  const params: { id: string }[] = [];
+  PRODUCTS.forEach((product) => {
+    params.push({ id: product.id });
+    if (product.aliases) {
+      product.aliases.forEach((alias) => {
+        params.push({ id: alias });
+      });
+    }
+  });
+  return params;
 }
 
 export async function generateMetadata({
@@ -32,7 +22,7 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }): Promise<Metadata> {
-  const product = getProduct(params.id);
+  const product = getCentralProductById(params.id);
 
   if (!product) {
     return {
@@ -60,7 +50,7 @@ export async function generateMetadata({
 }
 
 export default function Page({ params }: { params: { id: string } }) {
-  const product = getProduct(params.id);
+  const product = getCentralProductById(params.id);
 
   const productSchema = product
     ? {
