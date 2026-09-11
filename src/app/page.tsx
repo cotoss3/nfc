@@ -31,7 +31,7 @@ export default function Page() {
         'logo': 'https://startap.com.pa/images/logo.png',
         'image': 'https://startap.com.pa/images/startap_negocio_resenas.webp',
         'description': 'Placas y tarjetas NFC contactless para captar opiniones de Google Maps en comercios y restaurantes de Panamá.',
-        'priceRange': '$20.00 - $60.00',
+        'priceRange': '$20.00 - $50.00',
         'telephone': '+50765239821',
         'address': {
           '@type': 'PostalAddress',

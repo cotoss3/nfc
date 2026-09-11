@@ -87,9 +87,9 @@ export const PRODUCTS: ProductConfig[] = [
     category: 'packs',
     categoryLabel: 'PAQUETE EMPRESARIAL',
     material: '1 PLACA ACRÍLICA 3MM + 2 TARJETAS PVC 0.76MM | NFC + QR',
-    price: 60,
-    priceFormatted: '$60.00',
-    badge: 'Ahorro de $10.00',
+    price: 50,
+    priceFormatted: '$50.00',
+    badge: 'Ahorro de $20.00 (28% OFF)',
     description: 'Equipa tu punto fijo de cobro y tu personal móvil. Incluye 1 Placa de Mostrador para recepción y 2 Tarjetas de Bolsillo para tu equipo de ventas o entregas.',
     useCase: 'Caja de cobro fija + personal móvil en campo.',
     image: '/products/NFC_10001/NFC_10001_Placa.webp',
@@ -98,7 +98,7 @@ export const PRODUCTS: ProductConfig[] = [
       'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp'
     ],
     isPack: true,
-    savingsText: 'Ahorro de $10.00 vs compra individual',
+    savingsText: 'Ahorro de $20.00 (28% OFF) vs compra individual',
     shippingNote: 'Envío gratis en Ciudad de Panamá',
     spec: 'Solución Completa de Captación Local',
     type: 'google'

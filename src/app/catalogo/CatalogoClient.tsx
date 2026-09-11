@@ -113,11 +113,14 @@ export default function CatalogoClient() {
                 </div>
 
                 <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                  <div className="flex items-baseline gap-3">
+                  <div className="flex flex-wrap items-baseline gap-2.5">
                     <span className="text-3xl sm:text-4xl font-black text-amber-400">${specialPacks[0].price}.00</span>
-                    <span className="text-xs text-slate-400 line-through">$70.00</span>
-                    <span className="text-xs font-bold text-amber-300 bg-amber-400/20 px-2 py-0.5 rounded">
-                      Ahorras $10.00
+                    <span className="text-sm text-slate-400 line-through font-semibold">$70.00</span>
+                    <span className="text-xs font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-md shadow-sm">
+                      28% OFF
+                    </span>
+                    <span className="text-xs font-bold text-amber-300 bg-amber-400/20 px-2.5 py-1 rounded-md">
+                      Ahorras $20.00
                     </span>
                   </div>
 
