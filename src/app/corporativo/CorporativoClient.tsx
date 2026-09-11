@@ -123,23 +123,23 @@ export default function CorporativoClient() {
                   <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center flex-shrink-0 font-bold">1</div>
                   <div>
                     <strong className="block text-white">Tarjetas Ejecutivas Reutilizables</strong>
-                    <p className="text-xs text-slate-400">Sustituye cajas de papel por tarjetas NFC eternas grabadas a láser.</p>
+                    <p className="text-xs text-slate-400">Sustituye tarjetas de papel por tarjetas NFC eternas de PVC técnico.</p>
                   </div>
                 </li>
 
                 <li className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center flex-shrink-0 font-bold">2</div>
                   <div>
-                    <strong className="block text-white">Administración Centralizada</strong>
-                    <p className="text-xs text-slate-400">Actualiza los datos de colaboradores o sucursales desde tu panel web.</p>
+                    <strong className="block text-white">Gestión Centralizada</strong>
+                    <p className="text-xs text-slate-400">Asigna o cambia el destino de cada tarjeta desde un solo panel administrativo.</p>
                   </div>
                 </li>
 
                 <li className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-400 flex items-center justify-center flex-shrink-0 font-bold">3</div>
                   <div>
-                    <strong className="block text-white">Precios Especiales por Volumen</strong>
-                    <p className="text-xs text-slate-400">Escala tus pedidos a partir de 10 unidades con precios mayoristas.</p>
+                    <strong className="block text-white">Placas para Puntos de Venta</strong>
+                    <p className="text-xs text-slate-400">Placas de acrílico de 3mm para mostradores, cajas de cobro y recepción.</p>
                   </div>
                 </li>
               </ul>
@@ -223,7 +223,7 @@ export default function CorporativoClient() {
               <span className="text-xs font-bold text-brand-500 uppercase tracking-wider">Pequeño Equipo</span>
               <div className="text-3xl font-black text-brand-950">10 – 49 <span className="text-xs font-normal text-brand-500">uds</span></div>
               <span className="inline-block bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full uppercase">15% de Descuento</span>
-              <p className="text-[11px] text-brand-500">Incluye grabado de logo básico y configuración pre-envío.</p>
+              <p className="text-[11px] text-brand-500">Incluye impresión de logo corporativo y configuración pre-envío.</p>
             </div>
 
             <div className="border-2 border-brand-950 rounded-2xl p-6 text-center space-y-3 bg-white shadow-xl relative">
@@ -388,7 +388,7 @@ export default function CorporativoClient() {
                       rows={3}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Detalla si necesitas tarjetas ejecutivas, placas para sucursales o grabado de logo específico."
+                      placeholder="Detalla si necesitas tarjetas ejecutivas, placas para sucursales o impresión de logo específico."
                       className="w-full px-3 py-2.5 rounded bg-brand-900 border border-brand-700 text-white placeholder-brand-500 focus:outline-none focus:border-amber-400"
                     ></textarea>
                   </div>

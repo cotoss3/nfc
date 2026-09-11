@@ -122,7 +122,7 @@ const faqSchema = {
       name: '¿Es compatible con cualquier teléfono móvil (iPhone y Android)?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Sí. Todos los smartphones modernos (iPhone y Android) cuentan con lector NFC integrado. Para modelos antiguos, el dispositivo incluye un código QR grabado para compatibilidad del 100%.',
+        text: 'Sí. Todos los smartphones modernos (iPhone y Android) cuentan con lector NFC integrado. Para modelos antiguos, el dispositivo incluye un código QR impreso para compatibilidad del 100%.',
       },
     },
     {

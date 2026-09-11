@@ -497,7 +497,7 @@ export default function ProductLanding({ product }: { product: Product }) {
                           <span className="text-xs font-black text-brand-950 bg-white px-2 py-0.5 rounded-md border border-brand-200">+ $5.00 USD</span>
                         </span>
                         <span className="block text-xs text-brand-500 mt-1">
-                          Grabado láser de tu logo oficial en el frontal.
+                          Impresión de tu logo oficial en el frontal (Opcional si lo requieres).
                         </span>
                       </span>
                     </label>
@@ -553,12 +553,12 @@ export default function ProductLanding({ product }: { product: Product }) {
                         <span className="flex justify-between items-center flex-wrap gap-1">
                           <span className="text-xs sm:text-sm font-bold text-brand-950 uppercase flex items-center gap-1.5">
                             <QrCode className="h-4 w-4 text-brand-600" aria-hidden="true" />
-                            Agregar código QR grabado
+                            Agregar código QR impreso HD
                           </span>
                           <span className="text-xs font-black text-brand-950 bg-white px-2 py-0.5 rounded-md border border-brand-200">+ $3.00 USD</span>
                         </span>
                         <span className="block text-xs text-brand-500 mt-1">
-                          Respaldo grabado láser para teléfonos sin NFC.
+                          Respaldo impreso HD para teléfonos sin lector NFC.
                         </span>
                       </span>
                     </label>

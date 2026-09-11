@@ -1002,7 +1002,7 @@ function DashboardContent() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                               <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1">
                                 <div className="flex items-center justify-between text-[10px] font-bold text-emerald-800 uppercase">
-                                  <span>URL para Grabador NFC</span>
+                                  <span>URL para Programador NFC</span>
                                   <button
                                     type="button"
                                     onClick={() => copyToClipboard(`${window.location.origin}/r/${selectedCard.card_id}?m=nfc`, 'nfc_write')}

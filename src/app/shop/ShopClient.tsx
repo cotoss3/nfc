@@ -123,7 +123,7 @@ export default function ShopClient() {
             const details = productTechDetails[product.id] || {
               badge: 'Dispositivo TAP',
               categoryLabel: 'Dispositivo NFC',
-              spec: 'NFC Contactless + Código QR Grabado',
+              spec: 'NFC Contactless + Código QR Impreso HD',
               alt: product.name
             };
 
@@ -230,7 +230,7 @@ export default function ShopClient() {
           <div className="space-y-2 text-center md:text-left">
             <h3 className="font-black text-base text-brand-950 uppercase tracking-wider">¿Deseas pedidos corporativos o cantidades especiales?</h3>
             <p className="text-xs text-brand-600 max-w-xl leading-relaxed">
-              Ofrecemos volumen especial para hoteles, restaurantes y cadenas comerciales en Panamá. Personalizamos colores y grabado de logos corporativos.
+              Ofrecemos volumen especial para hoteles, restaurantes y cadenas comerciales en Panamá. Personalizamos colores e impresión de logos corporativos.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">

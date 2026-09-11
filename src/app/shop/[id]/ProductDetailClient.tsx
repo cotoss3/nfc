@@ -145,10 +145,10 @@ export default function ProductDetailClient({ params }: { params: { id: string }
           <div className="bg-white border border-brand-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
             <h3 className="text-xs font-bold uppercase tracking-wider text-brand-950">Especificaciones</h3>
             <ul className="text-xs text-brand-500 space-y-2.5">
-              <li className="flex justify-between"><span>Material</span><span className="font-semibold text-brand-800">{product.material || (product.category === 'plates' ? 'Acrílico Premium 3mm' : 'PVC / Madera Maciza')}</span></li>
+              <li className="flex justify-between"><span>Material</span><span className="font-semibold text-brand-800">{product.material || 'PVC Técnico / Acrílico Premium'}</span></li>
               <li className="flex justify-between"><span>Chip Interno</span><span className="font-semibold text-brand-800">NTAG213 (Alta velocidad)</span></li>
-              <li className="flex justify-between"><span>Ciclo de Vida</span><span className="font-semibold text-brand-800">100,000 lecturas / Grabado Permanente</span></li>
-              <li className="flex justify-between"><span>Fulfillment</span><span className="font-semibold text-brand-800">Grabado láser en Panamá</span></li>
+              <li className="flex justify-between"><span>Ciclo de Vida</span><span className="font-semibold text-brand-800">100,000 lecturas / Reutilizable</span></li>
+              <li className="flex justify-between"><span>Fulfillment</span><span className="font-semibold text-brand-800">Programación y Configuración en Panamá</span></li>
             </ul>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
 
               {/* Add-ons Checkboxes */}
               <div className="space-y-3 pt-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-brand-900 block">Personalización Opcional</label>
+                <p className="text-xs font-bold uppercase tracking-wider text-brand-950">Personalización y Opciones (Opcionales)</p>
                 
                 {/* Logo Checkbox */}
                 <div className={`border rounded-2xl p-4 sm:p-5 transition-all ${hasCustomLogo ? 'border-brand-950 bg-brand-50/60 shadow-sm' : 'border-brand-200 bg-white'}`}>
@@ -246,11 +246,11 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                       <div className="flex justify-between items-center flex-wrap gap-1">
                         <span className="text-xs sm:text-sm font-bold text-brand-950 uppercase flex items-center gap-1.5">
                           <ImageIcon className="h-4 w-4 text-brand-600" />
-                          Agregar Logo Personalizado
+                          Agregar logo personalizado
                         </span>
                         <span className="text-xs font-black text-brand-950 bg-white px-2 py-0.5 rounded-md border border-brand-200">+ $5.00 USD</span>
                       </div>
-                      <p className="text-xs text-brand-500 mt-1">Grabamos el logo vectorizado de tu marca en el frontal del producto.</p>
+                      <p className="text-xs text-brand-500 mt-1">Impresión de tu logo oficial en el frontal (Opcional si el cliente lo solicita).</p>
                     </div>
                   </label>
 
@@ -292,11 +292,11 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                       <div className="flex justify-between items-center flex-wrap gap-1">
                         <span className="text-xs sm:text-sm font-bold text-brand-950 uppercase flex items-center gap-1.5">
                           <QrCode className="h-4 w-4 text-brand-600" />
-                          Agregar Código QR Grabado
+                          Agregar Código QR Impreso HD
                         </span>
                         <span className="text-xs font-black text-brand-950 bg-white px-2 py-0.5 rounded-md border border-brand-200">+ $3.00 USD</span>
                       </div>
-                      <p className="text-xs text-brand-500 mt-1">Grabado láser de respaldo para teléfonos sin lector NFC.</p>
+                      <p className="text-xs text-brand-500 mt-1">Respaldo impreso HD para teléfonos sin lector NFC.</p>
                     </div>
                   </label>
                 </div>

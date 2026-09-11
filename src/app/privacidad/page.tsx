@@ -73,7 +73,7 @@ export default function PrivacidadPage() {
             </p>
             <ul className="list-disc pl-5 space-y-1 text-slate-700">
               <li><strong className="text-slate-900">Datos de Identificación y Contacto:</strong> Nombre completo, nombre comercial del negocio, número de teléfono (WhatsApp), dirección de correo electrónico y dirección física de entrega (provincia, distrito y corregimiento).</li>
-              <li><strong className="text-slate-900">Datos de Programación del Hardware:</strong> Enlace oficial a la ficha de Google Maps o WhatsApp comercial facilitado por el usuario para ser grabado en el chip NFC y código QR.</li>
+              <li><strong className="text-slate-900">Datos de Programación del Hardware:</strong> Enlace oficial a la ficha de Google Maps o WhatsApp comercial facilitado por el usuario para ser programado en el chip NFC y código QR.</li>
               <li><strong className="text-slate-900">Datos de Facturación:</strong> Registro de transacciones y método de pago utilizado (Yappy, ACH o Tarjeta). <em className="text-slate-600">Nota: No almacenamos datos sensibles ni números completos de tarjetas de crédito; estos son procesados directamente por la pasarela bancaria.</em></li>
             </ul>
           </section>

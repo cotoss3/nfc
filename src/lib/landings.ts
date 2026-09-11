@@ -66,7 +66,7 @@ export const LANDINGS: LandingCopy[] = [
     h1: 'Multiplica tus reseñas en Google.',
     h1Destacado: 'Sin esfuerzo.',
     subtitulo:
-      'El Stand NFC es tu vendedor silencioso. Colócalo en tu mostrador o mesa y tus clientes satisfechos te dejan reseñas de 5 estrellas en segundos.',
+      'El Stand NFC en PVC Técnico Autoportante es tu vendedor silencioso. Colócalo en tu mostrador o mesa y tus clientes satisfechos te dejan reseñas de 5 estrellas en segundos.',
     nombreCorto: 'Stand',
     heroImagenAlt:
       'Stand NFC starTAP para reseñas de Google sobre el mostrador de un negocio en Panamá',
@@ -79,11 +79,11 @@ export const LANDINGS: LandingCopy[] = [
         imagenAlt: 'Cliente acercando su celular a un stand NFC para dejar una reseña de Google',
       },
       {
-        titulo: 'Acrílico de alta resistencia',
+        titulo: 'PVC técnico autoportante de alta resistencia',
         texto:
-          'Diseñado para el tráfico de comercios, restaurantes y clínicas. Soporta rayones, líquidos y caídas ligeras. Su base pesada evita que se caiga en mostradores concurridos.',
+          'Diseñado para el tráfico constante de comercios, restaurantes y clínicas. Soporta rayones, líquidos y caídas ligeras con estructura rígida y estable.',
         icono: 'shield',
-        imagenAlt: 'Detalle del acabado en acrílico del stand NFC starTAP',
+        imagenAlt: 'Detalle del acabado en PVC técnico del stand NFC starTAP',
       },
     ],
     pasos: [
@@ -93,12 +93,12 @@ export const LANDINGS: LandingCopy[] = [
     ],
     faqs: [
       { q: '¿Necesito pagar alguna mensualidad o suscripción?', a: 'No, el pago es único. Compras tu Stand NFC una vez y te funciona para siempre, sin cobros ocultos ni mantenimiento.' },
-      { q: '¿Funciona con iPhone y Android?', a: 'Sí. Todos los smartphones modernos traen lector NFC integrado. Para modelos antiguos, el Stand incluye un código QR grabado.' },
+      { q: '¿Funciona con iPhone y Android?', a: 'Sí. Todos los smartphones modernos traen lector NFC integrado. Para modelos antiguos, el Stand incluye un código QR impreso HD.' },
       { q: '¿Cómo configuran el enlace hacia mi negocio?', a: 'Al procesar tu pedido programamos el chip para que apunte a tu perfil de Google Maps. Te llega listo para usar.' },
+      { q: '¿Puedo personalizarlo con el logo de mi negocio?', a: 'Sí. Los dispositivos incluyen su diseño base y puedes solicitar la impresión de tu logo personalizado si lo deseas (+ $5.00).' },
       { q: '¿Si cambio la ubicación de mi local, debo comprar otro Stand?', a: 'No. Desde tu panel actualizas el enlace hacia donde dirige el Stand en cualquier momento, sin costo.' },
-      { q: '¿Puedo pedirle la reseña solo a los clientes contentos?', a: 'No, y no conviene. Filtrar reseñas va contra las políticas de Google y puede costarte la ficha. El Stand se le ofrece a todos por igual: lo que sube tu promedio es el volumen de clientes satisfechos.' },
     ],
-    coloresPorDefecto: ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado'],
+    coloresPorDefecto: ['Negro Mate', 'Blanco Brillante'],
   },
   {
     ids: ['tarjeta-nfc-bolsillo', 'tarjeta-nfc', 'placa-google'],
@@ -106,7 +106,7 @@ export const LANDINGS: LandingCopy[] = [
     h1: 'Cierra tratos y recolecta reseñas',
     h1Destacado: 'donde vayas.',
     subtitulo:
-      'Lleva el SEO local y el networking en el bolsillo. Ideal para meseros, vendedores, ejecutivos y emprendedores en Panamá que buscan impresionar al toque.',
+      'Lleva el SEO local y el networking en el bolsillo. Tarjeta de PVC Contactless 0.76mm ideal para meseros, vendedores, ejecutivos y personal en movimiento.',
     nombreCorto: 'Tarjeta',
     heroImagenAlt:
       'Tarjeta NFC starTAP para reseñas de Google, tamaño billetera, en la mano de un vendedor',
@@ -114,16 +114,16 @@ export const LANDINGS: LandingCopy[] = [
       {
         titulo: 'Ideal para equipos de ventas y personal de servicio',
         texto:
-          'Del tamaño de una tarjeta de crédito (8.5 × 5.4 cm) y muy delgada. Cabe en la billetera o se cuelga con un lanyard. Cada miembro del equipo puede llevar la suya y ver cuántos escaneos genera.',
+          'Del tamaño estándar de una tarjeta de crédito (8.5 × 5.4 cm) en PVC rígido 0.76mm. Cabe en la billetera o se cuelga con un lanyard para solicitar valoraciones al instante.',
         icono: 'zap',
         imagenAlt: 'Mesero mostrando una tarjeta NFC starTAP a un cliente en un restaurante de Panamá',
       },
       {
-        titulo: 'Materiales premium: PVC técnico y madera maciza',
+        titulo: 'PVC Contactless técnico impermeable',
         texto:
-          'El chip va sellado dentro de la tarjeta, así que aguanta el uso diario, el roce del bolsillo y la humedad. Acabados en PVC técnico o en madera de bambú y nogal.',
+          'El chip va sellado dentro de la tarjeta de PVC, así que aguanta el uso diario, el roce del bolsillo y la humedad sin dañarse.',
         icono: 'shield',
-        imagenAlt: 'Tarjetas NFC starTAP en acabado de madera de bambú y PVC negro',
+        imagenAlt: 'Tarjeta NFC de PVC técnico starTAP',
       },
     ],
     pasos: [
@@ -132,13 +132,13 @@ export const LANDINGS: LandingCopy[] = [
       { titulo: 'Reseña o contacto guardado', texto: 'Puede apuntar a tu ficha de Google, a WhatsApp o a tu perfil.' },
     ],
     faqs: [
-      { q: '¿Puedo llevar la tarjeta en la billetera o colgarla al cuello?', a: 'Sí. Tiene el tamaño estándar de una tarjeta de crédito (8.5 × 5.4 cm), es fina y resistente. Muchos negocios en Panamá la usan con lanyard para su personal de servicio.' },
+      { q: '¿Puedo llevar la tarjeta en la billetera o colgarla al cuello?', a: 'Sí. Tiene el tamaño estándar de una tarjeta de crédito (8.5 × 5.4 cm), fabricada en PVC técnico 0.76mm fino y resistente.' },
       { q: '¿Necesito pagar alguna suscripción mensual?', a: 'No. La tarjeta NFC starTAP es de pago único. No cobramos mensualidades por usarla ni por acceder a tu panel.' },
-      { q: '¿Qué pasa si cambio de empleo o de red social?', a: 'Desde tu panel gratuito cambias el enlace hacia donde dirige la tarjeta al instante, cuantas veces quieras, sin comprar otra.' },
-      { q: '¿Funciona con cualquier teléfono inteligente?', a: 'Sí, con iPhone y Android mediante el chip NFC, o con el código QR grabado en el reverso.' },
+      { q: '¿Puedo agregar el logo de mi negocio?', a: 'Sí. Si lo deseas, puedes solicitar la impresión de tu logo personalizado en la tarjeta (+ $5.00).' },
+      { q: '¿Funciona con cualquier teléfono inteligente?', a: 'Sí, con iPhone y Android mediante el chip NFC, o con el código QR impreso en el reverso.' },
       { q: '¿Puedo saber qué vendedor genera más reseñas?', a: 'Sí. Cada tarjeta tiene su propio código y su propio contador de escaneos en el panel.' },
     ],
-    coloresPorDefecto: ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'],
+    coloresPorDefecto: ['Negro Premium', 'Blanco Premium'],
   },
   {
     ids: ['placa-nfc-mostrador', 'placa-acrilica-nfc', 'NFC_10001'],
@@ -146,22 +146,22 @@ export const LANDINGS: LandingCopy[] = [
     h1: 'Transforma cada rincón en',
     h1Destacado: 'reseñas de 5 estrellas.',
     subtitulo:
-      'La placa acrílica adhesiva NFC es la solución para mesas de restaurantes, puertas de cristal, mostradores y paredes de clínicas o locales comerciales en Panamá.',
+      'Placa de Acrílico Premium de 3mm con adhesivo 3M industrial. La solución ideal para mostradores, cajas de cobro, puertas de cristal y paredes de atención en Panamá.',
     nombreCorto: 'Placa',
     heroImagenAlt:
       'Placa acrílica NFC starTAP adherida al mostrador de un local comercial en Panamá',
     beneficios: [
       {
-        titulo: 'Fácil instalación, sin taladrar ni romper paredes',
+        titulo: 'Fácil instalación en Acrílico Premium 3mm',
         texto:
-          'Todas las placas incluyen adhesivo 3M de grado industrial en el reverso. Despegas la cinta protectora y la fijas en cristal, madera, azulejo o acrílico. Sin perforar y sin taladro.',
+          'Todas las placas de acrílico de 3mm incluyen adhesivo 3M de grado industrial en el reverso. Despegas la cinta protectora y la fijas en cristal, madera, azulejo o metal sin taladrar.',
         icono: 'zap',
         imagenAlt: 'Instalación de una placa NFC adhesiva sobre una puerta de cristal',
       },
       {
         titulo: 'Impermeable y resistente al tráfico constante',
         texto:
-          'El chip NFC va sellado dentro del acrílico de 3 mm. Aguanta el calor de Panamá, las salpicaduras y la limpieza diaria sin dañarse.',
+          'El chip NFC va sellado dentro de la placa de acrílico de 3 mm. Aguanta el calor de Panamá, las salpicaduras y la limpieza diaria sin dañarse.',
         icono: 'shield',
         imagenAlt: 'Placa NFC acrílica resistiendo salpicaduras de agua',
       },
@@ -172,13 +172,12 @@ export const LANDINGS: LandingCopy[] = [
       { titulo: 'Llega tu reseña', texto: 'Directo a la pantalla de calificación de tu ficha de Google.' },
     ],
     faqs: [
-      { q: '¿Cómo se instala la placa en mi local o restaurante?', a: 'Incluye adhesivo 3M ultrarresistente de grado industrial en el reverso. Despegas la cinta protectora y la fijas en cristal, madera, azulejo o acrílico, sin perforar ni usar taladro.' },
-      { q: '¿Soporta la intemperie o salpicaduras de agua?', a: 'Sí. El chip NFC está sellado dentro del cuerpo de acrílico de 3 mm. Es impermeable, resiste el calor de Panamá y no sufre daños por salpicaduras.' },
-      { q: '¿Puedo cambiar el enlace si cambio de ubicación?', a: 'Sí. Con el panel incluido actualizas el enlace hacia donde dirige la placa en cualquier momento, desde el celular.' },
+      { q: '¿De qué material está hecha la placa?', a: 'Está fabricada en Acrílico Premium pulido de 3 mm de grosor con adhesivo 3M ultrarresistente de grado industrial en el reverso.' },
+      { q: '¿Soporta la intemperie o salpicaduras de agua?', a: 'Sí. El chip NFC está sellado dentro del cuerpo de acrílico de 3 mm. Es impermeable y resiste el calor de Panamá.' },
+      { q: '¿Puedo solicitar el logo de mi negocio en la placa?', a: 'Sí. La placa viene con el diseño estándar y puedes añadir la impresión de tu logo si lo requieres (+ $5.00).' },
       { q: '¿Cobran mensualidades por usar la placa?', a: 'No. Es un pago único por el dispositivo, sin suscripciones obligatorias ni renovaciones anuales.' },
-      { q: '¿Puedo poner varias placas en el mismo local?', a: 'Sí, y suele rendir más. Cada placa tiene su propio código y puedes ver desde cuál llegan más escaneos.' },
     ],
-    coloresPorDefecto: ['Blanco Acrílico', 'Negro Mate', 'Dorado Espejo', 'Plata Pulido'],
+    coloresPorDefecto: ['Acrílico Negro', 'Acrílico Blanco'],
   },
   {
     ids: ['pack-trio-comercial', 'pack-trio'],
@@ -186,7 +185,7 @@ export const LANDINGS: LandingCopy[] = [
     h1: 'Equipa tu local fijo y tu personal móvil',
     h1Destacado: 'en un solo paquete.',
     subtitulo:
-      'Incluye 1 Placa NFC de Mostrador para tu caja registradora o recepción + 2 Tarjetas NFC de Bolsillo para tu personal en campo. Ahorra $20.00 con envío gratis en Ciudad de Panamá.',
+      'Incluye 1 Placa NFC de Mostrador en Acrílico Premium de 3mm + 2 Tarjetas NFC de Bolsillo en PVC 0.76mm. Ahorra $20.00 con envío gratis en Ciudad de Panamá.',
     nombreCorto: 'Pack Trío',
     heroImagenAlt:
       'Pack Trío Comercial NFC starTAP con 1 placa acrílica y 2 tarjetas de PVC',
@@ -194,7 +193,7 @@ export const LANDINGS: LandingCopy[] = [
       {
         titulo: 'Cobertura total en el local y en movimiento',
         texto:
-          'Captura reseñas en la caja de cobro con la placa fija y permite a tu equipo solicitar opiniones durante entregas, visitas o atención directa.',
+          'Captura reseñas en la caja de cobro con la placa fija en acrílico de 3mm y permite a tu equipo solicitar opiniones con las tarjetas de PVC técnico de 0.76mm.',
         icono: 'zap',
         imagenAlt: 'Pack Trío Comercial desplegado en mostrador de ventas',
       },
@@ -212,11 +211,11 @@ export const LANDINGS: LandingCopy[] = [
       { titulo: 'Multiplica tus opiniones', texto: 'Captura reseñas desde múltiples puntos de contacto simultáneamente.' },
     ],
     faqs: [
-      { q: '¿Qué incluye exactamente el Pack Trío Comercial?', a: 'Incluye 1 Placa NFC de Mostrador en acrílico de 3mm y 2 Tarjetas NFC de Bolsillo en PVC técnico 0.76mm.' },
+      { q: '¿Qué incluye exactamente el Pack Trío Comercial?', a: 'Incluye 1 Placa NFC de Mostrador en Acrílico Premium de 3mm y 2 Tarjetas NFC de Bolsillo en PVC técnico de 0.76mm.' },
       { q: '¿Vienen todas programadas al mismo perfil de Google?', a: 'Sí, todas vienen listos y programadas hacia tu negocio. Si deseas programarlas a enlaces diferentes, puedes modificar cada una de forma independiente en tu portal.' },
       { q: '¿Incluye costo de envío?', a: 'El envío es totalmente gratuito en Ciudad de Panamá y Panamá Oeste. Para provincias enviamos por Uno Express o Servientrega.' },
     ],
-    coloresPorDefecto: ['Negro Premium / Blanco Acrílico'],
+    coloresPorDefecto: ['Acrílico 3mm + PVC 0.76mm'],
   }
 ];
 

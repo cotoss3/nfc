@@ -72,7 +72,7 @@ export default function EnviosPage() {
                 <h3 className="font-bold text-slate-950 text-base">Procesamiento y Preparación Física</h3>
                 <ul className="text-xs space-y-1.5 text-slate-600 list-disc pl-4">
                   <li>Verificación de pago (Yappy, ACH o Tarjeta).</li>
-                  <li>Grabado del chip NFC 13.56 MHz con la URL de tu ficha de Google Maps.</li>
+                  <li>Programación del chip NFC 13.56 MHz con la URL de tu ficha de Google Maps.</li>
                   <li>Verificación de impresión del código QR de respaldo.</li>
                   <li>Empaque seguro y entrega del paquete en el centro de acopio del proveedor logístico.</li>
                 </ul>

@@ -64,7 +64,7 @@ export default function HomeClient() {
     },
     {
       q: '¿Qué pasa si el teléfono del cliente no tiene NFC?',
-      a: 'Todos los productos StarTAP incluyen un código QR vectorizado grabado en la superficie. Si un cliente utiliza un celular sin lector NFC, solo abre la cámara de su teléfono, enfoca el código QR y accede exactamente al mismo formulario de calificación.'
+      a: 'Todos los productos StarTAP incluyen un código QR vectorizado impreso en la superficie. Si un cliente utiliza un celular sin lector NFC, solo abre la cámara de su teléfono, enfoca el código QR y accede exactamente al mismo formulario de calificación.'
     }
   ];
 

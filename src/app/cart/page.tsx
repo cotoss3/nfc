@@ -68,7 +68,7 @@ export default function CartPage() {
                     <h3 className="font-bold text-brand-950 text-xs sm:text-sm uppercase tracking-wide leading-snug">{item.product_name}</h3>
                     <div className="text-[10px] text-brand-500 space-y-0.5">
                       <p>Acabado: <span className="font-bold text-brand-800 uppercase">{item.selected_color}</span></p>
-                      <p>Grabado: <span className="font-bold text-brand-800 uppercase">{item.business_name}</span></p>
+                      <p>Negocio: <span className="font-bold text-brand-800 uppercase">{item.business_name}</span></p>
                       {item.has_custom_logo && (
                         <p className="flex items-center gap-1 text-green-700 font-bold">
                           <span>✓ Logo Personalizado (+ $5.00)</span>
@@ -76,7 +76,7 @@ export default function CartPage() {
                       )}
                       {item.has_qr_code && (
                         <p className="flex items-center gap-1 text-green-700 font-bold">
-                          <span>✓ Código QR Grabado (+ $3.00)</span>
+                          <span>✓ Código QR Impreso (+ $3.00)</span>
                         </p>
                       )}
                       {item.initial_redirect_url && (
@@ -137,7 +137,7 @@ export default function CartPage() {
                 <span className="font-semibold text-brand-950">{getItemCount()} artículos</span>
               </div>
               <div className="flex justify-between">
-                <span>Grabado Digital Láser</span>
+                <span>Programación del Chip NFC</span>
                 <span className="text-accent-600 font-bold uppercase">Gratuito</span>
               </div>
               <div className="flex justify-between">
