@@ -203,7 +203,7 @@ export default function HomeClient() {
             
             {/* Item 1: Tarjeta NFC de Bolsillo */}
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
+              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/tarjeta-nfc-bolsillo'}>
                 <img
                   src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
                   alt="Tarjeta NFC de Bolsillo para Reseñas de Google Panamá"
@@ -215,7 +215,7 @@ export default function HomeClient() {
               </div>
               <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5 hover:text-amber-600 cursor-pointer transition-colors" onClick={() => window.location.href='/catalogo/tarjeta-nfc-bolsillo'}>
                     Tarjeta NFC de Bolsillo
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
@@ -231,10 +231,10 @@ export default function HomeClient() {
                     Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
                   </p>
                   <Link
-                    href="/catalogo"
+                    href="/catalogo/tarjeta-nfc-bolsillo"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Comprar Tarjeta — $20.00
+                    Ver Producto — $20.00
                   </Link>
                 </div>
               </div>
@@ -245,7 +245,7 @@ export default function HomeClient() {
               <div className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3.5 py-1 rounded-full shadow-md z-20">
                 Más Vendida
               </div>
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
+              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/placa-nfc-mostrador'}>
                 <img
                   src="/products/NFC_10001/NFC_10001_Placa.webp"
                   alt="Placa NFC para Reseñas de Google en Panamá"
@@ -257,7 +257,7 @@ export default function HomeClient() {
               </div>
               <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5 hover:text-amber-600 cursor-pointer transition-colors" onClick={() => window.location.href='/catalogo/placa-nfc-mostrador'}>
                     Placa NFC para Reseñas de Google
                   </h3>
                   <p className="text-xs text-slate-700 leading-relaxed font-medium">
@@ -273,10 +273,10 @@ export default function HomeClient() {
                     Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
                   </p>
                   <Link
-                    href="/catalogo"
+                    href="/catalogo/placa-nfc-mostrador"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Comprar Placa — $30.00
+                    Ver Producto — $30.00
                   </Link>
                 </div>
               </div>
@@ -284,7 +284,7 @@ export default function HomeClient() {
 
             {/* Item 3: Stand NFC para Reseñas de Google */}
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
+              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/stand-nfc-mesa'}>
                 <img
                   src="/products/NFC10002/NFC_10002_Stan.webp"
                   alt="Stand NFC para Reseñas de Google"
@@ -296,7 +296,7 @@ export default function HomeClient() {
               </div>
               <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5 hover:text-amber-600 cursor-pointer transition-colors" onClick={() => window.location.href='/catalogo/stand-nfc-mesa'}>
                     Stand NFC para Reseñas de Google
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
@@ -312,10 +312,10 @@ export default function HomeClient() {
                     Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
                   </p>
                   <Link
-                    href="/catalogo"
+                    href="/catalogo/stand-nfc-mesa"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Comprar Stand — $35.00
+                    Ver Producto — $35.00
                   </Link>
                 </div>
               </div>
