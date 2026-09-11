@@ -81,12 +81,25 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-gray-800 text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
-          <p>© {new Date().getFullYear()} StarTAP Panamá (KoreNet Cloud & Web - Fernando Contreras). Todos los derechos reservados.</p>
+        <div className="mt-10 pt-6 border-t border-gray-800 text-center text-xs text-gray-400 flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+          <div className="space-y-1 text-center md:text-left">
+            <p>© {new Date().getFullYear()} StarTAP Panamá. Todos los derechos reservados.</p>
+            <p className="text-[11px] text-gray-400">
+              Desarrollo Web por{' '}
+              <a
+                href="https://datakorex.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-400 font-bold hover:text-white transition-colors"
+              >
+                DataKorex (datakorex.com)
+              </a>
+            </p>
+          </div>
           <div className="flex items-center space-x-4">
-            <Link href="/envios" className="hover:text-gray-300 underline">Envíos</Link>
-            <Link href="/terminos" className="hover:text-gray-300 underline">Términos</Link>
-            <Link href="/privacidad" className="hover:text-gray-300 underline">Privacidad</Link>
+            <Link href="/envios" className="hover:text-gray-200 underline">Envíos</Link>
+            <Link href="/terminos" className="hover:text-gray-200 underline">Términos</Link>
+            <Link href="/privacidad" className="hover:text-gray-200 underline">Privacidad</Link>
           </div>
         </div>
       </div>
