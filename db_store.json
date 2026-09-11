@@ -1,24 +1,10 @@
 {
   "nfc_products": [
     {
-      "id": "stand-nfc",
-      "name": "Stand NFC para Reseñas de Google",
-      "description": "Stand NFC optimizado para SEO local. Perfecto para capturar reseñas para restaurante y comercios. Mejora tu posicionamiento en Google Maps al instante y vende más en Panamá. Elegante, sin apps y listo para usar.",
-      "price": 35,
-      "image": "/products/NFC10002/NFC_10002_Stan.webp",
-      "images": [
-        "/products/NFC10002/NFC_10002_Stan.webp",
-        "/products/NFC10002/NFC_10002_Stan.png"
-      ],
-      "material": "PVC Técnico",
-      "category": "accessories",
-      "type": "google"
-    },
-    {
       "id": "tarjeta-nfc",
-      "name": "Tarjeta NFC para Reseñas de Google",
-      "description": "Tarjeta NFC portátil para disparar tu SEO local. Lleva tu captación de clientes a otro nivel: obtén reseñas para restaurante, clínica o tienda con un solo toque y vende más en Panamá rápidamente.",
-      "price": 20,
+      "name": "Tarjeta NFC de Bolsillo para Reseñas",
+      "description": "Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en la billetera para pedir reseñas en entregas a domicilio, eventos o ventas presenciales en Panamá.",
+      "price": 15,
       "image": "https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp",
       "images": [
         "https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp",
@@ -30,16 +16,30 @@
     },
     {
       "id": "placa-acrilica-nfc",
-      "name": "Placa NFC para Reseñas de Google",
-      "description": "Placa NFC de instalación permanente. La herramienta definitiva de SEO local para conseguir reseñas para restaurante, recepción o local comercial. Domina las búsquedas orgánicas y vende más en Panamá.",
-      "price": 30,
+      "name": "Placa Acrílica de Mostrador Estándar",
+      "description": "Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.",
+      "price": 25,
       "image": "/products/NFC_10001/NFC_10001_Placa.webp",
       "images": [
         "/products/NFC_10001/NFC_10001_Placa.webp",
         "/products/NFC_10001/NFC_10001_Placa.png"
       ],
-      "material": "PVC de alta densidad",
+      "material": "Acrílico Pulido 3mm",
       "category": "plates",
+      "type": "google"
+    },
+    {
+      "id": "stand-nfc",
+      "name": "Placa Acrílica Premium Personalizada con Logo",
+      "description": "Grabado láser oficial de la marca de tu negocio en acrílico de alta densidad. Incluye chip NFC NTAG213 y código QR impreso de alta resolución.",
+      "price": 29.99,
+      "image": "/products/NFC10002/NFC_10002_Stan.webp",
+      "images": [
+        "/products/NFC10002/NFC_10002_Stan.webp",
+        "/products/NFC10002/NFC_10002_Stan.png"
+      ],
+      "material": "Acrílico Alta Densidad + Grabado Láser",
+      "category": "accessories",
       "type": "google"
     },
     {
