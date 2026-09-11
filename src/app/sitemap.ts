@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { dbLocal } from '@/lib/db';
+import { PRODUCTS } from '@/config/products';
 import { INDUSTRIAS } from '@/lib/industrias';
 
 const BASE_URL = 'https://startap.com.pa';
@@ -25,17 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  let productRoutes: MetadataRoute.Sitemap = [];
-  try {
-    productRoutes = dbLocal.getProducts().map((p) => ({
-      url: `${BASE_URL}/catalogo/${p.id}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    }));
-  } catch {
-    productRoutes = [];
-  }
+  const productRoutes: MetadataRoute.Sitemap = PRODUCTS.map((p) => ({
+    url: `${BASE_URL}/catalogo/${p.id}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }));
 
   return [...staticRoutes, ...industriaRoutes, ...productRoutes];
 }
