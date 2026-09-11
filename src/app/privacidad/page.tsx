@@ -84,7 +84,7 @@ export default function PrivacidadPage() {
               3. Finalidad del Tratamiento de los Datos
             </h2>
             <p>
-              Tus datos personales son utilizados estrictamente para las siguientes finalidades comerciales legítimas:
+              Tus datos personales son utilizados para la gestión operativa de compras y para la conformación de la base de datos oficial de clientes de StarTAP Panamá (KoreNet Cloud & Web). Las finalidades incluyen:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 flex items-start gap-2">
@@ -101,21 +101,24 @@ export default function PrivacidadPage() {
               </div>
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span>Atención a consultas de soporte técnico o garantías.</span>
+                <span>Creación de la base de datos interna de clientes para envío directo de ofertas exclusivas, descuentos, nuevos lanzamientos de hardware NFC y novedades del servicio.</span>
               </div>
             </div>
+            <p className="text-xs text-slate-600 pt-1">
+              * El cliente podrá solicitar la suspensión o cancelación del envío de comunicaciones promocionales directas en cualquier momento a través de nuestras vías de contacto.
+            </p>
           </section>
 
           {/* Sección 4 */}
           <section className="space-y-3 border-b border-slate-100 pb-6">
             <h2 className="text-lg font-bold text-slate-950 uppercase tracking-wide">
-              4. Confidencialidad y Transferencia a Terceros
+              4. Base de Datos Interna y Prohibición Absoluta de Reventa a Terceros
             </h2>
-            <p>
-              <strong className="text-slate-900">KoreNet Cloud & Web / StarTAP Panamá no vende, alquila ni comercializa datos personales de sus clientes con ninguna tercera empresa.</strong>
+            <p className="font-semibold text-slate-900">
+              Queda expresamente garantizado que KoreNet Cloud & Web / StarTAP Panamá NO vende, NO alquila, NO cede ni comercializa la base de datos de datos personales de sus clientes con ninguna otra empresa o entidad tercera.
             </p>
             <p>
-              Tus datos únicamente podrán ser compartidos de forma limitada con proveedores logísticos de mensajería (ej. Uno Express / Servientrega) para posibilitar la entrega de los productos físicos en tu dirección en Panamá.
+              La información ingresada por nuestros clientes se almacena exclusivamente en nuestra base de datos interna para el control de pedidos y comunicaciones de ofertas propias de la marca. Tus datos solo se comparten de forma limitada con empresas de mensajería (como Uno Express o Servientrega) únicamente para la logística de entrega física de tus pedidos en Panamá.
             </p>
           </section>
 
