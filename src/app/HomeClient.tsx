@@ -205,7 +205,7 @@ export default function HomeClient() {
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
               <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo'}>
                 <img
-                  src="https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp"
+                  src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
                   alt="Tarjeta NFC de Bolsillo para Reseñas de Google"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />

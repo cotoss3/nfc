@@ -32,10 +32,11 @@ export const PRODUCTS: ProductConfig[] = [
     badge: 'PVC Contactless 0.76mm',
     description: 'Tarjeta de PVC tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
     useCase: 'Meseros, técnicos en ruta, repartidores y eventos.',
-    image: 'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
+    image: '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
     images: [
-      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp',
-      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-Resenas-Google-funcionando.webp'
+      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
+      '/products/tarjeta-nfc/tarjeta-nfc-contactless-google-maps-panama.webp',
+      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp'
     ],
     spec: 'Impermeable HD + Impresión de Alta Durabilidad',
     type: 'google'
@@ -95,7 +96,7 @@ export const PRODUCTS: ProductConfig[] = [
     image: '/products/NFC_10001/NFC_10001_Placa.webp',
     images: [
       '/products/NFC_10001/NFC_10001_Placa.webp',
-      'https://tapreview.es/wp-content/uploads/2025/01/Tarjeta-NFC-TapReview.webp'
+      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp'
     ],
     isPack: true,
     savingsText: 'Ahorro de $20.00 (28% OFF) vs compra individual',
