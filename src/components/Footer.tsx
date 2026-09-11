@@ -24,6 +24,7 @@ export default function Footer() {
               <li><Link href="/catalogo" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
               <li><Link href="/catalogo" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
               <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Pedidos Corporativos B2B</Link></li>
+              <li><Link href="/envios" className="hover:text-white transition-colors text-amber-300 font-medium">Política de Envíos</Link></li>
               <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-300">Términos y Condiciones</Link></li>
               <li><Link href="/privacidad" className="hover:text-white transition-colors text-gray-300">Política de Privacidad</Link></li>
             </ul>
@@ -83,6 +84,7 @@ export default function Footer() {
         <div className="mt-10 pt-6 border-t border-gray-800 text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
           <p>© {new Date().getFullYear()} StarTAP Panamá (KoreNet Cloud & Web - Fernando Contreras). Todos los derechos reservados.</p>
           <div className="flex items-center space-x-4">
+            <Link href="/envios" className="hover:text-gray-300 underline">Envíos</Link>
             <Link href="/terminos" className="hover:text-gray-300 underline">Términos</Link>
             <Link href="/privacidad" className="hover:text-gray-300 underline">Privacidad</Link>
           </div>

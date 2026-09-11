@@ -97,13 +97,20 @@ export default function TerminosPage() {
           {/* Sección 4 */}
           <section className="space-y-3 border-b border-slate-100 pb-6">
             <h2 className="text-lg font-bold text-slate-950 uppercase tracking-wide">
-              4. Despacho y Tiempos de Entrega en Panamá
+              4. Tiempos de Configuración y Despacho Logístico en Panamá
             </h2>
             <p>
-              Los envíos dentro de la <strong className="text-slate-900">Ciudad de Panamá</strong> se entregan en un periodo estimado de <strong className="text-slate-900">24 a 48 horas laborables</strong> tras confirmar el pago y la ficha de Google Maps a programar.
+              El periodo de <strong className="text-slate-900">24 a 48 horas laborables</strong> corresponde al tiempo interno de StarTAP para la verificación de pago, programación electrónica del chip NFC, validación de impresión del código QR e ingreso del paquete en la empresa de transporte seleccionada.
             </p>
             <p>
-              Para entregas en <strong className="text-slate-900">Provincias Centrales, Chiriquí, Colón y resto del país</strong>, los paquetes se despachan mediante servicios de encomienda autorizados como <strong className="text-slate-900">Uno Express</strong> o <strong className="text-slate-900">Servientrega</strong>. El número de guía de rastreo es enviado al comprador por WhatsApp o correo electrónico.
+              El tiempo final de tránsito y llegada al cliente dependerá del proveedor logístico y la modalidad de entrega a su elección:
+            </p>
+            <ul className="list-disc pl-5 space-y-1 text-slate-700">
+              <li><strong className="text-slate-900">Ciudad de Panamá (Mensajería Local):</strong> Entregas habitualmente concretadas tras completar la fase de configuración.</li>
+              <li><strong className="text-slate-900">Interior y Provincias (Uno Express / Servientrega):</strong> El tiempo de traslado estándar del transportista suele tomar entre 24 y 72 horas hábiles adicionales. El número de guía para seguimiento directo es notificado por WhatsApp o correo electrónico.</li>
+            </ul>
+            <p className="text-xs text-slate-600 pt-1">
+              * Puedes consultar todos los detalles en nuestra <a href="/envios" className="text-amber-700 font-semibold underline">Política de Envíos</a>.
             </p>
           </section>
 
