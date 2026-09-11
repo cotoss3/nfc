@@ -9,6 +9,8 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   ArrowRight,
   ShieldCheck,
   Zap,
@@ -68,6 +70,108 @@ function Foto({
     <div className={`${ratio} ${className} rounded-3xl overflow-hidden bg-white`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} className="w-full h-full object-cover" loading="lazy" />
+    </div>
+  );
+}
+
+/**
+ * Carrusel interactivo de imágenes para el producto en la landing.
+ * Permite navegar entre todas las fotos con flechas, indicadores y miniaturas.
+ */
+function ProductCarousel({
+  images,
+  alt,
+  ratio = 'aspect-[4/5]',
+  className = '',
+}: {
+  images: string[];
+  alt: string;
+  ratio?: string;
+  className?: string;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const validImages = images.filter(Boolean);
+
+  if (validImages.length === 0) {
+    return <Foto alt={alt} ratio={ratio} className={className} />;
+  }
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Marco Principal de Imagen */}
+      <div className={`relative ${ratio} ${className} rounded-3xl overflow-hidden bg-white shadow-2xl border-4 border-white group`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={validImages[currentIndex]}
+          alt={`${alt} - Foto ${currentIndex + 1}`}
+          className="w-full h-full object-cover transition-all duration-300"
+        />
+
+        {/* Badge de contador de fotos */}
+        {validImages.length > 1 && (
+          <span className="absolute top-4 right-4 bg-brand-950/80 backdrop-blur-md text-white text-[11px] font-black uppercase px-3 py-1 rounded-full shadow border border-white/20">
+            {currentIndex + 1} / {validImages.length}
+          </span>
+        )}
+
+        {/* Flechas de Navegación del Carrusel */}
+        {validImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Foto anterior"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-brand-950 shadow-xl flex items-center justify-center transition-all opacity-90 hover:scale-110 active:scale-95 cursor-pointer"
+            >
+              <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Siguiente foto"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-brand-950 shadow-xl flex items-center justify-center transition-all opacity-90 hover:scale-110 active:scale-95 cursor-pointer"
+            >
+              <ChevronRight className="w-6 h-6 stroke-[2.5]" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Miniaturas de selección rápida */}
+      {validImages.length > 1 && (
+        <div className="flex items-center justify-center gap-2 sm:gap-3 px-2 overflow-x-auto py-1">
+          {validImages.map((img, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setCurrentIndex(idx)}
+              className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
+                currentIndex === idx
+                  ? 'border-accent-500 ring-2 ring-accent-400 scale-105 shadow-md'
+                  : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-400'
+              }`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={img}
+                alt={`Miniatura ${idx + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -201,11 +305,10 @@ export default function ProductLanding({ product }: { product: Product }) {
           </div>
 
           <div className="order-1 lg:order-2">
-            <Foto
-              src={fotos[0]}
+            <ProductCarousel
+              images={fotos}
               alt={copy.heroImagenAlt}
               ratio="aspect-[4/5]"
-              className="shadow-2xl border-4 border-white"
             />
           </div>
         </div>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { dbLocal, Order, NfcCard, Product, ScanRecord } from '@/lib/db';
 import { 
   ShieldCheck, Package, RefreshCw, CheckCircle, Search, 
-  Tag, BarChart2, Smartphone, Layers, Edit2, DollarSign, 
+  Tag, BarChart2, Smartphone, Layers, Edit2, Trash2, DollarSign, 
   Filter, Radio, QrCode, User, Plus, Check, Printer, AlertCircle,
   LogOut, ChevronRight, X, Image as ImageIcon
 } from 'lucide-react';
@@ -179,6 +179,17 @@ export default function AdminPage() {
     setTimeout(() => {
       setPriceSuccess(prev => ({ ...prev, [productId]: false }));
     }, 2000);
+  };
+
+  const handleDeleteProduct = (productId: string, productName: string) => {
+    if (window.confirm(`¿Estás seguro de que deseas eliminar el producto "${productName}" (${productId})? Esta acción no se puede deshacer.`)) {
+      const success = dbLocal.deleteProduct(productId);
+      if (success) {
+        loadData();
+      } else {
+        alert('No se pudo eliminar el producto.');
+      }
+    }
   };
 
   const handleOpenProductEditModal = (p: Product) => {
@@ -1061,7 +1072,15 @@ export default function AdminPage() {
                                   className="py-1.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-sm transition flex items-center gap-1"
                                 >
                                   <Edit2 className="w-3 h-3 text-amber-400" />
-                                  <span>Editar Producto</span>
+                                  <span>Editar</span>
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteProduct(p.id, p.name)}
+                                  title="Eliminar producto"
+                                  className="py-1.5 px-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[10px] uppercase tracking-wider rounded-lg border border-rose-200 transition flex items-center gap-1"
+                                >
+                                  <Trash2 className="w-3 h-3 text-rose-600" />
+                                  <span>Eliminar</span>
                                 </button>
                               </div>
                             </td>

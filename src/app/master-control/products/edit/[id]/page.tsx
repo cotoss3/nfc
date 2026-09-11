@@ -164,6 +164,14 @@ export default function EditProductPage() {
     }, 1500);
   };
 
+  const handleDelete = () => {
+    if (!product) return;
+    if (window.confirm(`¿Estás seguro de que deseas eliminar el producto "${product.name}" (${product.id})? Esta acción no se puede deshacer.`)) {
+      dbLocal.deleteProduct(product.id);
+      router.push('/master-control');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 p-12 text-center text-xs font-bold uppercase tracking-widest text-slate-400">
@@ -414,21 +422,32 @@ export default function EditProductPage() {
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-between gap-3 pt-2">
             <button
               type="button"
-              onClick={() => router.push('/master-control')}
-              className="py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-300 transition"
+              onClick={handleDelete}
+              className="py-3 px-5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs uppercase tracking-wider rounded-xl border border-rose-200 transition flex items-center gap-1.5"
             >
-              Cancelar
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>Eliminar Producto</span>
             </button>
-            <button
-              type="submit"
-              className="py-3 px-8 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center gap-2"
-            >
-              <Save className="w-4 h-4 text-amber-400" />
-              <span>Guardar Cambios en Supabase</span>
-            </button>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => router.push('/master-control')}
+                className="py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-300 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="py-3 px-8 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center gap-2"
+              >
+                <Save className="w-4 h-4 text-amber-400" />
+                <span>Guardar Cambios en Supabase</span>
+              </button>
+            </div>
           </div>
 
         </form>

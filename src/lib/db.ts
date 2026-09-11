@@ -353,6 +353,22 @@ class LocalDbService {
     return true;
   }
 
+  deleteProduct(id: string): boolean {
+    const products = this.getProducts();
+    const normalizedId = id.trim().toLowerCase();
+    const filtered = products.filter(p => p.id.trim().toLowerCase() !== normalizedId);
+    if (filtered.length !== products.length) {
+      this.setStorageItem('nfc_products', filtered);
+      if (supabase) {
+        supabase.from('products').delete().eq('id', id).then(({ error }) => {
+          if (error) console.error('Error eliminando producto en Supabase:', error);
+        });
+      }
+      return true;
+    }
+    return false;
+  }
+
   // Métodos de Pedidos
   getOrders(): Order[] {
     return this.getStorageItem('nfc_orders', []);

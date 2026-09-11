@@ -5,7 +5,7 @@ import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, Upload, Check, Info, Zap, QrCode, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Upload, Check, Info, Zap, QrCode, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import ProductLanding from '@/components/landings/ProductLanding';
 import { getLandingCopy } from '@/lib/landings';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
@@ -117,10 +117,44 @@ export default function ProductDetailClient({ params }: { params: { id: string }
         {/* Left Side: Mockup & Images */}
         <div className="lg:col-span-5 space-y-6">
           
-          {/* Physical Photo Gallery */}
+          {/* Physical Photo Gallery Carousel */}
           <div className="space-y-4">
-            <div className="bg-white border border-brand-200 rounded-2xl p-4 sm:p-6 shadow-premium flex items-center justify-center aspect-square overflow-hidden">
-              <img src={selectedImage || product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
+            <div className="relative bg-white border border-brand-200 rounded-2xl p-4 sm:p-6 shadow-premium flex items-center justify-center aspect-square overflow-hidden group">
+              <img src={selectedImage || product.image} alt={product.name} className="max-h-full max-w-full object-contain transition-all duration-300" />
+
+              {product.images && product.images.length > 1 && (
+                <>
+                  <span className="absolute top-3 right-3 bg-brand-950/80 backdrop-blur-md text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow border border-white/20">
+                    {(product.images.indexOf(selectedImage || product.image) + 1 || 1)} / {product.images.length}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const all = product.images || [product.image];
+                      const currIdx = all.indexOf(selectedImage || product.image);
+                      const prevIdx = currIdx <= 0 ? all.length - 1 : currIdx - 1;
+                      setSelectedImage(all[prevIdx]);
+                    }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-brand-950 shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 hover:scale-110 active:scale-95"
+                  >
+                    <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const all = product.images || [product.image];
+                      const currIdx = all.indexOf(selectedImage || product.image);
+                      const nextIdx = currIdx >= all.length - 1 ? 0 : currIdx + 1;
+                      setSelectedImage(all[nextIdx]);
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-brand-950 shadow-md flex items-center justify-center transition-all opacity-80 hover:opacity-100 hover:scale-110 active:scale-95"
+                  >
+                    <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+                  </button>
+                </>
+              )}
             </div>
             
             {product.images && product.images.length > 0 && (
