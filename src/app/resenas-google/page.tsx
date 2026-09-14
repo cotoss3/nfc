@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   ArrowRight, 
   Star, 
@@ -14,7 +15,6 @@ import {
   Wrench, 
   Building2, 
   ShoppingBag, 
-  Image as ImageIcon,
   ChevronRight,
   Sparkles,
   Smartphone,
@@ -34,6 +34,14 @@ export const metadata: Metadata = {
     title: 'Guía de Reseñas de Google por Industria en Panamá | starTAP',
     description: 'Estrategias y tecnología NFC + QR para dominar el ranking de Google Maps en Panamá.',
     url: `${BASE_URL}/resenas-google`,
+    images: [
+      {
+        url: `${BASE_URL}/images/resenas-google/resenas-google-restaurantes-panama-startap.webp`,
+        width: 1024,
+        height: 1024,
+        alt: 'Dispositivos NFC starTAP para Reseñas de Google por Industria en Panamá',
+      },
+    ],
   },
 };
 
@@ -45,41 +53,6 @@ const INDUSTRY_ICONS: Record<string, any> = {
   'hoteles-y-hospedajes': Building2,
   'tiendas-y-comercios': ShoppingBag,
 };
-
-const INDUSTRY_PHOTO_IDEAS: Record<string, string> = {
-  restaurantes: 'Foto de mesero entregando la cuenta junto al Stand NFC en la mesa de un restaurante en Panamá',
-  clinicas: 'Foto de la Placa NFC en acrílico 3mm instalada en la recepción de un consultorio médico en Panamá',
-  'barberias-y-salones': 'Foto del barbero mostrando la Tarjeta NFC de Bolsillo al cliente tras terminar el corte',
-  'talleres-y-mecanicas': 'Foto de cliente escaneando el dispositivo en la recepción/caja de un taller mecánico',
-  'hoteles-y-hospedajes': 'Foto del Stand NFC ubicado en el mostrador de Check-out en la recepción de un hotel',
-  'tiendas-y-comercios': 'Foto de cliente realizando Tap con su smartphone junto a la caja registradora de la tienda',
-};
-
-function FotoPlaceholder({
-  ideaText,
-  aspectRatio = 'aspect-[16/9]',
-  className = '',
-}: {
-  ideaText: string;
-  aspectRatio?: string;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`${aspectRatio} ${className} bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 p-5 flex flex-col items-center justify-center text-center group hover:border-amber-400 hover:bg-amber-50/20 transition-all`}
-    >
-      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-xs mb-2 group-hover:text-amber-600 transition-colors">
-        <ImageIcon className="w-5 h-5" />
-      </div>
-      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
-        📸 Espacio para Imagen Recomendada
-      </span>
-      <p className="text-xs font-semibold text-slate-600 max-w-sm leading-relaxed">
-        {ideaText}
-      </p>
-    </div>
-  );
-}
 
 export default function ResenasGoogleHub() {
   const itemListSchema = {
@@ -150,7 +123,6 @@ export default function ResenasGoogleHub() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {INDUSTRIAS.map((ind) => {
                 const IconComponent = INDUSTRY_ICONS[ind.slug] || Sparkles;
-                const photoIdea = INDUSTRY_PHOTO_IDEAS[ind.slug] || `Foto representativa de ${ind.nombre} usando el dispositivo de reseñas`;
 
                 return (
                   <div
@@ -171,8 +143,16 @@ export default function ResenasGoogleHub() {
                         </div>
                       </div>
 
-                      {/* Photo Placeholder */}
-                      <FotoPlaceholder ideaText={photoIdea} aspectRatio="aspect-[16/10]" />
+                      {/* Industry Real Image */}
+                      <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xs group-hover:border-amber-400/50 transition-colors">
+                        <Image
+                          src={ind.imagen}
+                          alt={ind.imagenAlt}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
 
                       {/* Short Description */}
                       <p className="text-xs text-slate-600 leading-relaxed">

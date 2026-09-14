@@ -12,6 +12,8 @@ export interface Industria {
   producto: string; // id de producto recomendado
   productoRazon: string;
   faqs: { q: string; a: string }[];
+  imagen: string;
+  imagenAlt: string;
 }
 
 export const INDUSTRIAS: Industria[] = [
@@ -38,6 +40,8 @@ export const INDUSTRIAS: Industria[] = [
     producto: 'stand-nfc',
     productoRazon:
       'El stand de mostrador es el que mejor funciona en restaurantes: se queda en la mesa o en la caja, se ve y no se pierde.',
+    imagen: '/images/resenas-google/resenas-google-restaurantes-panama-startap.webp',
+    imagenAlt: 'Stand NFC starTAP para reseñas de Google en la mesa de un restaurante en Panamá',
     faqs: [
       {
         q: '¿Puedo pedirle la reseña solo a los clientes que quedaron contentos?',
@@ -76,6 +80,8 @@ export const INDUSTRIAS: Industria[] = [
     producto: 'placa-acrilica-nfc',
     productoRazon:
       'La placa acrílica adhesiva es la mejor opción para recepción: se pega al mostrador, se ve siempre y no ocupa espacio.',
+    imagen: '/images/resenas-google/resenas-google-clinicas-consultorios-panama-startap.webp',
+    imagenAlt: 'Placa acrílica NFC starTAP para reseñas de Google en recepción de clínica en Panamá',
     faqs: [
       {
         q: '¿Esto maneja datos de mis pacientes?',
@@ -114,6 +120,8 @@ export const INDUSTRIAS: Industria[] = [
     producto: 'tarjeta-nfc',
     productoRazon:
       'La tarjeta NFC es ideal aquí: cabe en el bolsillo del barbero y se la pasa al cliente en la silla, sin moverse del puesto.',
+    imagen: '/images/resenas-google/resenas-google-barberias-salones-panama-startap.webp',
+    imagenAlt: 'Tarjeta NFC de bolsillo starTAP para reseñas de Google en barbería o salón de belleza en Panamá',
     faqs: [
       {
         q: '¿Puedo ver cuántas reseñas trajo cada barbero?',
@@ -152,6 +160,8 @@ export const INDUSTRIAS: Industria[] = [
     producto: 'placa-acrilica-nfc',
     productoRazon:
       'La placa acrílica se pega al mostrador o al vidrio de la oficina y aguanta el polvo y el uso diario del taller.',
+    imagen: '/images/resenas-google/resenas-google-talleres-mecanicas-panama-startap.webp',
+    imagenAlt: 'Stand NFC starTAP para valoraciones de Google en mostrador de taller mecánico en Panamá',
     faqs: [
       {
         q: '¿Funciona si mi taller no tiene ficha de Google todavía?',
@@ -190,6 +200,8 @@ export const INDUSTRIAS: Industria[] = [
     producto: 'stand-nfc',
     productoRazon:
       'El stand de mostrador funciona en recepción y también en la mesa de noche de la habitación, sin necesidad de instalación.',
+    imagen: '/images/resenas-google/resenas-google-hoteles-hospedajes-panama-startap.webp',
+    imagenAlt: 'Stand NFC starTAP en recepción de hotel para conseguir reseñas de Google en Panamá',
     faqs: [
       {
         q: '¿Sirve también para TripAdvisor o Airbnb?',
@@ -228,6 +240,8 @@ export const INDUSTRIAS: Industria[] = [
     producto: 'stand-nfc',
     productoRazon:
       'El stand de mostrador se pone junto a la caja registradora, donde todo cliente pasa antes de salir.',
+    imagen: '/images/resenas-google/resenas-google-tiendas-comercios-panama-startap.webp',
+    imagenAlt: 'Dispositivo NFC starTAP junto a la caja registradora de tienda comercial en Panamá',
     faqs: [
       {
         q: '¿Cuántas reseñas puedo esperar al mes?',

@@ -54,9 +54,12 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <meta name="google-site-verification" content="1igPIkAizA33F2BubkJ8H7lEqWOh9QHVFAOkvAXdgBc" />
-        <StructuredData />
       </head>
       <body className="flex flex-col min-h-screen bg-gray-50 text-gray-900 antialiased">
+        {/* JSON-LD: va en el body, no en <head>. En el App Router los hijos de
+            <head> en el layout raíz no se renderizan de forma fiable, y schema.org
+            se lee igual desde el body. */}
+        <StructuredData />
         <CartProvider>
           <Navbar />
           <main className="flex-grow pt-20">

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { 
   Check, 
@@ -14,7 +15,7 @@ import {
   CheckCircle2, 
   Image as ImageIcon,
   HelpCircle,
-  ShoppingBag,
+  ShoppingBag, 
   Sparkles,
   ChevronRight
 } from 'lucide-react';
@@ -37,13 +38,21 @@ export function generateMetadata({
   if (!ind) return { title: 'Reseñas de Google en Panamá' };
 
   return {
-    title: `${ind.title} | starTAP Panamá`,
+    title: ind.title,
     description: ind.description,
     alternates: { canonical: `/resenas-google/${ind.slug}` },
     openGraph: {
       title: `${ind.title} | starTAP Panamá`,
       description: ind.description,
       url: `${BASE_URL}/resenas-google/${ind.slug}`,
+      images: [
+        {
+          url: `${BASE_URL}${ind.imagen}`,
+          width: 1024,
+          height: 1024,
+          alt: ind.imagenAlt,
+        },
+      ],
     },
   };
 }
@@ -187,12 +196,18 @@ export default function IndustriaPage({
               </div>
             </div>
 
-            {/* Hero Image Placeholder */}
+            {/* Hero Image */}
             <div className="pt-4">
-              <FotoPlaceholder
-                ideaText={`Idea Visual: Foto ambiental de alto impacto en un ${ind.nombreSingular} en Panamá mostrando a un cliente interactuando con el dispositivo NFC / QR`}
-                aspectRatio="aspect-[21/9]"
-              />
+              <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 shadow-md">
+                <Image
+                  src={ind.imagen}
+                  alt={ind.imagenAlt}
+                  fill
+                  priority
+                  sizes="(max-width: 1200px) 100vw, 1024px"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -279,12 +294,24 @@ export default function IndustriaPage({
           <section className="bg-slate-950 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
-              {/* Product Photo Placeholder */}
+              {/* Product Photo */}
               <div className="lg:col-span-5">
-                <FotoPlaceholder
-                  ideaText={`Idea Visual: Fotografía de catálogo profesional del producto ${recommendedProduct?.name || ind.producto} grabado e instalado para ${ind.nombre}`}
-                  aspectRatio="aspect-square"
-                />
+                {recommendedProduct?.image ? (
+                  <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-inner flex items-center justify-center p-6">
+                    <Image
+                      src={recommendedProduct.image}
+                      alt={`Dispositivo starTAP ${recommendedProduct.name} para ${ind.nombre}`}
+                      width={500}
+                      height={500}
+                      className="object-contain max-h-full max-w-full drop-shadow-xl"
+                    />
+                  </div>
+                ) : (
+                  <FotoPlaceholder
+                    ideaText={`Idea Visual: Fotografía de catálogo profesional del producto ${recommendedProduct?.name || ind.producto} grabado e instalado para ${ind.nombre}`}
+                    aspectRatio="aspect-square"
+                  />
+                )}
               </div>
 
               {/* Product Info & CTA */}
@@ -316,7 +343,7 @@ export default function IndustriaPage({
 
                 <div className="pt-2 flex flex-col sm:flex-row gap-3">
                   <Link
-                    href={`/shop/${recommendedProduct?.id || ind.producto}`}
+                    href={`/catalogo/${recommendedProduct?.id || ind.producto}`}
                     className="py-3.5 px-6 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center justify-center gap-2"
                   >
                     <ShoppingBag className="w-4 h-4" />
