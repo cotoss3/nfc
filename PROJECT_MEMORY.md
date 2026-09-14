@@ -149,8 +149,56 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
   marcador discreto. Al cargar las fotos al catálogo aparecen solas, sin tocar código.
 * Los archivos viejos quedaron en `_to_delete/landings-viejas/` (borrar a mano).
 
-## 📎 10. Documentos hermanos
-* `CLAUDE.md` — reglas de trabajo para sesiones de IA (ahorro de tokens). Leerlo primero.
-* `AUDIT.md` — auditoría de seguridad y deuda técnica vigente (2026-09-08).
+## 📝 10. BITÁCORA DE PROGRESO
 
-*Última actualización:* 2026-09-08 (auditoría + CLAUDE.md; anterior: 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)
+> Regla permanente: **toda sesión de trabajo se registra aquí antes de terminar.**
+> Entrada nueva arriba. Formato: fecha · qué se hizo · qué quedó pendiente.
+> Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
+> compilando y commiteable, nunca se publica desde la sesión.
+
+### 2026-09-14 · Checkout, pagos y SEO técnico
+
+**Hecho**
+* **Pago con tarjeta conectado a Tilopay de verdad.** El checkout capturaba número de tarjeta
+  y CVV en formulario propio y marcaba `payment_status: 'completed'` con un `setTimeout`.
+  No cobraba nada. La integración de Tilopay ya existía pero nunca se llamaba.
+* **Total calculado en el servidor** (`/api/tilopay/process`) desde `config/products.ts`.
+  Antes se cobraba el `total` que mandaba el navegador.
+* **Callback verificado contra la API de Tilopay** (`consultTilopayPayment`). Antes daba el
+  pago por bueno leyendo `code=1` de la URL de retorno, que el cliente puede escribir a mano.
+* **Yappy**: número real 6713-4341 (Fernando Contreras). El pedido queda `pending` hasta
+  verificación manual; antes entraba como pagado con cualquier referencia.
+* **Retiro en oficina eliminado.** Quedan Panamá Centro, Uno Express y Servientrega.
+* **Envío gratis desde $50** + barra de progreso en el carrito.
+* **Nuevo `src/config/shipping.ts`**: umbral, tarifas y datos de Yappy en un solo lugar.
+* SEO: JSON-LD movido de `<head>` al `<body>` (en App Router los hijos de `<head>` del layout
+  raíz no se renderizan de forma fiable); quitado el sufijo duplicado del title en las páginas
+  de industria; enlaces de industria apuntando a `/catalogo` en vez de `/shop`;
+  `/shop/[id]` convertido en redirect permanente.
+* **Search Console resuelto**: el conector entra con la cuenta de servicio
+  `datakorex-analytics-api@gen-lang-client-0012367217.iam.gserviceaccount.com`, no con el Gmail.
+  Se agregó como propietaria en startap.com.pa y ya hay acceso por API.
+* **Fotos de Reseñas de Google completadas**: las 6 fotos de la carpeta `reseñas/` se convirtieron a WebP de alta fidelidad (<150 KB), con nombres de archivo y atributos ALT orientados a SEO para la marca starTAP en Panamá. Se asignaron al hub `/resenas-google` y a las 6 landings de industria (`/resenas-google/[industria]`) sin repetirse.
+* **Emparejamiento de pedidos Tilopay**: `dbLocal.createOrder` ahora acepta y respeta el `orderNumber` generado (`orderData.id`), y se agregó `dbLocal.updateOrderPaymentStatus` sincronizado con Supabase para marcar el pago como `completed` en el retorno exitoso de Tilopay.
+* `npm run build` verificado en limpio: compila sin errores, 42 páginas estáticas generadas.
+
+**Pendiente**
+1. Variables de Tilopay en producción: `TILOPAY_API_USER`, `TILOPAY_API_PASSWORD`,
+   `TILOPAY_API_KEY`, `NEXT_PUBLIC_BASE_URL`.
+2. Probar un pago real de $1 antes de anunciar la tienda.
+3. **Los pedidos siguen en `dbLocal`** (localStorage + `db_store.json`), que en Vercel no
+   persiste. Riesgo real: Tilopay cobra y el pedido no queda registrado si no hay sesión activa. Ver `AUDIT.md`.
+4. Indexación: solo el home está indexado. El resto sale "Descubierta, sin indexar".
+   Tras desplegar, pedir indexación manual del home, el hub y las 6 de industria en Google Search Console.
+5. Fotos restantes de productos de catálogo pendientes si se requieren más ángulos (ver `FOTOS_LANDINGS.md`).
+6. Recategorización de dominio pendiente en Cisco Talos y Symantec/Bluecoat
+   (FortiGuard ya enviada: estaba como "Newly Observed Domain / Security Risk").
+
+## 📎 11. Documentos hermanos
+* `CLAUDE.md` — reglas de trabajo para sesiones de IA (ahorro de tokens). Leerlo primero.
+* `AUDIT.md` — auditoría de seguridad y deuda técnica (2026-09-08).
+* `AUDITORIA_CHECKOUT.md` — auditoría del checkout y pagos (2026-09-14).
+* `SEO_PLAN.md` — plan de posicionamiento.
+* `FOTOS_LANDINGS.md` — lista de las 15 fotos que faltan y cómo tomarlas.
+
+*Última actualización:* 2026-09-14 (ver bitácora, sección 10) · anterior: 2026-09-08 (auditoría + CLAUDE.md; anterior: 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)

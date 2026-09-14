@@ -397,11 +397,11 @@ class LocalDbService {
     return `STT-${nextNum}`;
   }
 
-  createOrder(orderData: Omit<Order, 'id' | 'created_at'>): Order {
+  createOrder(orderData: Omit<Order, 'id' | 'created_at'> & { id?: string }): Order {
     const orders = this.getOrders();
     const newOrder: Order = {
       ...orderData,
-      id: `PED-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: orderData.id || `PED-${Math.floor(1000 + Math.random() * 9000)}`,
       created_at: new Date().toISOString()
     };
     orders.unshift(newOrder);
@@ -466,6 +466,17 @@ class LocalDbService {
     const orders = this.getOrders();
     const updated = orders.map(o => o.id === orderId ? { ...o, status } : o);
     this.setStorageItem('nfc_orders', updated);
+  }
+
+  updateOrderPaymentStatus(orderId: string, payment_status: Order['payment_status']): void {
+    const orders = this.getOrders();
+    const updated = orders.map(o => o.id === orderId ? { ...o, payment_status } : o);
+    this.setStorageItem('nfc_orders', updated);
+    if (supabase) {
+      supabase.from('orders').update({ payment_status }).eq('id', orderId).then(({ error }) => {
+        if (error) console.error('Error actualizando estado de pago en Supabase:', error);
+      });
+    }
   }
 
   // Métodos de Tarjetas NFC

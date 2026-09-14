@@ -4,7 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { dbLocal } from '@/lib/db';
-import { ShieldCheck, Check, CheckCircle2, Info, CreditCard, AlertCircle, Lock } from 'lucide-react';
+import { ShieldCheck, Check, CheckCircle2, Info, CreditCard, AlertCircle, Lock, Truck } from 'lucide-react';
+import {
+  SHIPPING_METHODS,
+  calculateShippingCost,
+  qualifiesForFreeShipping,
+  amountMissingForFreeShipping,
+  FREE_SHIPPING_THRESHOLD,
+  YAPPY,
+  type ShippingMethodId,
+} from '@/config/shipping';
 import confetti from 'canvas-confetti';
 
 export default function CheckoutPage() {
@@ -18,14 +27,8 @@ export default function CheckoutPage() {
   const [province, setProvince] = useState('Panamá');
   const [district, setDistrict] = useState('');
   const [address, setAddress] = useState('');
-  const [shippingMethod, setShippingMethod] = useState<'uno' | 'servi' | 'local' | 'office'>('local');
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethodId>('local');
   const [paymentMethod, setPaymentMethod] = useState<'tarjeta' | 'yappy'>('tarjeta');
-
-  // Direct In-Site Card Form States
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
 
   // Yappy Reference State
   const [yappyRef, setYappyRef] = useState('');
@@ -42,6 +45,10 @@ export default function CheckoutPage() {
       const params = new URLSearchParams(window.location.search);
       const status = params.get('status');
       if (status === 'success') {
+        const orderId = params.get('order');
+        if (orderId) {
+          dbLocal.updateOrderPaymentStatus(orderId, 'completed');
+        }
         setIsSuccess(true);
         confetti({
           particleCount: 150,
@@ -90,15 +97,10 @@ export default function CheckoutPage() {
       item.product_name.toLowerCase().includes('pack')
   );
 
-  const getShippingCost = () => {
-    if (isPackInCart) return 0;
-    switch (shippingMethod) {
-      case 'uno': return 6.50;
-      case 'servi': return 7.50;
-      case 'local': return 3.75;
-      case 'office': return 3.00;
-    }
-  };
+  const getShippingCost = () =>
+    calculateShippingCost(getCartTotal(), shippingMethod, isPackInCart);
+
+  const envioGratis = isPackInCart || qualifiesForFreeShipping(getCartTotal());
 
   const getGrandTotal = () => {
     return getCartTotal() + getShippingCost();
@@ -113,11 +115,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (paymentMethod === 'tarjeta' && (!cardName || !cardNumber || !cardExpiry || !cardCvv)) {
-      alert('Por favor completa todos los datos de tu tarjeta de crédito o débito');
-      return;
-    }
-
     if (paymentMethod === 'yappy' && !yappyRef) {
       alert('Por favor ingresa el número de referencia de tu pago en Yappy');
       return;
@@ -125,39 +122,81 @@ export default function CheckoutPage() {
 
     setIsProcessing(true);
 
-    // Process payment directly inside website
-    setTimeout(() => {
-      dbLocal.createOrder({
-        customer_name: name,
-        customer_email: email,
-        customer_phone: phone,
-        shipping_province: province,
-        shipping_district: district,
-        shipping_address: address,
-        payment_method: paymentMethod,
-        payment_status: 'completed',
-        status: 'pending',
-        total: getGrandTotal(),
-        items: cart
-      });
+    const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
 
+    // El pedido se registra SIEMPRE como pendiente de pago.
+    // Solo Tilopay (tarjeta) o la verificación manual (Yappy) lo marcan pagado.
+    const baseOrder = {
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      shipping_province: province,
+      shipping_district: district,
+      shipping_address: address,
+      payment_method: paymentMethod,
+      payment_status: 'pending' as const,
+      status: 'pending' as const,
+      total: getGrandTotal(),
+      items: cart,
+    };
+
+    try {
+      if (paymentMethod === 'tarjeta') {
+        // Tarjeta: se paga en la pasarela de Tilopay, nunca en este sitio.
+        dbLocal.createOrder({ ...baseOrder, id: orderNumber } as any);
+        sessionStorage.setItem('current_user_email', email);
+        sessionStorage.setItem('current_user_name', name);
+
+        const res = await fetch('/api/tilopay/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderNumber,
+            name,
+            email,
+            phone,
+            province,
+            district,
+            address,
+            shippingMethod,
+            items: cart.map((i) => ({
+              product_id: i.product_id,
+              quantity: i.quantity,
+              has_custom_logo: i.has_custom_logo,
+              has_qr_code: i.has_qr_code,
+            })),
+            total: getGrandTotal(),
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success || !data.redirectUrl) {
+          throw new Error(data.error || 'No pudimos iniciar el pago con tarjeta. Intenta de nuevo o paga con Yappy.');
+        }
+
+        // Fuera del sitio: el cliente escribe su tarjeta en Tilopay, no aquí.
+        window.location.href = data.redirectUrl;
+        return;
+      }
+
+      // Yappy: queda pendiente hasta que confirmes el pago manualmente.
+      dbLocal.createOrder({ ...baseOrder, id: orderNumber, yappy_reference: yappyRef } as any);
       sessionStorage.setItem('current_user_email', email);
       sessionStorage.setItem('current_user_name', name);
 
       setIsProcessing(false);
       setIsSuccess(true);
-      
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
-
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
       clearCart();
       setTimeout(() => {
         router.push(`/dashboard?email=${encodeURIComponent(email)}`);
       }, 3000);
-    }, 1800);
+    } catch (err: any) {
+      console.error('[CHECKOUT_ERROR]', err);
+      setErrorMessage(err.message || 'Ocurrió un error al procesar tu pedido.');
+      setIsProcessing(false);
+    }
   };
 
   if (cart.length === 0 && !isSuccess) return null;
@@ -170,9 +209,13 @@ export default function CheckoutPage() {
             <Check className="h-8 w-8" />
           </div>
           <div className="space-y-2">
-            <h1 className="text-xl font-bold uppercase tracking-wider text-brand-950">¡Pago Exitoso!</h1>
+            <h1 className="text-xl font-bold uppercase tracking-wider text-brand-950">
+              {paymentMethod === 'yappy' ? '¡Pedido recibido!' : '¡Pago exitoso!'}
+            </h1>
             <p className="text-xs text-brand-500 leading-relaxed">
-              Tu pedido ha sido procesado y registrado correctamente. Recibirás un correo de confirmación.
+              {paymentMethod === 'yappy'
+                ? `Registramos tu pedido con la referencia de Yappy. Verificamos el pago al ${YAPPY.numero} y te confirmamos por WhatsApp.`
+                : 'Tu pago fue procesado correctamente. Recibirás un correo de confirmación.'}
             </p>
             <p className="text-[10px] text-brand-400">
               Redirigiendo a tu portal para configurar los enlaces NFC de tus productos...
@@ -288,68 +331,42 @@ export default function CheckoutPage() {
               {/* Shipping Options */}
               <div className="space-y-4">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-2">Método de Envío</h3>
-                {isPackInCart && (
+
+                {envioGratis && (
                   <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded text-xs flex items-center space-x-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-                    <span className="font-bold">¡Envío Gratis a todo Panamá incluido en tu Pack Recomendado!</span>
+                    <span className="font-bold">
+                      {isPackInCart
+                        ? '¡Envío gratis a todo Panamá incluido en tu pack!'
+                        : `¡Envío gratis! Tu pedido supera los $${FREE_SHIPPING_THRESHOLD}.`}
+                    </span>
                   </div>
                 )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShippingMethod('local')}
-                    className={`p-4 border rounded text-left flex justify-between items-start transition-all ${
-                      shippingMethod === 'local' ? 'border-brand-950 bg-brand-50' : 'border-brand-200 hover:bg-brand-50 bg-white'
-                    }`}
-                  >
-                    <div>
-                      <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Panamá Centro</span>
-                      <span className="text-[10px] text-brand-400">Oficina o Residencia (1-2 días)</span>
-                    </div>
-                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$3.75'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShippingMethod('uno')}
-                    className={`p-4 border rounded text-left flex justify-between items-start transition-all ${
-                      shippingMethod === 'uno' ? 'border-brand-950 bg-brand-50' : 'border-brand-200 hover:bg-brand-50 bg-white'
-                    }`}
-                  >
-                    <div>
-                      <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Uno Express</span>
-                      <span className="text-[10px] text-brand-400">Retiro en Sucursal Interior</span>
-                    </div>
-                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$6.50'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShippingMethod('servi')}
-                    className={`p-4 border rounded text-left flex justify-between items-start transition-all ${
-                      shippingMethod === 'servi' ? 'border-brand-950 bg-brand-50' : 'border-brand-200 hover:bg-brand-50 bg-white'
-                    }`}
-                  >
-                    <div>
-                      <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Servientrega</span>
-                      <span className="text-[10px] text-brand-400">A Domicilio en Provincias</span>
-                    </div>
-                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$7.50'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShippingMethod('office')}
-                    className={`p-4 border rounded text-left flex justify-between items-start transition-all ${
-                      shippingMethod === 'office' ? 'border-brand-950 bg-brand-50' : 'border-brand-200 hover:bg-brand-50 bg-white'
-                    }`}
-                  >
-                    <div>
-                      <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">Retiro Oficina</span>
-                      <span className="text-[10px] text-brand-400">San Francisco, Panamá</span>
-                    </div>
-                    <span className="font-black text-xs text-brand-950">{isPackInCart ? '$0.00' : '$3.00'}</span>
-                  </button>
+                  {SHIPPING_METHODS.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setShippingMethod(m.id)}
+                      aria-pressed={shippingMethod === m.id}
+                      className={`p-4 border rounded text-left flex justify-between items-start transition-all ${
+                        shippingMethod === m.id
+                          ? 'border-brand-950 bg-brand-50'
+                          : 'border-brand-200 hover:bg-brand-50 bg-white'
+                      }`}
+                    >
+                      <div>
+                        <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">
+                          {m.label}
+                        </span>
+                        <span className="text-[10px] text-brand-400">{m.detail}</span>
+                      </div>
+                      <span className="font-black text-xs text-brand-950">
+                        {envioGratis ? '$0.00' : `$${m.cost.toFixed(2)}`}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </form>
@@ -385,62 +402,20 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              {/* Direct Card Form inside Website */}
+              {/* Tarjeta: el pago ocurre en la pasarela de Tilopay, no en este sitio */}
               {paymentMethod === 'tarjeta' && (
                 <div className="bg-white p-4 border border-brand-200 rounded space-y-3 shadow-sm">
-                  <div className="flex items-center space-x-2 text-[10px] text-brand-500 mb-1">
+                  <div className="flex items-center space-x-2 text-[10px] text-brand-500">
                     <Lock className="h-3.5 w-3.5 text-accent-600" />
-                    <span className="font-semibold">Pago Encriptado Directo (Visa / Mastercard)</span>
+                    <span className="font-semibold">Pago seguro con Tilopay (Visa / Mastercard)</span>
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">Nombre del Tarjetahabiente</label>
-                    <input
-                      type="text"
-                      required={paymentMethod === 'tarjeta'}
-                      placeholder="Carlos Mendoza"
-                      value={cardName}
-                      onChange={(e) => setCardName(e.target.value)}
-                      className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">Número de Tarjeta</label>
-                    <input
-                      type="text"
-                      required={paymentMethod === 'tarjeta'}
-                      placeholder="4000 1234 5678 9010"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950 font-mono"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">Vencimiento</label>
-                      <input
-                        type="text"
-                        required={paymentMethod === 'tarjeta'}
-                        placeholder="MM/AA"
-                        value={cardExpiry}
-                        onChange={(e) => setCardExpiry(e.target.value)}
-                        className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950 font-mono"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-brand-500 uppercase tracking-wider">CVV</label>
-                      <input
-                        type="password"
-                        required={paymentMethod === 'tarjeta'}
-                        placeholder="•••"
-                        maxLength={4}
-                        value={cardCvv}
-                        onChange={(e) => setCardCvv(e.target.value)}
-                        className="w-full px-3 py-2 border border-brand-300 rounded bg-white text-xs outline-none focus:border-brand-950 font-mono"
-                      />
-                    </div>
+                  <p className="text-[11px] text-brand-600 leading-relaxed">
+                    Al confirmar te llevamos a la pasarela segura de Tilopay para que ingreses los
+                    datos de tu tarjeta. Nosotros nunca vemos ni guardamos tu número de tarjeta.
+                  </p>
+                  <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
+                    <ShieldCheck className="h-4 w-4 text-accent-600 flex-shrink-0 mt-0.5" />
+                    <span>Al terminar el pago vuelves automáticamente a starTAP con tu comprobante.</span>
                   </div>
                 </div>
               )}
@@ -451,13 +426,15 @@ export default function CheckoutPage() {
                   <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
                     <Info className="h-4 w-4 text-brand-500 flex-shrink-0 mt-0.5" />
                     <span>
-                      Envía el total de tu pedido a través de tu aplicación móvil de Banco General (Yappy).
+                      Envía el total de tu pedido por Yappy al <strong>{YAPPY.numero}</strong> ({YAPPY.titular})
+                      y pega abajo el número de referencia. Verificamos el pago y te confirmamos por WhatsApp.
                     </span>
                   </div>
 
                   <div className="text-center py-2 space-y-0.5 border border-brand-200 bg-brand-50 rounded">
-                    <p className="text-[8px] text-brand-400 uppercase tracking-widest font-bold">Directorio Yappy</p>
-                    <p className="text-base font-black text-brand-950 font-mono">@panacards</p>
+                    <p className="text-[8px] text-brand-400 uppercase tracking-widest font-bold">Yappy</p>
+                    <p className="text-base font-black text-brand-950 font-mono">{YAPPY.numero}</p>
+                    <p className="text-[11px] font-bold text-brand-700">{YAPPY.titular}</p>
                     <p className="text-xs font-bold text-brand-500">Monto total: ${getGrandTotal().toFixed(2)}</p>
                   </div>
 
@@ -514,9 +491,16 @@ export default function CheckoutPage() {
                   <span className="font-semibold text-brand-950">${getCartTotal().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Envío {isPackInCart ? '(Promoción Pack Recomendado)' : `(${shippingMethod === 'office' ? 'Retiro en oficina' : 'Provincial'})`}</span>
+                  <span>
+                    Envío
+                    {isPackInCart
+                      ? ' (incluido en el pack)'
+                      : qualifiesForFreeShipping(getCartTotal())
+                      ? ` (gratis sobre $${FREE_SHIPPING_THRESHOLD})`
+                      : ` (${SHIPPING_METHODS.find((m) => m.id === shippingMethod)?.label})`}
+                  </span>
                   <span className="font-semibold text-brand-950">
-                    {isPackInCart ? (
+                    {envioGratis ? (
                       <span className="text-emerald-600 font-bold uppercase">Gratis</span>
                     ) : (
                       `$${getShippingCost().toFixed(2)}`
@@ -545,10 +529,15 @@ export default function CheckoutPage() {
                 {isProcessing ? (
                   <>
                     <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
-                    <span>Procesando Pago Seguro...</span>
+                    <span>
+                      {paymentMethod === 'tarjeta' ? 'Redirigiendo a Tilopay...' : 'Registrando tu pedido...'}
+                    </span>
                   </>
                 ) : (
-                  <span>Confirmar Pago • ${getGrandTotal().toFixed(2)}</span>
+                  <span>
+                    {paymentMethod === 'tarjeta' ? 'Pagar con tarjeta' : 'Confirmar pedido'} • $
+                    {getGrandTotal().toFixed(2)}
+                  </span>
                 )}
               </button>
             </div>

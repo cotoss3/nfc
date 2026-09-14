@@ -3,10 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
+import {
+  FREE_SHIPPING_THRESHOLD,
+  amountMissingForFreeShipping,
+} from '@/config/shipping';
+import { Trash2, ShoppingBag, ArrowRight, Truck } from 'lucide-react';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getItemCount } = useCart();
+
+  const faltaParaGratis = amountMissingForFreeShipping(getCartTotal());
+  const progresoGratis = Math.min(100, (getCartTotal() / FREE_SHIPPING_THRESHOLD) * 100);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -131,6 +138,42 @@ export default function CartPage() {
           <div className="bg-white border border-brand-200 rounded-lg p-6 space-y-6 shadow-premium">
             <h2 className="font-bold text-xs uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-3">Resumen de Compra</h2>
             
+            {/* Barra de progreso hacia el envío gratis */}
+            <div className="space-y-2">
+              {faltaParaGratis > 0 ? (
+                <p className="text-xs text-brand-600 leading-snug">
+                  Te faltan{' '}
+                  <strong className="text-brand-950">${faltaParaGratis.toFixed(2)}</strong> para
+                  el <strong className="text-brand-950">envío gratis</strong>.
+                </p>
+              ) : (
+                <p className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
+                  <Truck className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                  ¡Tienes envío gratis a todo Panamá!
+                </p>
+              )}
+              <div
+                className="h-2 w-full bg-brand-100 rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={FREE_SHIPPING_THRESHOLD}
+                aria-valuenow={Math.min(getCartTotal(), FREE_SHIPPING_THRESHOLD)}
+                aria-label="Progreso hacia el envío gratis"
+              >
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    faltaParaGratis > 0 ? 'bg-accent-500' : 'bg-emerald-500'
+                  }`}
+                  style={{ width: `${progresoGratis}%` }}
+                />
+              </div>
+              <p className="text-[10px] text-brand-400">
+                Envío gratis en pedidos de ${FREE_SHIPPING_THRESHOLD} o más.
+              </p>
+            </div>
+
+            <hr className="border-brand-200" />
+
             <div className="space-y-3 text-xs text-brand-500">
               <div className="flex justify-between">
                 <span>Cantidad Total</span>
@@ -142,7 +185,11 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between">
                 <span>Envío</span>
-                <span className="font-semibold text-brand-950">Calculado al checkout</span>
+                <span className="font-semibold text-brand-950">
+                  {faltaParaGratis > 0 ? 'Calculado al checkout' : (
+                    <span className="text-emerald-600 font-bold uppercase">Gratis</span>
+                  )}
+                </span>
               </div>
             </div>
 

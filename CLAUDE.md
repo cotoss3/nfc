@@ -15,6 +15,16 @@
 6. No ejecutar `npm run build` para verificar cambios pequeños; usar `npx tsc --noEmit` si hace falta.
 7. Al terminar una sesión con cambios estructurales: actualizar `PROJECT_MEMORY.md` (2-3 líneas), no regenerar el documento.
 
+## ⛔ Regla obligatoria: bitácora
+**Toda sesión termina escribiendo su avance en la BITÁCORA DE PROGRESO de `PROJECT_MEMORY.md`.**
+No es opcional y no depende de que Fernando lo pida. Entrada nueva arriba, con fecha,
+qué se hizo y qué quedó pendiente. Es lo que evita repetir diagnósticos ya hechos.
+
+## 🚀 Deploy
+Fernando publica por su propio proceso de GitHub. **No desplegar desde la sesión**
+ni crear proyectos nuevos en Vercel. El trabajo se entrega compilando
+(`npx tsc --noEmit` y, en cambios grandes, `npm run build`) y listo para commit.
+
 ## Convenciones
 - Rutas admin reales: `/master-control` (NO `/admin`).
 - Códigos de dispositivo: `STT-1001`... ; redirección en `src/app/r/[id]/route.ts`.
