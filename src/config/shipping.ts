@@ -68,3 +68,49 @@ export const YAPPY = {
   numero: '6713-4341',
   titular: 'Fernando Contreras',
 };
+
+// ---------------------------------------------------------------------------
+// SISTEMA DE CUPONES
+// ---------------------------------------------------------------------------
+
+export type CouponType = 'free_shipping' | 'percent' | 'fixed';
+
+export interface Coupon {
+  code: string;
+  type: CouponType;
+  /** Para 'percent': 0-100. Para 'fixed': monto en USD. Para 'free_shipping': ignorado. */
+  value: number;
+  description: string;
+}
+
+/** Catálogo de cupones válidos (en mayúsculas para comparación sin distinción de caso). */
+export const COUPONS: Record<string, Coupon> = {
+  EVG: {
+    code: 'EVG',
+    type: 'free_shipping',
+    value: 0,
+    description: 'Envio gratis en todo Panama',
+  },
+};
+
+/**
+ * Valida un codigo de cupon.
+ * Retorna el cupon si es valido, o null si no existe.
+ */
+export function validateCoupon(code: string): Coupon | null {
+  return COUPONS[code.trim().toUpperCase()] ?? null;
+}
+
+/**
+ * Aplica un cupon al costo de envio y retorna el nuevo costo.
+ */
+export function applyShippingCoupon(
+  shippingCost: number,
+  coupon: Coupon | null
+): number {
+  if (!coupon) return shippingCost;
+  if (coupon.type === 'free_shipping') return 0;
+  if (coupon.type === 'percent') return shippingCost * (1 - coupon.value / 100);
+  if (coupon.type === 'fixed') return Math.max(0, shippingCost - coupon.value);
+  return shippingCost;
+}

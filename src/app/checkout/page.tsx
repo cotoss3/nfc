@@ -12,6 +12,9 @@ import {
   amountMissingForFreeShipping,
   FREE_SHIPPING_THRESHOLD,
   YAPPY,
+  validateCoupon,
+  applyShippingCoupon,
+  type Coupon,
   type ShippingMethodId,
 } from '@/config/shipping';
 import confetti from 'canvas-confetti';
@@ -34,6 +37,12 @@ export default function CheckoutPage() {
 
   // Yappy Reference State
   const [yappyRef, setYappyRef] = useState('');
+
+  // Coupon State
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [couponSuccess, setCouponSuccess] = useState('');
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -113,13 +122,35 @@ export default function CheckoutPage() {
       item.product_name.toLowerCase().includes('pack')
   );
 
-  const getShippingCost = () =>
-    calculateShippingCost(getCartTotal(), shippingMethod, isPackInCart);
+  const getShippingCost = () => {
+    const base = calculateShippingCost(getCartTotal(), shippingMethod, isPackInCart);
+    return applyShippingCoupon(base, appliedCoupon);
+  };
 
-  const envioGratis = isPackInCart || qualifiesForFreeShipping(getCartTotal());
+  const envioGratis = isPackInCart || qualifiesForFreeShipping(getCartTotal()) || (appliedCoupon?.type === 'free_shipping');
 
   const getGrandTotal = () => {
     return getCartTotal() + getShippingCost();
+  };
+
+  const handleApplyCoupon = () => {
+    setCouponError('');
+    setCouponSuccess('');
+    const coupon = validateCoupon(couponInput);
+    if (!coupon) {
+      setCouponError('Cupon no valido. Verifica el codigo e intentalo de nuevo.');
+      setAppliedCoupon(null);
+      return;
+    }
+    setAppliedCoupon(coupon);
+    setCouponSuccess(`Cupon "${coupon.code}" aplicado: ${coupon.description}`);
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponError('');
+    setCouponSuccess('');
   };
 
   const handlePayment = async (e: React.FormEvent) => {
@@ -537,6 +568,49 @@ export default function CheckoutPage() {
 
               <hr className="border-brand-200" />
 
+              {/* CUPON */}
+              <div className="space-y-2">
+                {!appliedCoupon ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyCoupon())}
+                      placeholder="Codigo de cupon (ej: EVG)"
+                      className="shopify-input flex-1 uppercase tracking-widest text-xs"
+                      maxLength={20}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      className="px-4 py-2 bg-brand-950 text-white text-xs font-bold uppercase tracking-wider rounded hover:bg-brand-800 transition-colors flex-shrink-0"
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
+                    <div className="flex items-center gap-2 text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                      <span className="font-bold text-emerald-800">Cupon <span className="font-black">{appliedCoupon.code}</span> aplicado</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCoupon}
+                      className="text-[10px] text-brand-400 hover:text-brand-700 font-bold uppercase underline"
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                )}
+                {couponError && (
+                  <p className="text-[11px] text-red-600 font-semibold flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {couponError}
+                  </p>
+                )}
+              </div>
+
               {/* Calculations lines */}
               <div className="space-y-2 text-xs text-brand-500">
                 <div className="flex justify-between">
@@ -545,9 +619,11 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>
-                    Envío
+                    Envio
                     {isPackInCart
                       ? ' (incluido en el pack)'
+                      : appliedCoupon?.type === 'free_shipping'
+                      ? ' (cupon EVG)'
                       : qualifiesForFreeShipping(getCartTotal())
                       ? ` (gratis sobre $${FREE_SHIPPING_THRESHOLD})`
                       : ` (${SHIPPING_METHODS.find((m) => m.id === shippingMethod)?.label})`}
@@ -561,7 +637,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Programación y Ruteo</span>
+                  <span>Programacion y Ruteo</span>
                   <span className="text-accent-600 font-bold uppercase">Gratuito</span>
                 </div>
               </div>
