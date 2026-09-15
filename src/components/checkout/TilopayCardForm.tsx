@@ -146,12 +146,21 @@ const TilopayCardForm = forwardRef<TilopayCardFormHandle, { visible: boolean }>(
             );
           }
 
-          // El SDK lee el metodo desde el select. Si el cliente no eligio,
-          // tomamos la primera tarjeta disponible (no Yappy).
+          // El SDK lee el metodo desde el select #tlpy_payment_method.
+          // Poblamos de inmediato las opciones en el DOM antes de llamar a startPayment.
           const sel = selectMetodo.current;
-          if (sel && !sel.value) {
-            const tarjeta = disponibles.find((m) => m.id.split(':')[1] !== SEGMENTO_YAPPY);
-            if (tarjeta) sel.value = tarjeta.id;
+          if (sel) {
+            sel.innerHTML = '';
+            for (const m of disponibles) {
+              const opt = document.createElement('option');
+              opt.value = m.id;
+              opt.textContent = m.name;
+              sel.appendChild(opt);
+            }
+            const tarjeta = disponibles.find((m) => m.id.split(':')[1] !== SEGMENTO_YAPPY) || disponibles[0];
+            if (tarjeta) {
+              sel.value = tarjeta.id;
+            }
           }
 
           const res = await window.Tilopay.startPayment();
