@@ -165,11 +165,16 @@ export async function consultTilopayPayment(orderNumber: string): Promise<any> {
 
   const token = await getTilopayToken();
 
-  const res = await fetch(`${TILOPAY_BASE_URL}/consult?orderNumber=${encodeURIComponent(orderNumber)}&key=${encodeURIComponent(apiKey)}`, {
-    method: 'GET',
+  const res = await fetch(`${TILOPAY_BASE_URL}/consult`, {
+    method: 'POST',
     headers: {
+      'Content-Type': 'application/json',
       'Authorization': `bearer ${token}`,
     },
+    body: JSON.stringify({
+      key: apiKey,
+      orderNumber,
+    }),
     cache: 'no-store',
   });
 
