@@ -157,7 +157,14 @@ const TilopayCardForm = forwardRef<TilopayCardFormHandle, { visible: boolean }>(
           const res = await window.Tilopay.startPayment();
           // Si llega aqui con mensaje, el pago no arranco. Cuando arranca,
           // el SDK se encarga del 3DS y navega solo a la URL de redirect.
-          if (res?.message) throw new Error(res.message);
+          if (res?.message) {
+            if (res.message.includes('Card not allowed')) {
+              throw new Error(
+                'Tu cuenta de Tilopay está en Modo Pruebas (Sandbox). Para probar usa la tarjeta: 4000 0000 0000 0002 (Exp: 12/28, CVV: 123). Para cobros reales activa el modo Producción en admin.tilopay.com.'
+              );
+            }
+            throw new Error(res.message);
+          }
         } finally {
           setCargando(false);
         }
@@ -239,9 +246,15 @@ const TilopayCardForm = forwardRef<TilopayCardFormHandle, { visible: boolean }>(
           </p>
 
           {modoPrueba === 1 && (
-            <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-700">
-              Tilopay está en modo PRUEBAS. Ningún cobro es real.
-            </p>
+            <div className="mt-3 rounded-xl bg-amber-50 border border-amber-300/80 p-3 space-y-1 text-amber-900">
+              <p className="text-xs font-bold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                Tilopay está en MODO PRUEBAS (Sandbox)
+              </p>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                Usa la tarjeta de prueba: <strong className="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-200">4000 0000 0000 0002</strong> | Vence: <strong>12/28</strong> | CVV: <strong>123</strong>
+              </p>
+            </div>
           )}
 
           {!sdkListo && (
