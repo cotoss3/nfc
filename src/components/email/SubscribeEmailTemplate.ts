@@ -13,10 +13,15 @@ export function buildWelcomeSubscriptionEmailHtml(email: string): string {
         <td align="center">
           <table width="100%" max-width="580" cellpadding="0" cellspacing="0" style="max-width:580px; background-color:#ffffff; border-radius:18px; overflow:hidden; border:1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);">
             
-            <!-- Header con Logo Blanco y Soporte para Outlook -->
+            <!-- Header con Logo y Fallback de Texto para Outlook -->
             <tr>
-              <td bgcolor="#0f172a" style="background-color: #0f172a; padding: 28px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
-                <img src="https://startap.com.pa/logos/email-logo-white.png" width="160" height="30" alt="starTAP Panamá" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 10px auto; border: 0;" />
+              <td bgcolor="#0f172a" style="background-color: #0f172a; padding: 26px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
+                <div style="margin-bottom: 8px;">
+                  <img src="https://startap.com.pa/logos/Logo.png" width="160" height="30" alt="starTAP Panamá" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 6px auto; border: 0; color: #ffffff; font-size: 18px; font-weight: 900; font-family: sans-serif;" />
+                  <div style="font-size: 22px; font-weight: 900; color: #ffffff; letter-spacing: -0.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    starTAP<span style="color: #f59e0b;">.</span>
+                  </div>
+                </div>
                 <span style="color: #fbbf24; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;">
                   TECNOLOGÍA NFC CONTACTLESS PANAMÁ
                 </span>
