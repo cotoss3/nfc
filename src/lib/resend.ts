@@ -102,3 +102,59 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
     };
   }
 }
+
+/**
+ * Registra o actualiza un contacto en la audiencia de Resend.
+ */
+export async function addContactToResend(
+  email: string,
+  firstName?: string
+): Promise<{ success: boolean; id?: string; error?: string }> {
+  const apiKey = process.env.RESEND_API_KEY?.replace(/["']/g, '').trim();
+
+  if (!apiKey) {
+    return { success: false, error: 'Falta RESEND_API_KEY' };
+  }
+
+  const audienceId = process.env.RESEND_AUDIENCE_ID?.trim();
+  const endpoint = audienceId
+    ? `https://api.resend.com/audiences/${audienceId}/contacts`
+    : `https://api.resend.com/contacts`;
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        first_name: firstName || '',
+        unsubscribed: false,
+      }),
+      cache: 'no-store',
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.warn('[RESEND_CONTACT_ADD_WARN]', res.status, data);
+      return {
+        success: false,
+        error: data.message || 'No se pudo registrar el contacto en Resend.',
+      };
+    }
+
+    return {
+      success: true,
+      id: data.id,
+    };
+  } catch (error: any) {
+    console.error('[RESEND_CONTACT_ADD_EXCEPTION]', error);
+    return {
+      success: false,
+      error: error.message || 'Error al conectar con la API de contactos de Resend.',
+    };
+  }
+}

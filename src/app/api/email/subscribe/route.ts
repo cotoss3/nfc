@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendEmail } from '@/lib/resend';
+import { sendEmail, addContactToResend } from '@/lib/resend';
 import { buildWelcomeSubscriptionEmailHtml } from '@/components/email/SubscribeEmailTemplate';
 
 export async function POST(req: NextRequest) {
@@ -16,18 +16,32 @@ export async function POST(req: NextRequest) {
     const cleanEmail = String(email).trim().toLowerCase();
     const html = buildWelcomeSubscriptionEmailHtml(cleanEmail);
 
-    // 1. Correo de bienvenida al suscriptor
+    // 1. Agregar contacto a la audiencia en Resend Dashboard
+    addContactToResend(cleanEmail).catch((err) =>
+      console.error('[RESEND_CONTACT_SYNC_ERROR]', err)
+    );
+
+    // 2. Correo de bienvenida al suscriptor
     const welcomeRes = await sendEmail({
       to: cleanEmail,
-      subject: '⭐ ¡Bienvenido a starTAP Panamá!',
+      subject: '⭐ ¡Bienvenido a starTAP Panamá! | Tu regalo de bienvenida dentro',
       html,
     });
 
-    // 2. Alerta interna de nuevo suscriptor
+    // 3. Alerta interna de nuevo suscriptor
     sendEmail({
       to: 'info@datakorex.com',
       subject: `📩 Nuevo Suscriptor: ${cleanEmail}`,
-      html: `<p>Se ha registrado un nuevo correo en la web de starTAP: <strong>${cleanEmail}</strong></p>`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+          <h2 style="color: #0f172a; margin-top: 0;">🎉 Nuevo Suscriptor en starTAP Panamá</h2>
+          <p style="color: #334155; font-size: 14px;">Se ha registrado una nueva suscripción al boletín desde el sitio web:</p>
+          <div style="background-color: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: bold; font-family: monospace; color: #0284c7;">
+            ${cleanEmail}
+          </div>
+          <p style="color: #64748b; font-size: 12px; margin-bottom: 0; margin-top: 16px;">El contacto ha sido sincronizado con Resend y recibió el correo de bienvenida.</p>
+        </div>
+      `,
     }).catch(() => {});
 
     return NextResponse.json({
