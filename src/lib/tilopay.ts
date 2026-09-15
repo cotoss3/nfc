@@ -60,25 +60,43 @@ export async function getTilopayToken(): Promise<string> {
 export async function getTilopaySdkToken(): Promise<{ token: string; expiresIn: number }> {
   const apiuser = process.env.TILOPAY_API_USER;
   const password = process.env.TILOPAY_API_PASSWORD;
+  const key = process.env.TILOPAY_API_KEY;
 
-  if (!apiuser || !password) {
-    throw new Error('Faltan las credenciales de Tilopay en las variables de entorno (TILOPAY_API_USER, TILOPAY_API_PASSWORD).');
+  // loginSdk pide TRES credenciales, no dos como /login. Si falta la key
+  // Tilopay responde "Request not valid, missing username, password or key".
+  if (!apiuser || !password || !key) {
+    const faltan = [
+      !apiuser && 'TILOPAY_API_USER',
+      !password && 'TILOPAY_API_PASSWORD',
+      !key && 'TILOPAY_API_KEY',
+    ].filter(Boolean).join(', ');
+    throw new Error(`Faltan credenciales de Tilopay en las variables de entorno: ${faltan}.`);
   }
 
   const res = await fetch(`${TILOPAY_BASE_URL}/loginSdk`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ apiuser, password }),
+    body: JSON.stringify({ apiuser, password, key }),
     cache: 'no-store',
   });
 
   const data = await res.json();
 
+  // Tilopay no garantiza 4xx en los errores: hay que mirar el cuerpo siempre.
   if (!res.ok || !data.access_token) {
-    throw new Error(data.message || data.error || 'Error al obtener el token del SDK de Tilopay.');
+    const detalle =
+      data.message || data.description || data.error || JSON.stringify(data).slice(0, 200);
+    console.error('[TILOPAY_LOGIN_SDK_ERROR]', res.status, detalle);
+    throw new Error(`Tilopay rechazó el inicio de sesión del SDK: ${detalle}`);
   }
 
-  return { token: data.access_token, expiresIn: Number(data.expires_in) || 3600 };
+  // expires_in llega como fecha ("2023-06-05 13:32:06"), no como segundos.
+  const vence = Date.parse(String(data.expires_in).replace(' ', 'T'));
+  const expiresIn = Number.isFinite(vence)
+    ? Math.max(60, Math.floor((vence - Date.now()) / 1000))
+    : 3600;
+
+  return { token: data.access_token, expiresIn };
 }
 
 /**
