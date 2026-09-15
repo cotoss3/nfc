@@ -48,25 +48,30 @@ export default function CartPage() {
     const itemsList = cart.map(item => {
       const extras = [
         item.has_custom_logo ? 'Logo personalizado' : '',
-        item.has_qr_code ? 'Código QR' : '',
+        item.has_qr_code ? 'Codigo QR' : '',
         item.selected_color ? `Acabado: ${item.selected_color}` : ''
       ].filter(Boolean).join(', ');
-      
+
       const extrasText = extras ? ` (${extras})` : '';
-      return `• ${item.quantity}x ${item.product_name}${extrasText} - $${(item.price * item.quantity).toFixed(2)}`;
+      return `- ${item.quantity}x ${item.product_name}${extrasText} : $${(item.price * item.quantity).toFixed(2)}`;
     }).join('\n');
 
-    const message = `Hola starTAP, quiero pagar mi pedido por Yappy / WhatsApp:
+    const envio = faltaParaGratis > 0 ? 'Por coordinar' : 'GRATIS (pedido mayor a $50)';
 
-📦 *RESUMEN DEL PEDIDO:*
-${itemsList}
+    const lines = [
+      'Hola starTAP, quiero pagar mi pedido por Yappy o WhatsApp.',
+      '',
+      '*PEDIDO:*',
+      itemsList,
+      '',
+      `*TOTAL:* $${getCartTotal().toFixed(2)} USD`,
+      `*ENVIO:* ${envio}`,
+      '*GARANTIA:* 90 dias incluida',
+      '',
+      'Por favor indicarme como proceder con el pago. Gracias.',
+    ];
 
-💰 *TOTAL:* $${getCartTotal().toFixed(2)} USD
-🚚 *ENVÍO:* ${faltaParaGratis > 0 ? 'Por coordinar' : 'Envío Gratis incluido (+$50)'}
-🛡️ *GARANTÍA:* 90 días incluida
-
-¿Me indican cómo proceder con el pago?`;
-
+    const message = lines.join('\n');
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
