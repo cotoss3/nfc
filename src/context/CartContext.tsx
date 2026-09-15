@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { OrderItem } from '@/lib/db';
 import { track } from '@/lib/fbpixel';
+import { trackTikTok } from '@/lib/tiktokpixel';
 
 interface CartContextType {
   cart: OrderItem[];
@@ -48,6 +49,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       content_ids: [newItem.product_id],
       content_name: newItem.product_name,
       contents: [{ id: newItem.product_id, quantity: newItem.quantity }],
+      value: newItem.price * newItem.quantity,
+      currency: 'USD',
+    });
+
+    trackTikTok('AddToCart', {
+      content_type: 'product',
+      content_id: newItem.product_id,
+      content_name: newItem.product_name,
+      quantity: newItem.quantity,
+      price: newItem.price,
       value: newItem.price * newItem.quantity,
       currency: 'USD',
     });

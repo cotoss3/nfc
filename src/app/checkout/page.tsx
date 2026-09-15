@@ -40,6 +40,7 @@ import {
 import { PRODUCTS } from '@/config/products';
 import confetti from 'canvas-confetti';
 import { track, itemsParaMeta } from '@/lib/fbpixel';
+import { trackTikTok, itemsParaTikTok } from '@/lib/tiktokpixel';
 import TilopayCardForm, { type TilopayCardFormHandle } from '@/components/checkout/TilopayCardForm';
 
 export default function CheckoutPage() {
@@ -91,6 +92,11 @@ export default function CheckoutPage() {
             value: pedido.total,
             currency: 'USD',
             order_id: pedido.id,
+          });
+          trackTikTok('CompletePayment', {
+            ...itemsParaTikTok(pedido.items),
+            value: pedido.total,
+            currency: 'USD',
           });
           setCompletedOrder(pedido);
         }
@@ -330,6 +336,12 @@ export default function CheckoutPage() {
         value: getGrandTotal(),
         currency: 'USD',
         order_id: orderNumber,
+      });
+
+      trackTikTok('CompletePayment', {
+        ...itemsParaTikTok(cart),
+        value: getGrandTotal(),
+        currency: 'USD',
       });
 
       setIsProcessing(false);
