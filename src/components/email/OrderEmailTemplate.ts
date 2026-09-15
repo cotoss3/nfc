@@ -71,12 +71,12 @@ export function buildCustomerOrderEmailHtml(data: OrderEmailParams): string {
         <td align="center">
           <table width="100%" max-width="600" cellpadding="0" cellspacing="0" style="max-width:600px; background-color:#ffffff; border-radius:18px; overflow:hidden; border:1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);">
             
-            <!-- Header Banner con Logo Oficial -->
+            <!-- Header Banner con Logo Oficial y Soporte Total para Outlook / Gmail -->
             <tr>
-              <td style="background: linear-gradient(135deg, #020617 0%, #0f172a 100%); padding: 32px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
-                <img src="https://startap.com.pa/logos/email-logo.png" width="160" height="30" alt="starTAP Panamá Logo" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 10px auto; border: 0;" />
-                <div style="display: inline-block; background-color: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 4px 14px; border-radius: 20px;">
-                  <span style="color: #fef08a; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;">
+              <td bgcolor="#0f172a" style="background-color: #0f172a; padding: 28px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
+                <img src="https://startap.com.pa/logos/Logo.png" width="160" height="30" alt="starTAP Panamá Logo" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 12px auto; border: 0;" />
+                <div style="display: inline-block; background-color: #1e293b; border: 1px solid #f59e0b; padding: 6px 16px; border-radius: 20px;">
+                  <span style="color: #fbbf24; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">
                     N° DE PEDIDO: #${data.orderId}
                   </span>
                 </div>
