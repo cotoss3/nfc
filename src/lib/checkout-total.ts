@@ -1,5 +1,6 @@
 import { getProductById } from '@/config/products';
 import { calculateShippingCost } from '@/config/shipping';
+import { getPrecio } from '@/lib/precios';
 
 /** Extras que el cliente puede anadir en la landing de producto */
 export const PRECIO_LOGO = 5;
@@ -13,21 +14,23 @@ export interface ItemEntrada {
 }
 
 /**
- * Recalcula el total en el servidor a partir del catalogo.
- * El monto que manda el navegador NO se usa para cobrar: solo se compara.
- *
- * Con el SDK esto importa mas que con la pagina alojada: el `amount` de
- * Tilopay.Init() sale del navegador, asi que el servidor tiene que ser el
- * que diga cuanto vale el pedido y despues confirmar contra /consult.
+ * Calcula el total a cobrar. El precio sale de Supabase (lo que edita el
+ * admin y lo que ve el cliente), no del navegador ni de una copia aparte.
  */
-export function calcularTotal(items: ItemEntrada[], shippingMethod: string) {
+export async function calcularTotal(items: ItemEntrada[], shippingMethod: string) {
   let subtotal = 0;
   let hasPack = false;
 
   for (const item of items) {
-    const product = getProductById(String(item.product_id || ''));
+    const id = String(item.product_id || '');
+    const product = getProductById(id);
     if (!product) {
-      throw new Error(`Producto no reconocido en el pedido: ${item.product_id}`);
+      throw new Error(`Producto no reconocido en el pedido: ${id}`);
+    }
+
+    const precio = await getPrecio(id);
+    if (precio === undefined) {
+      throw new Error(`No hay precio vigente para el producto: ${id}`);
     }
 
     const cantidad = Math.max(1, Math.min(500, Number(item.quantity) || 1));
@@ -36,9 +39,13 @@ export function calcularTotal(items: ItemEntrada[], shippingMethod: string) {
     const extras =
       (item.has_custom_logo ? PRECIO_LOGO : 0) + (item.has_qr_code ? PRECIO_QR : 0);
 
-    subtotal += (product.price + extras) * cantidad;
+    subtotal += (precio + extras) * cantidad;
   }
 
   const envio = calculateShippingCost(subtotal, shippingMethod, hasPack);
-  return { subtotal, envio, total: Number((subtotal + envio).toFixed(2)) };
+  return {
+    subtotal: Number(subtotal.toFixed(2)),
+    envio,
+    total: Number((subtotal + envio).toFixed(2)),
+  };
 }

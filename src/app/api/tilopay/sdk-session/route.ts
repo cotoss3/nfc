@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { subtotal, envio, total } = calcularTotal(
+    const { subtotal, envio, total } = await calcularTotal(
       items as ItemEntrada[],
       String(shippingMethod || 'local')
     );

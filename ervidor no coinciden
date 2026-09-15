@@ -1,0 +1,31 @@
+warning: in the working copy of 'src/app/api/tilopay/sdk-session/route.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/app/api/tilopay/sdk-session/route.ts b/src/app/api/tilopay/sdk-session/route.ts[m
+[1mindex 826c419..dc7639e 100644[m
+[1m--- a/src/app/api/tilopay/sdk-session/route.ts[m
+[1m+++ b/src/app/api/tilopay/sdk-session/route.ts[m
+[36m@@ -33,10 +33,24 @@[m [mexport async function POST(req: NextRequest) {[m
+       );[m
+     }[m
+ [m
+[32m+[m[32m    // Si el navegador y el servidor no coinciden, NO se cobra. Antes se[m
+[32m+[m[32m    // registraba el aviso y se cobraba el total del servidor: eso produjo un[m
+[32m+[m[32m    // cobro de $23.75 por un producto que la tienda mostraba en $0.50, porque[m
+[32m+[m[32m    // el precio editable vive en otra fuente que calcularTotal() no lee.[m
+[32m+[m[32m    // Mientras haya mas de una fuente de verdad para el precio, la unica[m
+[32m+[m[32m    // salida segura es parar.[m
+     if (totalCliente !== undefined && Math.abs(Number(totalCliente) - total) > 0.01) {[m
+[31m-      console.warn([m
+[32m+[m[32m      console.error([m
+         `[TILOPAY_TOTAL_MISMATCH] cliente=${totalCliente} servidor=${total} subtotal=${subtotal} envio=${envio}`[m
+       );[m
+[32m+[m[32m      return NextResponse.json([m
+[32m+[m[32m        {[m
+[32m+[m[32m          success: false,[m
+[32m+[m[32m          error:[m
+[32m+[m[32m            'El monto del pedido no coincide con nuestro catálogo. No cobramos nada. Vuelve a cargar el carrito o escríbenos por WhatsApp.',[m
+[32m+[m[32m        },[m
+[32m+[m[32m        { status: 409 }[m
+[32m+[m[32m      );[m
+     }[m
+ [m
+     const orderNumber = clientOrderNumber || `STP-${Date.now().toString().slice(-8)}`;[m

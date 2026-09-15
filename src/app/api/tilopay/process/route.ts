@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Monto autoritativo: se calcula aquí, nunca se toma del navegador.
-    const { subtotal, envio, total } = calcularTotal(items as ItemEntrada[], String(shippingMethod || 'local'));
+    const { subtotal, envio, total } = await calcularTotal(items as ItemEntrada[], String(shippingMethod || 'local'));
 
     if (total <= 0) {
       return NextResponse.json(

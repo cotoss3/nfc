@@ -1,18 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xnepnlaoiflngtikozqd.supabase.co';
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhuZXBubGFvaWZsbmd0aWtvenFkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODc4NDI4NiwiZXhwIjoyMTA0MzYwMjg2fQ.VedI_FsJMBU1X1HSeJQxd4hXoRYVRxyJ_OU1eXp_q_w';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// Nunca un valor por defecto aqui: esta llave ignora las reglas de seguridad
+// de Supabase y el repositorio es publico. Si falta, la ruta falla y punto.
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, serviceKey);
+if (!supabaseUrl || !serviceKey) {
+  console.error('[UPLOAD] Faltan NEXT_PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY.');
+}
+
+const supabase =
+  supabaseUrl && serviceKey ? createClient(supabaseUrl, serviceKey) : null;
 
 async function ensureBucketExists(bucketName: string) {
+  if (!supabase) return;
   try {
     const { data: buckets } = await supabase.storage.listBuckets();
     const exists = buckets?.some(b => b.name === bucketName);
 
     if (!exists) {
-      await supabase.storage.createBucket(bucketName, {
+      await supabase!.storage.createBucket(bucketName, {
         public: true,
         allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'],
         fileSizeLimit: 10485760 // 10MB
@@ -24,6 +32,12 @@ async function ensureBucketExists(bucketName: string) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!supabase) {
+    return NextResponse.json(
+      { error: 'Almacenamiento no configurado en el servidor.' },
+      { status: 503 }
+    );
+  }
   try {
     const formData = await req.formData();
     const files = formData.getAll('file') as File[];
@@ -43,7 +57,7 @@ export async function POST(req: NextRequest) {
       const ext = originalName.split('.').pop() || 'png';
       const fileName = `prod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
 
-      const { data, error } = await supabase.storage
+      const { data, error } = await supabase!.storage
         .from(bucketName)
         .upload(fileName, buffer, {
           contentType: file.type || `image/${ext}`,
@@ -56,7 +70,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: `Error subiendo ${file.name}: ${error.message}` }, { status: 500 });
       }
 
-      const { data: urlData } = supabase.storage
+      const { data: urlData } = supabase!.storage
         .from(bucketName)
         .getPublicUrl(fileName);
 
