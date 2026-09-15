@@ -24,21 +24,36 @@ export default function Page() {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'Store',
-        '@id': 'https://startap.com.pa/#store',
-        'name': 'StarTAP Panamá',
+        '@type': 'LocalBusiness',
+        '@id': 'https://startap.com.pa/#organization',
+        'name': 'starTAP Panamá',
+        'alternateName': ['starTAP', 'StarTAP'],
         'url': 'https://startap.com.pa/',
-        'logo': 'https://startap.com.pa/images/logo.png',
-        'image': 'https://startap.com.pa/images/startap_negocio_resenas.webp',
-        'description': 'Placas y tarjetas NFC contactless para captar opiniones de Google Maps en comercios y restaurantes de Panamá.',
+        'logo': 'https://startap.com.pa/logos/Logo.webp',
+        'image': 'https://startap.com.pa/images/posicionamiento-seo-google-maps-panama-startap.webp',
+        'description': 'Dispositivos NFC y códigos QR para que negocios en Panamá multipliquen sus reseñas de Google Maps, sin mensualidades.',
+        'telephone': '+507 6713-4341',
+        'email': 'info@datakorex.com',
         'priceRange': '$20.00 - $50.00',
-        'telephone': '+50765239821',
+        'currenciesAccepted': 'USD',
+        'paymentAccepted': 'Yappy, Tarjeta de crédito, Transferencia ACH',
+        'areaServed': {
+          '@type': 'Country',
+          'name': 'Panamá'
+        },
         'address': {
           '@type': 'PostalAddress',
-          'streetAddress': 'San Francisco, Vía Porras',
-          'addressLocality': 'Ciudad de Panamá',
-          'addressRegion': 'Panamá',
+          'addressLocality': 'Arraiján',
+          'addressRegion': 'Panamá Oeste',
           'addressCountry': 'PA'
+        },
+        'sameAs': [
+          'https://www.datakorex.com'
+        ],
+        'parentOrganization': {
+          '@type': 'Organization',
+          'name': 'DataKorex',
+          'url': 'https://www.datakorex.com'
         }
       },
       {
@@ -46,12 +61,15 @@ export default function Page() {
         'name': 'Tarjeta NFC de Bolsillo',
         'description': 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
         'image': 'https://startap.com.pa/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
+        'brand': { '@type': 'Brand', 'name': 'starTAP' },
         'offers': {
           '@type': 'Offer',
           'price': '20.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'url': 'https://startap.com.pa/catalogo'
+          'itemCondition': 'https://schema.org/NewCondition',
+          'url': 'https://startap.com.pa/catalogo/tarjeta-nfc-bolsillo',
+          'seller': { '@id': 'https://startap.com.pa/#organization' }
         }
       },
       {
@@ -59,12 +77,15 @@ export default function Page() {
         'name': 'Placa NFC para Reseñas de Google',
         'description': 'Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.',
         'image': 'https://startap.com.pa/products/NFC_10001/NFC_10001_Placa.webp',
+        'brand': { '@type': 'Brand', 'name': 'starTAP' },
         'offers': {
           '@type': 'Offer',
           'price': '30.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'url': 'https://startap.com.pa/catalogo'
+          'itemCondition': 'https://schema.org/NewCondition',
+          'url': 'https://startap.com.pa/catalogo/placa-nfc-mostrador',
+          'seller': { '@id': 'https://startap.com.pa/#organization' }
         }
       },
       {
@@ -72,12 +93,15 @@ export default function Page() {
         'name': 'Stand NFC para Reseñas de Google',
         'description': 'Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.',
         'image': 'https://startap.com.pa/products/NFC10002/NFC_10002_Stan.webp',
+        'brand': { '@type': 'Brand', 'name': 'starTAP' },
         'offers': {
           '@type': 'Offer',
           'price': '35.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
-          'url': 'https://startap.com.pa/catalogo'
+          'itemCondition': 'https://schema.org/NewCondition',
+          'url': 'https://startap.com.pa/catalogo/stand-nfc-mesa',
+          'seller': { '@id': 'https://startap.com.pa/#organization' }
         }
       },
       {

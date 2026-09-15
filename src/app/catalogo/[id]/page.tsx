@@ -64,9 +64,10 @@ export default function Page({ params }: { params: { id: string } }) {
         offers: {
           '@type': 'Offer',
           url: `${BASE_URL}/catalogo/${product.id}`,
-          price: product.price,
+          price: product.price.toFixed(2),
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
+          itemCondition: 'https://schema.org/NewCondition',
           areaServed: { '@type': 'Country', name: 'Panamá' },
           seller: { '@id': `${BASE_URL}/#organization` },
         },

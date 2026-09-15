@@ -41,7 +41,11 @@ export default function AutorPage({ params }: { params: { slug: string } }) {
     url: `${BASE_URL}/autor/${autor.slug}`,
     ...(autor.foto ? { image: `${BASE_URL}${autor.foto}` } : {}),
     ...(autor.sameAs.length ? { sameAs: autor.sameAs } : {}),
-    worksFor: { '@id': `${BASE_URL}/#organization` },
+    worksFor: {
+      '@type': 'Organization',
+      name: 'DataKorex',
+      url: 'https://www.datakorex.com',
+    },
     knowsAbout: [
       'SEO local',
       'Google Business Profile',

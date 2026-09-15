@@ -243,6 +243,103 @@ export default function IndustriaPage({
             </div>
           </section>
 
+          {/* DINÁMICA OPERATIVA Y MOMENTO EXACTO */}
+          {ind.momentoDetalle && (
+            <section className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 space-y-6 shadow-card">
+              <div className="space-y-1">
+                <span className="text-xs font-black uppercase tracking-widest text-amber-600 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Dinámica de Servicio</span>
+                </span>
+                <h2 className="text-2xl font-black text-slate-950 uppercase tracking-tight">
+                  {ind.momentoDetalle.titulo}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+                  {ind.momentoDetalle.subtitulo}
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                {ind.momentoDetalle.pasos.map((p) => (
+                  <div key={p.paso} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-2 relative">
+                    <div className="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 font-mono font-black text-sm flex items-center justify-center">
+                      {p.paso}
+                    </div>
+                    <h3 className="font-extrabold text-slate-950 text-xs sm:text-sm uppercase pt-1">{p.titulo}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">{p.descripcion}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* PROTOCOLO PREVENTIVO DE RESEÑAS NEGATIVAS */}
+          {ind.manejoPreventivo && (
+            <section className="bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-slate-50 border border-amber-300/60 rounded-3xl p-8 sm:p-10 space-y-6 shadow-card">
+              <div className="space-y-1">
+                <span className="text-xs font-black uppercase tracking-widest text-amber-800 flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-amber-700" />
+                  <span>Control de Calidad y Reputación</span>
+                </span>
+                <h2 className="text-2xl font-black text-slate-950 uppercase tracking-tight">
+                  {ind.manejoPreventivo.titulo}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+                  {ind.manejoPreventivo.subtitulo}
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                {ind.manejoPreventivo.reglas.map((r, idx) => (
+                  <div key={idx} className="bg-white border border-amber-200/80 rounded-2xl p-5 space-y-2 shadow-xs">
+                    <div className="flex items-center gap-2 text-rose-700">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      <h3 className="font-extrabold text-xs uppercase text-slate-950">{r.alerta}</h3>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{r.explicacion}</p>
+                  </div>
+                ))}
+              </div>
+
+              {ind.manejoPreventivo.protocolo && (
+                <div className="bg-white/80 border border-slate-200 rounded-2xl p-4 sm:p-5 text-xs text-slate-700 leading-relaxed flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-bold text-slate-900 block mb-0.5">Protocolo ante una queja publicada:</strong>
+                    {ind.manejoPreventivo.protocolo}
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* UBICACIÓN FÍSICA ESTRATÉGICA */}
+          {ind.ubicacionVisual && (
+            <section className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 space-y-6 shadow-card">
+              <div className="space-y-1">
+                <span className="text-xs font-black uppercase tracking-widest text-brand-400">Instalación Contextualizada</span>
+                <h2 className="text-2xl font-black text-slate-950 uppercase tracking-tight">
+                  {ind.ubicacionVisual.titulo}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+                  {ind.ubicacionVisual.subtitulo}
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                {ind.ubicacionVisual.puntos.map((pt, idx) => (
+                  <div key={idx} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-2.5">
+                    <div className="inline-block px-2.5 py-1 rounded-md bg-slate-950 text-white text-[10px] font-black uppercase tracking-wider">
+                      {pt.lugar}
+                    </div>
+                    <div className="text-xs font-extrabold text-amber-600 block">{pt.dispositivo}</div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{pt.razon}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* FLUJO DE 3 PASOS EN EL LOCAL */}
           <section className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 space-y-6 shadow-card">
             <div className="space-y-1">
@@ -343,21 +440,25 @@ export default function IndustriaPage({
 
                 <div className="pt-2 flex flex-col sm:flex-row gap-3">
                   <Link
-                    href={`/catalogo/${recommendedProduct?.id || ind.producto}`}
-                    className="py-3.5 px-6 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center justify-center gap-2"
+                    href={ind.ctaDescriptivo?.urlCatalogo || `/catalogo/${recommendedProduct?.id || ind.producto}`}
+                    className="py-3.5 px-6 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-center"
                   >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>Ver Producto y Configurar</span>
+                    <ShoppingBag className="w-4 h-4 shrink-0" />
+                    <span>{ind.ctaDescriptivo?.textoCatalogo || 'Ver Producto y Configurar'}</span>
                   </Link>
 
                   <a
-                    href={whatsappProducto}
+                    href={
+                      ind.ctaDescriptivo?.mensajeWhatsapp
+                        ? `${WHATSAPP}?text=${encodeURIComponent(ind.ctaDescriptivo.mensajeWhatsapp)}`
+                        : whatsappProducto
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="py-3.5 px-6 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2"
+                    className="py-3.5 px-6 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 text-center"
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Consultar por WhatsApp</span>
+                    <MessageCircle className="w-4 h-4 shrink-0" />
+                    <span>{ind.ctaDescriptivo?.textoWhatsapp || 'Consultar por WhatsApp'}</span>
                   </a>
                 </div>
               </div>

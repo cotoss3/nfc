@@ -57,17 +57,44 @@ export default function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center space-x-6">
-            {/* Cart Icon */}
+          <div className="flex items-center space-x-4 sm:space-x-6">
+            {/* Cart Button */}
             <Link
               href="/cart"
-              className="relative p-1 text-brand-700 hover:text-brand-950 transition-colors"
-              aria-label="Ver carrito"
+              className="relative p-2 rounded-lg text-brand-700 hover:text-brand-950 hover:bg-brand-100 transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-accent-500"
+              aria-label={
+                mounted && getItemCount() > 0
+                  ? `Ver carrito, ${getItemCount()} ${getItemCount() === 1 ? 'producto' : 'productos'}`
+                  : 'Ver carrito de compras'
+              }
             >
-              <ShoppingBag className="h-5 w-5 stroke-[1.8]" />
+              {/* SVG de Carrito visible, con viewBox estándar y dimensiones fijas para SSR */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5 min-w-[20px] min-h-[20px] text-brand-800 shrink-0"
+                aria-hidden="true"
+              >
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                <path d="M3 6h18" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              <span className="sr-only">
+                {mounted && getItemCount() > 0
+                  ? `Carrito con ${getItemCount()} productos`
+                  : 'Carrito de compras'}
+              </span>
               {mounted && getItemCount() > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-brand-950 text-[10px] font-bold text-white">
-                  {getItemCount()}
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 flex items-center justify-center rounded-full bg-accent-500 text-[11px] font-black text-white ring-2 ring-white shadow-sm"
+                >
+                  {getItemCount() > 99 ? '99+' : getItemCount()}
                 </span>
               )}
             </Link>

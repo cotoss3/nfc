@@ -8,6 +8,28 @@ export interface Industria {
   intro: string;
   dolor: string;
   momento: string;
+  momentoDetalle?: {
+    titulo: string;
+    subtitulo: string;
+    pasos: { paso: string; titulo: string; descripcion: string }[];
+  };
+  manejoPreventivo?: {
+    titulo: string;
+    subtitulo: string;
+    reglas: { alerta: string; explicacion: string }[];
+    protocolo: string;
+  };
+  ubicacionVisual?: {
+    titulo: string;
+    subtitulo: string;
+    puntos: { lugar: string; dispositivo: string; razon: string }[];
+  };
+  ctaDescriptivo?: {
+    textoCatalogo: string;
+    urlCatalogo: string;
+    textoWhatsapp: string;
+    mensajeWhatsapp: string;
+  };
   beneficios: string[];
   producto: string; // id de producto recomendado
   productoRazon: string;
@@ -31,6 +53,73 @@ export const INDUSTRIAS: Industria[] = [
       'El problema no es que a tus clientes no les guste la comida. Es que salen contentos y nunca escriben nada. Pedirles que busquen tu restaurante en Google y redacten una reseña son cinco pasos, y ahí se pierde la mayoría.',
     momento:
       'El mejor momento es justo cuando llega la cuenta: el cliente está satisfecho, sentado y con el celular a mano. Un stand NFC en la mesa o junto a la caja convierte ese momento en una reseña.',
+    momentoDetalle: {
+      titulo: 'La Dinámica de Sala: El Momento Exacto en Restaurantes',
+      subtitulo: 'Pedir la reseña a destiempo interrumpe al comensal o se ignora. En Panamá, la psicología del comensal responde con éxito a esta secuencia:',
+      pasos: [
+        {
+          paso: '1',
+          titulo: 'Pregunta de Calidad Previa',
+          descripcion: 'Al retirar los platos principales o servir el café, el salonero valida: "¿Qué tal estuvo el término del plato hoy?". Si el cliente elogia la comida, queda listo para la recomendación.'
+        },
+        {
+          paso: '2',
+          titulo: 'Presentación con la Cuenta en Mesa',
+          descripcion: 'El momento cumbre es cuando se entrega el porta-cuentas. El comensal está relajado en la sobremesa, satisfecho y con su teléfono en mano para revisar el total o pagar con Yappy.'
+        },
+        {
+          paso: '3',
+          titulo: 'El Toque de 2 Segundos',
+          descripcion: 'El personal señala con naturalidad: "Si disfrutaron el servicio, con acercar su celular aquí al stand nos apoyan muchísimo en Google". Sin pedir 5 estrellas explícitamente ni crear fricción.'
+        }
+      ]
+    },
+    manejoPreventivo: {
+      titulo: 'Protocolo Preventivo Anti-Reseñas Negativas en Sala',
+      subtitulo: 'El 90% de las malas reseñas en Google Maps para restaurantes en Panamá provienen de clientes que sintieron que nadie los escuchó en el local:',
+      reglas: [
+        {
+          alerta: 'Nunca presentes el Stand a una mesa con quejas',
+          explicacion: 'Si el cliente reportó demora excesiva, un plato frío o una equivocación, no se le pide reseña. Se activa la atención gerencial de inmediato.'
+        },
+        {
+          alerta: 'Resuelve la inconformidad antes de que pidan la cuenta',
+          explicacion: 'Un cambio de plato rápido, un café o un postre de cortesía convierte una molestia inicial en un testimonio de excelente servicio.'
+        },
+        {
+          alerta: 'Prohibido usar tablets compartidas del restaurante',
+          explicacion: 'Google detecta múltiples opiniones emitidas desde la misma IP o aparato y las borra o marca la ficha. El cliente siempre debe usar su propio celular.'
+        }
+      ],
+      protocolo: 'Si llega una reseña negativa a tu perfil de Google, responde antes de 4 horas con tono profesional, reconociendo el hecho sin discutir y ofreciendo un contacto de WhatsApp de gerencia para solucionar el caso.'
+    },
+    ubicacionVisual: {
+      titulo: 'Ubicación Estratégica del Hardware en el Salón',
+      subtitulo: 'Distribución estudiada para maximizar escaneos sin estorbar platos ni vasos:',
+      puntos: [
+        {
+          lugar: 'Centro de Mesa / Junto al Servilletero',
+          dispositivo: 'Stand NFC Autoportante 4:5',
+          razon: 'Permanece visible durante toda la sobremesa sin estorbar los cubiertos ni la vajilla.'
+        },
+        {
+          lugar: 'Estación de Cobro / Barra de Pago',
+          dispositivo: 'Placa Acrílica Adhesiva 3mm',
+          razon: 'A la vista directa del comensal que paga en caja con tarjeta de crédito o Yappy.'
+        },
+        {
+          lugar: 'Bolsas de Delivery y Pedidos Para Llevar',
+          dispositivo: 'Tarjeta NFC / QR en empaque',
+          razon: 'Captura valoraciones de clientes en casa que ordenaron por WhatsApp o retiro en local.'
+        }
+      ]
+    },
+    ctaDescriptivo: {
+      textoCatalogo: 'Comprar Stand NFC para Mesas de Restaurante en el Catálogo',
+      urlCatalogo: '/catalogo/stand-nfc-mesa',
+      textoWhatsapp: 'Cotizar Stands para mi Restaurante por WhatsApp',
+      mensajeWhatsapp: 'Hola, tengo un restaurante en Panamá y quiero equipar mis mesas con Stands NFC starTAP para conseguir más reseñas en Google Maps.'
+    },
     beneficios: [
       'Apareces más arriba cuando alguien busca "restaurante cerca de mí" en tu zona',
       'Más reseñas recientes suben tu calificación promedio y bajan el peso de una mala reseña vieja',
@@ -111,6 +200,73 @@ export const INDUSTRIAS: Industria[] = [
       'Tus clientes son fieles y vuelven cada dos semanas, pero eso no se ve en Google. Un local nuevo con 60 reseñas te pasa por encima aunque tú lleves cinco años.',
     momento:
       'Justo después del corte, cuando el cliente se está mirando en el espejo y va a pagar. Ese es el pico de satisfacción del día.',
+    momentoDetalle: {
+      titulo: 'La Dinámica de Barbería: El Clímax del Espejo',
+      subtitulo: 'En barbería y estilismo no existe la sobremesa. El punto más alto de satisfacción dura apenas 60 segundos:',
+      pasos: [
+        {
+          paso: '1',
+          titulo: 'El Giro hacia el Espejo Principal',
+          descripcion: 'El barbero retira la capa, sacude los residuos y gira la silla hacia el espejo grande bien iluminado. Es el instante en que el cliente sonríe, se acomoda el cabello y se siente seguro de su apariencia.'
+        },
+        {
+          paso: '2',
+          titulo: 'La Tarjeta en la Mano del Profesional',
+          descripcion: 'Mientras aplica el aftershave o tónico, el barbero saca su Tarjeta NFC de Bolsillo del mandil o portacredencial: "Quedaste nítido bro. Si te gustó el degradado, tócale aquí atrás con tu cel y déjame la calificación en Google".'
+        },
+        {
+          paso: '3',
+          titulo: 'El Escaneo en la Misma Silla',
+          descripcion: 'El cliente ya tiene el celular en la mano. El escaneo toma 2 segundos antes de levantarse hacia la caja, capturando la valoración en el instante de mayor alegría.'
+        }
+      ]
+    },
+    manejoPreventivo: {
+      titulo: 'Protocolo Preventivo Anti-Reseñas Negativas en Barberías y Salones',
+      subtitulo: 'El cabello y la barba son sumamente personales. Una pequeña duda no resuelta en el sillón se convierte en una mala reseña con foto en Google Maps:',
+      reglas: [
+        {
+          alerta: 'Confirmación activa de satisfacción previa',
+          explicacion: 'Antes de acercar la tarjeta o pedir la reseña, el profesional debe preguntar: "¿Te gustó el degradado o quieres que le baje un poco más a los laterales?". Si hay dudas, se retoca sin discutir.'
+        },
+        {
+          alerta: 'Evitar pedir reseñas si hubo atraso en la cita',
+          explicacion: 'Si el cliente tuvo que esperar 30 minutos a pesar de tener reserva previa, aunque el corte haya quedado impecable, la probabilidad de que mencione la tardanza en Google es alta.'
+        },
+        {
+          alerta: 'Cumplimiento con la política de Google 2026',
+          explicacion: 'No le pidas al cliente que escriba el nombre del barbero textualmente en la reseña ni fijes cuotas obligatorias por empleado; usa el panel starTAP para medir escaneos de forma interna y privada.'
+        }
+      ],
+      protocolo: 'Si un cliente sale inconforme, el administrador debe contactarlo por WhatsApp el mismo día ofreciendo un perfilado o lavado de cortesía. Resolver el detalle en privado blinda tu calificación de 5 estrellas.'
+    },
+    ubicacionVisual: {
+      titulo: 'Ubicación Estratégica del Hardware en el Salón',
+      subtitulo: 'Distribución pensada para el flujo de trabajo sin estorbar máquinas ni tijeras:',
+      puntos: [
+        {
+          lugar: 'Marco del Espejo / Estación de Corte',
+          dispositivo: 'Placa Acrílica Adhesiva 3mm',
+          razon: 'Pegada a la altura de la mirada del cliente cuando está sentado frente al tocador.'
+        },
+        {
+          lugar: 'Bolsillo del Barbero / Portacredencial',
+          dispositivo: 'Tarjeta NFC Personal PVC',
+          razon: 'Permite a cada barbero o estilista solicitar la reseña en su propia silla sin depender de la recepción.'
+        },
+        {
+          lugar: 'Mostrador de Cobro / Recepción',
+          dispositivo: 'Stand NFC Autoportante',
+          razon: 'Punto de contacto final para clientes que pagan en caja con Punto de Venta o Yappy.'
+        }
+      ]
+    },
+    ctaDescriptivo: {
+      textoCatalogo: 'Comprar Tarjetas NFC para Barberos y Salones en el Catálogo',
+      urlCatalogo: '/catalogo/tarjeta-nfc-bolsillo',
+      textoWhatsapp: 'Pedir Tarjetas Personalizadas para mi Equipo por WhatsApp',
+      mensajeWhatsapp: 'Hola, tengo una barbería/salón de belleza en Panamá y quiero equipar a mis estilistas con tarjetas NFC para reseñas de Google.'
+    },
     beneficios: [
       'Sales primero cuando buscan "barbería cerca de mí" en tu corregimiento',
       'Las fotos de tus cortes rinden más cuando la ficha tiene reseñas que las respalden',

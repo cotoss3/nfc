@@ -21,10 +21,41 @@ export const metadata: Metadata = {
 };
 
 export default function CatalogoPage() {
+  const aggregateProductSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${BASE_URL}/catalogo#collection`,
+    name: 'Dispositivos NFC y QR para Reseñas de Google en Panamá',
+    description: 'Placas acrílicas de mostrador, tarjetas de bolsillo y stands autoportantes con chip NFC y código QR para capturar reseñas en Google Maps en Panamá.',
+    brand: { '@type': 'Brand', name: 'starTAP' },
+    category: 'Hardware > Dispositivos NFC',
+    image: `${BASE_URL}/images/posicionamiento-seo-google-maps-panama-startap.webp`,
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'USD',
+      lowPrice: '20.00',
+      highPrice: '50.00',
+      offerCount: PRODUCTS.length,
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@id': `${BASE_URL}/#organization` },
+      offers: PRODUCTS.map((product) => ({
+        '@type': 'Offer',
+        name: product.name,
+        price: product.price.toFixed(2),
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        itemCondition: 'https://schema.org/NewCondition',
+        url: `${BASE_URL}/catalogo/${product.id}`,
+        seller: { '@id': `${BASE_URL}/#organization` },
+      })),
+    },
+  };
+
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Catálogo de Dispositivos NFC & QR StarTAP Panamá',
+    name: 'Catálogo de Dispositivos NFC & QR starTAP Panamá',
     url: `${BASE_URL}/catalogo`,
     numberOfItems: PRODUCTS.length,
     itemListElement: PRODUCTS.map((product, index) => ({
@@ -35,12 +66,16 @@ export default function CatalogoPage() {
         name: product.name,
         description: product.description,
         image: product.image.startsWith('http') ? product.image : `${BASE_URL}${product.image}`,
+        brand: { '@type': 'Brand', name: 'starTAP' },
         offers: {
           '@type': 'Offer',
-          price: product.price,
+          price: product.price.toFixed(2),
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
+          itemCondition: 'https://schema.org/NewCondition',
+          url: `${BASE_URL}/catalogo/${product.id}`,
           areaServed: { '@type': 'Country', name: 'Panamá' },
+          seller: { '@id': `${BASE_URL}/#organization` },
         },
       },
     })),
@@ -48,6 +83,10 @@ export default function CatalogoPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateProductSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}

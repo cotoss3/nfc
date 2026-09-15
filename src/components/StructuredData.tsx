@@ -13,10 +13,14 @@ const organizationSchema = {
   description:
     'Dispositivos NFC y códigos QR para que los negocios en Panamá multipliquen sus reseñas de Google Maps, sin mensualidades.',
   telephone: '+507 6713-4341',
+  email: 'info@datakorex.com',
   areaServed: {
     '@type': 'Country',
     name: 'Panamá',
   },
+  sameAs: [
+    'https://www.datakorex.com',
+  ],
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Arraiján',
@@ -72,27 +76,31 @@ const websiteSchema = {
 
 const storeSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Store',
+  '@type': 'LocalBusiness',
   '@id': `${BASE_URL}/#store`,
-  name: 'StarTAP Panamá',
+  name: 'starTAP Panamá',
   alternateName: ['StarTAP', 'starTAP'],
   url: BASE_URL,
-  logo: `${BASE_URL}/logos/Logo.png`,
+  logo: `${BASE_URL}/logos/Logo.webp`,
   image: `${BASE_URL}/images/posicionamiento-seo-google-maps-panama-startap.webp`,
   description:
     'Venta de placas y tarjetas NFC contactless en Panamá para captar reseñas de Google Maps sin pagos mensuales ni suscripciones.',
   telephone: '+507 6713-4341',
-  priceRange: '$$',
+  email: 'info@datakorex.com',
+  priceRange: '$20.00 - $50.00',
   currenciesAccepted: 'USD',
-  paymentAccepted: 'Yappy, Tarjeta de crédito, Transferencia Bancaria',
+  paymentAccepted: 'Yappy, Tarjeta de crédito, Transferencia Bancaria, ACH',
   areaServed: {
     '@type': 'Country',
     name: 'Panamá',
   },
+  sameAs: [
+    'https://www.datakorex.com',
+  ],
   address: {
     '@type': 'PostalAddress',
-    addressLocality: 'San Francisco',
-    addressRegion: 'Ciudad de Panamá',
+    addressLocality: 'Arraiján',
+    addressRegion: 'Panamá Oeste',
     addressCountry: 'PA',
   },
 };

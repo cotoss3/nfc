@@ -39,9 +39,14 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
   icons: {
-    icon: '/logos/Favicon.png',
-    shortcut: '/logos/Favicon.png',
-    apple: '/logos/Favicon.png',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.png', type: 'image/png', sizes: '32x32' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/logos/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 };
 
@@ -53,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <meta name="google-site-verification" content="1igPIkAizA33F2BubkJ8H7lEqWOh9QHVFAOkvAXdgBc" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon.png" />
       </head>
       <body className="flex flex-col min-h-screen bg-gray-50 text-gray-900 antialiased">
         {/* JSON-LD: va en el body, no en <head>. En el App Router los hijos de

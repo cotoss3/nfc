@@ -7,7 +7,7 @@ import {
   FREE_SHIPPING_THRESHOLD,
   amountMissingForFreeShipping,
 } from '@/config/shipping';
-import { Trash2, ShoppingBag, ArrowRight, Truck } from 'lucide-react';
+import { Trash2, ShoppingBag, ArrowRight, Truck, MessageCircle } from 'lucide-react';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getItemCount } = useCart();
@@ -15,6 +15,33 @@ export default function CartPage() {
   const faltaParaGratis = amountMissingForFreeShipping(getCartTotal());
   const progresoGratis = Math.min(100, (getCartTotal() / FREE_SHIPPING_THRESHOLD) * 100);
   const [mounted, setMounted] = useState(false);
+
+  const whatsappNumber = '50767134341';
+
+  const generateWhatsAppMessage = () => {
+    const itemsList = cart.map(item => {
+      const extras = [
+        item.has_custom_logo ? 'Logo personalizado' : '',
+        item.has_qr_code ? 'Código QR' : '',
+        item.selected_color ? `Acabado: ${item.selected_color}` : ''
+      ].filter(Boolean).join(', ');
+      
+      const extrasText = extras ? ` (${extras})` : '';
+      return `• ${item.quantity}x ${item.product_name}${extrasText} - $${(item.price * item.quantity).toFixed(2)}`;
+    }).join('\n');
+
+    const message = `Hola starTAP, quiero pagar mi pedido directo por Yappy / WhatsApp sin tarjeta:
+
+📦 *RESUMEN DEL PEDIDO:*
+${itemsList}
+
+💰 *TOTAL:* $${getCartTotal().toFixed(2)} USD
+🚚 *ENVÍO:* ${faltaParaGratis > 0 ? 'Por coordinar con asesor' : 'Envío Gratis incluido (+$50)'}
+
+¿Me confirmas tu número de Yappy comercial o cuenta ACH para hacer el pago y coordinar el despacho?`;
+
+    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -204,9 +231,35 @@ export default function CartPage() {
               href="/checkout"
               className="w-full shopify-btn-primary uppercase tracking-widest text-xs font-bold py-4"
             >
-              Completar Compra
+              Completar Compra con Tarjeta
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
+
+            {/* CRO Panamá: Compra directa por Yappy / WhatsApp para evitar abandono de pasarelas */}
+            <div className="pt-2 space-y-3">
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-brand-200"></div>
+                <span className="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-brand-400">
+                  o compra directa sin tarjeta
+                </span>
+                <div className="flex-grow border-t border-brand-200"></div>
+              </div>
+
+              <a
+                href={generateWhatsAppMessage()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center gap-0.5 group hover:shadow-lg"
+              >
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 text-emerald-100 group-hover:scale-110 transition-transform" />
+                  <span>Comprar directo por Yappy / WhatsApp</span>
+                </div>
+                <span className="text-[10px] font-normal text-emerald-100">
+                  Sin ingresar tarjeta • Pago local inmediato (+507 6713-4341)
+                </span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

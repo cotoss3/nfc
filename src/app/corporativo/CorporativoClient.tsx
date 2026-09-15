@@ -20,6 +20,7 @@ import {
   Briefcase 
 } from 'lucide-react';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
+import CorporativoCalculator from '@/components/CorporativoCalculator';
 
 export default function CorporativoClient() {
   const [companyName, setCompanyName] = useState('');
@@ -241,6 +242,11 @@ export default function CorporativoClient() {
               <p className="text-[11px] text-brand-500">Atención ejecutiva personalizada, muestras físicas y facturación a crédito.</p>
             </div>
           </div>
+
+          {/* Interactive B2B Calculator */}
+          <div className="pt-8">
+            <CorporativoCalculator />
+          </div>
         </div>
       </section>
 
@@ -286,7 +292,7 @@ export default function CorporativoClient() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">Correo Electrónico</span>
-                    <span>soporte@startap.com.pa</span>
+                    <span>info@datakorex.com</span>
                   </div>
                 </div>
 
@@ -295,8 +301,8 @@ export default function CorporativoClient() {
                     <Building2 className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="block font-bold text-white">Oficinas Principales</span>
-                    <span>San Francisco, Ciudad de Panamá</span>
+                    <span className="block font-bold text-white">Sede y Cobertura</span>
+                    <span>Arraiján, Panamá Oeste (Envíos a todo Panamá)</span>
                   </div>
                 </div>
               </div>
