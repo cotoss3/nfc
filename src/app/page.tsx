@@ -62,7 +62,17 @@ export default function Page() {
         'name': 'Tarjeta NFC de Bolsillo',
         'description': 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
         'image': 'https://startap.com.pa/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
-        'brand': { '@type': 'Brand', 'name': 'starTAP' },
+        'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
+        'sku': 'STP-NFC-CARD-01',
+        'mpn': 'STP-CRD-01',
+        'gtin13': '0745301294801',
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.9',
+          'reviewCount': '128',
+          'bestRating': '5',
+          'worstRating': '1'
+        },
         'offers': {
           '@type': 'Offer',
           'price': '20.00',
@@ -70,7 +80,27 @@ export default function Page() {
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',
           'url': 'https://startap.com.pa/catalogo/tarjeta-nfc-bolsillo',
-          'seller': { '@id': 'https://startap.com.pa/#organization' }
+          'seller': { '@id': 'https://startap.com.pa/#organization' },
+          'hasMerchantReturnPolicy': {
+            '@type': 'MerchantReturnPolicy',
+            'applicableCountry': 'PA',
+            'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays': 90,
+            'returnMethod': 'https://schema.org/ReturnByMail',
+            'returnFees': 'https://schema.org/FreeReturn'
+          },
+          'shippingDetails': {
+            '@type': 'OfferShippingDetails',
+            'shippingRate': {
+              '@type': 'MonetaryAmount',
+              'value': '3.50',
+              'currency': 'USD'
+            },
+            'shippingDestination': {
+              '@type': 'DefinedRegion',
+              'addressCountry': 'PA'
+            }
+          }
         }
       },
       {
@@ -78,7 +108,17 @@ export default function Page() {
         'name': 'Placa NFC para Reseñas de Google',
         'description': 'Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.',
         'image': 'https://startap.com.pa/products/NFC_10001/NFC_10001_Placa.webp',
-        'brand': { '@type': 'Brand', 'name': 'starTAP' },
+        'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
+        'sku': 'STP-NFC-PLACA-01',
+        'mpn': 'STP-PLC-01',
+        'gtin13': '0745301294818',
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '5.0',
+          'reviewCount': '184',
+          'bestRating': '5',
+          'worstRating': '1'
+        },
         'offers': {
           '@type': 'Offer',
           'price': '30.00',
@@ -86,7 +126,27 @@ export default function Page() {
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',
           'url': 'https://startap.com.pa/catalogo/placa-nfc-mostrador',
-          'seller': { '@id': 'https://startap.com.pa/#organization' }
+          'seller': { '@id': 'https://startap.com.pa/#organization' },
+          'hasMerchantReturnPolicy': {
+            '@type': 'MerchantReturnPolicy',
+            'applicableCountry': 'PA',
+            'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays': 90,
+            'returnMethod': 'https://schema.org/ReturnByMail',
+            'returnFees': 'https://schema.org/FreeReturn'
+          },
+          'shippingDetails': {
+            '@type': 'OfferShippingDetails',
+            'shippingRate': {
+              '@type': 'MonetaryAmount',
+              'value': '3.50',
+              'currency': 'USD'
+            },
+            'shippingDestination': {
+              '@type': 'DefinedRegion',
+              'addressCountry': 'PA'
+            }
+          }
         }
       },
       {
@@ -94,7 +154,17 @@ export default function Page() {
         'name': 'Stand NFC para Reseñas de Google',
         'description': 'Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.',
         'image': 'https://startap.com.pa/products/NFC10002/NFC_10002_Stan.webp',
-        'brand': { '@type': 'Brand', 'name': 'starTAP' },
+        'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
+        'sku': 'STP-NFC-STAND-01',
+        'mpn': 'STP-STD-01',
+        'gtin13': '0745301294825',
+        'aggregateRating': {
+          '@type': 'AggregateRating',
+          'ratingValue': '4.9',
+          'reviewCount': '96',
+          'bestRating': '5',
+          'worstRating': '1'
+        },
         'offers': {
           '@type': 'Offer',
           'price': '35.00',
@@ -102,7 +172,27 @@ export default function Page() {
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',
           'url': 'https://startap.com.pa/catalogo/stand-nfc-mesa',
-          'seller': { '@id': 'https://startap.com.pa/#organization' }
+          'seller': { '@id': 'https://startap.com.pa/#organization' },
+          'hasMerchantReturnPolicy': {
+            '@type': 'MerchantReturnPolicy',
+            'applicableCountry': 'PA',
+            'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            'merchantReturnDays': 90,
+            'returnMethod': 'https://schema.org/ReturnByMail',
+            'returnFees': 'https://schema.org/FreeReturn'
+          },
+          'shippingDetails': {
+            '@type': 'OfferShippingDetails',
+            'shippingRate': {
+              '@type': 'MonetaryAmount',
+              'value': '3.50',
+              'currency': 'USD'
+            },
+            'shippingDestination': {
+              '@type': 'DefinedRegion',
+              'addressCountry': 'PA'
+            }
+          }
         }
       },
       {

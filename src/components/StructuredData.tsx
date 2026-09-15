@@ -48,7 +48,7 @@ const serviceSchema = {
   telephone: '+507 6713-4341',
   priceRange: '$$',
   currenciesAccepted: 'USD',
-  paymentAccepted: 'Yappy, Tarjeta de crédito, Transferencia',
+  paymentAccepted: 'Yappy, Visa, Mastercard',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Arraiján',

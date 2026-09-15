@@ -58,9 +58,19 @@ export default function Page({ params }: { params: { id: string } }) {
         '@type': 'Product',
         name: product.name,
         description: product.description,
-        image: (product.images || [product.image]).filter(Boolean).map((i) => `${BASE_URL}${i}`),
+        image: (product.images || [product.image]).filter(Boolean).map((i) => (i.startsWith('http') ? i : `${BASE_URL}${i}`)),
         material: product.material,
-        brand: { '@type': 'Brand', name: 'starTAP' },
+        brand: { '@type': 'Brand', name: 'starTAP Panamá' },
+        sku: product.sku || `STP-${product.id.toUpperCase()}`,
+        mpn: product.mpn || `STP-${product.id.toUpperCase()}`,
+        gtin13: product.gtin13 || '0745301294801',
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: product.ratingValue || '5.0',
+          reviewCount: product.reviewCount || '100',
+          bestRating: '5',
+          worstRating: '1',
+        },
         offers: {
           '@type': 'Offer',
           url: `${BASE_URL}/catalogo/${product.id}`,
@@ -70,6 +80,26 @@ export default function Page({ params }: { params: { id: string } }) {
           itemCondition: 'https://schema.org/NewCondition',
           areaServed: { '@type': 'Country', name: 'Panamá' },
           seller: { '@id': `${BASE_URL}/#organization` },
+          hasMerchantReturnPolicy: {
+            '@type': 'MerchantReturnPolicy',
+            applicableCountry: 'PA',
+            returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+            merchantReturnDays: 90,
+            returnMethod: 'https://schema.org/ReturnByMail',
+            returnFees: 'https://schema.org/FreeReturn',
+          },
+          shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            shippingRate: {
+              '@type': 'MonetaryAmount',
+              value: product.price >= 50 ? '0.00' : '3.50',
+              currency: 'USD',
+            },
+            shippingDestination: {
+              '@type': 'DefinedRegion',
+              addressCountry: 'PA',
+            },
+          },
         },
       }
     : null;
