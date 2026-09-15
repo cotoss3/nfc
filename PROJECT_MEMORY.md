@@ -156,6 +156,42 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
 
+### 2026-09-15 · Blog con SEO completo + reglas de contenido
+
+**Hecho**
+* **Blog montado**: `/blog` (hub), `/blog/[slug]` y `/autor/[slug]`. Build verificado, 45 páginas.
+* **Arquitectura**: los artículos viven en `src/content/blog/*.ts` (metadatos + cuerpo markdown +
+  FAQs). `src/lib/blog.ts` los registra y expone helpers. Para publicar uno nuevo se crea el
+  archivo de contenido y se añade al array `POSTS`. La ruta, el sitemap y los enlaces salen solos.
+* **Renderizador propio** en `src/components/Markdown.tsx`, sin dependencias nuevas. Cubre
+  `##`, `###`, listas, negrita, cursiva y enlaces, y genera ids para las anclas.
+* **SEO del artículo**: JSON-LD `BlogPosting` + `FAQPage` + `BreadcrumbList`, autor como `Person`
+  con `@id` estable y `sameAs`, OpenGraph de tipo article con fechas, Twitter card, canonical,
+  tabla de contenidos automática, y enlaces internos a industrias y catálogo.
+* **Página de autor** con schema `Person` y `knowsAbout`. Es la pieza de E-E-A-T: la misma
+  entidad Fernando Contreras debe usarse en startap y en datakorex, con la misma bio y los
+  mismos `sameAs`.
+* **Primer artículo publicado**: "Cómo pedir reseñas de Google sin que te penalicen".
+  1.962 palabras, 8 FAQs, verificado contra fuentes oficiales de Google.
+* **`REGLAS_CONTENIDO.md` (nuevo)**: requisitos E-E-A-T y 12 patrones de IA prohibidos.
+  Lectura obligatoria antes de escribir cualquier texto publicable. Enlazado desde `CLAUDE.md`.
+
+* **5 Imágenes reales procesadas y optimizadas a WebP (<140 KB c/u):**
+  - **Portada del blog:** `public/blog/pedir-resenas-google-panama-nfc.webp` (1200x675, 76 KB, cliente tocando el Stand starTAP en mesa de restaurante).
+  - **Foto de autor E-E-A-T:** `public/autores/fernando-contreras.webp` (400x400, 8.2 KB, retrato profesional de Fernando en traje). Activada en `src/lib/blog.ts` y en `/autor/fernando-contreras`.
+  - **Catálogo Stand NFC:** `public/products/NFC10002/stand-nfc-resenas-google-frontal.webp` (800x800, 29 KB, stand frontal sobre fondo blanco). Integrada en `src/config/products.ts`.
+  - **Catálogo Tarjeta NFC:** `public/products/tarjeta-nfc/tarjeta-nfc-en-lanyard-empleado.webp` (1000x1000, 138 KB, tarjeta en lanyard/portacredencial de empleado). Integrada en `src/config/products.ts`.
+  - **Catálogo Placa Acrílica:** `public/products/NFC_10001/placa-acrilica-resistente-agua-limpieza.webp` (1000x1000, 124 KB, placa acrílica mojada siendo limpiada con paño). Integrada en `src/config/products.ts`.
+* Build de producción verificado: 45/45 páginas estáticas generadas sin errores.
+
+**Pendiente**
+1. **Revisar el texto de `/app`**: anuncia "Ranking de Empleados por Escaneos". Mide escaneos,
+   no reseñas, y esa diferencia lo salva de la política de abril 2026, pero hay que decirlo
+   explícito para que ningún cliente lo use como cuota de reseñas.
+2. Añadir el LinkedIn real de Fernando al array `sameAs` de `src/lib/blog.ts`. Cada perfil
+   verificable suma a la entidad de autor.
+3. Replicar la misma firma de autor en datakorex.com y enlazar las dos páginas entre sí.
+
 ### 2026-09-14 · Checkout, pagos y SEO técnico
 
 **Hecho**
@@ -201,4 +237,4 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 * `SEO_PLAN.md` — plan de posicionamiento.
 * `FOTOS_LANDINGS.md` — lista de las 15 fotos que faltan y cómo tomarlas.
 
-*Última actualización:* 2026-09-14 (ver bitácora, sección 10) · anterior: 2026-09-08 (auditoría + CLAUDE.md; anterior: 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)
+*Última actualización:* 2026-09-15 (ver bitácora, sección 10) · anterior: 2026-09-14 (ver bitácora, sección 10) · anterior: 2026-09-08 (auditoría + CLAUDE.md; anterior: 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)

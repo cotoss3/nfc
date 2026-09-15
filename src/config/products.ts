@@ -35,6 +35,7 @@ export const PRODUCTS: ProductConfig[] = [
     image: '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
     images: [
       '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
+      '/products/tarjeta-nfc/tarjeta-nfc-en-lanyard-empleado.webp',
       '/products/tarjeta-nfc/tarjeta-nfc-contactless-google-maps-panama.webp',
       '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-dimensiones-especificaciones.webp'
     ],
@@ -56,7 +57,7 @@ export const PRODUCTS: ProductConfig[] = [
     image: '/products/NFC_10001/NFC_10001_Placa.webp',
     images: [
       '/products/NFC_10001/NFC_10001_Placa.webp',
-      '/products/NFC_10001/NFC_10001_Placa.png'
+      '/products/NFC_10001/placa-acrilica-resistente-agua-limpieza.webp'
     ],
     spec: 'Adhesivo 3M Industrial + Chip NTAG Integrado',
     type: 'google'
@@ -76,7 +77,7 @@ export const PRODUCTS: ProductConfig[] = [
     image: '/products/NFC10002/NFC_10002_Stan.webp',
     images: [
       '/products/NFC10002/NFC_10002_Stan.webp',
-      '/products/NFC10002/NFC_10002_Stan.png'
+      '/products/NFC10002/stand-nfc-resenas-google-frontal.webp'
     ],
     spec: 'Ángulo Inclinado Ergonómico + Antena NFC Dual',
     type: 'google'

@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { 
   Smartphone, 
   Sparkles, 
@@ -669,30 +667,27 @@ export default function AppProClient() {
   ];
 
   return (
-    <div className="w-full bg-white font-sans text-brand-900 min-h-screen flex flex-col justify-between">
-      <Navbar />
+    <div className="w-full bg-white font-sans text-brand-900">
+      {/* 1. HERO SECTION */}
+      <section className="relative bg-gradient-to-br from-slate-950 via-brand-950 to-slate-900 text-white pt-8 sm:pt-14 pb-14 sm:pb-20 px-4 overflow-hidden">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+          
+          <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center space-x-2 bg-amber-400/15 border border-amber-400/30 px-3.5 py-1.5 rounded-full text-xs font-black text-amber-300 uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Suite Pro • Próximamente</span>
+            </div>
 
-      <main className="flex-grow">
-        {/* 1. HERO SECTION */}
-        <section className="relative bg-gradient-to-br from-brand-950 via-slate-900 to-brand-900 text-white pt-24 pb-24 px-4 overflow-hidden">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-            
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center space-x-2 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-amber-300 uppercase tracking-widest">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Próximamente • Suite Pro Completa</span>
-              </div>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white break-words">
+              starTAP App Pro <br className="hidden sm:block" />
+              <span className="text-amber-400 block mt-1 sm:mt-2 drop-shadow-md">
+                16 Superpoderes para Tu Negocio
+              </span>
+            </h1>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15]">
-                starTAP App Pro <br className="hidden sm:block" />
-                <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-amber-200 bg-clip-text text-transparent">
-                  16 Superpoderes para Tu Negocio
-                </span>
-              </h1>
-
-              <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-                La solución todo en uno para empresas en Panamá: desde redirección NFC física gratuita de por vida hasta Inteligencia Artificial con automatización avanzada en Google Maps.
-              </p>
+            <p className="text-sm sm:text-lg text-slate-200 max-w-2xl leading-relaxed font-normal">
+              La solución todo en uno para empresas en Panamá: desde <strong className="text-white font-semibold">redirección NFC física gratuita de por vida</strong> hasta <strong className="text-amber-300 font-semibold">Inteligencia Artificial</strong> con automatización avanzada en Google Maps.
+            </p>
 
               {/* 🛡️ Guarantee Box */}
               <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 text-left space-y-2 max-w-2xl">
@@ -939,9 +934,6 @@ export default function AppProClient() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
     </div>
   );
 }

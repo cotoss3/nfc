@@ -5,6 +5,9 @@
 - Grafo de código: `graphify-out/GRAPH_REPORT.md` y `graphify-out/graph.json`.
   Consulta: `py -m graphify.cli query "pregunta"` en vez de leer archivos completos.
 - Auditoría vigente y deuda técnica: `AUDIT.md`.
+- **Antes de escribir CUALQUIER texto publicable** (blog, landings, fichas, posts del perfil
+  de Google): leer `REGLAS_CONTENIDO.md`. Contiene los requisitos E-E-A-T y la lista de
+  patrones de IA prohibidos. No es opcional.
 
 ## Reglas anti-desperdicio de tokens
 1. NUNCA leer archivos completos >300 líneas. Usar `grep -n` y `sed -n 'A,Bp'` para el bloque exacto.
