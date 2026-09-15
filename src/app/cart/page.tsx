@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { PRODUCTS } from '@/config/products';
 import {
   FREE_SHIPPING_THRESHOLD,
   amountMissingForFreeShipping,
@@ -18,8 +19,12 @@ import {
   Zap,
   Smartphone,
   CheckCircle2,
-  Sparkles,
-  Lock
+  Lock,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Minus,
+  FileText
 } from 'lucide-react';
 
 function YappyBadge() {
@@ -27,9 +32,9 @@ function YappyBadge() {
     <Image
       src="/logos/yappy-logo.webp"
       alt="Pagar con Yappy"
-      width={100}
-      height={56}
-      className="h-7 w-auto object-contain"
+      width={90}
+      height={50}
+      className="h-6 w-auto object-contain"
       priority
     />
   );
@@ -41,6 +46,8 @@ export default function CartPage() {
   const faltaParaGratis = amountMissingForFreeShipping(getCartTotal());
   const progresoGratis = Math.min(100, (getCartTotal() / FREE_SHIPPING_THRESHOLD) * 100);
   const [mounted, setMounted] = useState(false);
+  const [orderNotes, setOrderNotes] = useState('');
+  const [showNotes, setShowNotes] = useState(false);
 
   const whatsappNumber = '50767134341';
 
@@ -48,7 +55,7 @@ export default function CartPage() {
     const itemsList = cart.map(item => {
       const extras = [
         item.has_custom_logo ? 'Logo personalizado' : '',
-        item.has_qr_code ? 'Codigo QR' : '',
+        item.has_qr_code ? 'Código QR' : '',
         item.selected_color ? `Acabado: ${item.selected_color}` : ''
       ].filter(Boolean).join(', ');
 
@@ -59,20 +66,20 @@ export default function CartPage() {
     const envio = faltaParaGratis > 0 ? 'Por coordinar' : 'GRATIS (pedido mayor a $50)';
 
     const lines = [
-      'Hola starTAP, quiero pagar mi pedido por Yappy o WhatsApp.',
+      'Hola starTAP Panamá, quiero realizar mi pedido por Yappy / WhatsApp.',
       '',
-      '*PEDIDO:*',
+      '*DETALLES DEL PEDIDO:*',
       itemsList,
       '',
-      `*TOTAL:* $${getCartTotal().toFixed(2)} USD`,
-      `*ENVIO:* ${envio}`,
-      '*GARANTIA:* 90 dias incluida',
+      `*SUBTOTAL:* $${getCartTotal().toFixed(2)} USD`,
+      `*ENVÍO:* ${envio}`,
+      '*GARANTÍA:* 90 días incluida',
+      orderNotes ? `*NOTAS:* ${orderNotes}` : '',
       '',
-      'Por favor indicarme como proceder con el pago. Gracias.',
-    ];
+      'Por favor confirmarme cómo transferir por Yappy para despachar mi orden. ¡Gracias!'
+    ].filter(Boolean);
 
-    const message = lines.join('\n');
-    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
   };
 
   useEffect(() => {
@@ -81,278 +88,491 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <div className="max-w-md mx-auto px-4 py-24 text-center text-xs text-brand-400 uppercase tracking-widest">
-        Cargando carrito...
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <span className="animate-spin h-6 w-6 border-2 border-slate-900 border-t-transparent rounded-full"></span>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Cargando carrito...</p>
+        </div>
       </div>
     );
   }
 
+  // Complementary cross-sell products from PRODUCTS not currently in cart
+  const crossSellProducts = PRODUCTS.filter(
+    p => !cart.some(item => item.product_id === p.id || p.aliases?.includes(item.product_id))
+  ).slice(0, 3);
+
   if (cart.length === 0) {
     return (
-      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-6">
-        <div className="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mx-auto text-brand-400">
-          <ShoppingBag className="h-6 w-6 stroke-[1.5]" />
+      <div className="min-h-[75vh] bg-slate-50/60 flex items-center justify-center px-4 py-16">
+        <div className="max-w-lg w-full bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-12 text-center shadow-sm space-y-6">
+          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto text-slate-500 shadow-xs">
+            <ShoppingBag className="h-8 w-8 stroke-[1.5]" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-slate-900">Tu carrito está vacío</h1>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto">
+              Aún no has agregado placas o tarjetas inteligentes NFC a tu pedido. Explora nuestro catálogo y empieza a capturar reseñas para tu negocio.
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md hover:shadow-lg transition-all"
+            >
+              <span>Explorar Catálogo</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
-        <div className="space-y-1">
-          <h1 className="text-xl font-bold text-brand-950 uppercase tracking-wider">Tu Carrito está Vacío</h1>
-          <p className="text-xs text-brand-500">Agrega placas o tarjetas inteligentes NFC de nuestro catálogo para continuar.</p>
-        </div>
-        <Link
-          href="/shop"
-          className="inline-block shopify-btn-primary uppercase tracking-wider text-xs font-bold w-full py-3.5"
-        >
-          Ver Productos
-        </Link>
       </div>
     );
   }
 
   return (
-    <div className="shopify-container max-w-5xl py-12">
-      <h1 className="text-3xl font-black text-brand-950 uppercase tracking-wide mb-10">Tu Carrito de Compras</h1>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        {/* Left: Cart Items List */}
-        <div className="lg:col-span-8 space-y-6">
-          <div className="border border-brand-200 bg-white divide-y divide-brand-200">
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
-              >
-                {/* Visual */}
-                <div className="flex items-center space-x-4">
-                  <div className={`w-14 h-9 rounded flex items-center justify-center text-[10px] font-bold text-white shadow-sm flex-shrink-0 ${
-                    item.selected_color?.includes('Negro') ? 'bg-brand-950' :
-                    item.selected_color?.includes('Blanco') ? 'bg-brand-100 border border-brand-200 !text-brand-950' :
-                    item.selected_color?.includes('Bambú') ? 'bg-[#f7e2c4] !text-amber-950' :
-                    'bg-yellow-500'
-                  }`}>
-                    NFC
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-brand-950 text-xs sm:text-sm uppercase tracking-wide leading-snug">{item.product_name}</h3>
-                    <div className="text-[10px] text-brand-500 space-y-0.5">
-                      <p>Acabado: <span className="font-bold text-brand-800 uppercase">{item.selected_color}</span></p>
-                      <p>Negocio: <span className="font-bold text-brand-800 uppercase">{item.business_name}</span></p>
-                      {item.has_custom_logo && (
-                        <p className="flex items-center gap-1 text-green-700 font-bold">
-                          <span>✓ Logo Personalizado (+ $5.00)</span>
-                        </p>
-                      )}
-                      {item.has_qr_code && (
-                        <p className="flex items-center gap-1 text-green-700 font-bold">
-                          <span>✓ Código QR Impreso (+ $3.00)</span>
-                        </p>
-                      )}
-                      {item.initial_redirect_url && (
-                        <p className="truncate max-w-[180px] sm:max-w-[280px]">
-                          Destino: <span className="font-bold text-brand-800 font-mono">{item.initial_redirect_url}</span>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Pricing & Control */}
-                <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-6 pt-4 sm:pt-0 border-t border-brand-100 sm:border-0">
-                  <div className="flex items-center border border-brand-300 rounded bg-white">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="px-2.5 py-1 font-bold text-brand-500 hover:bg-brand-100"
-                    >
-                      −
-                    </button>
-                    <span className="px-3 font-bold text-xs text-brand-800">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="px-2.5 py-1 font-bold text-brand-500 hover:bg-brand-100"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div className="text-right">
-                    <span className="text-[9px] text-brand-400 block font-semibold">Subtotal</span>
-                    <span className="font-black text-brand-950 text-sm">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="p-1.5 text-brand-400 hover:text-brand-950 hover:bg-brand-100 rounded transition-colors"
-                    aria-label="Eliminar"
-                  >
-                    <Trash2 className="h-4.5 w-4.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+    <div className="min-h-screen bg-slate-50/60 pb-20 pt-6 sm:pt-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Navigation & Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors mb-2"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Seguir comprando</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Tu Carrito</h1>
+              <span className="text-xs font-bold px-2.5 py-1 bg-slate-200 text-slate-800 rounded-full">
+                {getItemCount()} {getItemCount() === 1 ? 'artículo' : 'artículos'}
+              </span>
+            </div>
           </div>
+
+          <a
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hola starTAP, tengo una consulta sobre los productos en mi carrito.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-3.5 py-2 rounded-xl transition self-start sm:self-auto"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>¿Dudas con tu pedido? WhatsApp</span>
+          </a>
         </div>
 
-        {/* Right: Cart Summary */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white border border-brand-200 rounded-lg p-6 space-y-6 shadow-premium">
-            <h2 className="font-bold text-xs uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-3">Resumen de Compra</h2>
-            
-            {/* Barra de progreso hacia el envío gratis */}
-            <div className="space-y-2">
+        {/* Free Shipping Progress Card (Shopify OS 2.0 style) */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              faltaParaGratis <= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-50 text-blue-600'
+            }`}>
+              <Truck className="w-5 h-5" />
+            </div>
+            <div>
               {faltaParaGratis > 0 ? (
-                <p className="text-xs text-brand-600 leading-snug">
-                  Te faltan{' '}
-                  <strong className="text-brand-950">${faltaParaGratis.toFixed(2)}</strong> para
-                  el <strong className="text-brand-950">envío gratis</strong>.
+                <p className="text-xs sm:text-sm font-semibold text-slate-800">
+                  Estás a solo <strong className="text-blue-600 font-extrabold">${faltaParaGratis.toFixed(2)}</strong> de tener <strong className="text-slate-950 font-bold">Envío Gratis</strong> en todo Panamá.
                 </p>
               ) : (
-                <p className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
-                  <Truck className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                  ¡Tienes envío gratis a todo Panamá!
+                <p className="text-xs sm:text-sm font-bold text-emerald-800 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" />
+                  <span>¡Felicidades! Calificas para <strong>Envío Gratis</strong> a todo Panamá.</span>
                 </p>
               )}
-              <div
-                className="h-2 w-full bg-brand-100 rounded-full overflow-hidden"
-                role="progressbar"
-                aria-valuemin={0}
-                aria-valuemax={FREE_SHIPPING_THRESHOLD}
-                aria-valuenow={Math.min(getCartTotal(), FREE_SHIPPING_THRESHOLD)}
-                aria-label="Progreso hacia el envío gratis"
-              >
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    faltaParaGratis > 0 ? 'bg-accent-500' : 'bg-emerald-500'
-                  }`}
-                  style={{ width: `${progresoGratis}%` }}
-                />
-              </div>
-              <p className="text-[10px] text-brand-400">
-                Envío gratis en pedidos de ${FREE_SHIPPING_THRESHOLD} o más.
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Envío gratuito aplicable en compras de ${FREE_SHIPPING_THRESHOLD}.00 o más.
               </p>
             </div>
+          </div>
 
-            <hr className="border-brand-200" />
+          <div className="w-full sm:w-56 space-y-1">
+            <div className="flex justify-between text-[10px] font-bold text-slate-400">
+              <span>$0</span>
+              <span>${FREE_SHIPPING_THRESHOLD}</span>
+            </div>
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  faltaParaGratis <= 0 ? 'bg-emerald-500' : 'bg-blue-600'
+                }`}
+                style={{ width: `${progresoGratis}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
-            <div className="space-y-3 text-xs text-brand-500">
-              <div className="flex justify-between">
-                <span>Cantidad Total</span>
-                <span className="font-semibold text-brand-950">{getItemCount()} artículos</span>
+        {/* Main Cart Grid (Shopify 2-column layout) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left Column: Items Table (lg:col-span-8) */}
+          <div className="lg:col-span-8 space-y-6">
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 shadow-xs">
+              {/* Desktop Table Header */}
+              <div className="hidden sm:grid sm:grid-cols-12 gap-4 pb-4 border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="sm:col-span-7">Producto</div>
+                <div className="sm:col-span-3 text-center">Cantidad</div>
+                <div className="sm:col-span-2 text-right">Total</div>
               </div>
-              <div className="flex justify-between">
-                <span>Programación del Chip NFC</span>
-                <span className="text-accent-600 font-bold uppercase">Gratuito</span>
+
+              {/* Items List */}
+              <div className="divide-y divide-slate-100">
+                {cart.map((item) => {
+                  const prod = PRODUCTS.find((p) => p.id === item.product_id || p.aliases?.includes(item.product_id));
+                  const imgUrl = prod?.image || '/logos/startap-logo.webp';
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="py-6 flex flex-col sm:grid sm:grid-cols-12 gap-4 sm:items-center first:pt-4 last:pb-0"
+                    >
+                      {/* Product Thumbnail & Details (Col 1-7) */}
+                      <div className="sm:col-span-7 flex items-start gap-4">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 flex-shrink-0 flex items-center justify-center">
+                          <img
+                            src={imgUrl}
+                            alt={item.product_name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5 flex-1 min-w-0">
+                          <Link
+                            href={`/catalogo/${item.product_id}`}
+                            className="font-bold text-slate-900 text-sm hover:text-blue-600 transition block leading-snug"
+                          >
+                            {item.product_name}
+                          </Link>
+
+                          <div className="text-xs text-slate-500 font-medium">
+                            ${item.price.toFixed(2)} c/u
+                          </div>
+
+                          {/* Variant & Customization Badges */}
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {item.selected_color && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-700">
+                                Acabado: {item.selected_color}
+                              </span>
+                            )}
+                            {item.business_name && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-700">
+                                Negocio: {item.business_name}
+                              </span>
+                            )}
+                            {item.has_custom_logo && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                ✓ Logo (+ $5.00)
+                              </span>
+                            )}
+                            {item.has_qr_code && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                                ✓ QR (+ $3.00)
+                              </span>
+                            )}
+                            {item.initial_redirect_url && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-50 text-slate-600 border border-slate-200/60 max-w-[200px] truncate">
+                                🔗 {item.initial_redirect_url}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quantity Stepper (Col 8-10) */}
+                      <div className="sm:col-span-3 flex items-center justify-between sm:justify-center gap-3 pt-2 sm:pt-0">
+                        <div className="inline-flex items-center border border-slate-200 rounded-full bg-slate-50/80 p-1 shadow-2xs">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-slate-600 hover:bg-white hover:text-slate-900 transition-colors"
+                            aria-label="Disminuir cantidad"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="w-9 text-center font-bold text-xs text-slate-900">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-slate-600 hover:bg-white hover:text-slate-900 transition-colors"
+                            aria-label="Aumentar cantidad"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Mobile Delete Button */}
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.id)}
+                          className="sm:hidden p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          aria-label="Eliminar producto"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Line Item Total & Desktop Delete (Col 11-12) */}
+                      <div className="sm:col-span-2 flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0">
+                        <span className="sm:hidden text-xs text-slate-500 font-medium">Subtotal:</span>
+                        <div className="text-right">
+                          <span className="font-extrabold text-slate-900 text-sm sm:text-base font-mono block">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.id)}
+                          className="hidden sm:inline-flex p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-1"
+                          title="Eliminar de la orden"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="flex justify-between">
-                <span>Envío</span>
-                <span className="font-semibold text-brand-950">
-                  {faltaParaGratis > 0 ? 'Calculado al checkout' : (
-                    <span className="text-emerald-600 font-bold uppercase">Gratis</span>
-                  )}
-                </span>
+
+              {/* Order Notes (Classic Shopify Feature) */}
+              <div className="pt-6 border-t border-slate-100 mt-6">
+                {!showNotes ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowNotes(true)}
+                    className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>¿Instrucciones especiales para el grabado o entrega? Agregar nota</span>
+                  </button>
+                ) : (
+                  <div className="space-y-2 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Notas o requerimientos de tu pedido:</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowNotes(false)}
+                        className="text-[11px] text-slate-400 hover:text-slate-600"
+                      >
+                        Ocultar
+                      </button>
+                    </div>
+                    <textarea
+                      rows={2}
+                      value={orderNotes}
+                      onChange={(e) => setOrderNotes(e.target.value)}
+                      placeholder="Ej: Colocar el logo centrado, o instrucciones sobre el local de entrega..."
+                      className="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 outline-none focus:ring-1 focus:ring-slate-900 transition"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
-            <hr className="border-brand-200" />
-
-            <div className="flex justify-between items-baseline">
-              <span className="font-bold text-xs uppercase tracking-wider text-brand-950">Subtotal</span>
-              <span className="text-xl font-black text-brand-950">${getCartTotal().toFixed(2)}</span>
-            </div>
-
-            <Link
-              href="/checkout"
-              className="w-full shopify-btn-primary uppercase tracking-widest text-xs font-bold py-4"
-            >
-              Completar Compra con Tarjeta
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-
-            {/* CRO Panamá: Compra directa por Yappy / WhatsApp para evitar abandono de pasarelas */}
-            <div className="pt-2 space-y-3">
-              <div className="relative flex py-1 items-center">
-                <div className="flex-grow border-t border-brand-200"></div>
-                <span className="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-brand-400">
-                  o paga sin tarjeta bancaria
-                </span>
-                <div className="flex-grow border-t border-brand-200"></div>
-              </div>
-
-              {/* Botón Yappy / WhatsApp mejorado */}
-              <a
-                href={generateWhatsAppMessage()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:shadow-xl hover:scale-[1.01] active:scale-100"
-              >
-                {/* Row: Yappy badge + WhatsApp icon */}
-                <div className="flex items-center gap-3">
-                  <YappyBadge />
-                  <span className="text-white/40 text-lg font-light">+</span>
-                  {/* WhatsApp SVG */}
-                  <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
-                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                      <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.821.487 3.532 1.338 5.017L2.01 22l5.123-1.32A9.96 9.96 0 0012 22c5.523 0 10-4.478 10-10S17.523 2 12 2zm0 18.18a8.147 8.147 0 01-4.16-1.143l-.298-.177-3.039.783.81-2.96-.195-.306A8.177 8.177 0 013.82 12c0-4.508 3.671-8.18 8.18-8.18 4.508 0 8.18 3.672 8.18 8.18 0 4.509-3.672 8.18-8.18 8.18z"/>
-                    </svg>
-                    <span className="text-white font-black text-sm">WhatsApp</span>
-                  </div>
-                </div>
-                <span className="text-white/80 text-xs font-semibold normal-case">
-                  Pago sin tarjeta • Rápido y seguro en Panamá
-                </span>
-              </a>
-            </div>
-
-            {/* TRUST BADGES: Garantía, Envío, Beneficios de conversión */}
-            <div className="pt-4 border-t border-brand-100 space-y-3">
-              <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest text-center">¿Por qué comprar en starTAP?</p>
-
-              <div className="grid grid-cols-1 gap-2">
-                {/* Garantía 90 días */}
-                <div className="flex items-start gap-3 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-bold text-emerald-900">Garantía de 90 días</p>
-                    <p className="text-[11px] text-emerald-700">Si tu dispositivo NFC falla, lo reponemos sin costo. Sin letra pequeña.</p>
-                  </div>
-                </div>
-
-                {/* Envío a todo Panamá */}
-                <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <Truck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-bold text-blue-900">Envío a todo Panamá</p>
-                    <p className="text-[11px] text-blue-700">Despachamos a todas las provincias por Uno Express y Servientrega. Gratis desde \$50.</p>
-                  </div>
-                </div>
-
-                {/* Chip programado gratis */}
-                <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <Zap className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-bold text-amber-900">Chip NFC configurado de fábrica</p>
-                    <p className="text-[11px] text-amber-700">Llega listo para usarse. Solo acerca un celular y funciona al instante.</p>
-                  </div>
-                </div>
-
-                {/* Cambio de destino sin costo */}
-                <div className="flex items-start gap-3 bg-purple-50 border border-purple-200 rounded-lg p-3">
-                  <Smartphone className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-bold text-purple-900">Cambia el destino cuando quieras</p>
-                    <p className="text-[11px] text-purple-700">Actualiza el link de tu tarjeta desde el panel sin reprogramar el chip.</p>
-                  </div>
+            {/* Guaranteed Trust Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Garantía 90 Días</h4>
+                  <p className="text-[11px] text-slate-500 leading-snug">Reposición directa ante cualquier fallo del chip NFC.</p>
                 </div>
               </div>
 
-              {/* Sello de seguridad */}
-              <div className="flex items-center justify-center gap-2 text-[10px] text-brand-400 pt-1">
-                <Lock className="w-3 h-3" />
-                <span>Compra segura • Empresa registrada en Panamá (DataKorex)</span>
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+                <Zap className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Listo para Usar</h4>
+                  <p className="text-[11px] text-slate-500 leading-snug">Programado de fábrica para tu negocio sin apps extras.</p>
+                </div>
+              </div>
+
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+                <Truck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">Envíos Rápidos</h4>
+                  <p className="text-[11px] text-slate-500 leading-snug">Despachos por Uno Express y Servientrega en Panamá.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Sticky Summary Sidebar (lg:col-span-4) */}
+          <div className="lg:col-span-4 space-y-6">
+            <div className="sticky top-28 bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-7 shadow-xs space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h2 className="text-base font-bold text-slate-900">Resumen de Compra</h2>
+                <span className="text-xs font-semibold px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-full">
+                  {getItemCount()} artículos
+                </span>
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="space-y-3 text-xs text-slate-600">
+                <div className="flex justify-between items-center">
+                  <span>Subtotal</span>
+                  <span className="font-bold text-slate-900 font-mono">${getCartTotal().toFixed(2)} USD</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span>Envío a Panamá</span>
+                  <span>
+                    {faltaParaGratis <= 0 ? (
+                      <span className="text-emerald-600 font-extrabold uppercase">Gratis</span>
+                    ) : (
+                      <span className="text-slate-500 font-medium">Calculado al pagar</span>
+                    )}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span>Configuración del Chip</span>
+                  <span className="text-slate-900 font-semibold">Incluida ($0.00)</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span>Soporte y Garantía 90d</span>
+                  <span className="text-emerald-600 font-semibold">Incluida</span>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-100 pt-4 space-y-1">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-sm font-bold text-slate-900">Total Estimado</span>
+                  <span className="text-2xl font-black text-slate-950 font-mono">
+                    ${getCartTotal().toFixed(2)}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  {faltaParaGratis <= 0 
+                    ? '¡Envío gratis aplicado! No hay cargos sorpresa.' 
+                    : 'Tarifa de envío ($3.50 en Ciudad / $6.50 Provincias) se selecciona en el siguiente paso.'}
+                </p>
+              </div>
+
+              {/* Primary Action Button (Shopify Style) */}
+              <div className="space-y-3 pt-2">
+                <Link
+                  href="/checkout"
+                  className="w-full py-4 px-6 bg-slate-950 hover:bg-slate-900 text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group active:scale-[0.99]"
+                >
+                  <Lock className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                  <span>Completar Compra con Tarjeta</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+
+                {/* Yappy / WhatsApp Fast Checkout Alternative */}
+                <div className="relative flex py-1 items-center">
+                  <div className="flex-grow border-t border-slate-200"></div>
+                  <span className="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    o paga sin tarjeta bancaria
+                  </span>
+                  <div className="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <a
+                  href={generateWhatsAppMessage()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:scale-[1.01] active:scale-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <YappyBadge />
+                    <span className="text-white/40 text-lg font-light">+</span>
+                    <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
+                      <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                        <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.821.487 3.532 1.338 5.017L2.01 22l5.123-1.32A9.96 9.96 0 0012 22c5.523 0 10-4.478 10-10S17.523 2 12 2zm0 18.18a8.147 8.147 0 01-4.16-1.143l-.298-.177-3.039.783.81-2.96-.195-.306A8.177 8.177 0 013.82 12c0-4.508 3.671-8.18 8.18-8.18 4.508 0 8.18 3.672 8.18 8.18 0 4.509-3.672 8.18-8.18 8.18z"/>
+                      </svg>
+                      <span className="text-white font-black text-sm">WhatsApp</span>
+                    </div>
+                  </div>
+                  <span className="text-white/80 text-xs font-semibold normal-case">
+                    Pagar con Yappy por WhatsApp • ${getCartTotal().toFixed(2)} USD
+                  </span>
+                </a>
+              </div>
+
+              {/* Security Sells */}
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+                <Lock className="w-3.5 h-3.5" />
+                <span>Compra 100% Cifrada • starTAP Panamá</span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Cross-Sell Recommendations Section (Shopify OS 2.0 Style) */}
+        {crossSellProducts.length > 0 && (
+          <div className="mt-16 pt-10 border-t border-slate-200">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+                  Complementa tu pedido
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Agrega más puntos de contacto para tu negocio con tarifa combinada de envío.
+                </p>
+              </div>
+              <Link
+                href="/catalogo"
+                className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              >
+                <span>Ver catálogo completo</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {crossSellProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition-all group"
+                >
+                  <div className="space-y-3">
+                    <div className="w-full h-40 rounded-2xl bg-slate-50 flex items-center justify-center p-3 relative overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <span className="absolute top-2 left-2 text-[9px] font-bold text-slate-700 bg-white/90 px-2 py-0.5 rounded-full border border-slate-200">
+                        {product.badge}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-sm line-clamp-1">
+                        {product.name}
+                      </h4>
+                      <p className="text-xs text-slate-500 line-clamp-2 mt-1">
+                        {product.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex items-center justify-between mt-3 border-t border-slate-100">
+                    <span className="text-sm font-extrabold text-slate-900 font-mono">
+                      {product.priceFormatted}
+                    </span>
+                    <Link
+                      href={`/catalogo/${product.id}`}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold rounded-lg transition"
+                    >
+                      <span>Ver detalles</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
