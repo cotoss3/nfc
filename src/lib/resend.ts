@@ -28,8 +28,8 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
     };
   }
 
-  // Remitente predeterminado (Resend permite onboarding@resend.dev por defecto antes de verificar el dominio)
-  const from = payload.from || 'starTAP Panamá <onboarding@resend.dev>';
+  // Remitente predeterminado con la marca starTAP Panamá a través de DataKorex
+  const from = payload.from || 'starTAP Panamá <pedidos@datakorex.com>';
 
   try {
     const res = await fetch(RESEND_API_URL, {

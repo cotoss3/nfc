@@ -1,11 +1,113 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { CreditCard, Heart, MapPin, Phone, Mail } from 'lucide-react';
+import { CreditCard, Heart, MapPin, Phone, Mail, Send, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) {
+      setStatus('error');
+      setErrorMessage('Por favor ingresa un correo válido.');
+      return;
+    }
+
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('/api/email/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setStatus('success');
+        setEmail('');
+      } else {
+        setStatus('error');
+        setErrorMessage(data.error || 'Ocurrió un error al procesar tu suscripción.');
+      }
+    } catch (err: any) {
+      console.error('[FOOTER_SUBSCRIBE_ERROR]', err);
+      setStatus('error');
+      setErrorMessage('Error de conexión. Inténtalo nuevamente.');
+    }
+  };
+
   return (
     <footer className="bg-gray-950 text-gray-300 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+        
+        {/* Newsletter Subscription Banner */}
+        <div className="mb-12 p-6 sm:p-8 bg-gradient-to-r from-slate-900 via-gray-900 to-slate-950 border border-amber-500/30 rounded-2xl shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <div className="md:col-span-7 space-y-2">
+              <span className="inline-block text-[11px] font-extrabold uppercase tracking-widest bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full">
+                ⭐ Ofertas y Novedades NFC
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                Suscríbete y Recibe Guías para Aumentar tus Reseñas
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-300">
+                Únete a más de 500 negocios en Panamá. Recibirás trucos de SEO local y lanzamientos de nuevos productos NFC.
+              </p>
+            </div>
+
+            <div className="md:col-span-5">
+              {status === 'success' ? (
+                <div className="bg-emerald-500/20 border border-emerald-500/40 p-4 rounded-xl text-center space-y-1">
+                  <div className="flex items-center justify-center space-x-2 text-emerald-400 font-bold text-sm">
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                    <span>¡Suscripción confirmada!</span>
+                  </div>
+                  <p className="text-xs text-gray-300">Te hemos enviado un correo de bienvenida.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="space-y-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="tu.correo@negocio.com"
+                      className="px-4 py-3 rounded-xl bg-gray-950/80 border border-gray-700 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-amber-400 flex-grow"
+                    />
+                    <button
+                      type="submit"
+                      disabled={status === 'loading'}
+                      className="bg-amber-500 hover:bg-amber-400 text-gray-950 font-black text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center space-x-1.5 flex-shrink-0 disabled:opacity-50"
+                    >
+                      {status === 'loading' ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Enviando...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Suscribirme</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {status === 'error' && (
+                    <p className="text-xs text-red-400 font-semibold">{errorMessage}</p>
+                  )}
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand Column */}
           <div className="space-y-4">
