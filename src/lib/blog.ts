@@ -46,11 +46,12 @@ export const AUTORES: Record<string, Autor> = {
   'fernando-contreras': {
     slug: 'fernando-contreras',
     nombre: 'Fernando Contreras',
-    cargo: 'Fundador de starTAP y DataKorex',
-    bio: 'Fundador de DataKorex, agencia de desarrollo web y automatización en Panamá Oeste, y de starTAP, su línea de dispositivos NFC para reseñas de Google. Instala los equipos en los negocios y trabaja el SEO local de sus clientes en Panamá.',
+    cargo: 'Fundador de starTAP Panamá y DataKorex',
+    bio: 'Fundador de DataKorex, agencia de desarrollo web y automatización en Panamá Oeste, y de starTAP Panamá, su línea de dispositivos NFC para reseñas de Google. Instala los equipos en los negocios y trabaja el SEO local de sus clientes en Panamá.',
     foto: '/autores/fernando-contreras.webp',
     sameAs: [
       'https://www.datakorex.com',
+      'https://www.facebook.com/profile.php?id=61594455868652',
       // Añadir LinkedIn y perfiles reales cuando estén. Cada uno suma a la entidad.
     ],
   },

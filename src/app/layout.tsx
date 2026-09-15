@@ -10,7 +10,7 @@ import MetaPixel from '@/components/MetaPixel';
 export const metadata: Metadata = {
   metadataBase: new URL('https://startap.com.pa'),
   title: {
-    default: 'starTAP | Tarjetas NFC para Reseñas de Google en Panamá',
+    default: 'starTAP Panamá | Tarjetas NFC para Reseñas de Google',
     template: '%s | starTAP Panamá',
   },
   description:
@@ -25,13 +25,19 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
   verification: {
     google: '1igPIkAizA33F2BubkJ8H7lEqWOh9QHVFAOkvAXdgBc',
+    // Verificacion del dominio en el portfolio comercial de Meta.
+    // Hace falta para las conversiones agregadas de eventos y para
+    // que solo nosotros podamos editar los enlaces del dominio.
+    other: {
+      'facebook-domain-verification': 'h26bx4dq1m5gmqq8uzzy4j4gq72uz2',
+    },
   },
   openGraph: {
     type: 'website',
     locale: 'es_PA',
     url: 'https://startap.com.pa',
-    siteName: 'starTAP',
-    title: 'starTAP | Tarjetas NFC para Reseñas de Google en Panamá',
+    siteName: 'starTAP Panamá',
+    title: 'starTAP Panamá | Tarjetas NFC para Reseñas de Google',
     description:
       'Multiplica tus reseñas de Google Maps con un toque. Dispositivos NFC sin mensualidades, con envíos a todo Panamá.',
   },

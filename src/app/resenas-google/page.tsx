@@ -257,7 +257,7 @@ export default function ResenasGoogleHub() {
               <div className="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-5 space-y-2">
                 <div className="flex items-center space-x-2 text-rose-400 font-bold text-xs uppercase">
                   <XCircle className="w-4 h-4 shrink-0" />
-                  <span>No Incentives Financieramente</span>
+                  <span>No incentives la reseña</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Regalar bebidas, descuentos o rifas a cambio de 5 estrellas está prohibido. Los algoritmos borran reseñas sospechosas automáticamente.

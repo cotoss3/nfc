@@ -6,8 +6,11 @@ const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   '@id': `${BASE_URL}/#organization`,
-  name: 'starTAP',
-  alternateName: 'starTAP Panamá',
+  // "starTAP" a secas choca con startap.pro, startap.com.ar, startap.lat y
+  // otros homonimos. El nombre canonico de la entidad lleva Panamá; las
+  // variantes quedan como alternateName para que Google las asocie igual.
+  name: 'starTAP Panamá',
+  alternateName: ['starTAP', 'StarTAP', 'Star TAP'],
   url: BASE_URL,
   logo: `${BASE_URL}/logos/Logo.webp`,
   description:
@@ -20,6 +23,7 @@ const organizationSchema = {
   },
   sameAs: [
     'https://www.datakorex.com',
+    'https://www.facebook.com/profile.php?id=61594455868652',
   ],
   address: {
     '@type': 'PostalAddress',
@@ -38,7 +42,7 @@ const serviceSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   '@id': `${BASE_URL}/#service`,
-  name: 'starTAP',
+  name: 'starTAP Panamá',
   image: `${BASE_URL}/logos/Logo.webp`,
   url: BASE_URL,
   telephone: '+507 6713-4341',
@@ -96,6 +100,7 @@ const storeSchema = {
   },
   sameAs: [
     'https://www.datakorex.com',
+    'https://www.facebook.com/profile.php?id=61594455868652',
   ],
   address: {
     '@type': 'PostalAddress',

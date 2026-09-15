@@ -2,18 +2,18 @@ import type { Metadata } from 'next';
 import HomeClient from './HomeClient';
 
 export const metadata: Metadata = {
-  title: 'Placas NFC para Reseñas de Google en Panamá | StarTAP',
+  title: 'Tarjetas y Placas NFC para Reseñas de Google | starTAP Panamá',
   description:
     'Aumenta tus clientes y valoraciones en Google Maps con placas y tarjetas NFC contactless. Envío en Panamá. Sin pagos mensuales ni suscripciones. ¡Compra hoy!',
   alternates: {
     canonical: 'https://startap.com.pa/',
   },
   openGraph: {
-    title: 'Placas NFC para Reseñas de Google en Panamá | StarTAP',
+    title: 'Tarjetas y Placas NFC para Reseñas de Google | starTAP Panamá',
     description:
       'Aumenta tus clientes y valoraciones en Google Maps con placas y tarjetas NFC contactless. Envío en Panamá. Sin pagos mensuales ni suscripciones. ¡Compra hoy!',
     url: 'https://startap.com.pa/',
-    siteName: 'StarTAP Panamá',
+    siteName: 'starTAP Panamá',
     locale: 'es_PA',
     type: 'website',
   },
@@ -27,7 +27,7 @@ export default function Page() {
         '@type': 'LocalBusiness',
         '@id': 'https://startap.com.pa/#organization',
         'name': 'starTAP Panamá',
-        'alternateName': ['starTAP', 'StarTAP'],
+        'alternateName': ['starTAP', 'StarTAP', 'Star TAP'],
         'url': 'https://startap.com.pa/',
         'logo': 'https://startap.com.pa/logos/Logo.webp',
         'image': 'https://startap.com.pa/images/posicionamiento-seo-google-maps-panama-startap.webp',
@@ -48,7 +48,8 @@ export default function Page() {
           'addressCountry': 'PA'
         },
         'sameAs': [
-          'https://www.datakorex.com'
+          'https://www.datakorex.com',
+          'https://www.facebook.com/profile.php?id=61594455868652'
         ],
         'parentOrganization': {
           '@type': 'Organization',

@@ -156,6 +156,157 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
 
+### 2026-09-15 · Marca alineada a "starTAP Panamá"
+
+Decisión tras el hallazgo de homónimos: no se cambia el nombre, se **califica**.
+"starTAP" a secas compite contra startap.pro (mismo producto), startap.com.ar,
+startap.lat y varios más. "starTAP Panamá" no tiene competencia y es lo que ya
+usamos en Facebook.
+
+Cambios en el código:
+
+- `src/app/layout.tsx` — título por defecto "starTAP Panamá | Tarjetas NFC para
+  Reseñas de Google" y `openGraph.siteName` a "starTAP Panamá". El `template` ya
+  era `%s | starTAP Panamá`.
+- `src/app/page.tsx` — título de home a "Tarjetas y Placas NFC para Reseñas de
+  Google | starTAP Panamá" (antes repetía Panamá dos veces), capitalización
+  unificada y Facebook agregado al `sameAs` del LocalBusiness.
+- `src/components/StructuredData.tsx` — el `name` de Organization y de
+  ProfessionalService pasa a "starTAP Panamá"; las variantes quedan en
+  `alternateName: ['starTAP', 'StarTAP', 'Star TAP']` para que Google las asocie a
+  la misma entidad. Facebook agregado al `sameAs` de ambas.
+- `src/lib/blog.ts` — cargo y bio del autor a "starTAP Panamá", Facebook en su
+  `sameAs`.
+
+El nombre en la ficha de Google se queda como "starTAP": cambiarlo puede disparar
+otra revisión y el perfil acaba de ser aprobado. La consistencia de entidad la
+aporta el `alternateName` del schema.
+
+`npm run build` limpio.
+
+**Ojo con la capitalización**: el sitio mezclaba "StarTAP", "starTAP" y
+"starTAP Panamá". Queda "starTAP Panamá" como forma canónica. Vale un barrido
+completo en algún momento; quedan usos sueltos de "StarTAP" en textos de FAQ.
+
+### 2026-09-15 · Perfil de Google aprobado + hallazgo de marca
+
+El perfil de Google Business quedó **verificado**: starTAP, 5.0 con 4 opiniones,
+categoría "Servicio de comercio electrónico", teléfono 6713-4341, área de servicio
+marcada (Coclé, Panamá, Veraguas y 9 zonas más). Código de tienda
+`02098562584205432947`.
+
+**Hallazgo grave de marca: el nombre ya está tomado**
+
+Al buscar "starTAP" en Google, el primer resultado orgánico es **startap.pro**, que
+vende exactamente lo mismo: *"StarTap: Tarjetas NFC para conseguir más reseñas en
+Google. Impulsa tu posicionamiento local... TAP. CONNECT. GROW."* La visión general
+de IA de Google resume que *"StarTAP es un término que se usa para nombrar varios
+proyectos diferentes"* y cita a startap.com.ar. startap.com.pa no aparece en la
+primera página.
+
+Otros homónimos: startap.com.ar (consultoría), startap.lat (software de pedidos),
+STARTAP Servicios de Limpieza (Buenos Aires), StartAP (iniciativa de Andhra Pradesh).
+
+Esto cambia la estrategia: el SEO de marca por "starTAP" a secas no es ganable a
+corto plazo. Hay que apuntar a "starTAP Panamá" y a las consultas de producto
+("tarjetas NFC reseñas Google Panamá"), que es donde ya estamos trabajando. Queda
+pendiente decidir con Fernando si vale la pena discutir el nombre.
+
+**Riesgo de política en la descripción de la ficha**
+
+La descripción actual dice *"capturar reseñas positivas de 5 estrellas"*. Eso
+describe selección de reseñas, prohibido por la política de Google, y está escrito
+en la propia ficha de Google. También afirma ser *"la solución líder en Panamá"*,
+que no se puede respaldar. Hay una descripción de reemplazo redactada, pendiente de
+que Fernando la pegue.
+
+**Nota operativa: el editor de la ficha no se deja automatizar**
+
+El panel "Editar perfil" vive dentro de la página de resultados de Google. Al
+escribir en el textarea de descripción el texto se duplicó, y después la pestaña
+dejó de responder a capturas de pantalla. Desde el Administrador de Perfiles
+(business.google.com/locations) el icono de lápiz tampoco abre el panel. Se
+verificó que **no quedó ningún cambio guardado ni dañado**. Conclusión: los cambios
+en la ficha de Google los hace Fernando a mano; desde la sesión solo se audita.
+
+**Pendiente en la ficha**
+
+- Pegar la descripción nueva.
+- Vincular el perfil de Facebook en "perfiles de redes sociales".
+- Conectar WhatsApp.
+- Subir fotos (mismo lote pendiente de las landings).
+- Revisar que el sitio web apunte a startap.com.pa.
+- Cargar productos y servicios.
+
+### 2026-09-15 · Ranking de equipo: riesgo con la política de Google
+
+El bloque `employee-ranking` de `/app` premiaba a los empleados por **reseñas
+conseguidas** ("184 Escaneos (48 Reseñas)", "medición de rendimiento para programas
+de incentivos"). Eso es exactamente lo que la política de contenido de Google Maps
+señala como manipulación de valoraciones, y el cambio de abril de 2026 lo mira con
+más lupa. Vender la función así nos pone del lado equivocado de la política y expone
+las fichas de los clientes.
+
+Reescrito para que mida **la invitación, no el resultado**:
+
+- Título: "Ranking de Equipo por Escaneos" (antes "Ranking de Empleados / Leaderboard").
+- El mockup ya no muestra reseñas por persona, solo escaneos.
+- Copy nuevo: se cuenta quién ofreció el dispositivo, y el texto dice explícitamente
+  que nunca es para premiar por cantidad de reseñas.
+- Nota visible bajo la tabla: "Se cuentan escaneos, no reseñas. Google prohíbe
+  condicionar o premiar las opiniones de los clientes."
+- `kicker` pasó de "GAMIFICACIÓN DE EQUIPO" a "ACTIVIDAD DEL EQUIPO".
+
+Barrido del resto del sitio buscando lenguaje de incentivos: el blog, `lib/industrias.ts`
+y el hub de `/resenas-google` ya decían lo correcto (que incentivar está prohibido).
+Solo se corrigió un texto mal escrito en el hub: "No Incentives Financieramente" →
+"No incentives la reseña".
+
+`npm run build` limpio.
+
+### 2026-09-15 · Auditoría del portfolio comercial de Meta
+
+**Arreglado en esta sesión**
+
+- La página **Startap Panamá** no estaba en el portfolio: se creó desde el perfil
+  personal y quedó suelta. Se reclamó y ahora aparece como propiedad de DataKorex
+  (identificador de página en el portfolio: `1245573605315053`).
+- Dominio **startap.com.pa** agregado al portfolio (`2137924417118846`). Meta dio
+  la metaetiqueta y quedó puesta en `src/app/layout.tsx` dentro de
+  `metadata.verification.other`, que Next la renderiza en el `<head>`:
+  `facebook-domain-verification = h26bx4dq1m5gmqq8uzzy4j4gq72uz2`.
+  Falta desplegar y pulsar "Verificar dominio".
+
+**Ya estaba bien**
+
+- Método de pago cargado en la cuenta publicitaria (`945892215066961`).
+- Píxel `starTAP Pixel` conectado a la cuenta publicitaria starTAP Panamá.
+- API de Conversiones habilitada en el conjunto de datos.
+- 2FA exigida a "Todos" a nivel de portfolio.
+
+**Pendiente**
+
+- **0 de 2 personas tienen la 2FA activada** aunque el portfolio la exige. Riesgo
+  real de quedarse fuera del propio portfolio.
+- **No hay administrador alternativo.** Si Fernando pierde el acceso, no hay quien
+  recupere el portfolio. Es lo más urgente de la lista de seguridad.
+- Verificar el dominio startap.com.pa después del deploy.
+- Ubicación principal del negocio vacía y dirección puesta solo como "Panamá".
+- Límite de creación de cuentas publicitarias: 1, ya consumido. Para más hace
+  falta la verificación del negocio.
+- Las 2 cuentas publicitarias no tienen aprobación de pares.
+- La página no tiene foto de perfil ni portada, ni cuenta de Instagram vinculada
+  (lo único que ofrece "Conectar activos" es Instagram).
+- WhatsApp sin conectar a la página.
+
+**Ojo con la "verificación rechazada"**
+
+El portfolio muestra "Estado de la verificación del negocio: Rechazada", pero el
+caso de uso enviado fue *"La app requiere acceso a los permisos en Meta for
+Developers"*, a nombre de **KoreNet Cloud & Web**. Esa es la verificación para
+acceso avanzado a la API, no la que hace falta para anunciar. No bloquea las
+campañas; sí bloquea permisos de API y el límite de cuentas publicitarias.
+
 ### 2026-09-15 · Tilopay con SDK V2: cobro dentro del sitio
 
 **Por qué**

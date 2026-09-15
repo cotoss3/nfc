@@ -510,21 +510,21 @@ export default function AppProClient() {
           icon: Trophy,
           badgeLabel: '100% GRATIS',
           isFree: true,
-          kicker: 'GAMIFICACIÓN DE EQUIPO',
-          title: 'Ranking de Empleados / Leaderboard por Escaneos',
-          summary: 'Motiva a tus meseros o vendedores midiendo quién genera más toques y reseñas de clientes en tiempo real.',
+          kicker: 'ACTIVIDAD DEL EQUIPO',
+          title: 'Ranking de Equipo por Escaneos',
+          summary: 'Mide cuántas veces tu equipo acercó el dispositivo al cliente. Cuenta escaneos, no reseñas: lo que se mide es el trabajo de invitar.',
           bullets: [
             'Tabla de posiciones por colaborador o tarjeta asignada.',
-            'Medición de rendimiento para programas de incentivos.',
+            'Cuenta toques y escaneos. El resultado de la reseña no se atribuye a nadie.',
             'Filtros por día, semana y mes.'
           ],
-          benefit: 'Incentiva a tu personal a solicitar opiniones activamente a cada cliente.',
+          benefit: 'Sirve para ver quién está ofreciendo el dispositivo y quién no. Nunca para premiar por cantidad de reseñas conseguidas.',
           mockup: (
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg space-y-3">
               <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                 <span className="text-xs font-extrabold text-gray-900 flex items-center">
                   <Trophy className="h-4 w-4 text-amber-500 mr-1" />
-                  Tabla de Clasificación del Equipo
+                  Escaneos por Colaborador
                 </span>
                 <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Septiembre</span>
               </div>
@@ -535,7 +535,7 @@ export default function AppProClient() {
                     <span className="font-extrabold text-amber-700">🥇 #1</span>
                     <span className="font-bold text-gray-900">María González</span>
                   </div>
-                  <span className="font-extrabold text-amber-900">184 Escaneos (48 Reseñas)</span>
+                  <span className="font-extrabold text-amber-900">184 escaneos</span>
                 </div>
 
                 <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 border border-gray-200">
@@ -543,7 +543,7 @@ export default function AppProClient() {
                     <span className="font-extrabold text-gray-600">🥈 #2</span>
                     <span className="font-bold text-gray-900">Juan Pérez</span>
                   </div>
-                  <span className="font-extrabold text-gray-700">142 Escaneos (36 Reseñas)</span>
+                  <span className="font-extrabold text-gray-700">142 escaneos</span>
                 </div>
 
                 <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50 border border-gray-200">
@@ -551,9 +551,14 @@ export default function AppProClient() {
                     <span className="font-extrabold text-amber-800">🥉 #3</span>
                     <span className="font-bold text-gray-900">Sofía Ruiz</span>
                   </div>
-                  <span className="font-extrabold text-gray-700">98 Escaneos (24 Reseñas)</span>
+                  <span className="font-extrabold text-gray-700">98 escaneos</span>
                 </div>
               </div>
+
+              <p className="text-[10px] leading-snug text-gray-500 border-t border-gray-100 pt-2">
+                Se cuentan escaneos, no reseñas. Google prohíbe condicionar o premiar
+                las opiniones de los clientes.
+              </p>
             </div>
           )
         },
@@ -880,7 +885,7 @@ export default function AppProClient() {
                     <td className="p-4 text-center text-emerald-600 font-bold">✓ Incluido</td>
                   </tr>
                   <tr>
-                    <td className="p-4">Ranking de Empleados / Leaderboard</td>
+                    <td className="p-4">Ranking de Equipo por Escaneos</td>
                     <td className="p-4 text-center text-emerald-600 font-bold">✓ Incluido</td>
                     <td className="p-4 text-center text-emerald-600 font-bold">✓ Incluido</td>
                   </tr>
