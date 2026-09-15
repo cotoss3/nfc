@@ -1,5 +1,5 @@
 import { getProductById } from '@/config/products';
-import { calculateShippingCost } from '@/config/shipping';
+import { calculateShippingCost, validateCoupon, applyShippingCoupon } from '@/config/shipping';
 import { getPrecio } from '@/lib/precios';
 
 /** Extras que el cliente puede anadir en la landing de producto */
@@ -17,7 +17,11 @@ export interface ItemEntrada {
  * Calcula el total a cobrar. El precio sale de Supabase (lo que edita el
  * admin y lo que ve el cliente), no del navegador ni de una copia aparte.
  */
-export async function calcularTotal(items: ItemEntrada[], shippingMethod: string) {
+export async function calcularTotal(
+  items: ItemEntrada[],
+  shippingMethod: string,
+  couponCode?: string
+) {
   let subtotal = 0;
   let hasPack = false;
 
@@ -42,7 +46,10 @@ export async function calcularTotal(items: ItemEntrada[], shippingMethod: string
     subtotal += (precio + extras) * cantidad;
   }
 
-  const envio = calculateShippingCost(subtotal, shippingMethod, hasPack);
+  const baseEnvio = calculateShippingCost(subtotal, shippingMethod, hasPack);
+  const coupon = couponCode ? validateCoupon(couponCode) : null;
+  const envio = applyShippingCoupon(baseEnvio, coupon);
+
   return {
     subtotal: Number(subtotal.toFixed(2)),
     envio,

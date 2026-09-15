@@ -213,6 +213,7 @@ export default function CheckoutPage() {
             district,
             address,
             shippingMethod,
+            couponCode: appliedCoupon?.code,
             items: cart.map((i) => ({
               product_id: i.product_id,
               quantity: i.quantity,
@@ -236,6 +237,7 @@ export default function CheckoutPage() {
         await tarjetaRef.current?.pagar(
           {
             token: data.token,
+            key: data.key,
             amount: data.amount,
             orderNumber: data.orderNumber,
             redirect: data.redirect,

@@ -57,7 +57,7 @@ export async function getTilopayToken(): Promise<string> {
  * dura 1 hora en vez de 24 y es el unico que baja al cliente.
  * apiuser y password nunca salen del servidor.
  */
-export async function getTilopaySdkToken(): Promise<{ token: string; expiresIn: number }> {
+export async function getTilopaySdkToken(): Promise<{ token: string; key: string; expiresIn: number }> {
   const apiuser = process.env.TILOPAY_API_USER;
   const password = process.env.TILOPAY_API_PASSWORD;
   const key = process.env.TILOPAY_API_KEY;
@@ -90,13 +90,13 @@ export async function getTilopaySdkToken(): Promise<{ token: string; expiresIn: 
     throw new Error(`Tilopay rechazó el inicio de sesión del SDK: ${detalle}`);
   }
 
-  // expires_in llega como fecha ("2023-06-05 13:32:06"), no como segundos.
+  // expires_in llega como fecha ("2026-09-15 13:32:06"), no como segundos.
   const vence = Date.parse(String(data.expires_in).replace(' ', 'T'));
   const expiresIn = Number.isFinite(vence)
     ? Math.max(60, Math.floor((vence - Date.now()) / 1000))
     : 3600;
 
-  return { token: data.access_token, expiresIn };
+  return { token: data.access_token, key, expiresIn };
 }
 
 /**

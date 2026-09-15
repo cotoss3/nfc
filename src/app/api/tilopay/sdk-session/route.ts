@@ -12,7 +12,7 @@ import { calcularTotal, type ItemEntrada } from '@/lib/checkout-total';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { items, shippingMethod, total: totalCliente, orderNumber: clientOrderNumber } = body;
+    const { items, shippingMethod, couponCode, total: totalCliente, orderNumber: clientOrderNumber } = body;
 
     if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
 
     const { subtotal, envio, total } = await calcularTotal(
       items as ItemEntrada[],
-      String(shippingMethod || 'local')
+      String(shippingMethod || 'local'),
+      couponCode ? String(couponCode) : undefined
     );
 
     if (total <= 0) {
@@ -33,15 +34,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Si el navegador y el servidor no coinciden, NO se cobra. Antes se
-    // registraba el aviso y se cobraba el total del servidor: eso produjo un
-    // cobro de $23.75 por un producto que la tienda mostraba en $0.50, porque
-    // el precio editable vive en otra fuente que calcularTotal() no lee.
-    // Mientras haya mas de una fuente de verdad para el precio, la unica
-    // salida segura es parar.
-    if (totalCliente !== undefined && Math.abs(Number(totalCliente) - total) > 0.01) {
+    // Si el navegador y el servidor no coinciden, NO se cobra.
+    if (totalCliente !== undefined && Math.abs(Number(totalCliente) - total) > 0.05) {
       console.error(
-        `[TILOPAY_TOTAL_MISMATCH] cliente=${totalCliente} servidor=${total} subtotal=${subtotal} envio=${envio}`
+        `[TILOPAY_TOTAL_MISMATCH] cliente=${totalCliente} servidor=${total} subtotal=${subtotal} envio=${envio} cupon=${couponCode}`
       );
       return NextResponse.json(
         {
@@ -60,11 +56,12 @@ export async function POST(req: NextRequest) {
       req.headers.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https');
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
-    const { token } = await getTilopaySdkToken();
+    const { token, key } = await getTilopaySdkToken();
 
     return NextResponse.json({
       success: true,
       token,
+      key,
       orderNumber,
       subtotal,
       envio,

@@ -47,6 +47,7 @@ export interface DatosCliente {
 
 export interface TilopaySesion {
   token: string;
+  key?: string;
   amount: number;
   orderNumber: string;
   redirect: string;
@@ -103,7 +104,7 @@ const TilopayCardForm = forwardRef<TilopayCardFormHandle, { visible: boolean }>(
           await cargarSdk();
           if (!window.Tilopay) throw new Error('El SDK de Tilopay no está disponible.');
 
-          const init = await window.Tilopay.Init({
+          const initOpts: Record<string, unknown> = {
             token: sesion.token,
             currency: 'USD',
             language: 'es',
@@ -121,7 +122,13 @@ const TilopayCardForm = forwardRef<TilopayCardFormHandle, { visible: boolean }>(
             billToCountry: cliente.pais,
             billToTelephone: cliente.telefono,
             hashVersion: 'V2',
-          });
+          };
+
+          if (sesion.key) {
+            initOpts.key = sesion.key;
+          }
+
+          const init = await window.Tilopay.Init(initOpts);
 
           if (init?.message && init.message !== 'Success') {
             throw new Error(init.message);
