@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import StructuredData from '@/components/StructuredData';
 import MetaPixel from '@/components/MetaPixel';
 import TikTokPixel from '@/components/TikTokPixel';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://startap.com.pa'),
@@ -85,6 +86,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <WhatsAppButton />
         </CartProvider>
       </body>
     </html>
