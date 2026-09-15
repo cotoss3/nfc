@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import {
   FREE_SHIPPING_THRESHOLD,
   amountMissingForFreeShipping,
-  YAPPY,
 } from '@/config/shipping';
 import { 
   Trash2, 
@@ -24,14 +24,14 @@ import {
 
 function YappyBadge() {
   return (
-    <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md shadow-sm">
-      <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="8" fill="#005CE6" />
-        <path d="M9 10L14.5 18.5V23H17.5V18.5L23 10H19.5L16 15.8L12.5 10H9Z" fill="white" />
-        <circle cx="22.5" cy="10" r="2.5" fill="#FF5E00" />
-      </svg>
-      <span className="text-[#005CE6] font-black text-sm tracking-tight">yappy</span>
-    </div>
+    <Image
+      src="/logos/yappy-logo.webp"
+      alt="Pagar con Yappy"
+      width={100}
+      height={56}
+      className="h-7 w-auto object-contain"
+      priority
+    />
   );
 }
 
@@ -56,16 +56,16 @@ export default function CartPage() {
       return `• ${item.quantity}x ${item.product_name}${extrasText} - $${(item.price * item.quantity).toFixed(2)}`;
     }).join('\n');
 
-    const message = `Hola starTAP, quiero pagar mi pedido directo por Yappy / WhatsApp sin tarjeta:
+    const message = `Hola starTAP, quiero pagar mi pedido por Yappy / WhatsApp:
 
 📦 *RESUMEN DEL PEDIDO:*
 ${itemsList}
 
 💰 *TOTAL:* $${getCartTotal().toFixed(2)} USD
-🚚 *ENVÍO:* ${faltaParaGratis > 0 ? 'Por coordinar con asesor' : 'Envío Gratis incluido (+$50)'}
-🛡️ *GARANTÍA:* 90 días starTAP incluida
+🚚 *ENVÍO:* ${faltaParaGratis > 0 ? 'Por coordinar' : 'Envío Gratis incluido (+$50)'}
+🛡️ *GARANTÍA:* 90 días incluida
 
-¿Me confirmas tu número de Yappy comercial (${YAPPY.numero}) para realizar la transferencia y coordinar el despacho?`;
+¿Me indican cómo proceder con el pago?`;
 
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
@@ -292,8 +292,8 @@ ${itemsList}
                     <span className="text-white font-black text-sm">WhatsApp</span>
                   </div>
                 </div>
-                <span className="text-white/90 text-xs font-semibold normal-case">
-                  Pago inmediato sin formularios • {YAPPY.numero} ({YAPPY.titular})
+                <span className="text-white/80 text-xs font-semibold normal-case">
+                  Pago sin tarjeta • Rápido y seguro en Panamá
                 </span>
               </a>
             </div>
