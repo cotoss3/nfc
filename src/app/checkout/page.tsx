@@ -24,6 +24,8 @@ import {
   Mail,
   Sparkles,
   ChevronRight,
+  ChevronLeft,
+  ChevronDown,
   ShoppingBag,
 } from 'lucide-react';
 import {
@@ -69,6 +71,7 @@ export default function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [completedOrder, setCompletedOrder] = useState<any>(null);
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
 
   const [mounted, setMounted] = useState(false);
 
@@ -653,407 +656,574 @@ export default function CheckoutPage() {
           </div>
         </div>
       ) : (
-        /* Shopify style two-column checkout screen */
-        <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen max-w-7xl mx-auto border-x border-brand-200">
+        /* Full Shopify style checkout experience */
+        <div className="min-h-screen bg-slate-50/60 pb-16">
           
-          {/* Left Column: Shipping details & Options */}
-          <div className="lg:col-span-7 p-6 sm:p-10 space-y-10 bg-white">
-            
-            {/* Header info */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold tracking-widest text-brand-400 uppercase block">StarTAP Panamá</span>
-              <h1 className="text-xl font-extrabold text-brand-950 uppercase tracking-wide">Paso de Pago Seguro</h1>
+          {/* Mobile Collapsible Order Summary Bar (Shopify Standard) */}
+          <div className="lg:hidden border-b border-slate-200 bg-slate-100/90 px-4 py-3.5 sticky top-16 z-20 backdrop-blur-md">
+            <div className="max-w-xl mx-auto flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setShowMobileSummary(!showMobileSummary)}
+                className="flex items-center gap-2 text-xs font-bold text-slate-800 hover:text-slate-950 transition-colors"
+              >
+                <ShoppingBag className="w-4 h-4 text-emerald-600" />
+                <span>{showMobileSummary ? 'Ocultar resumen del pedido' : 'Mostrar resumen del pedido'}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showMobileSummary ? 'rotate-180' : ''}`} />
+              </button>
+              <span className="font-black text-slate-900 text-sm font-mono">
+                ${getGrandTotal().toFixed(2)} USD
+              </span>
             </div>
 
-            {errorMessage && (
-              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded text-xs flex items-start space-x-2">
-                <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">Error en la transacción</p>
-                  <p className="text-[11px]">{errorMessage}</p>
+            {/* Collapsible drawer */}
+            {showMobileSummary && (
+              <div className="max-w-xl mx-auto pt-4 pb-2 border-t border-slate-200 mt-3 space-y-4">
+                <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                  {cart.map((item) => {
+                    const prod = PRODUCTS.find((p) => p.id === item.product_id);
+                    const imgUrl = prod?.image || '/logos/startap-logo.webp';
+                    return (
+                      <div key={item.id} className="flex items-center gap-3 text-xs">
+                        <div className="relative w-14 h-14 rounded-xl border border-slate-200 bg-white p-1 flex-shrink-0 flex items-center justify-center shadow-xs">
+                          <img src={imgUrl} alt={item.product_name} className="w-full h-full object-contain" />
+                          <span className="absolute -top-1.5 -right-1.5 bg-slate-700 text-white rounded-full text-[10px] w-4.5 h-4.5 flex items-center justify-center font-bold">
+                            {item.quantity}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span className="font-semibold text-slate-900 block truncate">{item.product_name}</span>
+                          <span className="text-[11px] text-slate-500 block truncate">
+                            {item.selected_color || ''}{item.business_name ? ` • ${item.business_name}` : ''}
+                          </span>
+                        </div>
+                        <span className="font-bold text-slate-900 flex-shrink-0">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="border-t border-slate-200 pt-3 space-y-1.5 text-xs text-slate-600">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span className="font-semibold text-slate-900">${getCartTotal().toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Envío</span>
+                    <span className="font-semibold text-slate-900">{envioGratis ? 'Gratis' : `$${getShippingCost().toFixed(2)}`}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-sm text-slate-900 pt-2 border-t border-slate-200">
+                    <span>Total</span>
+                    <span>${getGrandTotal().toFixed(2)} USD</span>
+                  </div>
                 </div>
               </div>
             )}
-
-            <form id="checkout-form" onSubmit={handlePayment} className="space-y-8">
-              
-              {/* Shipping Form */}
-              <div className="space-y-4">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-2">Información del Envío</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-brand-500 uppercase tracking-wider">Nombre Completo</label>
-                    <input
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Carlos Mendoza"
-                      className="shopify-input"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-brand-500 uppercase tracking-wider">Correo del Negocio</label>
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="carlos@correo.com"
-                      className="shopify-input"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-brand-500 uppercase tracking-wider">Teléfono Celular (WhatsApp)</label>
-                    <input
-                      type="tel"
-                      required
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="6523-9821"
-                      className="shopify-input"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-brand-500 uppercase tracking-wider">Provincia</label>
-                    <select
-                      value={province}
-                      onChange={(e) => setProvince(e.target.value)}
-                      className="shopify-input bg-white"
-                    >
-                      {provincesPanama.map((prov) => (
-                        <option key={prov} value={prov}>{prov}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-brand-500 uppercase tracking-wider">Distrito / Corregimiento / Localidad</label>
-                    <input
-                      type="text"
-                      required
-                      value={district}
-                      onChange={(e) => setDistrict(e.target.value)}
-                      placeholder="Ej. San Francisco / Vía Porras"
-                      className="shopify-input"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-brand-500 uppercase tracking-wider">Dirección Exacta (Local, Edificio, Apartamento)</label>
-                    <input
-                      type="text"
-                      required
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Edificio Sunset Place, Piso 4, Apto 4B"
-                      className="shopify-input"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Shipping Options */}
-              <div className="space-y-4">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-2">Método de Envío</h3>
-
-                {envioGratis && (
-                  <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded text-xs flex items-center space-x-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-                    <span className="font-bold">
-                      {isPackInCart
-                        ? '¡Envío gratis a todo Panamá incluido en tu pack!'
-                        : `¡Envío gratis! Tu pedido supera los $${FREE_SHIPPING_THRESHOLD}.`}
-                    </span>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {SHIPPING_METHODS.map((m) => (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setShippingMethod(m.id)}
-                      aria-pressed={shippingMethod === m.id}
-                      className={`p-4 border rounded text-left flex justify-between items-start transition-all ${
-                        shippingMethod === m.id
-                          ? 'border-brand-950 bg-brand-50'
-                          : 'border-brand-200 hover:bg-brand-50 bg-white'
-                      }`}
-                    >
-                      <div>
-                        <span className="font-bold text-xs uppercase tracking-wide block text-brand-900">
-                          {m.label}
-                        </span>
-                        <span className="text-[10px] text-brand-400">{m.detail}</span>
-                      </div>
-                      <span className="font-black text-xs text-brand-950">
-                        {envioGratis ? '$0.00' : `$${m.cost.toFixed(2)}`}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </form>
           </div>
 
-          {/* Right Column: Order Summary & Payment Methods */}
-          <div className="lg:col-span-5 p-6 sm:p-10 bg-brand-100 space-y-8 border-t lg:border-t-0 lg:border-l border-brand-200">
-            
-            {/* 1. ORDER SUMMARY SECTION (PRIMERO: RESUMEN DE PEDIDO) */}
-            <div className="space-y-6">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-200 pb-3">Resumen de tu Pedido</h2>
-              
-              {/* List items */}
-              <div className="space-y-4 max-h-[250px] overflow-y-auto pr-2">
-                {cart.map((item) => (
-                  <div key={item.id} className="flex justify-between items-center text-xs gap-3">
-                    <div className="flex items-center space-x-3 truncate">
-                      <div className="w-10 h-10 bg-brand-200 rounded flex items-center justify-center font-bold text-[8px] flex-shrink-0 text-brand-700 relative">
-                        NFC
-                        <span className="absolute -top-1.5 -right-1.5 bg-brand-850 text-white rounded-full text-[9px] w-4.5 h-4.5 flex items-center justify-center font-bold">
-                          {item.quantity}
-                        </span>
-                      </div>
-                      <div className="truncate">
-                        <span className="font-bold text-brand-950 uppercase tracking-wide block truncate">{item.product_name}</span>
-                        <span className="text-[9px] text-brand-400 block truncate">
-                          {item.selected_color} • {item.business_name}
-                          {item.has_custom_logo ? ' • Logo (+ $5)' : ''}
-                          {item.has_qr_code ? ' • QR (+ $3)' : ''}
-                        </span>
-                      </div>
-                    </div>
-                    <span className="font-black text-brand-950 flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
+          {/* Main Two-Column Layout */}
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
-              <hr className="border-brand-200" />
-
-              {/* CUPON */}
-              <div className="space-y-2">
-                {!appliedCoupon ? (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={couponInput}
-                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyCoupon())}
-                      placeholder="Código de cupón"
-                      className="shopify-input flex-1 uppercase tracking-widest text-xs"
-                      maxLength={20}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleApplyCoupon}
-                      className="px-4 py-2 bg-brand-950 text-white text-xs font-bold uppercase tracking-wider rounded hover:bg-brand-800 transition-colors flex-shrink-0"
-                    >
-                      Aplicar
-                    </button>
+              {/* LEFT COLUMN: SHOPIFY STEP-BY-STEP CHECKOUT FORM */}
+              <div className="lg:col-span-7 space-y-8">
+                
+                {/* Brand & Breadcrumbs */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black tracking-widest text-emerald-700 uppercase bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                      PAGO SEGURO
+                    </span>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
-                    <div className="flex items-center gap-2 text-xs">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                      <span className="font-bold text-emerald-800">Cupón <span className="font-black">{appliedCoupon.code}</span> aplicado</span>
+                  <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                    Finalizar tu Pedido
+                  </h1>
+                  
+                  {/* Breadcrumb Steps */}
+                  <nav aria-label="Progreso de compra" className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                    <Link href="/cart" className="text-emerald-600 hover:underline">Carrito</Link>
+                    <span>/</span>
+                    <span className="text-slate-900 font-bold">Información de Entrega</span>
+                    <span>/</span>
+                    <span className="text-slate-900 font-bold">Pago</span>
+                  </nav>
+                </div>
+
+                {errorMessage && (
+                  <div className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-xl text-xs flex items-start gap-3 shadow-xs">
+                    <AlertCircle className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-sm">No se pudo procesar la transacción</p>
+                      <p className="mt-0.5">{errorMessage}</p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleRemoveCoupon}
-                      className="text-[10px] text-brand-400 hover:text-brand-700 font-bold uppercase underline"
-                    >
-                      Quitar
-                    </button>
                   </div>
                 )}
-                {couponError && (
-                  <p className="text-[11px] text-red-600 font-semibold flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> {couponError}
-                  </p>
-                )}
-              </div>
 
-              {/* Calculations lines */}
-              <div className="space-y-2 text-xs text-brand-500">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span className="font-semibold text-brand-950">${getCartTotal().toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>
-                    Envío
-                    {isPackInCart
-                      ? ' (incluido en el pack)'
-                      : appliedCoupon?.type === 'free_shipping'
-                      ? ' (envío gratis)'
-                      : qualifiesForFreeShipping(getCartTotal())
-                      ? ` (gratis sobre $${FREE_SHIPPING_THRESHOLD})`
-                      : ` (${SHIPPING_METHODS.find((m) => m.id === shippingMethod)?.label})`}
-                  </span>
-                  <span className="font-semibold text-brand-950">
-                    {envioGratis ? (
-                      <span className="text-emerald-600 font-bold uppercase">Gratis</span>
-                    ) : (
-                      `$${getShippingCost().toFixed(2)}`
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Programación y Ruteo</span>
-                  <span className="text-accent-600 font-bold uppercase">Gratuito</span>
-                </div>
-              </div>
-
-              <hr className="border-brand-200" />
-
-              <div className="flex justify-between items-baseline">
-                <span className="font-bold text-xs uppercase tracking-wider text-brand-950">Total Final</span>
-                <span className="text-2xl font-black text-brand-950">${getGrandTotal().toFixed(2)}</span>
-              </div>
-            </div>
-
-            {/* 2. PAYMENT METHODS SECTION (LUEGO: METODO DE PAGO) */}
-            <div className="space-y-5 pt-6 border-t border-brand-200">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-200 pb-2">Método de Pago</h3>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('tarjeta')}
-                  className={`p-4 border rounded flex items-center justify-center space-x-2 font-bold text-xs uppercase tracking-wider transition-all ${
-                    paymentMethod === 'tarjeta' ? 'border-brand-950 bg-white text-brand-950 shadow-sm' : 'border-brand-200 text-brand-500 hover:bg-white bg-brand-50'
-                  }`}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  <span>Tarjeta</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('yappy')}
-                  className={`p-4 border rounded flex items-center justify-center space-x-2 font-bold text-xs uppercase tracking-wider transition-all ${
-                    paymentMethod === 'yappy' ? 'border-brand-950 bg-white text-brand-950 shadow-sm' : 'border-brand-200 text-brand-500 hover:bg-white bg-brand-50'
-                  }`}
-                >
-                  <span>⚡</span>
-                  <span>Yappy</span>
-                </button>
-              </div>
-
-              {/* Tarjeta: el formulario vive aqui. El SDK de Tilopay toma control
-                  de los inputs tlpy_* y manda los datos cifrados directo a
-                  Tilopay; nuestro servidor no los ve nunca. */}
-              {paymentMethod === 'tarjeta' && (
-                <div className="space-y-4">
-                  <div className="bg-white p-4 border border-brand-200 rounded space-y-3 shadow-sm">
-                    <div className="flex items-center space-x-2 text-[10px] text-brand-500">
-                      <Lock className="h-3.5 w-3.5 text-accent-600" />
-                      <span className="font-semibold">Pago seguro con Tilopay (Visa / Mastercard)</span>
-                    </div>
-                    <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
-                      <ShieldCheck className="h-4 w-4 text-accent-600 flex-shrink-0 mt-0.5" />
-                      <span>Pagas sin salir de starTAP. Si tu banco pide verificación 3D Secure, se abre aquí mismo.</span>
-                    </div>
-                  </div>
-
-                  <TilopayCardForm ref={tarjetaRef} visible={true} />
-
-                  <button
-                    form="checkout-form"
-                    type="submit"
-                    disabled={isProcessing}
-                    className="w-full shopify-btn-primary uppercase tracking-widest text-xs font-bold py-4.5 disabled:opacity-50"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
-                        <span>Procesando el pago...</span>
-                      </>
-                    ) : (
-                      <span>Pagar con tarjeta • ${getGrandTotal().toFixed(2)}</span>
-                    )}
-                  </button>
-                </div>
-              )}
-
-              {/* Montado en background cuando no se ve para preservar inputs de Tilopay en el DOM */}
-              {paymentMethod !== 'tarjeta' && (
-                <TilopayCardForm ref={tarjetaRef} visible={false} />
-              )}
-
-              {/* Yappy: Boton Yappy enviando a WhatsApp (como en el carrito) */}
-              {paymentMethod === 'yappy' && (
-                <div className="space-y-4">
-                  <div className="bg-white p-5 border border-brand-200 rounded-2xl space-y-4 shadow-sm">
-                    <div className="flex items-start space-x-2.5 text-xs text-brand-600 bg-blue-50/70 p-3 rounded-xl border border-blue-100">
-                      <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <span>
-                        Paga sin tarjeta bancaria: confirma tu pedido enviando los detalles directamente a nuestro <strong>WhatsApp</strong> para transferir por <strong>Yappy</strong>.
-                      </span>
+                <form id="checkout-form" onSubmit={handlePayment} className="space-y-6">
+                  
+                  {/* STEP 1: CONTACTO */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                        Contacto
+                      </h2>
+                      <span className="text-[11px] text-slate-400">Recibirás recibo y guía de rastreo</span>
                     </div>
 
-                    {/* Boton Yappy / WhatsApp mejorado (identico al carrito) */}
-                    <a
-                      href={generateCheckoutWhatsAppMessage()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => {
-                        track('Contact', { method: 'yappy_checkout_whatsapp' });
-                        trackTikTok('Contact', { method: 'yappy_checkout_whatsapp' });
-                      }}
-                      className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:shadow-xl hover:scale-[1.01] active:scale-100"
-                    >
-                      {/* Row: Yappy badge + WhatsApp icon */}
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src="/logos/yappy-logo.webp"
-                          alt="Pagar con Yappy"
-                          width={100}
-                          height={56}
-                          className="h-7 w-auto object-contain"
-                          priority
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700">Correo Electrónico *</label>
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="tu@correo.com"
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
                         />
-                        <span className="text-white/40 text-lg font-light">+</span>
-                        <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
-                          <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                            <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.821.487 3.532 1.338 5.017L2.01 22l5.123-1.32A9.96 9.96 0 0012 22c5.523 0 10-4.478 10-10S17.523 2 12 2zm0 18.18a8.147 8.147 0 01-4.16-1.143l-.298-.177-3.039.783.81-2.96-.195-.306A8.177 8.177 0 013.82 12c0-4.508 3.671-8.18 8.18-8.18 4.508 0 8.18 3.672 8.18 8.18 0 4.509-3.672 8.18-8.18 8.18z"/>
-                          </svg>
-                          <span className="text-white font-black text-sm">WhatsApp</span>
-                        </div>
                       </div>
-                      <span className="text-white/80 text-xs font-semibold normal-case">
-                        Pagar con Yappy por WhatsApp • ${getGrandTotal().toFixed(2)} USD
-                      </span>
-                    </a>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700">Teléfono Móvil (WhatsApp) *</label>
+                        <input
+                          type="tel"
+                          required
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="6523-9821"
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Boton para registrar la orden en el sistema y abrir WhatsApp con la direccion guardada */}
-                  <button
-                    form="checkout-form"
-                    type="submit"
-                    disabled={isProcessing}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white uppercase tracking-widest text-xs font-bold py-4 rounded-xl shadow transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
-                        <span>Guardando pedido...</span>
-                      </>
-                    ) : (
-                      <>
-                        <MessageCircle className="w-4 h-4" />
-                        <span>Confirmar datos y pagar por Yappy</span>
-                      </>
+                  {/* STEP 2: DIRECCION DE ENTREGA */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">2</span>
+                        Dirección de Entrega
+                      </h2>
+                      <span className="text-[11px] text-slate-400">Envíos a todo Panamá</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label className="text-xs font-semibold text-slate-700">Nombre Completo o Razón Social *</label>
+                        <input
+                          type="text"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Carlos Mendoza o Nombre de tu Negocio"
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700">Provincia *</label>
+                        <select
+                          value={province}
+                          onChange={(e) => setProvince(e.target.value)}
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition cursor-pointer"
+                        >
+                          {provincesPanama.map((prov) => (
+                            <option key={prov} value={prov}>{prov}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700">Distrito / Corregimiento / Ciudad *</label>
+                        <input
+                          type="text"
+                          required
+                          value={district}
+                          onChange={(e) => setDistrict(e.target.value)}
+                          placeholder="Ej. San Francisco, Vía Porras"
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label className="text-xs font-semibold text-slate-700">Dirección Exacta (Local, Edificio, Apartamento) *</label>
+                        <input
+                          type="text"
+                          required
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          placeholder="Calle 74 Este, Edificio Sunset Place, Local 3"
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* STEP 3: METODO DE ENVIO */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">3</span>
+                        Método de Envío
+                      </h2>
+                    </div>
+
+                    {envioGratis && (
+                      <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3.5 rounded-xl text-xs flex items-center gap-2.5">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                        <span className="font-semibold">
+                          {isPackInCart
+                            ? '¡Envío gratis a todo Panamá incluido con tu pedido!'
+                            : `¡Envío gratis aplicado! Tu orden supera los $${FREE_SHIPPING_THRESHOLD}.`}
+                        </span>
+                      </div>
                     )}
-                  </button>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {SHIPPING_METHODS.map((m) => (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => setShippingMethod(m.id)}
+                          aria-pressed={shippingMethod === m.id}
+                          className={`p-4 border rounded-xl text-left flex justify-between items-start transition-all ${
+                            shippingMethod === m.id
+                              ? 'border-slate-900 bg-slate-50/80 ring-1 ring-slate-900 shadow-xs'
+                              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/40 bg-white'
+                          }`}
+                        >
+                          <div>
+                            <span className="font-bold text-xs uppercase tracking-wide block text-slate-900">
+                              {m.label}
+                            </span>
+                            <span className="text-[11px] text-slate-500 mt-0.5 block">{m.detail}</span>
+                          </div>
+                          <span className="font-black text-xs text-slate-900 ml-2">
+                            {envioGratis ? 'Gratis' : `$${m.cost.toFixed(2)}`}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* STEP 4: METODO DE PAGO (SHOPIFY ACCORDION BOX) */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] flex items-center justify-center font-bold">4</span>
+                        Pago
+                      </h2>
+                      <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <Lock className="w-3.5 h-3.5 text-emerald-600" /> Cifrado 256-bit
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-500">
+                      Selecciona cómo prefieres pagar tu orden:
+                    </p>
+
+                    {/* Contenedor estilo acordeón Shopify */}
+                    <div className="border border-slate-300 rounded-xl overflow-hidden divide-y divide-slate-200 bg-white shadow-xs">
+                      
+                      {/* Fila 1: Tarjeta Bancaria */}
+                      <div>
+                        <div
+                          onClick={() => setPaymentMethod('tarjeta')}
+                          className={`flex items-center justify-between p-4 cursor-pointer transition-colors ${
+                            paymentMethod === 'tarjeta' ? 'bg-slate-50/90' : 'hover:bg-slate-50/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="radio"
+                              name="paymentMethodSelect"
+                              checked={paymentMethod === 'tarjeta'}
+                              onChange={() => setPaymentMethod('tarjeta')}
+                              className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                            />
+                            <span className="text-sm font-bold text-slate-900">Tarjeta de crédito o débito</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-black text-slate-600">VISA</span>
+                            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-black text-slate-600">MC</span>
+                          </div>
+                        </div>
+
+                        {paymentMethod === 'tarjeta' && (
+                          <div className="p-4 sm:p-5 bg-slate-50/40 border-t border-slate-200 space-y-4">
+                            <div className="flex items-center gap-2.5 text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                              <ShieldCheck className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                              <span>Pagas directamente sin salir de starTAP con validación bancaria 3D Secure.</span>
+                            </div>
+
+                            <TilopayCardForm ref={tarjetaRef} visible={true} />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Fila 2: Yappy Panamá */}
+                      <div>
+                        <div
+                          onClick={() => setPaymentMethod('yappy')}
+                          className={`flex items-center justify-between p-4 cursor-pointer transition-colors ${
+                            paymentMethod === 'yappy' ? 'bg-slate-50/90' : 'hover:bg-slate-50/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="radio"
+                              name="paymentMethodSelect"
+                              checked={paymentMethod === 'yappy'}
+                              onChange={() => setPaymentMethod('yappy')}
+                              className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                            />
+                            <span className="text-sm font-bold text-slate-900">Yappy Panamá (WhatsApp)</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Image
+                              src="/logos/yappy-logo.webp"
+                              alt="Yappy"
+                              width={60}
+                              height={28}
+                              className="h-5 w-auto object-contain"
+                            />
+                          </div>
+                        </div>
+
+                        {paymentMethod === 'yappy' && (
+                          <div className="p-4 sm:p-5 bg-slate-50/40 border-t border-slate-200 space-y-4">
+                            <div className="flex items-start gap-2.5 text-xs text-slate-600 bg-blue-50/70 p-3.5 rounded-xl border border-blue-100">
+                              <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <span>
+                                Paga al instante sin ingresar datos de tarjeta: confirma tu orden vía <strong>WhatsApp</strong> y te enviamos la solicitud de cobro directo a tu <strong>Yappy</strong>.
+                              </span>
+                            </div>
+
+                            {/* Botón oficial de Yappy + WhatsApp (idéntico al carrito) */}
+                            <a
+                              href={generateCheckoutWhatsAppMessage()}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => {
+                                track('Contact', { method: 'yappy_checkout_whatsapp' });
+                                trackTikTok('Contact', { method: 'yappy_checkout_whatsapp' });
+                              }}
+                              className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:scale-[1.01] active:scale-100"
+                            >
+                              <div className="flex items-center gap-3">
+                                <Image
+                                  src="/logos/yappy-logo.webp"
+                                  alt="Pagar con Yappy"
+                                  width={90}
+                                  height={50}
+                                  className="h-6 w-auto object-contain"
+                                  priority
+                                />
+                                <span className="text-white/40 text-lg font-light">+</span>
+                                <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
+                                  <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                    <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.821.487 3.532 1.338 5.017L2.01 22l5.123-1.32A9.96 9.96 0 0012 22c5.523 0 10-4.478 10-10S17.523 2 12 2zm0 18.18a8.147 8.147 0 01-4.16-1.143l-.298-.177-3.039.783.81-2.96-.195-.306A8.177 8.177 0 013.82 12c0-4.508 3.671-8.18 8.18-8.18 4.508 0 8.18 3.672 8.18 8.18 0 4.509-3.672 8.18-8.18 8.18z"/>
+                                  </svg>
+                                  <span className="text-white font-black text-sm">WhatsApp</span>
+                                </div>
+                              </div>
+                              <span className="text-white/80 text-xs font-semibold normal-case">
+                                Pagar con Yappy por WhatsApp • ${getGrandTotal().toFixed(2)} USD
+                              </span>
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Fallback hidden instance to keep Tilopay inputs available in DOM if Yappy is selected */}
+                  {paymentMethod !== 'tarjeta' && (
+                    <TilopayCardForm ref={tarjetaRef} visible={false} />
+                  )}
+
+                  {/* SUBMIT BUTTON ROW (SHOPIFY STYLE) */}
+                  <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <Link
+                      href="/cart"
+                      className="text-xs font-bold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 order-2 sm:order-1 transition"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span>Volver al carrito</span>
+                    </Link>
+
+                    <button
+                      form="checkout-form"
+                      type="submit"
+                      disabled={isProcessing}
+                      className="w-full sm:w-auto sm:min-w-[280px] py-4 px-8 bg-slate-950 hover:bg-slate-900 text-white font-bold text-sm rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 order-1 sm:order-2"
+                    >
+                      {isProcessing ? (
+                        <>
+                          <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
+                          <span>Procesando pedido...</span>
+                        </>
+                      ) : paymentMethod === 'tarjeta' ? (
+                        <span>Pagar ahora • ${getGrandTotal().toFixed(2)} USD</span>
+                      ) : (
+                        <>
+                          <MessageCircle className="w-4 h-4" />
+                          <span>Confirmar pedido por Yappy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="pt-2 text-center text-[11px] text-slate-400">
+                    Al confirmar tu compra aceptas nuestros{' '}
+                    <Link href="/terminos" className="underline hover:text-slate-600">Términos y Condiciones</Link> y{' '}
+                    <Link href="/privacidad" className="underline hover:text-slate-600">Política de Privacidad</Link>.
+                  </div>
+                </form>
+              </div>
+
+              {/* RIGHT COLUMN: STICKY ORDER SUMMARY SIDEBAR (SHOPIFY AESTHETIC) */}
+              <div className="hidden lg:block lg:col-span-5">
+                <div className="sticky top-28 bg-white border border-slate-200 rounded-3xl p-7 shadow-sm space-y-6">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <h2 className="text-base font-bold text-slate-900">Resumen del Pedido</h2>
+                    <span className="text-xs font-semibold px-2.5 py-0.5 bg-slate-100 text-slate-700 rounded-full">
+                      {cart.reduce((n, i) => n + i.quantity, 0)} {cart.reduce((n, i) => n + i.quantity, 0) === 1 ? 'artículo' : 'artículos'}
+                    </span>
+                  </div>
+
+                  {/* List of items with real thumbnails & quantity badges */}
+                  <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                    {cart.map((item) => {
+                      const prod = PRODUCTS.find((p) => p.id === item.product_id);
+                      const imgUrl = prod?.image || '/logos/startap-logo.webp';
+                      return (
+                        <div key={item.id} className="flex items-center gap-3.5 text-xs">
+                          <div className="relative w-16 h-16 rounded-xl border border-slate-200 bg-slate-50/50 p-1 flex-shrink-0 flex items-center justify-center">
+                            <img src={imgUrl} alt={item.product_name} className="w-full h-full object-contain" />
+                            <span className="absolute -top-2 -right-2 bg-slate-700 text-white rounded-full text-[11px] w-5 h-5 flex items-center justify-center font-bold shadow-xs">
+                              {item.quantity}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-semibold text-slate-900 text-xs block truncate">{item.product_name}</span>
+                            <span className="text-[11px] text-slate-500 block truncate mt-0.5">
+                              {item.selected_color || ''}{item.business_name ? ` • ${item.business_name}` : ''}
+                              {item.has_custom_logo ? ' • Con Logo' : ''}
+                              {item.has_qr_code ? ' • Con QR' : ''}
+                            </span>
+                          </div>
+                          <span className="font-bold text-slate-900 text-xs flex-shrink-0">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Coupon input */}
+                  <div className="border-t border-slate-100 pt-4 space-y-2">
+                    {!appliedCoupon ? (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={couponInput}
+                          onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyCoupon())}
+                          placeholder="Código de cupón"
+                          className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs uppercase tracking-wider font-semibold focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none transition"
+                          maxLength={20}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyCoupon}
+                          className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl transition-colors flex-shrink-0"
+                        >
+                          Aplicar
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2.5">
+                        <div className="flex items-center gap-2 text-xs">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                          <span className="font-bold text-emerald-800">Cupón <span className="font-black">{appliedCoupon.code}</span> aplicado</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoupon}
+                          className="text-[11px] text-slate-500 hover:text-rose-600 font-bold underline"
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                    )}
+                    {couponError && (
+                      <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" /> {couponError}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Subtotal, Shipping, Routing lines */}
+                  <div className="border-t border-slate-100 pt-4 space-y-2.5 text-xs text-slate-600">
+                    <div className="flex justify-between">
+                      <span>Subtotal</span>
+                      <span className="font-semibold text-slate-900">${getCartTotal().toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>
+                        Envío
+                        {isPackInCart
+                          ? ' (incluido)'
+                          : appliedCoupon?.type === 'free_shipping'
+                          ? ' (envío gratis)'
+                          : qualifiesForFreeShipping(getCartTotal())
+                          ? ` (gratis sobre $${FREE_SHIPPING_THRESHOLD})`
+                          : ''}
+                      </span>
+                      <span className="font-semibold text-slate-900">
+                        {envioGratis ? (
+                          <span className="text-emerald-600 font-bold uppercase text-[11px]">Gratis</span>
+                        ) : (
+                          `$${getShippingCost().toFixed(2)}`
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Programación y Ruteo NFC</span>
+                      <span className="text-emerald-600 font-bold uppercase text-[11px]">Gratuito</span>
+                    </div>
+                  </div>
+
+                  {/* Grand total */}
+                  <div className="border-t border-slate-200 pt-4 flex justify-between items-baseline">
+                    <span className="font-bold text-sm text-slate-900">Total a pagar</span>
+                    <div className="text-right">
+                      <span className="text-xs text-slate-400 font-normal mr-1.5">USD</span>
+                      <span className="text-2xl font-black text-slate-950 tracking-tight">
+                        ${getGrandTotal().toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Trust guarantees box */}
+                  <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs text-slate-600">
+                    <div className="flex items-center gap-2 font-bold text-slate-800">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span>Compra protegida starTAP</span>
+                    </div>
+                    <ul className="space-y-1.5 text-[11px] text-slate-500">
+                      <li>• Reposición garantizada por 90 días ante cualquier falla.</li>
+                      <li>• Dispositivos configurados y listos para usar sin apps.</li>
+                      <li>• Soporte personalizado por WhatsApp en Panamá.</li>
+                    </ul>
+                  </div>
                 </div>
-              )}
+              </div>
+
             </div>
           </div>
         </div>
