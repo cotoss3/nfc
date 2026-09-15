@@ -48,10 +48,42 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
       cache: 'no-store',
     });
 
-    const data = await res.json();
+    let data = await res.json();
 
     if (!res.ok) {
       console.error('[RESEND_API_ERROR]', res.status, data);
+
+      // Si el dominio aún no está verificado en Resend, Resend retorna 403 permitiendo enviar solo a fbcontrerras@gmail.com
+      if (res.status === 403 && data.message?.includes('fbcontrerras@gmail.com')) {
+        console.warn('[RESEND_FALLBACK] El dominio no está verificado en Resend. Reintentando envío a fbcontrerras@gmail.com...');
+        
+        const fallbackRes = await fetch(RESEND_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            from,
+            to: ['fbcontrerras@gmail.com'],
+            subject: `[PROPIETARIO] ${payload.subject}`,
+            html: payload.html,
+            reply_to: payload.reply_to || 'info@datakorex.com',
+          }),
+          cache: 'no-store',
+        });
+
+        const fallbackData = await fallbackRes.json();
+        if (fallbackRes.ok) {
+          return {
+            success: true,
+            id: fallbackData.id,
+          };
+        } else {
+          console.error('[RESEND_FALLBACK_ERROR]', fallbackRes.status, fallbackData);
+        }
+      }
+
       return {
         success: false,
         error: data.message || data.name || 'Error al enviar correo vía Resend.',
