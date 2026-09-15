@@ -6,8 +6,34 @@ import { useCart } from '@/context/CartContext';
 import {
   FREE_SHIPPING_THRESHOLD,
   amountMissingForFreeShipping,
+  YAPPY,
 } from '@/config/shipping';
-import { Trash2, ShoppingBag, ArrowRight, Truck, MessageCircle } from 'lucide-react';
+import { 
+  Trash2, 
+  ShoppingBag, 
+  ArrowRight, 
+  Truck, 
+  MessageCircle,
+  ShieldCheck,
+  Zap,
+  Smartphone,
+  CheckCircle2,
+  Sparkles,
+  Lock
+} from 'lucide-react';
+
+function YappyBadge() {
+  return (
+    <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-md shadow-sm">
+      <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#005CE6" />
+        <path d="M9 10L14.5 18.5V23H17.5V18.5L23 10H19.5L16 15.8L12.5 10H9Z" fill="white" />
+        <circle cx="22.5" cy="10" r="2.5" fill="#FF5E00" />
+      </svg>
+      <span className="text-[#005CE6] font-black text-sm tracking-tight">yappy</span>
+    </div>
+  );
+}
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getItemCount } = useCart();
@@ -37,8 +63,9 @@ ${itemsList}
 
 💰 *TOTAL:* $${getCartTotal().toFixed(2)} USD
 🚚 *ENVÍO:* ${faltaParaGratis > 0 ? 'Por coordinar con asesor' : 'Envío Gratis incluido (+$50)'}
+🛡️ *GARANTÍA:* 90 días starTAP incluida
 
-¿Me confirmas tu número de Yappy comercial o cuenta ACH para hacer el pago y coordinar el despacho?`;
+¿Me confirmas tu número de Yappy comercial (${YAPPY.numero}) para realizar la transferencia y coordinar el despacho?`;
 
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
@@ -240,25 +267,84 @@ ${itemsList}
               <div className="relative flex py-1 items-center">
                 <div className="flex-grow border-t border-brand-200"></div>
                 <span className="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-brand-400">
-                  o compra directa sin tarjeta
+                  o paga sin tarjeta bancaria
                 </span>
                 <div className="flex-grow border-t border-brand-200"></div>
               </div>
 
+              {/* Botón Yappy / WhatsApp mejorado */}
               <a
                 href={generateWhatsAppMessage()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider py-3.5 px-4 rounded-xl shadow-md transition-all flex flex-col items-center justify-center gap-0.5 group hover:shadow-lg"
+                className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:shadow-xl hover:scale-[1.01] active:scale-100"
               >
-                <div className="flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-emerald-100 group-hover:scale-110 transition-transform" />
-                  <span>Comprar directo por Yappy / WhatsApp</span>
+                {/* Row: Yappy badge + WhatsApp icon */}
+                <div className="flex items-center gap-3">
+                  <YappyBadge />
+                  <span className="text-white/40 text-lg font-light">+</span>
+                  {/* WhatsApp SVG */}
+                  <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
+                    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                      <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.821.487 3.532 1.338 5.017L2.01 22l5.123-1.32A9.96 9.96 0 0012 22c5.523 0 10-4.478 10-10S17.523 2 12 2zm0 18.18a8.147 8.147 0 01-4.16-1.143l-.298-.177-3.039.783.81-2.96-.195-.306A8.177 8.177 0 013.82 12c0-4.508 3.671-8.18 8.18-8.18 4.508 0 8.18 3.672 8.18 8.18 0 4.509-3.672 8.18-8.18 8.18z"/>
+                    </svg>
+                    <span className="text-white font-black text-sm">WhatsApp</span>
+                  </div>
                 </div>
-                <span className="text-[10px] font-normal text-emerald-100">
-                  Sin ingresar tarjeta • Pago local inmediato (+507 6713-4341)
+                <span className="text-white/90 text-xs font-semibold normal-case">
+                  Pago inmediato sin formularios • {YAPPY.numero} ({YAPPY.titular})
                 </span>
               </a>
+            </div>
+
+            {/* TRUST BADGES: Garantía, Envío, Beneficios de conversión */}
+            <div className="pt-4 border-t border-brand-100 space-y-3">
+              <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest text-center">¿Por qué comprar en starTAP?</p>
+
+              <div className="grid grid-cols-1 gap-2">
+                {/* Garantía 90 días */}
+                <div className="flex items-start gap-3 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-emerald-900">Garantía de 90 días</p>
+                    <p className="text-[11px] text-emerald-700">Si tu dispositivo NFC falla, lo reponemos sin costo. Sin letra pequeña.</p>
+                  </div>
+                </div>
+
+                {/* Envío a todo Panamá */}
+                <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <Truck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-blue-900">Envío a todo Panamá</p>
+                    <p className="text-[11px] text-blue-700">Despachamos a todas las provincias por Uno Express y Servientrega. Gratis desde \$50.</p>
+                  </div>
+                </div>
+
+                {/* Chip programado gratis */}
+                <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <Zap className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-amber-900">Chip NFC configurado de fábrica</p>
+                    <p className="text-[11px] text-amber-700">Llega listo para usarse. Solo acerca un celular y funciona al instante.</p>
+                  </div>
+                </div>
+
+                {/* Cambio de destino sin costo */}
+                <div className="flex items-start gap-3 bg-purple-50 border border-purple-200 rounded-lg p-3">
+                  <Smartphone className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-purple-900">Cambia el destino cuando quieras</p>
+                    <p className="text-[11px] text-purple-700">Actualiza el link de tu tarjeta desde el panel sin reprogramar el chip.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sello de seguridad */}
+              <div className="flex items-center justify-center gap-2 text-[10px] text-brand-400 pt-1">
+                <Lock className="w-3 h-3" />
+                <span>Compra segura • Empresa registrada en Panamá (DataKorex)</span>
+              </div>
             </div>
           </div>
         </div>
