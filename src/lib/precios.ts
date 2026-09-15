@@ -54,7 +54,14 @@ async function cargarPrecios(): Promise<Map<string, number>> {
 /** Precio vigente de un producto. `undefined` si el id no existe. */
 export async function getPrecio(id: string): Promise<number | undefined> {
   const precios = await cargarPrecios();
-  return precios.get(id);
+  const normalizedId = id.trim().toLowerCase();
+  if (precios.has(normalizedId)) return precios.get(normalizedId);
+
+  const product = getProductById(normalizedId);
+  if (product && precios.has(product.id)) {
+    return precios.get(product.id);
+  }
+  return product?.price;
 }
 
 /** Catalogo con el precio vigente, para que la tienda muestre lo que se cobra. */

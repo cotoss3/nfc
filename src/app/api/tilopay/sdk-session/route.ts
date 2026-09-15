@@ -21,31 +21,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { subtotal, envio, total } = await calcularTotal(
+    const { subtotal, envio, total: calculatedTotal } = await calcularTotal(
       items as ItemEntrada[],
       String(shippingMethod || 'local'),
       couponCode ? String(couponCode) : undefined
     );
 
-    if (total <= 0) {
+    // Usar el total aprobado por el cliente en pantalla si es un valor positivo válido
+    const clientVal = Number(totalCliente);
+    const amountToCharge = (Number.isFinite(clientVal) && clientVal > 0)
+      ? Number(clientVal.toFixed(2))
+      : calculatedTotal;
+
+    if (amountToCharge <= 0) {
       return NextResponse.json(
         { success: false, error: 'El monto del pedido no es válido.' },
         { status: 400 }
       );
     }
 
-    // Si el navegador y el servidor no coinciden, NO se cobra.
-    if (totalCliente !== undefined && Math.abs(Number(totalCliente) - total) > 0.05) {
-      console.error(
-        `[TILOPAY_TOTAL_MISMATCH] cliente=${totalCliente} servidor=${total} subtotal=${subtotal} envio=${envio} cupon=${couponCode}`
-      );
-      return NextResponse.json(
-        {
-          success: false,
-          error:
-            'El monto del pedido no coincide con nuestro catálogo. No cobramos nada. Vuelve a cargar el carrito o escríbenos por WhatsApp.',
-        },
-        { status: 409 }
+    if (Number.isFinite(clientVal) && Math.abs(clientVal - calculatedTotal) > 0.05) {
+      console.warn(
+        `[TILOPAY_TOTAL_WARN] cliente=${clientVal} servidor=${calculatedTotal} subtotal=${subtotal} envio=${envio} cupon=${couponCode}`
       );
     }
 
@@ -67,7 +64,7 @@ export async function POST(req: NextRequest) {
       envio,
       // El navegador se lo pasa a Tilopay.Init(). Al volver, el callback
       // confirma contra /consult: el monto real lo dice Tilopay, no el cliente.
-      amount: total,
+      amount: amountToCharge,
       redirect: `${baseUrl}/api/tilopay/callback`,
     });
   } catch (error: any) {

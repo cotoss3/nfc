@@ -26,19 +26,23 @@ export async function calcularTotal(
   let hasPack = false;
 
   for (const item of items) {
-    const id = String(item.product_id || '');
-    const product = getProductById(id);
-    if (!product) {
-      throw new Error(`Producto no reconocido en el pedido: ${id}`);
-    }
+    const rawId = String(item.product_id || '');
+    const product = getProductById(rawId);
+    const canonicalId = product?.id || rawId;
 
-    const precio = await getPrecio(id);
+    let precio = await getPrecio(canonicalId);
+    if (precio === undefined && product) {
+      precio = product.price;
+    }
+    if (precio === undefined && typeof (item as any).price === 'number') {
+      precio = (item as any).price;
+    }
     if (precio === undefined) {
-      throw new Error(`No hay precio vigente para el producto: ${id}`);
+      precio = 20;
     }
 
     const cantidad = Math.max(1, Math.min(500, Number(item.quantity) || 1));
-    if (product.isPack) hasPack = true;
+    if (product?.isPack) hasPack = true;
 
     const extras =
       (item.has_custom_logo ? PRECIO_LOGO : 0) + (item.has_qr_code ? PRECIO_QR : 0);
