@@ -29,14 +29,16 @@ import {
 
 function YappyBadge() {
   return (
-    <Image
-      src="/logos/yappy-logo.webp"
-      alt="Pagar con Yappy"
-      width={90}
-      height={50}
-      className="h-6 w-auto object-contain"
-      priority
-    />
+    <div className="bg-white px-2.5 py-1 rounded-lg flex items-center justify-center shadow-xs">
+      <Image
+        src="/logos/yappy-logo.png"
+        alt="Pagar con Yappy"
+        width={85}
+        height={21}
+        className="h-5 w-auto object-contain"
+        priority
+      />
+    </div>
   );
 }
 

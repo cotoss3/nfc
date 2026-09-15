@@ -983,10 +983,10 @@ export default function CheckoutPage() {
                           </div>
                           <div className="flex items-center gap-1.5">
                             <Image
-                              src="/logos/yappy-logo.webp"
+                              src="/logos/yappy-logo.png"
                               alt="Yappy"
-                              width={60}
-                              height={28}
+                              width={70}
+                              height={18}
                               className="h-5 w-auto object-contain"
                             />
                           </div>
@@ -1013,14 +1013,16 @@ export default function CheckoutPage() {
                               className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:scale-[1.01] active:scale-100"
                             >
                               <div className="flex items-center gap-3">
-                                <Image
-                                  src="/logos/yappy-logo.webp"
-                                  alt="Pagar con Yappy"
-                                  width={90}
-                                  height={50}
-                                  className="h-6 w-auto object-contain"
-                                  priority
-                                />
+                                <div className="bg-white px-2.5 py-1 rounded-lg flex items-center justify-center shadow-xs">
+                                  <Image
+                                    src="/logos/yappy-logo.png"
+                                    alt="Pagar con Yappy"
+                                    width={85}
+                                    height={21}
+                                    className="h-5 w-auto object-contain"
+                                    priority
+                                  />
+                                </div>
                                 <span className="text-white/40 text-lg font-light">+</span>
                                 <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
                                   <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
