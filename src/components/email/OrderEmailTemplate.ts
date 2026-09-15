@@ -71,10 +71,10 @@ export function buildCustomerOrderEmailHtml(data: OrderEmailParams): string {
         <td align="center">
           <table width="100%" max-width="600" cellpadding="0" cellspacing="0" style="max-width:600px; background-color:#ffffff; border-radius:18px; overflow:hidden; border:1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);">
             
-            <!-- Header Banner con Logo Oficial y Soporte Total para Outlook / Gmail -->
+            <!-- Header Banner con Logo Blanco (email-logo-white.png) y Soporte para Outlook / Gmail -->
             <tr>
               <td bgcolor="#0f172a" style="background-color: #0f172a; padding: 28px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
-                <img src="https://startap.com.pa/logos/Logo.png" width="160" height="30" alt="starTAP Panamá Logo" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 12px auto; border: 0;" />
+                <img src="https://startap.com.pa/logos/email-logo-white.png" width="160" height="30" alt="starTAP Panamá Logo" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 12px auto; border: 0;" />
                 <div style="display: inline-block; background-color: #1e293b; border: 1px solid #f59e0b; padding: 6px 16px; border-radius: 20px;">
                   <span style="color: #fbbf24; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">
                     N° DE PEDIDO: #${data.orderId}
