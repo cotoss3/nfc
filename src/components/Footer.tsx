@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CreditCard, Heart, MapPin, Phone, Mail, Send, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function Footer() {
@@ -143,22 +144,37 @@ export default function Footer() {
               <li>• Envíos al interior por Uno Express y Servientrega</li>
             </ul>
 
-            {/* Legible Payment Badges */}
+            {/* Legible Payment Logos (Visa, Mastercard, Yappy) */}
             <div className="pt-2">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Métodos de Pago Aceptados</p>
-              <div className="flex flex-wrap gap-2 text-xs font-bold">
-                <span className="bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2.5 py-1 rounded-md">
-                  ⚡ Yappy
-                </span>
-                <span className="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-1 rounded-md">
-                  Visa
-                </span>
-                <span className="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-2.5 py-1 rounded-md">
-                  Mastercard
-                </span>
-                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-md">
-                  ACH
-                </span>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5">Métodos de Pago Aceptados</p>
+              <div className="flex items-center gap-2">
+                <div className="bg-white px-2 py-1 rounded-md flex items-center justify-center h-7 shadow-xs">
+                  <Image
+                    src="/logos/visa-logo.svg"
+                    alt="Visa"
+                    width={34}
+                    height={22}
+                    className="h-4 w-auto object-contain"
+                  />
+                </div>
+                <div className="bg-white px-2 py-1 rounded-md flex items-center justify-center h-7 shadow-xs">
+                  <Image
+                    src="/logos/mastercard-logo.svg"
+                    alt="Mastercard"
+                    width={34}
+                    height={22}
+                    className="h-4 w-auto object-contain"
+                  />
+                </div>
+                <div className="bg-white px-2.5 py-1 rounded-md flex items-center justify-center h-7 shadow-xs">
+                  <Image
+                    src="/logos/yappy-logo.png"
+                    alt="Yappy"
+                    width={55}
+                    height={14}
+                    className="h-3.5 w-auto object-contain"
+                  />
+                </div>
               </div>
             </div>
           </div>

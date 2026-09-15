@@ -289,7 +289,7 @@ export default function CatalogoClient() {
                 <span>Métodos de Pago Directos</span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Pagos seguros por Yappy, transferencias bancarias ACH directas o tarjetas de crédito y débito Visa / Mastercard.
+                Pagos seguros por Yappy o tarjetas de crédito y débito Visa y Mastercard.
               </p>
             </div>
 

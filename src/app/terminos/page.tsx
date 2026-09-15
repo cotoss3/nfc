@@ -88,9 +88,8 @@ export default function TerminosPage() {
               Los métodos de pago oficiales procesados en la tienda incluyen:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-slate-700">
-              <li><strong className="text-slate-900">Yappy (Banco General):</strong> Procesamiento mediante código QR o directorio telefónico corporativo.</li>
-              <li><strong className="text-slate-900">Transferencia Bancaria Directa (ACH):</strong> Hacia la cuenta de KoreNet Cloud & Web / Fernando Contreras.</li>
-              <li><strong className="text-slate-900">Tarjetas de Crédito y Débito:</strong> Procesadas por pasarelas de pago cifradas (Visa y Mastercard).</li>
+              <li><strong className="text-slate-900">Yappy (Banco General):</strong> Procesamiento inmediato mediante enlace directo o WhatsApp corporativo.</li>
+              <li><strong className="text-slate-900">Tarjetas de Crédito y Débito:</strong> Procesadas por pasarelas de pago cifradas con seguridad 3D Secure (Visa y Mastercard).</li>
             </ul>
           </section>
 

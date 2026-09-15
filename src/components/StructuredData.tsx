@@ -93,7 +93,7 @@ const storeSchema = {
   email: 'info@datakorex.com',
   priceRange: '$20.00 - $50.00',
   currenciesAccepted: 'USD',
-  paymentAccepted: 'Yappy, Tarjeta de crédito, Transferencia Bancaria, ACH',
+  paymentAccepted: 'Yappy, Visa, Mastercard',
   areaServed: {
     '@type': 'Country',
     name: 'Panamá',

@@ -70,7 +70,7 @@ export default function HomeClient() {
     },
     {
       q: '¿Hacen envíos al interior del país y cómo se paga por Yappy?',
-      a: 'Enviamos a todas las provincias de Panamá por Uno Express y mensajería local. Las entregas en Ciudad de Panamá toman de 24 a 48 horas. Al finalizar la compra puedes seleccionar pago por Yappy, tarjeta de crédito o transferencia ACH.'
+      a: 'Enviamos a todas las provincias de Panamá por Uno Express y mensajería local. Las entregas en Ciudad de Panamá toman de 24 a 48 horas. Al finalizar la compra puedes seleccionar pago con tarjeta Visa, Mastercard o directamente por Yappy.'
     },
     {
       q: '¿Qué pasa si el teléfono del cliente no tiene NFC?',
@@ -83,7 +83,7 @@ export default function HomeClient() {
       
       {/* Promo Bar */}
       <div className="bg-slate-950 text-white text-xs py-2.5 px-4 text-center font-bold tracking-wider">
-        Envíos en 24-48 horas a Ciudad de Panamá y despachos a todo el país | Pagos por Yappy, Tarjeta y ACH
+        Envíos en 24-48 horas a Ciudad de Panamá y despachos a todo el país | Pagos por Yappy, Visa y Mastercard
       </div>
 
       {/* 1. HERO SECTION */}

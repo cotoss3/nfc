@@ -946,8 +946,20 @@ export default function CheckoutPage() {
                             <span className="text-sm font-bold text-slate-900">Tarjeta de crédito o débito</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-black text-slate-600">VISA</span>
-                            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-black text-slate-600">MC</span>
+                            <Image
+                              src="/logos/visa-logo.svg"
+                              alt="Visa"
+                              width={36}
+                              height={24}
+                              className="h-5 w-auto object-contain rounded shadow-2xs"
+                            />
+                            <Image
+                              src="/logos/mastercard-logo.svg"
+                              alt="Mastercard"
+                              width={36}
+                              height={24}
+                              className="h-5 w-auto object-contain rounded shadow-2xs"
+                            />
                           </div>
                         </div>
 

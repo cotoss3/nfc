@@ -36,7 +36,7 @@ export default function Page() {
         'email': 'info@datakorex.com',
         'priceRange': '$20.00 - $50.00',
         'currenciesAccepted': 'USD',
-        'paymentAccepted': 'Yappy, Tarjeta de crédito, Transferencia ACH',
+        'paymentAccepted': 'Yappy, Visa, Mastercard',
         'areaServed': {
           '@type': 'Country',
           'name': 'Panamá'
@@ -137,7 +137,7 @@ export default function Page() {
             'name': '¿Hacen envíos al interior del país y cómo se paga por Yappy?',
             'acceptedAnswer': {
               '@type': 'Answer',
-              'text': 'Enviamos a todas las provincias de Panamá por Uno Express y mensajería local. Las entregas en Ciudad de Panamá toman de 24 a 48 horas. Al finalizar la compra puedes seleccionar pago por Yappy, tarjeta de crédito o transferencia ACH.'
+              'text': 'Enviamos a todas las provincias de Panamá por Uno Express y mensajería local. Las entregas en Ciudad de Panamá toman de 24 a 48 horas. Al finalizar la compra puedes seleccionar pago con tarjeta Visa, Mastercard o directamente por Yappy.'
             }
           },
           {

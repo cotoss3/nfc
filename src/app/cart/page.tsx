@@ -498,10 +498,38 @@ export default function CartPage() {
                 </a>
               </div>
 
-              {/* Security Sells */}
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-center gap-2 text-[11px] text-slate-400">
-                <Lock className="w-3.5 h-3.5" />
-                <span>Compra 100% Cifrada • starTAP Panamá</span>
+              {/* Security Sells & Accepted Payments */}
+              <div className="pt-3 border-t border-slate-100 flex flex-col items-center justify-center gap-2 text-[11px] text-slate-400">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Aceptamos:</span>
+                  <div className="flex items-center gap-1.5">
+                    <Image
+                      src="/logos/visa-logo.svg"
+                      alt="Visa"
+                      width={32}
+                      height={20}
+                      className="h-4 w-auto object-contain rounded shadow-2xs"
+                    />
+                    <Image
+                      src="/logos/mastercard-logo.svg"
+                      alt="Mastercard"
+                      width={32}
+                      height={20}
+                      className="h-4 w-auto object-contain rounded shadow-2xs"
+                    />
+                    <Image
+                      src="/logos/yappy-logo.png"
+                      alt="Yappy"
+                      width={55}
+                      height={14}
+                      className="h-3.5 w-auto object-contain ml-0.5"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-[10px]">
+                  <Lock className="w-3 h-3 text-slate-400" />
+                  <span>Compra 100% Cifrada • starTAP Panamá</span>
+                </div>
               </div>
             </div>
           </div>
