@@ -33,9 +33,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Si el navegador y el servidor no coinciden, NO se cobra. Antes se
+    // registraba el aviso y se cobraba el total del servidor: eso produjo un
+    // cobro de $23.75 por un producto que la tienda mostraba en $0.50, porque
+    // el precio editable vive en otra fuente que calcularTotal() no lee.
+    // Mientras haya mas de una fuente de verdad para el precio, la unica
+    // salida segura es parar.
     if (totalCliente !== undefined && Math.abs(Number(totalCliente) - total) > 0.01) {
-      console.warn(
+      console.error(
         `[TILOPAY_TOTAL_MISMATCH] cliente=${totalCliente} servidor=${total} subtotal=${subtotal} envio=${envio}`
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'El monto del pedido no coincide con nuestro catálogo. No cobramos nada. Vuelve a cargar el carrito o escríbenos por WhatsApp.',
+        },
+        { status: 409 }
       );
     }
 

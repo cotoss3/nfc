@@ -47,10 +47,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Si el navegador mandó otro número, se registra y se sigue con el del servidor.
+    // Mismo criterio que en sdk-session: si no coincide, no se cobra.
     if (totalCliente !== undefined && Math.abs(Number(totalCliente) - total) > 0.01) {
-      console.warn(
+      console.error(
         `[TILOPAY_TOTAL_MISMATCH] cliente=${totalCliente} servidor=${total} subtotal=${subtotal} envio=${envio}`
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'El monto del pedido no coincide con nuestro catálogo. No cobramos nada. Vuelve a cargar el carrito o escríbenos por WhatsApp.',
+        },
+        { status: 409 }
       );
     }
 
