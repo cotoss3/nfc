@@ -37,14 +37,10 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
     setCheckingAuth(true);
     let sessionEmail: string | null = null;
 
-    if (typeof window !== 'undefined') {
-      sessionEmail = sessionStorage.getItem('current_user_email') || localStorage.getItem('admin_authenticated_email');
-    }
-
     try {
       const session = await authService.getSession();
-      if (session && session.user && session.user.email) {
-        sessionEmail = session.user.email;
+      if (session?.user?.email) {
+        sessionEmail = session.user.email.trim().toLowerCase();
       }
     } catch (err) {
       console.error('Error verificando sesión en Supabase Auth:', err);
@@ -54,10 +50,6 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
 
     if (sessionEmail && isSuperAdmin(sessionEmail)) {
       setAuthorized(true);
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('current_user_email', sessionEmail);
-        localStorage.setItem('admin_authenticated_email', sessionEmail);
-      }
     } else {
       setAuthorized(false);
     }
@@ -79,39 +71,23 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
     }
 
     if (!isSuperAdmin(cleanEmail)) {
-      setAuthError(`Acceso denegado: El correo ${cleanEmail} no es una cuenta de Super Administrador Autorizada.`);
+      setAuthError(`Acceso denegado: El correo ${cleanEmail} no cuenta con privilegios de Super Administrador.`);
       setAuthLoading(false);
       return;
     }
 
     try {
-      // Si Supabase Auth está disponible, intentar inicio de sesión
       const res = await authService.signInWithEmail(cleanEmail, passwordInput);
-      if (res && res.success) {
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('current_user_email', cleanEmail);
-          sessionStorage.setItem('current_user_name', 'Fernando Contreras');
-          localStorage.setItem('admin_authenticated_email', cleanEmail);
-        }
+      if (res && res.success && res.user) {
         setCurrentEmail(cleanEmail);
         setAuthorized(true);
       } else {
-        throw new Error('Credenciales incorrectas');
+        throw new Error('Credenciales incorrectas. Verifica tu contraseña.');
       }
     } catch (err: any) {
       console.error('Error de autenticación admin:', err);
-      // Fallback para login directo si coincide la lista autorizada
-      if (isSuperAdmin(cleanEmail)) {
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('current_user_email', cleanEmail);
-          sessionStorage.setItem('current_user_name', 'Fernando Contreras');
-          localStorage.setItem('admin_authenticated_email', cleanEmail);
-        }
-        setCurrentEmail(cleanEmail);
-        setAuthorized(true);
-      } else {
-        setAuthError(err.message || 'Error al iniciar sesión como Administrador.');
-      }
+      setAuthError(err.message || 'Contraseña o credenciales inválidas. Verifica tus datos o ingresa con Google OAuth.');
+      setAuthorized(false);
     } finally {
       setAuthLoading(false);
     }

@@ -927,7 +927,9 @@ class LocalDbService {
       created_at: new Date().toISOString()
     };
     scans.push(newScan);
-    this.setStorageItem('nfc_scans', scans);
+    // Limitar historial local a los últimos 500 registros para prevenir degradación de I/O y memoria
+    const cappedScans = scans.length > 500 ? scans.slice(-500) : scans;
+    this.setStorageItem('nfc_scans', cappedScans);
 
     if (supabase) {
       supabase.from('scans').insert({

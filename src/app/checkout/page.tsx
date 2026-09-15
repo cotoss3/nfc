@@ -82,9 +82,6 @@ export default function CheckoutPage() {
       const status = params.get('status');
       if (status === 'success') {
         const orderId = params.get('order');
-        if (orderId) {
-          dbLocal.updateOrderPaymentStatus(orderId, 'completed');
-        }
         // El carrito todavia no esta hidratado aqui, asi que los datos del
         // evento salen del pedido guardado, no del estado de React.
         const pedido = orderId ? dbLocal.getOrderById(orderId) : undefined;

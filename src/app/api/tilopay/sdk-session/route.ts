@@ -27,22 +27,24 @@ export async function POST(req: NextRequest) {
       couponCode ? String(couponCode) : undefined
     );
 
-    // Usar el total aprobado por el cliente en pantalla si es un valor positivo válido
-    const clientVal = Number(totalCliente);
-    const amountToCharge = (Number.isFinite(clientVal) && clientVal > 0)
-      ? Number(clientVal.toFixed(2))
-      : calculatedTotal;
-
-    if (amountToCharge <= 0) {
+    if (calculatedTotal <= 0) {
       return NextResponse.json(
         { success: false, error: 'El monto del pedido no es válido.' },
         { status: 400 }
       );
     }
 
-    if (Number.isFinite(clientVal) && Math.abs(clientVal - calculatedTotal) > 0.05) {
-      console.warn(
-        `[TILOPAY_TOTAL_WARN] cliente=${clientVal} servidor=${calculatedTotal} subtotal=${subtotal} envio=${envio} cupon=${couponCode}`
+    // Validación de Integridad Financiera: si el cliente envía un total que difiere del catálogo, rechazar
+    if (totalCliente !== undefined && Math.abs(Number(totalCliente) - calculatedTotal) > 0.05) {
+      console.error(
+        `[TILOPAY_PRICE_TAMPERING_BLOCKED] cliente=${totalCliente} servidor=${calculatedTotal} subtotal=${subtotal} envio=${envio} cupon=${couponCode}`
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'El monto del pedido no coincide con nuestro catálogo oficial. Vuelve a cargar el carrito o contáctanos por WhatsApp.',
+        },
+        { status: 409 }
       );
     }
 
@@ -63,8 +65,8 @@ export async function POST(req: NextRequest) {
       subtotal,
       envio,
       // El navegador se lo pasa a Tilopay.Init(). Al volver, el callback
-      // confirma contra /consult: el monto real lo dice Tilopay, no el cliente.
-      amount: amountToCharge,
+      // confirma contra /consult: el monto real lo calcula el servidor.
+      amount: calculatedTotal,
       redirect: `${baseUrl}/api/tilopay/callback`,
     });
   } catch (error: any) {

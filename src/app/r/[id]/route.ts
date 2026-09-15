@@ -196,9 +196,15 @@ export async function GET(
   const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
   const referrer = isQr ? 'QR Code' : 'NFC Scan';
 
-  // Registrar analítica de escaneo
+  // Registrar analítica de escaneo de forma asíncrona / no bloqueante (<20ms TTFB)
   try {
-    dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
+    Promise.resolve().then(() => {
+      try {
+        dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
+      } catch (e) {
+        console.error('Error registrando analítica diferida:', e);
+      }
+    });
   } catch (err) {
     console.error('Error registrando analítica:', err);
   }

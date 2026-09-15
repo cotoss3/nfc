@@ -49,18 +49,31 @@ export async function POST(req: NextRequest) {
     const bucketName = 'products';
     await ensureBucketExists(bucketName);
 
+    const ALLOWED_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+    const ALLOWED_EXTS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif']);
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
     const uploadedUrls: string[] = [];
 
     for (const file of files) {
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json({ error: `El archivo ${file.name} excede el tamaño máximo permitido de 5MB` }, { status: 400 });
+      }
+
+      const mime = (file.type || '').toLowerCase();
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+
+      if (!ALLOWED_MIMES.has(mime) || !ALLOWED_EXTS.has(ext)) {
+        return NextResponse.json({ error: `Formato no permitido para ${file.name}. Solo se aceptan imágenes JPG, PNG, WEBP o GIF.` }, { status: 400 });
+      }
+
       const buffer = Buffer.from(await file.arrayBuffer());
-      const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const ext = originalName.split('.').pop() || 'png';
       const fileName = `prod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
 
       const { data, error } = await supabase!.storage
         .from(bucketName)
         .upload(fileName, buffer, {
-          contentType: file.type || `image/${ext}`,
+          contentType: mime,
           cacheControl: '3600',
           upsert: true
         });

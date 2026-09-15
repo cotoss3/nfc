@@ -71,29 +71,36 @@ function DashboardContent() {
     if (typeof window !== 'undefined') {
       const queryEmail = searchParams.get('email');
       const claimCode = searchParams.get('claim');
-      const sessionEmail = sessionStorage.getItem('current_user_email');
       const sessionName = sessionStorage.getItem('current_user_name');
-      const activeEmail = queryEmail || sessionEmail;
 
-      if (sessionName) setUserName(sessionName);
+      if (queryEmail) {
+        setEmailInput(queryEmail);
+      }
+
+      if (sessionName) {
+        setUserName(sessionName);
+      }
 
       if (claimCode) {
         setClaimInput(claimCode);
         setIsClaimModalOpen(true);
       }
 
-      // Verificar si hay una sesión activa de Supabase Auth
+      // Verificar si hay una sesión activa y verificada de Supabase Auth
       authService.getSession().then(session => {
-        if (session && session.user && session.user.email) {
+        if (session?.user?.email) {
           const email = session.user.email;
           const name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || email.split('@')[0];
           setUserEmail(email);
           setUserName(name);
           loadUserData(email);
-        } else if (activeEmail) {
-          setUserEmail(activeEmail);
-          loadUserData(activeEmail);
+        } else {
+          // Si no hay sesión activa verificada, no se exponen los dispositivos
+          setUserEmail(null);
         }
+      }).catch(err => {
+        console.error('[DASHBOARD_AUTH_CHECK_ERROR]', err);
+        setUserEmail(null);
       });
     }
   }, [searchParams]);

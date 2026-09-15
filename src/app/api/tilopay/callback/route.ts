@@ -91,7 +91,15 @@ async function handleCallback(req: NextRequest) {
   }
 
   if (isSuccess && order) {
-    // ENVIAR CORREO DE CONFIRMACIÓN A CLIENTE Y VENDEDOR VÍA RESEND API
+    // 1. Actualizar estado de pago en el servidor (Fuente de verdad)
+    try {
+      const { dbLocal } = await import('@/lib/db');
+      dbLocal.updateOrderPaymentStatus(order, 'completed');
+    } catch (dbErr) {
+      console.error('[CALLBACK_DB_UPDATE_ERROR]', dbErr);
+    }
+
+    // 2. ENVIAR CORREO DE CONFIRMACIÓN A CLIENTE Y VENDEDOR VÍA RESEND API
     try {
       const recipients = Array.from(new Set([customerEmail, 'info@datakorex.com', 'fbcontrerras@gmail.com']));
       const html = buildCustomerOrderEmailHtml({
