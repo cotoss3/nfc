@@ -189,21 +189,25 @@ class LocalDbService {
     if (typeof window === 'undefined') return;
 
     const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
 
     // Solo sembrar los productos iniciales si el storage está completamente vacío.
-    // NO resetear si el admin ya guardó cambios (precios, nombres, etc.).
-    const currentIds = storedProducts.map(p => p.id);
-    const expectedIds = INITIAL_PRODUCTS.map(p => p.id);
-    const missingAny = expectedIds.some(id => !currentIds.includes(id));
+    // NO resembrar si el admin eliminó explícitamente un producto.
+    const currentIds = storedProducts.map(p => p.id.trim().toLowerCase());
+    const expectedSeedIds = INITIAL_PRODUCTS
+      .map(p => p.id.trim().toLowerCase())
+      .filter(id => !deletedIds.includes(id));
+
+    const missingAny = expectedSeedIds.some(id => !currentIds.includes(id));
 
     if (storedProducts.length === 0 || missingAny) {
-      // Preservar los productos editados por el admin y solo agregar los que faltan
-      if (storedProducts.length === 0) {
+      if (storedProducts.length === 0 && deletedIds.length === 0) {
         this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
       } else {
-        const merged = [...storedProducts];
+        const merged = storedProducts.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
         for (const seed of INITIAL_PRODUCTS) {
-          if (!currentIds.includes(seed.id)) {
+          const seedIdNorm = seed.id.trim().toLowerCase();
+          if (!currentIds.includes(seedIdNorm) && !deletedIds.includes(seedIdNorm)) {
             merged.push(seed);
           }
         }
@@ -285,16 +289,22 @@ class LocalDbService {
 
   // Métodos de Productos
   getProducts(): Product[] {
-    return this.getStorageItem('nfc_products', INITIAL_PRODUCTS);
+    const products = this.getStorageItem<Product[]>('nfc_products', INITIAL_PRODUCTS);
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    if (deletedIds.length === 0) return products;
+    return products.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
   }
 
   getProductById(id: string): Product | undefined {
     const normalizedId = id.trim().toLowerCase();
-    const fromStorage = this.getProducts().find(p => p.id === normalizedId);
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    if (deletedIds.includes(normalizedId)) return undefined;
+
+    const fromStorage = this.getProducts().find(p => p.id.trim().toLowerCase() === normalizedId);
     if (fromStorage) return fromStorage;
 
     const central = getCentralProductById(normalizedId);
-    if (central) {
+    if (central && !deletedIds.includes(central.id.trim().toLowerCase())) {
       return {
         id: central.id,
         name: central.name,
@@ -344,8 +354,17 @@ class LocalDbService {
   }
 
   createProduct(product: Product): boolean {
+    const normalizedId = product.id.trim().toLowerCase();
+
+    // Si el producto fue eliminado previamente, reactivarlo removiéndolo de la lista de eliminados
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    if (deletedIds.includes(normalizedId)) {
+      const updatedDeleted = deletedIds.filter(d => d !== normalizedId);
+      this.setStorageItem('nfc_deleted_product_ids', updatedDeleted);
+    }
+
     const products = this.getProducts();
-    const existingIndex = products.findIndex(p => p.id === product.id);
+    const existingIndex = products.findIndex(p => p.id.trim().toLowerCase() === normalizedId);
     if (existingIndex !== -1) {
       products[existingIndex] = product;
     } else {
@@ -361,19 +380,27 @@ class LocalDbService {
   }
 
   deleteProduct(id: string): boolean {
-    const products = this.getProducts();
     const normalizedId = id.trim().toLowerCase();
-    const filtered = products.filter(p => p.id.trim().toLowerCase() !== normalizedId);
-    if (filtered.length !== products.length) {
-      this.setStorageItem('nfc_products', filtered);
-      if (supabase) {
-        supabase.from('products').delete().eq('id', id).then(({ error }) => {
-          if (error) console.error('Error eliminando producto en Supabase:', error);
-        });
-      }
-      return true;
+
+    // 1. Guardar el id en la lista persistente de productos eliminados para evitar resembrado
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    if (!deletedIds.includes(normalizedId)) {
+      deletedIds.push(normalizedId);
+      this.setStorageItem('nfc_deleted_product_ids', deletedIds);
     }
-    return false;
+
+    // 2. Filtrar de la lista de productos
+    const products = this.getProducts();
+    const filtered = products.filter(p => p.id.trim().toLowerCase() !== normalizedId);
+    this.setStorageItem('nfc_products', filtered);
+
+    // 3. Eliminar de Supabase si está configurado
+    if (supabase) {
+      supabase.from('products').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('Error eliminando producto en Supabase:', error);
+      });
+    }
+    return true;
   }
 
   // Métodos de Pedidos
