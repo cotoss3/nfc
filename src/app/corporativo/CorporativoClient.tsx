@@ -35,6 +35,24 @@ export default function CorporativoClient() {
 
   const handleQuoteSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Enviar correo transaccional vía Resend API
+    fetch('/api/email/b2b-quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: contactName,
+        email: email,
+        phone: phone,
+        businessName: companyName,
+        productType: 'Dispositivos NFC / Solución Corporativa',
+        quantity: typeof quantity === 'string' ? parseInt(quantity) || 50 : Number(quantity) || 50,
+        discountPercent: 20,
+        totalEstimated: 0,
+        message: notes,
+      }),
+    }).catch((e) => console.error('[B2B_QUOTE_EMAIL_ERROR]', e));
+
     const textMessage = `Hola starTAP Corporativo, solicito cotización para mi empresa:
 - *Empresa*: ${companyName}
 - *Contacto*: ${contactName}

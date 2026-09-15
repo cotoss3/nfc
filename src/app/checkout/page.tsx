@@ -256,10 +256,41 @@ export default function CheckoutPage() {
         return;
       }
 
+      const triggerOrderEmail = (orderIdStr: string) => {
+        fetch('/api/email/order-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: orderIdStr,
+            customerName: name,
+            customerEmail: email,
+            customerPhone: phone,
+            address,
+            district,
+            province,
+            paymentMethod,
+            paymentStatus: paymentMethod === 'yappy' ? 'pending' : 'completed',
+            subtotal: getCartTotal(),
+            shipping: getShippingCost(),
+            total: getGrandTotal(),
+            items: cart.map(i => ({
+              product_name: i.product_name,
+              quantity: i.quantity,
+              price: i.price,
+              selected_color: i.selected_color,
+              business_name: i.business_name,
+              has_custom_logo: i.has_custom_logo,
+              has_qr_code: i.has_qr_code,
+            })),
+          }),
+        }).catch(e => console.error('[ORDER_EMAIL_TRIGGER_ERROR]', e));
+      };
+
       // Yappy: queda pendiente hasta que confirmes el pago manualmente.
       dbLocal.createOrder({ ...baseOrder, id: orderNumber, yappy_reference: yappyRef } as any);
       sessionStorage.setItem('current_user_email', email);
       sessionStorage.setItem('current_user_name', name);
+      triggerOrderEmail(orderNumber);
 
       track('Purchase', {
         ...itemsParaMeta(cart),

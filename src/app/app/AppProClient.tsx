@@ -44,6 +44,12 @@ export default function AppProClient() {
     e.preventDefault();
     if (!email) return;
     setIsJoined(true);
+
+    fetch('/api/email/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    }).catch((err) => console.error('[SUBSCRIBE_EMAIL_ERROR]', err));
   };
 
   const featureGroups = [
