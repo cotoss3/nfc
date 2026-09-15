@@ -33,18 +33,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo & Navigation */}
-          <div className="flex items-center space-x-12">
-            <Link href="/" className="flex items-center">
-              <img src="/logos/Logo.webp" alt="starTAP Logo" className="h-9 md:h-11 w-auto object-contain" />
+          <div className="flex items-center space-x-6 xl:space-x-10">
+            <Link href="/" className="flex items-center flex-shrink-0">
+              <img src="/logos/Logo.webp" alt="starTAP Logo" className="h-8 sm:h-9 lg:h-10 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-4 xl:space-x-7">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-[13px] font-medium tracking-wide uppercase transition-colors py-1 ${
+                  className={`text-xs xl:text-[13px] font-medium tracking-wide uppercase transition-colors py-1 whitespace-nowrap ${
                     isActive(link.href)
                       ? 'text-brand-950 border-b-2 border-brand-950 font-bold'
                       : 'text-brand-500 hover:text-brand-950'
@@ -57,7 +57,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center space-x-4 sm:space-x-6">
+          <div className="flex items-center space-x-3 sm:space-x-5">
             {/* Cart Button */}
             <Link
               href="/cart"
@@ -102,7 +102,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-1 text-brand-700 hover:text-brand-950 focus:outline-none"
+              className="lg:hidden p-1 text-brand-700 hover:text-brand-950 focus:outline-none"
               aria-label="Abrir menú"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -113,7 +113,7 @@ export default function Navbar() {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white border-b border-brand-200 px-4 pt-2 pb-4 space-y-1">
+        <div className="lg:hidden bg-white border-b border-brand-200 px-4 pt-2 pb-4 space-y-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}

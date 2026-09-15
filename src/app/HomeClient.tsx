@@ -114,7 +114,7 @@ export default function HomeClient() {
 
             <div className="flex flex-col sm:flex-row gap-3.5 pt-2">
               <Link
-                href="/shop"
+                href="/catalogo"
                 className="shopify-btn-primary text-center py-4 px-8 tracking-wider text-xs sm:text-sm uppercase font-bold text-white bg-slate-950 hover:bg-slate-900 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
               >
                 Pedir mi Placa Ahora <ArrowRight className="w-4 h-4" />

@@ -108,9 +108,9 @@ export default function ProductDetailClient({ params }: { params: { id: string }
   return (
     <div className="shopify-container max-w-6xl w-full px-4 sm:px-6 py-8 sm:py-12">
       {/* Back Button */}
-      <Link href="/shop" className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-brand-400 hover:text-brand-950 transition-colors mb-8 sm:mb-10">
+      <Link href="/catalogo" className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-brand-400 hover:text-brand-950 transition-colors mb-8 sm:mb-10">
         <ArrowLeft className="h-4 w-4" />
-        <span>Volver a Colecciones</span>
+        <span>Volver al Catálogo</span>
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">

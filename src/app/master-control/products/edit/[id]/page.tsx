@@ -43,7 +43,7 @@ export default function EditProductPage() {
   const loadProduct = () => {
     setLoading(true);
     const dbProducts = dbLocal.getProducts();
-    const found = dbProducts.find(p => p.id.toLowerCase() === productId.toLowerCase());
+    const found = dbProducts.find(p => p.id.toLowerCase() === productId.toLowerCase()) || dbLocal.getProductById(productId);
 
     if (found) {
       setProduct(found);

@@ -936,7 +936,7 @@ export default function AppProClient() {
 
             <div className="text-center pt-4">
               <Link
-                href="/shop"
+                href="/catalogo"
                 className="inline-flex items-center gap-2 bg-brand-950 hover:bg-brand-900 text-white uppercase tracking-wider text-xs font-bold py-4 px-8 rounded-xl transition-all shadow-md"
               >
                 <span>Comprar Dispositivos NFC</span>
