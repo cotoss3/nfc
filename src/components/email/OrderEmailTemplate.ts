@@ -74,7 +74,7 @@ export function buildCustomerOrderEmailHtml(data: OrderEmailParams): string {
             <!-- Header Banner con Logo Oficial -->
             <tr>
               <td style="background: linear-gradient(135deg, #020617 0%, #0f172a 100%); padding: 32px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
-                <img src="https://startap.com.pa/logos/Logo.png" alt="starTAP Panamá Logo" style="height: 28px; width: auto; max-width: 140px; display: block; margin: 0 auto 10px auto;" />
+                <img src="https://startap.com.pa/logos/email-logo.png" width="160" height="30" alt="starTAP Panamá Logo" style="width: 160px; height: 30px; max-width: 160px; max-height: 30px; display: block; margin: 0 auto 10px auto; border: 0;" />
                 <div style="display: inline-block; background-color: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 4px 14px; border-radius: 20px;">
                   <span style="color: #fef08a; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;">
                     N° DE PEDIDO: #${data.orderId}
