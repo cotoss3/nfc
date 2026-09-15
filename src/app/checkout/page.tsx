@@ -4,7 +4,27 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { dbLocal } from '@/lib/db';
-import { ShieldCheck, Check, CheckCircle2, Info, CreditCard, AlertCircle, Lock, Truck } from 'lucide-react';
+import Link from 'next/link';
+import {
+  ShieldCheck,
+  Check,
+  CheckCircle2,
+  Info,
+  CreditCard,
+  AlertCircle,
+  Lock,
+  Truck,
+  ArrowRight,
+  BookOpen,
+  MessageCircle,
+  Settings,
+  ExternalLink,
+  Package,
+  Mail,
+  Sparkles,
+  ChevronRight,
+  ShoppingBag,
+} from 'lucide-react';
 import {
   SHIPPING_METHODS,
   calculateShippingCost,
@@ -17,6 +37,7 @@ import {
   type Coupon,
   type ShippingMethodId,
 } from '@/config/shipping';
+import { PRODUCTS } from '@/config/products';
 import confetti from 'canvas-confetti';
 import { track, itemsParaMeta } from '@/lib/fbpixel';
 import TilopayCardForm, { type TilopayCardFormHandle } from '@/components/checkout/TilopayCardForm';
@@ -47,6 +68,7 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [completedOrder, setCompletedOrder] = useState<any>(null);
 
   const [mounted, setMounted] = useState(false);
 
@@ -73,6 +95,7 @@ export default function CheckoutPage() {
             currency: 'USD',
             order_id: pedido.id,
           });
+          setCompletedOrder(pedido);
         }
         setIsSuccess(true);
         confetti({
@@ -287,7 +310,20 @@ export default function CheckoutPage() {
       };
 
       // Yappy: queda pendiente hasta que confirmes el pago manualmente.
-      dbLocal.createOrder({ ...baseOrder, id: orderNumber, yappy_reference: yappyRef } as any);
+      const orderObj = {
+        ...baseOrder,
+        id: orderNumber,
+        yappy_reference: yappyRef,
+        items: cart.map(i => ({
+          product_name: i.product_name,
+          quantity: i.quantity,
+          price: i.price,
+          selected_color: i.selected_color,
+          business_name: i.business_name,
+        })),
+      };
+      dbLocal.createOrder(orderObj as any);
+      setCompletedOrder(orderObj);
       sessionStorage.setItem('current_user_email', email);
       sessionStorage.setItem('current_user_name', name);
       triggerOrderEmail(orderNumber);
@@ -303,9 +339,6 @@ export default function CheckoutPage() {
       setIsSuccess(true);
       confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
       clearCart();
-      setTimeout(() => {
-        router.push(`/dashboard?email=${encodeURIComponent(email)}`);
-      }, 3000);
     } catch (err: any) {
       console.error('[CHECKOUT_ERROR]', err);
       setErrorMessage(err.message || 'Ocurrió un error al procesar tu pedido.');
@@ -313,27 +346,263 @@ export default function CheckoutPage() {
     }
   };
 
+  const displayEmail =
+    completedOrder?.email ||
+    email ||
+    (typeof window !== 'undefined' ? sessionStorage.getItem('current_user_email') || '' : '');
+  const displayOrderId =
+    completedOrder?.id ||
+    (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('order') || '' : '');
+  const displayMethod = completedOrder?.paymentMethod || paymentMethod;
+  const crossSellProducts = PRODUCTS.filter((p) => !p.isPack && p.type !== 'test').slice(0, 2);
+
   if (cart.length === 0 && !isSuccess) return null;
 
   return (
     <div className="bg-brand-50 min-h-screen">
       {isSuccess ? (
-        <div className="max-w-md mx-auto text-center space-y-6 py-32 px-4">
-          <div className="w-16 h-16 bg-accent-50 rounded-full flex items-center justify-center mx-auto text-accent-600 border border-accent-100">
-            <Check className="h-8 w-8" />
+        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 space-y-8">
+          {/* Main Success Hero Header */}
+          <div className="bg-white border border-brand-200 rounded-2xl p-6 sm:p-10 shadow-sm text-center space-y-6">
+            <div className="w-20 h-20 bg-accent-100 rounded-full flex items-center justify-center mx-auto text-accent-600 border-2 border-accent-200 shadow-inner">
+              <CheckCircle2 className="h-10 w-10 text-accent-600" />
+            </div>
+
+            <div className="space-y-3 max-w-xl mx-auto">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-accent-50 text-accent-700 border border-accent-200 uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5" />
+                {displayMethod === 'yappy' ? 'Pedido Registrado Exitosamente' : '¡Pago Confirmado!'}
+              </span>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-950 uppercase">
+                {displayMethod === 'yappy' ? '¡Gracias por tu pedido!' : '¡Gracias por tu compra!'}
+              </h1>
+
+              <p className="text-sm text-brand-600 leading-relaxed">
+                {displayMethod === 'yappy'
+                  ? `Registramos tu pedido con la referencia de Yappy. Verificaremos tu pago al ${YAPPY.numero} y te contactaremos por WhatsApp.`
+                  : `Tu pago fue procesado con éxito. Hemos enviado un correo de confirmación a `}
+                <strong className="text-brand-900">{displayEmail || 'tu correo'}</strong>.
+              </p>
+
+              {displayOrderId && (
+                <div className="inline-block bg-brand-50 border border-brand-200 px-4 py-1.5 rounded-lg text-xs font-mono text-brand-800 font-bold">
+                  Número de Pedido: <span className="text-accent-600">{displayOrderId}</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="space-y-2">
-            <h1 className="text-xl font-bold uppercase tracking-wider text-brand-950">
-              {paymentMethod === 'yappy' ? '¡Pedido recibido!' : '¡Pago exitoso!'}
-            </h1>
-            <p className="text-xs text-brand-500 leading-relaxed">
-              {paymentMethod === 'yappy'
-                ? `Registramos tu pedido con la referencia de Yappy. Verificamos el pago al ${YAPPY.numero} y te confirmamos por WhatsApp.`
-                : 'Tu pago fue procesado correctamente. Recibirás un correo de confirmación.'}
-            </p>
-            <p className="text-[10px] text-brand-400">
-              Redirigiendo a tu portal para configurar los enlaces NFC de tus productos...
-            </p>
+
+          {/* SECTION 1: ADMIN PANEL ONBOARDING CTA CARD */}
+          <div className="bg-gradient-to-br from-brand-950 via-brand-900 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-brand-800 space-y-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-accent-500/10 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-2 max-w-xl">
+                <div className="flex items-center gap-2">
+                  <span className="bg-accent-500/20 text-accent-400 border border-accent-500/30 text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded">
+                    Paso Obligatorio para Configuración
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase">
+                  Crea o Accede a tu Panel de Administración
+                </h2>
+                <p className="text-xs sm:text-sm text-brand-200 leading-relaxed">
+                  Ingresa tu enlace de Google Maps en el panel para que programemos la información NFC y los códigos QR de tus dispositivos antes del despacho.
+                </p>
+              </div>
+
+              <div className="flex-shrink-0">
+                <Link
+                  href={`/dashboard?email=${encodeURIComponent(displayEmail)}`}
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-accent-500 hover:bg-accent-600 text-brand-950 font-extrabold rounded-xl transition-all shadow-lg hover:shadow-accent-500/25 text-sm tracking-wide uppercase group"
+                >
+                  <Settings className="w-4 h-4 group-hover:rotate-45 transition-transform" />
+                  <span>Configurar mis Enlaces NFC</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-brand-800/80 text-[11px] text-brand-300 flex items-center gap-2">
+              <Info className="w-3.5 h-3.5 text-accent-400 flex-shrink-0" />
+              <span>
+                ¿Primera vez? Solo ingresa con el correo <strong>{displayEmail || 'utilizado en la compra'}</strong> para vincular tus placas automáticamente.
+              </span>
+            </div>
+          </div>
+
+          {/* SECTION 2: ORDER DETAILS & WHATSAPP SUPPORT */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Order Items & Shipping Summary */}
+            <div className="md:col-span-2 bg-white border border-brand-200 rounded-2xl p-6 shadow-sm space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-100 pb-3 flex items-center justify-between">
+                <span>Resumen de la Orden</span>
+                <Package className="w-4 h-4 text-brand-400" />
+              </h3>
+
+              {completedOrder?.items && completedOrder.items.length > 0 ? (
+                <div className="divide-y divide-brand-100 space-y-3">
+                  {completedOrder.items.map((item: any, idx: number) => (
+                    <div key={idx} className="pt-3 flex items-center justify-between text-xs">
+                      <div>
+                        <p className="font-bold text-brand-900">{item.product_name || item.name || 'Producto starTAP'}</p>
+                        {item.selected_color && (
+                          <p className="text-[11px] text-brand-500">Color: {item.selected_color}</p>
+                        )}
+                        {item.business_name && (
+                          <p className="text-[11px] text-brand-500">Grabado: {item.business_name}</p>
+                        )}
+                        <p className="text-[10px] text-brand-400">Cantidad: {item.quantity}</p>
+                      </div>
+                      <div className="font-bold text-brand-950 font-mono">
+                        ${((item.price || 0) * item.quantity).toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="pt-4 border-t border-brand-200 flex justify-between items-center text-sm font-extrabold text-brand-950">
+                    <span>Total Pagado:</span>
+                    <span className="text-accent-600 font-mono text-base">${(completedOrder.total || 0).toFixed(2)}</span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-xs text-brand-500 italic">
+                  Detalles del pedido enviados a tu correo electrónico ({displayEmail}).
+                </p>
+              )}
+            </div>
+
+            {/* Direct WhatsApp Support Box */}
+            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-700">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <h4 className="text-sm font-bold text-emerald-950 uppercase tracking-wide">
+                  Soporte por WhatsApp
+                </h4>
+                <p className="text-xs text-emerald-800 leading-relaxed">
+                  ¿Tienes dudas sobre la entrega de tu pedido o el grabado con tu logo? Escríbenos directamente.
+                </p>
+              </div>
+
+              <a
+                href={`https://wa.me/50767134341?text=${encodeURIComponent(`Hola, acabo de realizar el pedido ${displayOrderId} a nombre de ${completedOrder?.name || name || 'Comercio'}. Tengo una consulta.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors uppercase tracking-wider"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Chatear en WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+          {/* SECTION 3: CROSS-SELL PRODUCTS */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-brand-200 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-brand-950 uppercase tracking-wide">
+                  Equipa más puntos de tu negocio
+                </h3>
+                <p className="text-xs text-brand-500">
+                  Agrega tarjetas adicionales para tus meseros o placas secundarias para otras cajas.
+                </p>
+              </div>
+              <Link href="/catalogo" className="text-xs font-bold text-accent-600 hover:text-accent-700 flex items-center gap-1">
+                Ver catálogo <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {crossSellProducts.map((product) => (
+                <div key={product.id} className="bg-white border border-brand-200 rounded-2xl p-5 shadow-sm flex items-center gap-4 hover:border-brand-300 transition-all">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-20 h-20 object-contain rounded-lg bg-brand-50 p-2 flex-shrink-0"
+                  />
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <span className="text-[9px] font-bold text-accent-600 uppercase tracking-wider bg-accent-50 px-2 py-0.5 rounded border border-accent-100">
+                      {product.badge}
+                    </span>
+                    <h4 className="text-xs font-bold text-brand-950 truncate">
+                      {product.name}
+                    </h4>
+                    <p className="text-[11px] font-bold text-brand-900 font-mono">
+                      {product.priceFormatted}
+                    </p>
+                    <Link
+                      href={`/catalogo?producto=${product.id}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-accent-600 hover:underline pt-1"
+                    >
+                      <span>Ver detalles</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* SECTION 4: EDUCATIONAL BLOG GUIDES */}
+          <div className="bg-white border border-brand-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div className="border-b border-brand-100 pb-4">
+              <span className="text-[10px] font-bold text-accent-600 uppercase tracking-widest block mb-1">
+                Aprende y Crece con starTAP
+              </span>
+              <h3 className="text-lg font-bold text-brand-950 uppercase tracking-wide">
+                Guías de SEO Local y Reseñas en Panamá
+              </h3>
+              <p className="text-xs text-brand-500">
+                Aprovecha al máximo tu nuevo dispositivo NFC con nuestros artículos especializados.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Link
+                href="/blog/como-pedir-resenas-google-sin-penalizacion"
+                className="group border border-brand-200 hover:border-accent-400 rounded-xl p-5 transition-all bg-brand-50/50 hover:bg-white hover:shadow-md space-y-3 flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <div className="w-8 h-8 bg-accent-100 text-accent-700 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-xs font-bold text-brand-950 group-hover:text-accent-600 transition-colors line-clamp-2">
+                    Cómo pedir reseñas en Google Maps en Panamá sin penalización
+                  </h4>
+                  <p className="text-[11px] text-brand-600 leading-relaxed line-clamp-3">
+                    Aprende las mejores prácticas y evita cometer errores comunes que puedan afectar la reputación de tu ficha de Google.
+                  </p>
+                </div>
+                <div className="flex items-center text-[11px] font-bold text-accent-600 gap-1 pt-2">
+                  <span>Leer artículo</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+
+              <Link
+                href="/blog"
+                className="group border border-brand-200 hover:border-accent-400 rounded-xl p-5 transition-all bg-brand-50/50 hover:bg-white hover:shadow-md space-y-3 flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <div className="w-8 h-8 bg-brand-200 text-brand-800 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-xs font-bold text-brand-950 group-hover:text-accent-600 transition-colors line-clamp-2">
+                    Estrategias de Posicionamiento Local en Panamá
+                  </h4>
+                  <p className="text-[11px] text-brand-600 leading-relaxed line-clamp-3">
+                    Explora todos nuestros artículos para optimizar tu perfil comercial y posicionar tu local en los primeros lugares.
+                  </p>
+                </div>
+                <div className="flex items-center text-[11px] font-bold text-accent-600 gap-1 pt-2">
+                  <span>Ver todas las guías</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
       ) : (
