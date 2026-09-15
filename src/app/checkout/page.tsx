@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { dbLocal } from '@/lib/db';
@@ -57,8 +58,6 @@ export default function CheckoutPage() {
   const [shippingMethod, setShippingMethod] = useState<ShippingMethodId>('local');
   const [paymentMethod, setPaymentMethod] = useState<'tarjeta' | 'yappy'>('tarjeta');
 
-  // Yappy Reference State
-  const [yappyRef, setYappyRef] = useState('');
 
   // Coupon State
   const [couponInput, setCouponInput] = useState('');
@@ -179,17 +178,52 @@ export default function CheckoutPage() {
     setCouponSuccess('');
   };
 
+  const generateCheckoutWhatsAppMessage = () => {
+    const itemsList = cart
+      .map((item) => {
+        const extras = [
+          item.has_custom_logo ? 'Logo personalizado' : '',
+          item.has_qr_code ? 'Código QR' : '',
+          item.selected_color ? `Acabado: ${item.selected_color}` : '',
+          item.business_name ? `Negocio: ${item.business_name}` : '',
+        ]
+          .filter(Boolean)
+          .join(', ');
+
+        const extrasText = extras ? ` (${extras})` : '';
+        return `- ${item.quantity}x ${item.product_name}${extrasText} : $${(item.price * item.quantity).toFixed(2)}`;
+      })
+      .join('\n');
+
+    const envioTxt = envioGratis ? 'GRATIS' : `$${getShippingCost().toFixed(2)} USD`;
+    const datosCliente = name
+      ? `\n*DATOS DE ENTREGA:*\n- Nombre: ${name}\n- Correo: ${email || 'N/A'}\n- Teléfono: ${phone || 'N/A'}\n- Dirección: ${address || 'N/A'}, ${district || ''}, ${province || 'Panamá'}`
+      : '';
+
+    const lines = [
+      'Hola starTAP Panamá, quiero confirmar mi pedido y pagar mediante Yappy.',
+      datosCliente,
+      '',
+      '*PEDIDO:*',
+      itemsList,
+      '',
+      `*SUBTOTAL:* $${getCartTotal().toFixed(2)} USD`,
+      `*ENVÍO:* ${envioTxt}`,
+      `*TOTAL A PAGAR:* $${getGrandTotal().toFixed(2)} USD`,
+      '*GARANTÍA:* 90 días incluida',
+      '',
+      'Por favor indicarme los datos para transferir por Yappy. ¡Muchas gracias!',
+    ].filter(Boolean);
+
+    return `https://wa.me/50767134341?text=${encodeURIComponent(lines.join('\n'))}`;
+  };
+
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 
     if (!name || !email || !phone || !address || !district) {
       alert('Por favor completa todos los campos de información de envío');
-      return;
-    }
-
-    if (paymentMethod === 'yappy' && !yappyRef) {
-      alert('Por favor ingresa el número de referencia de tu pago en Yappy');
       return;
     }
 
@@ -312,11 +346,11 @@ export default function CheckoutPage() {
         }).catch(e => console.error('[ORDER_EMAIL_TRIGGER_ERROR]', e));
       };
 
-      // Yappy: queda pendiente hasta que confirmes el pago manualmente.
+      // Yappy: queda registrado y se coordina por WhatsApp
       const orderObj = {
         ...baseOrder,
         id: orderNumber,
-        yappy_reference: yappyRef,
+        yappy_reference: 'Yappy WhatsApp',
         items: cart.map(i => ({
           product_name: i.product_name,
           quantity: i.quantity,
@@ -343,6 +377,10 @@ export default function CheckoutPage() {
         value: getGrandTotal(),
         currency: 'USD',
       });
+
+      if (typeof window !== 'undefined') {
+        window.open(generateCheckoutWhatsAppMessage(), '_blank');
+      }
 
       setIsProcessing(false);
       setIsSuccess(true);
@@ -764,92 +802,11 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* Right Column: Payment Methods & Order Summary */}
+          {/* Right Column: Order Summary & Payment Methods */}
           <div className="lg:col-span-5 p-6 sm:p-10 bg-brand-100 space-y-8 border-t lg:border-t-0 lg:border-l border-brand-200">
             
-            {/* PAYMENT METHODS SECTION (POSITIONED ABOVE ORDER SUMMARY) */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-200 pb-2">Método de Pago</h3>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('tarjeta')}
-                  className={`p-4 border rounded flex items-center justify-center space-x-2 font-bold text-xs uppercase tracking-wider transition-all ${
-                    paymentMethod === 'tarjeta' ? 'border-brand-950 bg-white text-brand-950 shadow-sm' : 'border-brand-200 text-brand-500 hover:bg-white bg-brand-50'
-                  }`}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  <span>Tarjeta</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('yappy')}
-                  className={`p-4 border rounded flex items-center justify-center space-x-2 font-bold text-xs uppercase tracking-wider transition-all ${
-                    paymentMethod === 'yappy' ? 'border-brand-950 bg-white text-brand-950 shadow-sm' : 'border-brand-200 text-brand-500 hover:bg-white bg-brand-50'
-                  }`}
-                >
-                  <span>⚡</span>
-                  <span>Yappy</span>
-                </button>
-              </div>
-
-              {/* Tarjeta: el formulario vive aqui. El SDK de Tilopay toma control
-                  de los inputs tlpy_* y manda los datos cifrados directo a
-                  Tilopay; nuestro servidor no los ve nunca. */}
-              {paymentMethod === 'tarjeta' && (
-                <div className="bg-white p-4 border border-brand-200 rounded space-y-3 shadow-sm">
-                  <div className="flex items-center space-x-2 text-[10px] text-brand-500">
-                    <Lock className="h-3.5 w-3.5 text-accent-600" />
-                    <span className="font-semibold">Pago seguro con Tilopay (Visa / Mastercard)</span>
-                  </div>
-                  <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
-                    <ShieldCheck className="h-4 w-4 text-accent-600 flex-shrink-0 mt-0.5" />
-                    <span>Pagas sin salir de starTAP. Si tu banco pide verificación 3D Secure, se abre aquí mismo.</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Montado siempre: el SDK busca los inputs por id y necesita
-                  encontrarlos en el DOM, por eso se oculta con CSS y no se
-                  desmonta al cambiar de método de pago. */}
-              <TilopayCardForm ref={tarjetaRef} visible={paymentMethod === 'tarjeta'} />
-
-              {/* Yappy Steps instructions */}
-              {paymentMethod === 'yappy' && (
-                <div className="bg-white p-4 border border-brand-200 rounded space-y-4 shadow-sm">
-                  <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
-                    <Info className="h-4 w-4 text-brand-500 flex-shrink-0 mt-0.5" />
-                    <span>
-                      Envía el total de tu pedido por Yappy al <strong>{YAPPY.numero}</strong> ({YAPPY.titular})
-                      y pega abajo el número de referencia. Verificamos el pago y te confirmamos por WhatsApp.
-                    </span>
-                  </div>
-
-                  <div className="text-center py-2 space-y-0.5 border border-brand-200 bg-brand-50 rounded">
-                    <p className="text-[8px] text-brand-400 uppercase tracking-widest font-bold">Yappy</p>
-                    <p className="text-base font-black text-brand-950 font-mono">{YAPPY.numero}</p>
-                    <p className="text-[11px] font-bold text-brand-700">{YAPPY.titular}</p>
-                    <p className="text-xs font-bold text-brand-500">Monto total: ${getGrandTotal().toFixed(2)}</p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="yappyRef" className="text-xs font-bold text-brand-900 block mb-1">Número de Referencia (Yappy)</label>
-                    <input
-                      type="text"
-                      id="yappyRef"
-                      value={yappyRef}
-                      onChange={(e) => setYappyRef(e.target.value)}
-                      placeholder="Ej: Y-568213"
-                      className="shopify-input"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* ORDER SUMMARY SECTION */}
-            <div className="space-y-6 pt-4 border-t border-brand-200">
+            {/* 1. ORDER SUMMARY SECTION (PRIMERO: RESUMEN DE PEDIDO) */}
+            <div className="space-y-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-200 pb-3">Resumen de tu Pedido</h2>
               
               {/* List items */}
@@ -888,7 +845,7 @@ export default function CheckoutPage() {
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                       onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyCoupon())}
-                      placeholder="Codigo de cupon (ej: EVG)"
+                      placeholder="Código de cupón"
                       className="shopify-input flex-1 uppercase tracking-widest text-xs"
                       maxLength={20}
                     />
@@ -904,7 +861,7 @@ export default function CheckoutPage() {
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded px-3 py-2">
                     <div className="flex items-center gap-2 text-xs">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                      <span className="font-bold text-emerald-800">Cupon <span className="font-black">{appliedCoupon.code}</span> aplicado</span>
+                      <span className="font-bold text-emerald-800">Cupón <span className="font-black">{appliedCoupon.code}</span> aplicado</span>
                     </div>
                     <button
                       type="button"
@@ -930,11 +887,11 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>
-                    Envio
+                    Envío
                     {isPackInCart
                       ? ' (incluido en el pack)'
                       : appliedCoupon?.type === 'free_shipping'
-                      ? ' (cupon EVG)'
+                      ? ' (envío gratis)'
                       : qualifiesForFreeShipping(getCartTotal())
                       ? ` (gratis sobre $${FREE_SHIPPING_THRESHOLD})`
                       : ` (${SHIPPING_METHODS.find((m) => m.id === shippingMethod)?.label})`}
@@ -948,7 +905,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Programacion y Ruteo</span>
+                  <span>Programación y Ruteo</span>
                   <span className="text-accent-600 font-bold uppercase">Gratuito</span>
                 </div>
               </div>
@@ -959,27 +916,144 @@ export default function CheckoutPage() {
                 <span className="font-bold text-xs uppercase tracking-wider text-brand-950">Total Final</span>
                 <span className="text-2xl font-black text-brand-950">${getGrandTotal().toFixed(2)}</span>
               </div>
+            </div>
 
-              <button
-                form="checkout-form"
-                type="submit"
-                disabled={isProcessing}
-                className="w-full shopify-btn-primary uppercase tracking-widest text-xs font-bold py-4.5 disabled:opacity-50"
-              >
-                {isProcessing ? (
-                  <>
-                    <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
-                    <span>
-                      {paymentMethod === 'tarjeta' ? 'Procesando el pago...' : 'Registrando tu pedido...'}
-                    </span>
-                  </>
-                ) : (
-                  <span>
-                    {paymentMethod === 'tarjeta' ? 'Pagar con tarjeta' : 'Confirmar pedido'} • $
-                    {getGrandTotal().toFixed(2)}
-                  </span>
-                )}
-              </button>
+            {/* 2. PAYMENT METHODS SECTION (LUEGO: METODO DE PAGO) */}
+            <div className="space-y-5 pt-6 border-t border-brand-200">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-950 border-b border-brand-200 pb-2">Método de Pago</h3>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('tarjeta')}
+                  className={`p-4 border rounded flex items-center justify-center space-x-2 font-bold text-xs uppercase tracking-wider transition-all ${
+                    paymentMethod === 'tarjeta' ? 'border-brand-950 bg-white text-brand-950 shadow-sm' : 'border-brand-200 text-brand-500 hover:bg-white bg-brand-50'
+                  }`}
+                >
+                  <CreditCard className="h-4 w-4" />
+                  <span>Tarjeta</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('yappy')}
+                  className={`p-4 border rounded flex items-center justify-center space-x-2 font-bold text-xs uppercase tracking-wider transition-all ${
+                    paymentMethod === 'yappy' ? 'border-brand-950 bg-white text-brand-950 shadow-sm' : 'border-brand-200 text-brand-500 hover:bg-white bg-brand-50'
+                  }`}
+                >
+                  <span>⚡</span>
+                  <span>Yappy</span>
+                </button>
+              </div>
+
+              {/* Tarjeta: el formulario vive aqui. El SDK de Tilopay toma control
+                  de los inputs tlpy_* y manda los datos cifrados directo a
+                  Tilopay; nuestro servidor no los ve nunca. */}
+              {paymentMethod === 'tarjeta' && (
+                <div className="space-y-4">
+                  <div className="bg-white p-4 border border-brand-200 rounded space-y-3 shadow-sm">
+                    <div className="flex items-center space-x-2 text-[10px] text-brand-500">
+                      <Lock className="h-3.5 w-3.5 text-accent-600" />
+                      <span className="font-semibold">Pago seguro con Tilopay (Visa / Mastercard)</span>
+                    </div>
+                    <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
+                      <ShieldCheck className="h-4 w-4 text-accent-600 flex-shrink-0 mt-0.5" />
+                      <span>Pagas sin salir de starTAP. Si tu banco pide verificación 3D Secure, se abre aquí mismo.</span>
+                    </div>
+                  </div>
+
+                  <TilopayCardForm ref={tarjetaRef} visible={true} />
+
+                  <button
+                    form="checkout-form"
+                    type="submit"
+                    disabled={isProcessing}
+                    className="w-full shopify-btn-primary uppercase tracking-widest text-xs font-bold py-4.5 disabled:opacity-50"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
+                        <span>Procesando el pago...</span>
+                      </>
+                    ) : (
+                      <span>Pagar con tarjeta • ${getGrandTotal().toFixed(2)}</span>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Montado en background cuando no se ve para preservar inputs de Tilopay en el DOM */}
+              {paymentMethod !== 'tarjeta' && (
+                <TilopayCardForm ref={tarjetaRef} visible={false} />
+              )}
+
+              {/* Yappy: Boton Yappy enviando a WhatsApp (como en el carrito) */}
+              {paymentMethod === 'yappy' && (
+                <div className="space-y-4">
+                  <div className="bg-white p-5 border border-brand-200 rounded-2xl space-y-4 shadow-sm">
+                    <div className="flex items-start space-x-2.5 text-xs text-brand-600 bg-blue-50/70 p-3 rounded-xl border border-blue-100">
+                      <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>
+                        Paga sin tarjeta bancaria: confirma tu pedido enviando los detalles directamente a nuestro <strong>WhatsApp</strong> para transferir por <strong>Yappy</strong>.
+                      </span>
+                    </div>
+
+                    {/* Boton Yappy / WhatsApp mejorado (identico al carrito) */}
+                    <a
+                      href={generateCheckoutWhatsAppMessage()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => {
+                        track('Contact', { method: 'yappy_checkout_whatsapp' });
+                        trackTikTok('Contact', { method: 'yappy_checkout_whatsapp' });
+                      }}
+                      className="w-full bg-[#005CE6] hover:bg-[#0052cc] text-white font-black text-sm normal-case tracking-normal py-4 px-5 rounded-xl shadow-lg transition-all flex flex-col items-center justify-center gap-2 group hover:shadow-xl hover:scale-[1.01] active:scale-100"
+                    >
+                      {/* Row: Yappy badge + WhatsApp icon */}
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src="/logos/yappy-logo.webp"
+                          alt="Pagar con Yappy"
+                          width={100}
+                          height={56}
+                          className="h-7 w-auto object-contain"
+                          priority
+                        />
+                        <span className="text-white/40 text-lg font-light">+</span>
+                        <div className="flex items-center gap-1.5 bg-[#25D366] px-2.5 py-1 rounded-md">
+                          <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                            <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.821.487 3.532 1.338 5.017L2.01 22l5.123-1.32A9.96 9.96 0 0012 22c5.523 0 10-4.478 10-10S17.523 2 12 2zm0 18.18a8.147 8.147 0 01-4.16-1.143l-.298-.177-3.039.783.81-2.96-.195-.306A8.177 8.177 0 013.82 12c0-4.508 3.671-8.18 8.18-8.18 4.508 0 8.18 3.672 8.18 8.18 0 4.509-3.672 8.18-8.18 8.18z"/>
+                          </svg>
+                          <span className="text-white font-black text-sm">WhatsApp</span>
+                        </div>
+                      </div>
+                      <span className="text-white/80 text-xs font-semibold normal-case">
+                        Pagar con Yappy por WhatsApp • ${getGrandTotal().toFixed(2)} USD
+                      </span>
+                    </a>
+                  </div>
+
+                  {/* Boton para registrar la orden en el sistema y abrir WhatsApp con la direccion guardada */}
+                  <button
+                    form="checkout-form"
+                    type="submit"
+                    disabled={isProcessing}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white uppercase tracking-widest text-xs font-bold py-4 rounded-xl shadow transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
+                        <span>Guardando pedido...</span>
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Confirmar datos y pagar por Yappy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
