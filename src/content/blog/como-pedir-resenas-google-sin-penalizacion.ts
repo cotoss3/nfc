@@ -100,6 +100,8 @@ Esto está permitido:
 
 En resumen: puedes pedirla cuantas veces quieras y a quien quieras, siempre que se la ofrezcas a todos por igual.
 
+![Dispositivo físico starTAP con NFC y código QR para colocar visiblemente en mostrador o pared de atención](/products/NFC_10001/placa-acrilica-resistente-agua-limpieza.webp)
+
 ## Lo que te puede costar la ficha
 
 Aquí está la parte que casi nadie te cuenta.
@@ -132,7 +134,11 @@ Después de instalar dispositivos en varios negocios, lo que veo es que casi tod
 
 Por eso funciona cualquier cosa que lo reduzca a un toque: un enlace directo por WhatsApp, un QR en la mesa, un dispositivo NFC en la caja. La tecnología no es lo importante. Lo importante es que el cliente llegue directo a la pantalla de calificar.
 
+![Stand NFC y QR autoportante para mesas y barras de atención](/products/NFC10002/stand-nfc-resenas-google-frontal.webp)
+
 Y una cosa más que aprendí a la mala: si tu equipo no lo menciona, no pasa nada. Un stand en el mostrador que nadie señala genera una fracción de lo que genera el mismo stand con un mesero diciendo "si te gustó, acercá el celular aquí".
+
+![Tarjeta NFC de bolsillo para que meseros y personal de atención la lleven en su portacredencial](/products/tarjeta-nfc/tarjeta-nfc-en-lanyard-empleado.webp)
 
 ## Un caso con números
 

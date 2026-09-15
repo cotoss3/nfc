@@ -120,6 +120,30 @@ export default function Markdown({ children }: { children: string }) {
       continue;
     }
 
+    const imgMatch = l.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+    if (imgMatch) {
+      cerrarLista();
+      const alt = imgMatch[1];
+      const src = imgMatch[2];
+      salida.push(
+        <figure key={`fig-${k++}`} className="my-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt={alt}
+            className="w-full max-h-[480px] object-cover rounded-2xl shadow-sm border border-brand-100"
+            loading="lazy"
+          />
+          {alt && (
+            <figcaption className="text-center text-xs text-brand-500 mt-2.5 italic">
+              {alt}
+            </figcaption>
+          )}
+        </figure>
+      );
+      continue;
+    }
+
     if (l.startsWith('### ')) {
       cerrarLista();
       const t = l.replace(/^###\s+/, '');
