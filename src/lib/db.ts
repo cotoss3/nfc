@@ -187,21 +187,28 @@ class LocalDbService {
   // Inicializar bases simuladas si no existen
   init() {
     if (typeof window === 'undefined') return;
-    
+
     const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
-    const hasNewProduct = storedProducts.some(p => p.id === 'NFC_10001');
-    const isGooglePlacaPVC = storedProducts.some(p => p.id === 'placa-google' && p.name.includes('PVC'));
-    const hasAirbnb = storedProducts.some(p => p.id === 'placa-airbnb');
-    const isWebpImagesUpdated = storedProducts.some(p => (p.id === 'NFC_10001' || p.id === 'stand-nfc') && p.image.includes('/products/') && p.image.includes('.webp'));
-    const hasStandNFC = storedProducts.some(p => p.id === 'stand-nfc');
-    const hasTarjetaNFC = storedProducts.some(p => p.id === 'tarjeta-nfc');
-    const hasPlacaNFC = storedProducts.some(p => p.id === 'placa-acrilica-nfc');
-    const hasSEO = storedProducts.some(p => p.id === 'stand-nfc' && p.description.includes('SEO local'));
-    const hasAllSEO = storedProducts.some(p => p.id === 'llavero-google' && p.description.includes('SEO local'));
-    const hasCorrectPrices = storedProducts.some(p => p.id === 'stand-nfc' && p.price === 35.00);
-    
-    if (storedProducts.length === 0 || !hasNewProduct || !isGooglePlacaPVC || !hasAirbnb || !isWebpImagesUpdated || !hasStandNFC || !hasTarjetaNFC || !hasPlacaNFC || !hasSEO || !hasAllSEO || !hasCorrectPrices) {
-      this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
+
+    // Solo sembrar los productos iniciales si el storage está completamente vacío.
+    // NO resetear si el admin ya guardó cambios (precios, nombres, etc.).
+    const currentIds = storedProducts.map(p => p.id);
+    const expectedIds = INITIAL_PRODUCTS.map(p => p.id);
+    const missingAny = expectedIds.some(id => !currentIds.includes(id));
+
+    if (storedProducts.length === 0 || missingAny) {
+      // Preservar los productos editados por el admin y solo agregar los que faltan
+      if (storedProducts.length === 0) {
+        this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
+      } else {
+        const merged = [...storedProducts];
+        for (const seed of INITIAL_PRODUCTS) {
+          if (!currentIds.includes(seed.id)) {
+            merged.push(seed);
+          }
+        }
+        this.setStorageItem('nfc_products', merged);
+      }
     }
     if (!localStorage.getItem('nfc_orders')) {
       this.setStorageItem('nfc_orders', [

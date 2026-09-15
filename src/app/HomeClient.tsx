@@ -39,7 +39,17 @@ const HoverableImage = ({ product, altText }: { product: Product; altText?: stri
 };
 
 export default function HomeClient() {
-  const products = dbLocal.getProducts().slice(0, 3);
+  // Los 3 productos que se muestran en el home — precios leídos dinámicamente
+  const HOME_PRODUCT_IDS = ['tarjeta-nfc-bolsillo', 'placa-nfc-mostrador', 'stand-nfc-mesa'];
+  const allProducts = dbLocal.getProducts();
+  const homeProducts = HOME_PRODUCT_IDS.map(id =>
+    allProducts.find(p => p.id === id)
+  ).filter(Boolean) as typeof allProducts;
+
+  // Precios individuales con fallback a config central
+  const p1Price = (homeProducts[0]?.price ?? 20).toFixed(2);
+  const p2Price = (homeProducts[1]?.price ?? 30).toFixed(2);
+  const p3Price = (homeProducts[2]?.price ?? 35).toFixed(2);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const whatsappMessage = encodeURIComponent("Hola StarTAP, quiero pedir una placa NFC personalizada con el logo de mi negocio en Panamá.");
@@ -224,7 +234,7 @@ export default function HomeClient() {
                 </div>
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">$20.00 USD</span>
+                    <span className="text-2xl font-black text-slate-900">${p1Price} USD</span>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-semibold leading-tight">
@@ -234,7 +244,7 @@ export default function HomeClient() {
                     href="/catalogo/tarjeta-nfc-bolsillo"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Ver Producto — $20.00
+                    Ver Producto — ${p1Price}
                   </Link>
                 </div>
               </div>
@@ -266,7 +276,7 @@ export default function HomeClient() {
                 </div>
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">$30.00 USD</span>
+                    <span className="text-2xl font-black text-slate-900">${p2Price} USD</span>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-600 font-semibold leading-tight">
@@ -276,7 +286,7 @@ export default function HomeClient() {
                     href="/catalogo/placa-nfc-mostrador"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Ver Producto — $30.00
+                    Ver Producto — ${p2Price}
                   </Link>
                 </div>
               </div>
@@ -305,7 +315,7 @@ export default function HomeClient() {
                 </div>
                 <div className="pt-3 border-t border-slate-100 space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">$35.00 USD</span>
+                    <span className="text-2xl font-black text-slate-900">${p3Price} USD</span>
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-semibold leading-tight">
@@ -315,7 +325,7 @@ export default function HomeClient() {
                     href="/catalogo/stand-nfc-mesa"
                     className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
                   >
-                    Ver Producto — $35.00
+                    Ver Producto — ${p3Price}
                   </Link>
                 </div>
               </div>
