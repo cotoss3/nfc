@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import StructuredData from '@/components/StructuredData';
+import MetaPixel from '@/components/MetaPixel';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://startap.com.pa'),
@@ -65,6 +67,10 @@ export default function RootLayout({
             <head> en el layout raíz no se renderizan de forma fiable, y schema.org
             se lee igual desde el body. */}
         <StructuredData />
+        {/* Meta Pixel. useSearchParams necesita Suspense o el build estatico falla. */}
+        <Suspense fallback={null}>
+          <MetaPixel />
+        </Suspense>
         <CartProvider>
           <Navbar />
           <main className="flex-grow pt-20">

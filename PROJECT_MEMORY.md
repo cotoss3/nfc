@@ -156,6 +156,121 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
 
+### 2026-09-15 · Tilopay con SDK V2: cobro dentro del sitio
+
+**Por qué**
+
+Fernando no quiere que el cliente salga a la página de Tilopay. Se cambió de la
+Hosted Payment Page (redirección) al **SDK V2**, donde el formulario de tarjeta vive
+en startap.com.pa y los datos van del navegador directo a Tilopay.
+
+`ClinicaV2` no sirvió de referencia: su `lib/tilopay/client.ts` es un stub
+(`createOrder` devuelve `mock_token_123`, `verifyWebhookSignature` siempre `true`).
+Todo se armó desde la documentación oficial de Tilopay.
+
+**Cómo funciona el SDK V2** (docs: tilopay.com/developers/sdk)
+
+- Script: `https://app.tilopay.com/sdk/v2/sdk_tpay.min.js`. Sin versionado inmutable,
+  sin hash SRI y sin changelog: el archivo puede cambiar sin aviso.
+- Token del SDK: `POST /api/v1/loginSdk` con apiuser/password. **Vive 1 hora**
+  (el del API dura 24). Es lo único que baja al navegador.
+- El SDK no dibuja el formulario: busca inputs por `id` y toma control de ellos.
+  Los ids son un contrato: `tlpy_payment_method`, `tlpy_saved_cards`,
+  `tlpy_cc_number`, `tlpy_cc_expiration_date`, `tlpy_cvv`, más un div
+  `responseTilopay` **fuera del formulario** donde monta el 3DS.
+- `Tilopay.Init({...})` autentica y devuelve `methods`, `cards` y `test`.
+- `Tilopay.startPayment()` no recibe parámetros, maneja el 3DS completo y al
+  terminar navega a la URL de `redirect` de Init.
+- Pruebas y producción **comparten host** (`app.tilopay.com`). La única señal del
+  modo es el campo `test` de Init (`1` pruebas, `0` producción), y el modo se
+  cambia desde el portal, no desde el código.
+- Tarjetas de prueba: `4111111111111111` aprueba sin fricción,
+  `4012000000020071` aprueba con challenge 3DS, `4012000000020121` rechaza.
+  En la pantalla de challenge el código es **`3ds2`**.
+- Yappy también es un método del SDK: el `id` tiene forma `A:B:C` y el segundo
+  segmento `18` es Yappy; el teléfono va en `phoneYappy` de Init, no en el DOM.
+- Webhooks: la única verificación de origen es `orderHash` y **su algoritmo no es
+  público** — se pide a sac@tilopay.com. Por eso no se toma ninguna decisión
+  irreversible con el webhook: se confirma contra `/consult`.
+
+**Archivos**
+
+- `src/lib/checkout-total.ts` (nuevo) — `calcularTotal()` extraído para que lo usen
+  los dos endpoints. Con el SDK el `amount` sale del navegador, así que el total
+  autoritativo del servidor importa más que antes.
+- `src/lib/tilopay.ts` — `getTilopaySdkToken()` contra `/api/v1/loginSdk`.
+- `src/app/api/tilopay/sdk-session/route.ts` (nuevo) — abre la sesión: devuelve
+  token del SDK, monto autoritativo, orderNumber y la URL de redirect. apiuser,
+  password y key nunca salen del servidor.
+- `src/components/checkout/TilopayCardForm.tsx` (nuevo) — los inputs `tlpy_*`, el
+  div `responseTilopay`, carga del script, Init y startPayment. Se monta siempre y
+  se oculta con CSS: si se desmonta al cambiar de método, el SDK no encuentra los
+  ids. Falla ruidosamente si Tilopay responde `test: 0` fuera de producción.
+- `src/app/checkout/page.tsx` — la rama de tarjeta ya no redirige: llama a
+  `sdk-session` y luego a `pagar()` del formulario.
+- `src/app/api/tilopay/process/route.ts` — se queda como respaldo (página alojada).
+- `src/app/api/tilopay/callback/route.ts` — sin cambios: sigue confirmando contra
+  `/consult` antes de dar el pago por bueno.
+
+`npm run build` limpio sobre un clon fresco de `cotoss3/nfc`.
+
+**Pendiente**
+
+- Poner la cuenta de Tilopay en **modo pruebas** desde el portal y correr el flujo
+  completo con `4111111111111111` y con `4012000000020071` (challenge, código `3ds2`).
+- Confirmar con Tilopay que la cuenta tiene el SDK habilitado.
+- `TILOPAY_API_USER`, `TILOPAY_API_PASSWORD` y `TILOPAY_API_KEY` en producción.
+- Evaluar mover Yappy al SDK (hoy es manual con referencia): quitaría la
+  verificación a mano, pero exige pedir el teléfono Yappy del cliente.
+- Cumplimiento PCI: la página captura los datos de tarjeta aunque no los toque el
+  servidor. Eso mueve el alcance de SAQ A a **SAQ A-EP**. Confirmarlo con Tilopay.
+- Pedir a sac@tilopay.com el algoritmo de `orderHash` y el contrato del webhook de
+  `processPayment`, para no depender solo de `/consult`.
+- Los pedidos siguen en `dbLocal` (localStorage + db_store.json): no persisten en
+  Vercel. Sigue siendo el pendiente de fondo del checkout.
+
+### 2026-09-15 · Facebook, cuenta publicitaria y píxel de Meta
+
+**Hecho**
+
+- Página de Facebook creada: **Startap Panamá** — `facebook.com/profile.php?id=61594455868652`
+  - Meta rechazó el nombre "StarTAP" (formato inválido); quedó "Startap Panamá".
+  - Categoría: Servicio de marketing en internet (igual que el perfil de Google).
+  - Web startap.com.pa · Tel +507 6713-4341 · Correo info@datakorex.com
+  - Ubicación Arraiján (corregimiento), sin dirección física: negocio de área de servicio.
+- Cuenta publicitaria **starTAP Panamá** — ID `120250675056060696`, dentro del portfolio
+  comercial DataKorex (`1032660859932197`).
+  - Zona horaria **GMT-05:00 America/Panama** y divisa USD. Ojo: la zona horaria de una
+    cuenta publicitaria **no se puede cambiar después de crearla**.
+- Píxel / conjunto de datos **starTAP Pixel** — ID `1591597945771251`, con la API de
+  Conversiones habilitada desde la creación.
+- Píxel instalado en el sitio:
+  - `src/lib/fbpixel.ts` — ID desde `NEXT_PUBLIC_FB_PIXEL_ID`, helper `track()` que no
+    hace nada si la variable falta, y `itemsParaMeta()` para armar content_ids/contents.
+  - `src/components/MetaPixel.tsx` — snippet con `next/script` + PageView en cada cambio
+    de ruta (en el App Router la navegación no recarga, el PageView del snippet solo
+    cuenta la primera visita). Usa `useSearchParams`, así que en el layout va envuelto
+    en `<Suspense>` o el build estático falla.
+  - `src/context/CartContext.tsx` — evento `AddToCart` dentro de `addToCart`.
+  - `src/app/checkout/page.tsx` — `InitiateCheckout` al iniciar el pago y `Purchase`
+    en los dos caminos: retorno de Tilopay (`?status=success`, los datos salen del
+    pedido guardado porque el carrito todavía no está hidratado) y confirmación de Yappy.
+  - `.env.local` y `.env.example` con `NEXT_PUBLIC_FB_PIXEL_ID`.
+- `npm run build` limpio sobre un clon fresco de `cotoss3/nfc` con los cambios aplicados.
+
+**Pendiente**
+
+- Cargar el método de pago de la cuenta publicitaria (lo hace Fernando; la sesión no
+  mete datos de tarjeta ni de facturación).
+- Foto de perfil y portada de la página de Facebook.
+- Conectar WhatsApp a la página (Meta manda un código al celular).
+- Definir el público y la primera campaña.
+- `NEXT_PUBLIC_FB_PIXEL_ID` en las variables de entorno de producción; sin eso el píxel
+  no carga en el sitio publicado.
+- Verificar el dominio startap.com.pa en el portfolio comercial (hace falta para las
+  conversiones agregadas de eventos de iOS).
+- Validar con el Meta Pixel Helper después del deploy.
+
 ### 2026-09-15 · Blog con SEO completo + reglas de contenido
 
 **Hecho**

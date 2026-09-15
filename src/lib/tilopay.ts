@@ -53,6 +53,35 @@ export async function getTilopayToken(): Promise<string> {
 }
 
 /**
+ * Token del SDK (navegador). Es distinto del token del API:
+ * dura 1 hora en vez de 24 y es el unico que baja al cliente.
+ * apiuser y password nunca salen del servidor.
+ */
+export async function getTilopaySdkToken(): Promise<{ token: string; expiresIn: number }> {
+  const apiuser = process.env.TILOPAY_API_USER;
+  const password = process.env.TILOPAY_API_PASSWORD;
+
+  if (!apiuser || !password) {
+    throw new Error('Faltan las credenciales de Tilopay en las variables de entorno (TILOPAY_API_USER, TILOPAY_API_PASSWORD).');
+  }
+
+  const res = await fetch(`${TILOPAY_BASE_URL}/loginSdk`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ apiuser, password }),
+    cache: 'no-store',
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || !data.access_token) {
+    throw new Error(data.message || data.error || 'Error al obtener el token del SDK de Tilopay.');
+  }
+
+  return { token: data.access_token, expiresIn: Number(data.expires_in) || 3600 };
+}
+
+/**
  * Creates a payment transaction in Tilopay and returns the secure checkout URL
  */
 export async function createTilopayPayment(

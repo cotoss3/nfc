@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { dbLocal } from '@/lib/db';
@@ -15,6 +15,8 @@ import {
   type ShippingMethodId,
 } from '@/config/shipping';
 import confetti from 'canvas-confetti';
+import { track, itemsParaMeta } from '@/lib/fbpixel';
+import TilopayCardForm, { type TilopayCardFormHandle } from '@/components/checkout/TilopayCardForm';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -39,6 +41,9 @@ export default function CheckoutPage() {
 
   const [mounted, setMounted] = useState(false);
 
+  // El formulario de tarjeta del SDK de Tilopay vive en esta pagina.
+  const tarjetaRef = useRef<TilopayCardFormHandle>(null);
+
   useEffect(() => {
     setMounted(true);
     if (typeof window !== 'undefined') {
@@ -48,6 +53,17 @@ export default function CheckoutPage() {
         const orderId = params.get('order');
         if (orderId) {
           dbLocal.updateOrderPaymentStatus(orderId, 'completed');
+        }
+        // El carrito todavia no esta hidratado aqui, asi que los datos del
+        // evento salen del pedido guardado, no del estado de React.
+        const pedido = orderId ? dbLocal.getOrderById(orderId) : undefined;
+        if (pedido) {
+          track('Purchase', {
+            ...itemsParaMeta(pedido.items),
+            value: pedido.total,
+            currency: 'USD',
+            order_id: pedido.id,
+          });
         }
         setIsSuccess(true);
         confetti({
@@ -122,6 +138,12 @@ export default function CheckoutPage() {
 
     setIsProcessing(true);
 
+    track('InitiateCheckout', {
+      ...itemsParaMeta(cart),
+      value: getGrandTotal(),
+      currency: 'USD',
+    });
+
     const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
 
     // El pedido se registra SIEMPRE como pendiente de pago.
@@ -142,12 +164,13 @@ export default function CheckoutPage() {
 
     try {
       if (paymentMethod === 'tarjeta') {
-        // Tarjeta: se paga en la pasarela de Tilopay, nunca en este sitio.
+        // Tarjeta: el formulario vive aqui, pero los datos van del navegador
+        // directo a Tilopay. El servidor solo abre la sesion y dice el monto.
         dbLocal.createOrder({ ...baseOrder, id: orderNumber } as any);
         sessionStorage.setItem('current_user_email', email);
         sessionStorage.setItem('current_user_name', name);
 
-        const res = await fetch('/api/tilopay/process', {
+        const res = await fetch('/api/tilopay/sdk-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -171,12 +194,32 @@ export default function CheckoutPage() {
 
         const data = await res.json();
 
-        if (!res.ok || !data.success || !data.redirectUrl) {
+        if (!res.ok || !data.success || !data.token) {
           throw new Error(data.error || 'No pudimos iniciar el pago con tarjeta. Intenta de nuevo o paga con Yappy.');
         }
 
-        // Fuera del sitio: el cliente escribe su tarjeta en Tilopay, no aquí.
-        window.location.href = data.redirectUrl;
+        const partes = name.trim().split(' ');
+
+        // A partir de aqui manda el SDK: hace el 3DS en #responseTilopay y
+        // navega solo a /api/tilopay/callback, que confirma contra /consult.
+        await tarjetaRef.current?.pagar(
+          {
+            token: data.token,
+            amount: data.amount,
+            orderNumber: data.orderNumber,
+            redirect: data.redirect,
+          },
+          {
+            nombre: partes[0] || 'Cliente',
+            apellidos: partes.slice(1).join(' ') || 'StarTAP',
+            email,
+            telefono: phone,
+            direccion: address,
+            ciudad: district || province,
+            provincia: province,
+            pais: 'PA',
+          }
+        );
         return;
       }
 
@@ -184,6 +227,13 @@ export default function CheckoutPage() {
       dbLocal.createOrder({ ...baseOrder, id: orderNumber, yappy_reference: yappyRef } as any);
       sessionStorage.setItem('current_user_email', email);
       sessionStorage.setItem('current_user_name', name);
+
+      track('Purchase', {
+        ...itemsParaMeta(cart),
+        value: getGrandTotal(),
+        currency: 'USD',
+        order_id: orderNumber,
+      });
 
       setIsProcessing(false);
       setIsSuccess(true);
@@ -402,23 +452,26 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              {/* Tarjeta: el pago ocurre en la pasarela de Tilopay, no en este sitio */}
+              {/* Tarjeta: el formulario vive aqui. El SDK de Tilopay toma control
+                  de los inputs tlpy_* y manda los datos cifrados directo a
+                  Tilopay; nuestro servidor no los ve nunca. */}
               {paymentMethod === 'tarjeta' && (
                 <div className="bg-white p-4 border border-brand-200 rounded space-y-3 shadow-sm">
                   <div className="flex items-center space-x-2 text-[10px] text-brand-500">
                     <Lock className="h-3.5 w-3.5 text-accent-600" />
                     <span className="font-semibold">Pago seguro con Tilopay (Visa / Mastercard)</span>
                   </div>
-                  <p className="text-[11px] text-brand-600 leading-relaxed">
-                    Al confirmar te llevamos a la pasarela segura de Tilopay para que ingreses los
-                    datos de tu tarjeta. Nosotros nunca vemos ni guardamos tu número de tarjeta.
-                  </p>
                   <div className="flex items-start space-x-2 text-[10px] text-brand-500 bg-brand-50 p-2.5 rounded border border-brand-200">
                     <ShieldCheck className="h-4 w-4 text-accent-600 flex-shrink-0 mt-0.5" />
-                    <span>Al terminar el pago vuelves automáticamente a starTAP con tu comprobante.</span>
+                    <span>Pagas sin salir de starTAP. Si tu banco pide verificación 3D Secure, se abre aquí mismo.</span>
                   </div>
                 </div>
               )}
+
+              {/* Montado siempre: el SDK busca los inputs por id y necesita
+                  encontrarlos en el DOM, por eso se oculta con CSS y no se
+                  desmonta al cambiar de método de pago. */}
+              <TilopayCardForm ref={tarjetaRef} visible={paymentMethod === 'tarjeta'} />
 
               {/* Yappy Steps instructions */}
               {paymentMethod === 'yappy' && (
@@ -530,7 +583,7 @@ export default function CheckoutPage() {
                   <>
                     <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
                     <span>
-                      {paymentMethod === 'tarjeta' ? 'Redirigiendo a Tilopay...' : 'Registrando tu pedido...'}
+                      {paymentMethod === 'tarjeta' ? 'Procesando el pago...' : 'Registrando tu pedido...'}
                     </span>
                   </>
                 ) : (
