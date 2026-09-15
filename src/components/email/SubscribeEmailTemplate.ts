@@ -16,7 +16,7 @@ export function buildWelcomeSubscriptionEmailHtml(email: string): string {
             <!-- Header con Logo -->
             <tr>
               <td style="background: linear-gradient(135deg, #020617 0%, #0f172a 100%); padding: 32px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
-                <img src="https://startap.com.pa/logos/Logo.png" alt="starTAP Panamá" style="height: 46px; width: auto; max-width: 200px; display: block; margin: 0 auto 8px auto;" />
+                <img src="https://startap.com.pa/logos/Logo.png" alt="starTAP Panamá" style="height: 26px; width: auto; max-width: 130px; display: block; margin: 0 auto 8px auto;" />
                 <span style="color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;">
                   TECNOLOGÍA NFC CONTACTLESS PANAMÁ
                 </span>

@@ -28,7 +28,7 @@ export function buildQuoteEmailHtml(data: QuoteEmailParams): string {
             <!-- Header con Logo -->
             <tr>
               <td style="background: linear-gradient(135deg, #020617 0%, #0f172a 100%); padding: 32px 24px; text-align:center; border-bottom: 3px solid #f59e0b;">
-                <img src="https://startap.com.pa/logos/Logo.png" alt="starTAP Panamá" style="height: 48px; width: auto; max-width: 220px; display: block; margin: 0 auto 8px auto;" />
+                <img src="https://startap.com.pa/logos/Logo.png" alt="starTAP Panamá" style="height: 28px; width: auto; max-width: 140px; display: block; margin: 0 auto 8px auto;" />
                 <span style="color: #fef08a; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;">
                   💼 COTIZACIÓN B2B SOLICITADA
                 </span>
