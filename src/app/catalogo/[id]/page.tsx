@@ -26,24 +26,22 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: 'Producto NFC para Reseñas de Google',
-      alternates: { canonical: `/catalogo/${params.id}` },
+      title: 'Dispositivo NFC para Reseñas de Google en Panamá',
+      alternates: { canonical: `${BASE_URL}/catalogo/${params.id}` },
     };
   }
 
-  const shortDesc =
-    product.description.length > 155
-      ? product.description.slice(0, 152).trimEnd() + '...'
-      : product.description;
+  const shortDesc = `${product.description} Pago único sin mensualidades. Configurado y listo para usar en tu negocio en Panamá. Envíos a todo el país.`;
 
   return {
-    title: `${product.name} en Panamá`,
-    description: shortDesc,
-    alternates: { canonical: `/catalogo/${product.id}` },
+    title: `${product.name} en Panamá | Pago Único Sin Mensualidades`,
+    description: shortDesc.slice(0, 160),
+    alternates: { canonical: `${BASE_URL}/catalogo/${product.id}` },
     openGraph: {
-      title: `${product.name} | starTAP Panamá`,
-      description: shortDesc,
+      title: `${product.name} en Panamá | starTAP`,
+      description: shortDesc.slice(0, 160),
       url: `${BASE_URL}/catalogo/${product.id}`,
+      siteName: 'starTAP Panamá',
       images: product.image ? [`${BASE_URL}${product.image}`] : undefined,
     },
   };

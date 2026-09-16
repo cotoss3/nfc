@@ -12,8 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/`, lastModified: now, changeFrequency: 'weekly', priority: 1 },
     { url: `${BASE_URL}/catalogo`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/app`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/corporativo`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/resenas-google`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/corporativo`, lastModified: now, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE_URL}/resenas-google`, lastModified: now, changeFrequency: 'weekly', priority: 0.95 },
     { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/envios`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/terminos`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
@@ -24,14 +24,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${BASE_URL}/resenas-google/${i.slug}`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
-    priority: 0.9,
+    priority: 0.95,
   }));
 
   const productRoutes: MetadataRoute.Sitemap = PRODUCTS.map((p) => ({
     url: `${BASE_URL}/catalogo/${p.id}`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
-    priority: 0.9,
+    priority: 0.95,
   }));
 
   const blogRoutes: MetadataRoute.Sitemap = POSTS.map((p) => ({
