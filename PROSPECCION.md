@@ -202,6 +202,18 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | Fecha | Negocio | Rubro | Zona | Reseñas | Estrellas | WhatsApp | Estado | Nota |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | |
+| 2026-09-16 | Fonda El Vecino | Fonda | La Chorrera | 7 | 4.9 | 6490-2318 | pendiente | top2 fondas 13/51 |
+| 2026-09-16 | Los Olivos Fonda | Fonda | La Chorrera | 1 | 5.0 | 6632-4207 | pendiente | top2 fondas 13/51 |
+| 2026-09-16 | Fonda Mis Ángeles | Fonda | La Chorrera | 3 | 5.0 | 6819-9842 | pendiente | top2 fondas 13/51 |
+| 2026-09-16 | Fonda donde Luis y Matias | Fonda | La Chorrera | 6 | 4.7 | 6388-6700 | pendiente | contesta reseñas; top2 13/51 |
+| 2026-09-16 | Fonda Damiana | Fonda | La Chorrera | 2 | 5.0 | 6856-5394 | pendiente | ficha sin reclamar |
+| 2026-09-16 | Fonda Genin | Fonda | La Chorrera | 4 | 5.0 | 6742-6019 | pendiente | ficha sin reclamar |
+| 2026-09-16 | Diabliko's restaurante | Restaurante | La Chorrera | 14 | 4.9 | 6075-0745 | pendiente | top2 restaurantes 114/273 |
+| 2026-09-16 | DelyChoza | Restaurante | La Chorrera | 1 | 5.0 | 6974-3347 | pendiente | top2 restaurantes 114/273 |
+| 2026-09-16 | XILOKA | Comida rápida | La Chorrera | 13 | 4.7 | 6545-1152 | pendiente | ficha marcada posible cierre |
+| 2026-09-16 | RiQras Hechas con Amor | Comida rápida | La Chorrera | 8 | 4.4 | 6922-8108 | pendiente | top2 comida rápida 207/397 |
+| 2026-09-16 | Delirios Zulianos | Restaurante | La Chorrera | 1 | 5.0 | 6010-0077 | pendiente | top2 restaurantes 114/273 |
+| 2026-09-16 | Fonda Anyie | Fonda | La Chorrera | 6 | 4.8 | 254-4159 (fijo, sin WhatsApp) | pendiente | llamar; ficha sin reclamar |
 
 ---
 
