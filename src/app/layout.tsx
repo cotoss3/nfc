@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import StructuredData from '@/components/StructuredData';
 import MetaPixel from '@/components/MetaPixel';
 import TikTokPixel from '@/components/TikTokPixel';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
 export const metadata: Metadata = {
@@ -86,10 +87,11 @@ export default function RootLayout({
             <head> en el layout raíz no se renderizan de forma fiable, y schema.org
             se lee igual desde el body. */}
         <StructuredData />
-        {/* Meta & TikTok Pixels. useSearchParams necesita Suspense o el build estatico falla. */}
+        {/* Meta, TikTok & Google Analytics. useSearchParams necesita Suspense o el build estatico falla. */}
         <Suspense fallback={null}>
           <MetaPixel />
           <TikTokPixel />
+          <GoogleAnalytics />
         </Suspense>
         <CartProvider>
           <Navbar />
