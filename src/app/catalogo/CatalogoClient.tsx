@@ -121,7 +121,7 @@ export default function CatalogoClient() {
                   </ul>
                 </div>
 
-                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <div className="pt-2 space-y-4">
                   <div className="flex flex-wrap items-baseline gap-2.5">
                     <span className="text-3xl sm:text-4xl font-black text-amber-400">${specialPacks[0].price}.00</span>
                     <span className="text-sm text-slate-400 line-through font-semibold">$70.00</span>
@@ -133,7 +133,7 @@ export default function CatalogoClient() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <button
                       onClick={() => handleAddToCartPack(specialPacks[0])}
                       className="flex-1 sm:flex-none bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm uppercase px-6 py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -145,10 +145,11 @@ export default function CatalogoClient() {
                       href={getWhatsAppLink(specialPacks[0].name)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 p-3.5 rounded-xl transition-all"
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-4 py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow"
                       title="Consultar por WhatsApp"
                     >
-                      <MessageCircle className="w-5 h-5 text-emerald-400" />
+                      <MessageCircle className="w-5 h-5 text-white" />
+                      <span>Consulta WhatsApp</span>
                     </a>
                   </div>
                 </div>
