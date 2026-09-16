@@ -12,17 +12,18 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 export const metadata: Metadata = {
   metadataBase: new URL('https://startap.com.pa'),
   title: {
-    default: 'starTAP Panamá | Tarjetas NFC para Reseñas de Google',
+    default: 'Placas y Tarjetas NFC para Reseñas de Google en Panamá | starTAP',
     template: '%s | starTAP Panamá',
   },
   description:
     'Multiplica tus reseñas de Google Maps con tarjetas, stands y placas NFC. Un toque y listo, sin apps ni mensualidades. Envíos a todo Panamá.',
   keywords: [
-    'tarjetas NFC Panamá',
-    'reseñas de Google Panamá',
-    'stand NFC reseñas',
-    'placa NFC Google Maps',
-    'SEO local Panamá',
+    'tarjetas nfc panama',
+    'placas nfc google panama',
+    'placa nfc para reseñas google maps',
+    'comprar tarjeta nfc google panama',
+    'stand nfc reseñas panama',
+    'nfc google reviews panama',
   ],
   alternates: { canonical: '/' },
   verification: {
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
     locale: 'es_PA',
     url: 'https://startap.com.pa',
     siteName: 'starTAP Panamá',
-    title: 'starTAP Panamá | Tarjetas NFC para Reseñas de Google',
+    title: 'Placas y Tarjetas NFC para Reseñas de Google en Panamá | starTAP',
     description:
       'Multiplica tus reseñas de Google Maps con un toque. Dispositivos NFC sin mensualidades, con envíos a todo Panamá.',
     // WhatsApp, Facebook y el resto muestran esta imagen al pegar el enlace.
