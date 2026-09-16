@@ -238,35 +238,35 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                 </div>
               </div>
 
-              {/* Option: Name (DESTACADO) */}
+              {/* Option: Name or Link (DESTACADO) */}
               <div className="bg-gradient-to-br from-amber-500/10 via-amber-400/10 to-amber-500/20 border-2 border-amber-400/90 rounded-2xl p-5 shadow-md relative space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="inline-flex items-center gap-1.5 bg-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
                     <MapPin className="w-3.5 h-3.5 text-slate-950 fill-slate-950" />
-                    <span>Paso 1: Nombre de tu Negocio</span>
+                    <span>Paso 1: Enlace o Nombre de tu Negocio</span>
                   </div>
                   <span className="text-[10px] font-extrabold text-amber-900 bg-amber-200/80 border border-amber-400/70 px-2 py-0.5 rounded uppercase">
-                    Requerido para grabar
+                    Requerido para programar
                   </span>
                 </div>
 
                 <div>
                   <label htmlFor="businessName" className="text-sm font-black text-slate-950 block mb-1">
-                    Nombre del negocio <span className="text-amber-900 font-bold">(como aparece en Google Maps)</span>
+                    Enlace de Google Maps o Nombre del negocio <span className="text-amber-900 font-bold">(para tu chip NFC y QR)</span>
                   </label>
                   <p className="text-xs text-slate-600 mb-2.5 font-medium leading-snug">
-                    Escribe aquí el nombre exacto de tu local o empresa. Lo programamos de fábrica en tu chip NFC.
+                    Pega aquí el enlace de tu perfil en Google Maps (o escribe el nombre exacto de tu local). Lo programamos de fábrica en tu chip NFC.
                   </p>
 
                   <div className="relative">
                     <input
-                      type="text"
                       id="businessName"
+                      type="text"
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
-                      placeholder="Ej: PIZZERÍA ROMA / BARBERÍA EL BARÓN"
-                      className="w-full text-base sm:text-sm py-3.5 px-4 rounded-xl bg-white border-2 border-amber-400 font-bold text-slate-950 placeholder:text-slate-400 placeholder:font-normal transition-all shadow-inner focus:border-slate-950 focus:ring-2 focus:ring-slate-950 focus:outline-none uppercase"
+                      placeholder="Ej: https://maps.app.goo.gl/xxx o Pizzería Roma Panamá"
                       required
+                      className="w-full text-base sm:text-sm py-3.5 px-4 rounded-xl bg-white border-2 border-amber-400 font-bold text-slate-950 placeholder:text-slate-400 placeholder:font-normal transition-all shadow-inner focus:border-slate-950 focus:ring-2 focus:ring-slate-950 focus:outline-none"
                     />
                     {businessName.trim().length > 0 && (
                       <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-700 text-xs font-black flex items-center gap-1 bg-emerald-100 px-2 py-1 rounded border border-emerald-300">
