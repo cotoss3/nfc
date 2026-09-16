@@ -81,36 +81,94 @@ export interface Coupon {
   /** Para 'percent': 0-100. Para 'fixed': monto en USD. Para 'free_shipping': ignorado. */
   value: number;
   description: string;
+  is_active?: boolean;
+  created_at?: string;
 }
 
-/** Catálogo de cupones válidos (en mayúsculas para comparación sin distinción de caso). */
-export const COUPONS: Record<string, Coupon> = {
-  EVG: {
+export const DEFAULT_COUPONS_LIST: Coupon[] = [
+  {
     code: 'EVG',
     type: 'free_shipping',
     value: 0,
-    description: 'Envio gratis en todo Panama',
+    description: 'Envío gratis en todo Panamá',
+    is_active: true,
   },
-};
+  {
+    code: 'STARTAP10',
+    type: 'percent',
+    value: 10,
+    description: '10% de descuento en tu pedido',
+    is_active: true,
+  },
+  {
+    code: 'DESCUENTO5',
+    type: 'fixed',
+    value: 5,
+    description: '$5.00 de descuento en tu pedido',
+    is_active: true,
+  },
+];
+
+/** Catálogo de cupones válidos por defecto. */
+export const COUPONS: Record<string, Coupon> = DEFAULT_COUPONS_LIST.reduce((acc, c) => {
+  acc[c.code] = c;
+  return acc;
+}, {} as Record<string, Coupon>);
 
 /**
- * Valida un codigo de cupon.
- * Retorna el cupon si es valido, o null si no existe.
+ * Valida un código de cupón.
+ * Busca primero en los cupones creados en Master Control y luego en los por defecto.
+ * Retorna el cupón si existe y está activo, o null.
  */
 export function validateCoupon(code: string): Coupon | null {
-  return COUPONS[code.trim().toUpperCase()] ?? null;
+  const cleanCode = (code || '').trim().toUpperCase();
+  if (!cleanCode) return null;
+
+  if (typeof window !== 'undefined') {
+    try {
+      const data = localStorage.getItem('nfc_coupons');
+      if (data) {
+        const customCoupons: Coupon[] = JSON.parse(data);
+        const found = customCoupons.find((c) => (c.code || '').trim().toUpperCase() === cleanCode);
+        if (found) {
+          if (found.is_active === false) return null;
+          return found;
+        }
+      }
+    } catch (e) {
+      console.error('Error leyendo cupones personalizados:', e);
+    }
+  }
+
+  const defaultCoupon = COUPONS[cleanCode] ?? null;
+  if (defaultCoupon && defaultCoupon.is_active !== false) {
+    return defaultCoupon;
+  }
+  return null;
 }
 
 /**
- * Aplica un cupon al costo de envio y retorna el nuevo costo.
+ * Calcula el monto del descuento aplicado sobre el subtotal según el tipo de cupón.
+ */
+export function getDiscountAmount(subtotal: number, coupon: Coupon | null): number {
+  if (!coupon || coupon.is_active === false) return 0;
+  if (coupon.type === 'percent') {
+    return Number(((subtotal * coupon.value) / 100).toFixed(2));
+  }
+  if (coupon.type === 'fixed') {
+    return Math.min(subtotal, coupon.value);
+  }
+  return 0;
+}
+
+/**
+ * Aplica un cupón al costo de envío y retorna el nuevo costo.
  */
 export function applyShippingCoupon(
   shippingCost: number,
   coupon: Coupon | null
 ): number {
-  if (!coupon) return shippingCost;
+  if (!coupon || coupon.is_active === false) return shippingCost;
   if (coupon.type === 'free_shipping') return 0;
-  if (coupon.type === 'percent') return shippingCost * (1 - coupon.value / 100);
-  if (coupon.type === 'fixed') return Math.max(0, shippingCost - coupon.value);
   return shippingCost;
 }

@@ -3,23 +3,33 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { dbLocal, Order, NfcCard, Product, ScanRecord } from '@/lib/db';
+import { Coupon, CouponType } from '@/config/shipping';
 import { 
   ShieldCheck, Package, RefreshCw, CheckCircle, Search, 
   Tag, BarChart2, Smartphone, Layers, Edit2, Trash2, DollarSign, 
   Filter, Radio, QrCode, User, Plus, Check, Printer, AlertCircle,
-  LogOut, ChevronRight, X, Image as ImageIcon
+  LogOut, ChevronRight, X, Image as ImageIcon, Percent
 } from 'lucide-react';
 
-type AdminTab = 'cards' | 'orders' | 'products' | 'analytics' | 'stickers';
+type AdminTab = 'cards' | 'orders' | 'products' | 'coupons' | 'analytics' | 'stickers';
 
 export default function AdminPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [cards, setCards] = useState<NfcCard[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [scans, setScans] = useState<ScanRecord[]>([]);
   const [activeTab, setActiveTab] = useState<AdminTab>('cards');
   const [loading, setLoading] = useState(true);
+
+  // Coupon Manager States
+  const [couponSearch, setCouponSearch] = useState('');
+  const [newCouponCode, setNewCouponCode] = useState('');
+  const [newCouponType, setNewCouponType] = useState<CouponType>('percent');
+  const [newCouponValue, setNewCouponValue] = useState('');
+  const [newCouponDescription, setNewCouponDescription] = useState('');
+  const [createCouponSuccess, setCreateCouponSuccess] = useState(false);
 
   // Search & Filter States
   const [cardSearch, setCardSearch] = useState('');
@@ -84,11 +94,13 @@ export default function AdminPage() {
     const dbOrders = dbLocal.getOrders();
     const initialCards = dbLocal.getCards();
     const dbProducts = dbLocal.getProducts();
+    const dbCoupons = dbLocal.getCoupons();
     const dbScans = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
 
     setOrders(dbOrders);
     setCards(initialCards);
     setProducts(dbProducts);
+    setCoupons(dbCoupons);
     setScans(dbScans);
 
     // Initial price input states
@@ -105,6 +117,44 @@ export default function AdminPage() {
       console.error('Error cargando tarjetas en Master Control:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCouponCode.trim()) return;
+
+    const numVal = parseFloat(newCouponValue);
+    const couponData: Coupon = {
+      code: newCouponCode.trim().toUpperCase(),
+      type: newCouponType,
+      value: isNaN(numVal) ? 0 : numVal,
+      description: newCouponDescription.trim() || (
+        newCouponType === 'free_shipping' ? 'Envío gratis en todo Panamá' :
+        newCouponType === 'percent' ? `${numVal}% de descuento` :
+        `$${numVal.toFixed(2)} USD de descuento`
+      ),
+      is_active: true,
+    };
+
+    dbLocal.saveCoupon(couponData);
+    setCreateCouponSuccess(true);
+    setNewCouponCode('');
+    setNewCouponValue('');
+    setNewCouponDescription('');
+    loadData();
+    setTimeout(() => setCreateCouponSuccess(false), 2500);
+  };
+
+  const handleToggleCoupon = (code: string, currentStatus: boolean) => {
+    dbLocal.toggleCouponActive(code, !currentStatus);
+    loadData();
+  };
+
+  const handleDeleteCoupon = (code: string) => {
+    if (window.confirm(`¿Estás seguro de que deseas eliminar el cupón "${code}"?`)) {
+      dbLocal.deleteCoupon(code);
+      loadData();
     }
   };
 
@@ -429,6 +479,23 @@ export default function AdminPage() {
             </div>
             <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'products' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
               {products.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('coupons')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'coupons'
+                ? 'bg-slate-900 text-white shadow-md font-bold'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Percent className="w-4 h-4 text-emerald-500" />
+              <span>Cupones de Descuento</span>
+            </div>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'coupons' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
+              {coupons.length}
             </span>
           </button>
 
@@ -1267,6 +1334,183 @@ export default function AdminPage() {
               </div>
             )}
 
+            {/* ---------------- MODULE 6: GESTOR DE CUPONES DE DESCUENTO ---------------- */}
+            {activeTab === 'coupons' && (
+              <div className="space-y-6">
+                {/* Header informativo */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-wider bg-emerald-50 px-2.5 py-1 rounded-full mb-1">
+                      <Percent className="w-3.5 h-3.5" /> Promociones & Descuentos
+                    </div>
+                    <h2 className="text-xl font-black text-slate-900 uppercase">Gestor de Cupones de Descuento</h2>
+                    <p className="text-xs text-slate-500 mt-1">Crea y administra códigos promocionales activos en la tienda y checkout de starTAP Panamá.</p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="bg-slate-100 px-4 py-2 rounded-xl text-center border border-slate-200">
+                      <span className="text-xs font-bold text-slate-500 block">Cupones Activos</span>
+                      <span className="text-lg font-black text-slate-900">{coupons.filter(c => c.is_active !== false).length} / {coupons.length}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Formulario de creación de cupón */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-wide flex items-center gap-2">
+                    <Plus className="w-4 h-4 text-emerald-600" /> Generar Nuevo Cupón
+                  </h3>
+
+                  {createCouponSuccess && (
+                    <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold p-3.5 rounded-xl flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                      <span>¡Cupón creado con éxito! Ya se encuentra disponible para ser usado por tus clientes en el checkout.</span>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleCreateCoupon} className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="md:col-span-3 space-y-1">
+                      <label className="text-xs font-bold text-slate-700">Código del Cupón</label>
+                      <input
+                        type="text"
+                        required
+                        value={newCouponCode}
+                        onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
+                        placeholder="EJ: VERANO2026"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs uppercase font-bold text-slate-900 focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none"
+                      />
+                    </div>
+
+                    <div className="md:col-span-3 space-y-1">
+                      <label className="text-xs font-bold text-slate-700">Tipo de Descuento</label>
+                      <select
+                        value={newCouponType}
+                        onChange={(e) => setNewCouponType(e.target.value as CouponType)}
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none"
+                      >
+                        <option value="percent">Porcentaje (%) sobre Subtotal</option>
+                        <option value="fixed">Monto Fijo en USD ($)</option>
+                        <option value="free_shipping">Envío Gratis</option>
+                      </select>
+                    </div>
+
+                    {newCouponType !== 'free_shipping' && (
+                      <div className="md:col-span-2 space-y-1">
+                        <label className="text-xs font-bold text-slate-700">
+                          {newCouponType === 'percent' ? 'Porcentaje (%)' : 'Monto USD ($)'}
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          required
+                          value={newCouponValue}
+                          onChange={(e) => setNewCouponValue(e.target.value)}
+                          placeholder={newCouponType === 'percent' ? '15' : '5.00'}
+                          className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none"
+                        />
+                      </div>
+                    )}
+
+                    <div className={`${newCouponType === 'free_shipping' ? 'md:col-span-6' : 'md:col-span-4'} space-y-1`}>
+                      <label className="text-xs font-bold text-slate-700">Descripción Promocional</label>
+                      <input
+                        type="text"
+                        value={newCouponDescription}
+                        onChange={(e) => setNewCouponDescription(e.target.value)}
+                        placeholder="Ej: 15% OFF por promoción de lanzamiento"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none"
+                      />
+                    </div>
+
+                    <div className="md:col-span-12 flex justify-end pt-2">
+                      <button
+                        type="submit"
+                        className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2"
+                      >
+                        <Plus className="w-4 h-4 text-amber-400" /> Crear y Activar Cupón
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Listado de cupones */}
+                <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+                  <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">Listado de Cupones ({coupons.length})</h3>
+                    <div className="relative w-full sm:w-64">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={couponSearch}
+                        onChange={(e) => setCouponSearch(e.target.value)}
+                        placeholder="Buscar por código..."
+                        className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="divide-y divide-slate-100 overflow-x-auto">
+                    {coupons
+                      .filter(c => !couponSearch || c.code.toLowerCase().includes(couponSearch.toLowerCase()) || c.description.toLowerCase().includes(couponSearch.toLowerCase()))
+                      .map((c) => (
+                        <div key={c.code} className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition">
+                          <div className="flex items-center gap-3">
+                            <span className="font-mono font-black text-sm text-slate-900 bg-amber-400/20 text-amber-950 px-3 py-1 rounded-xl border border-amber-300">
+                              {c.code}
+                            </span>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-slate-900">{c.description}</span>
+                                <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
+                                  c.type === 'free_shipping' ? 'bg-blue-100 text-blue-700' :
+                                  c.type === 'percent' ? 'bg-purple-100 text-purple-700' :
+                                  'bg-emerald-100 text-emerald-700'
+                                }`}>
+                                  {c.type === 'free_shipping' ? 'Envío Gratis' : c.type === 'percent' ? `${c.value}% OFF` : `$${c.value.toFixed(2)} OFF`}
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-slate-400 block mt-0.5">
+                                {c.is_active !== false ? '🟢 Activo en Checkout' : '🔴 Desactivado'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(c.code, c.code, 'coupon')}
+                              className="px-3 py-1.5 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition flex items-center gap-1"
+                            >
+                              {copiedCardId?.id === c.code ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Tag className="w-3.5 h-3.5" />}
+                              {copiedCardId?.id === c.code ? 'Copiado' : 'Copiar'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleCoupon(c.code, c.is_active !== false)}
+                              className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${
+                                c.is_active !== false
+                                  ? 'bg-amber-100 hover:bg-amber-200 text-amber-800'
+                                  : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800'
+                              }`}
+                            >
+                              {c.is_active !== false ? 'Desactivar' : 'Activar'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCoupon(c.code)}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
           </>
         )}
 
@@ -1304,6 +1548,16 @@ export default function AdminPage() {
         >
           <Tag className="w-5 h-5" />
           <span className="text-[10px] font-semibold">Precios</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('coupons')}
+          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+            activeTab === 'coupons' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <Percent className="w-5 h-5" />
+          <span className="text-[10px] font-semibold">Cupones</span>
         </button>
 
         <button

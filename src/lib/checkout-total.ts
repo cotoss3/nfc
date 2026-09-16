@@ -1,5 +1,5 @@
 import { getProductById } from '@/config/products';
-import { calculateShippingCost, validateCoupon, applyShippingCoupon } from '@/config/shipping';
+import { calculateShippingCost, validateCoupon, applyShippingCoupon, getDiscountAmount } from '@/config/shipping';
 import { getPrecio } from '@/lib/precios';
 
 /** Extras que el cliente puede anadir en la landing de producto */
@@ -53,10 +53,13 @@ export async function calcularTotal(
   const baseEnvio = calculateShippingCost(subtotal, shippingMethod, hasPack);
   const coupon = couponCode ? validateCoupon(couponCode) : null;
   const envio = applyShippingCoupon(baseEnvio, coupon);
+  const descuento = getDiscountAmount(subtotal, coupon);
+  const total = Math.max(0, Number((subtotal + envio - descuento).toFixed(2)));
 
   return {
     subtotal: Number(subtotal.toFixed(2)),
     envio,
-    total: Number((subtotal + envio).toFixed(2)),
+    descuento,
+    total,
   };
 }

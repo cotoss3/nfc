@@ -37,6 +37,7 @@ import {
   YAPPY,
   validateCoupon,
   applyShippingCoupon,
+  getDiscountAmount,
   type Coupon,
   type ShippingMethodId,
 } from '@/config/shipping';
@@ -157,8 +158,12 @@ export default function CheckoutPage() {
 
   const envioGratis = isPackInCart || qualifiesForFreeShipping(getCartTotal()) || (appliedCoupon?.type === 'free_shipping');
 
+  const getDiscount = () => {
+    return getDiscountAmount(getCartTotal(), appliedCoupon);
+  };
+
   const getGrandTotal = () => {
-    return getCartTotal() + getShippingCost();
+    return Math.max(0, getCartTotal() + getShippingCost() - getDiscount());
   };
 
   const handleApplyCoupon = () => {
@@ -1208,6 +1213,12 @@ export default function CheckoutPage() {
                       <span>Programación y Ruteo NFC</span>
                       <span className="text-emerald-600 font-bold uppercase text-[11px]">Gratuito</span>
                     </div>
+                    {getDiscount() > 0 && (
+                      <div className="flex justify-between text-emerald-700 font-bold bg-emerald-50/80 p-2 rounded-lg border border-emerald-200">
+                        <span>Descuento ({appliedCoupon?.code})</span>
+                        <span>-${getDiscount().toFixed(2)}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Grand total */}

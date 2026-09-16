@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { PRODUCTS, getProductById as getCentralProductById } from '@/config/products';
+import { Coupon, DEFAULT_COUPONS_LIST } from '@/config/shipping';
 
 
 // Tipos del sistema
@@ -401,6 +402,56 @@ class LocalDbService {
       });
     }
     return true;
+  }
+
+  // Métodos de Cupones de Descuento
+  getCoupons(): Coupon[] {
+    const coupons = this.getStorageItem<Coupon[]>('nfc_coupons', DEFAULT_COUPONS_LIST);
+    if (!coupons || coupons.length === 0) {
+      return DEFAULT_COUPONS_LIST;
+    }
+    return coupons;
+  }
+
+  saveCoupon(coupon: Coupon): Coupon[] {
+    const coupons = this.getCoupons();
+    const codeNorm = (coupon.code || '').trim().toUpperCase();
+    const existingIdx = coupons.findIndex(c => (c.code || '').trim().toUpperCase() === codeNorm);
+
+    const updatedCoupon: Coupon = {
+      ...coupon,
+      code: codeNorm,
+      is_active: coupon.is_active ?? true,
+      created_at: coupon.created_at || new Date().toISOString()
+    };
+
+    if (existingIdx !== -1) {
+      coupons[existingIdx] = updatedCoupon;
+    } else {
+      coupons.unshift(updatedCoupon);
+    }
+
+    this.setStorageItem('nfc_coupons', coupons);
+    return coupons;
+  }
+
+  toggleCouponActive(code: string, is_active: boolean): Coupon[] {
+    const coupons = this.getCoupons();
+    const codeNorm = (code || '').trim().toUpperCase();
+    const idx = coupons.findIndex(c => (c.code || '').trim().toUpperCase() === codeNorm);
+    if (idx !== -1) {
+      coupons[idx].is_active = is_active;
+      this.setStorageItem('nfc_coupons', coupons);
+    }
+    return coupons;
+  }
+
+  deleteCoupon(code: string): Coupon[] {
+    const coupons = this.getCoupons();
+    const codeNorm = (code || '').trim().toUpperCase();
+    const filtered = coupons.filter(c => (c.code || '').trim().toUpperCase() !== codeNorm);
+    this.setStorageItem('nfc_coupons', filtered);
+    return filtered;
   }
 
   // Métodos de Pedidos
