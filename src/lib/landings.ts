@@ -98,7 +98,7 @@ export const LANDINGS: LandingCopy[] = [
       { q: '¿Puedo personalizarlo con el logo de mi negocio?', a: 'Sí. Los dispositivos incluyen su diseño base y puedes solicitar la impresión de tu logo personalizado si lo deseas (+ $5.00).' },
       { q: '¿Si cambio la ubicación de mi local, debo comprar otro Stand?', a: 'No. Desde tu panel actualizas el enlace hacia donde dirige el Stand en cualquier momento, sin costo.' },
     ],
-    coloresPorDefecto: ['Negro Mate', 'Blanco Brillante'],
+    coloresPorDefecto: ['Blanco Brillante', 'Negro Mate'],
   },
   {
     ids: ['tarjeta-nfc-bolsillo', 'tarjeta-nfc', 'placa-google'],
@@ -138,7 +138,7 @@ export const LANDINGS: LandingCopy[] = [
       { q: '¿Funciona con cualquier teléfono inteligente?', a: 'Sí, con iPhone y Android mediante el chip NFC, o con el código QR impreso en el reverso.' },
       { q: '¿Puedo saber qué vendedor genera más reseñas?', a: 'Sí. Cada tarjeta tiene su propio código y su propio contador de escaneos en el panel.' },
     ],
-    coloresPorDefecto: ['Negro Premium', 'Blanco Premium'],
+    coloresPorDefecto: ['Blanco Premium', 'Negro Premium'],
   },
   {
     ids: ['placa-nfc-mostrador', 'placa-acrilica-nfc', 'NFC_10001'],
@@ -177,7 +177,7 @@ export const LANDINGS: LandingCopy[] = [
       { q: '¿Puedo solicitar el logo de mi negocio en la placa?', a: 'Sí. La placa viene con el diseño estándar y puedes añadir la impresión de tu logo si lo requieres (+ $5.00).' },
       { q: '¿Cobran mensualidades por usar la placa?', a: 'No. Es un pago único por el dispositivo, sin suscripciones obligatorias ni renovaciones anuales.' },
     ],
-    coloresPorDefecto: ['Acrílico Negro', 'Acrílico Blanco'],
+    coloresPorDefecto: ['Acrílico Blanco', 'Acrílico Negro'],
   },
   {
     ids: ['pack-trio-comercial', 'pack-trio'],

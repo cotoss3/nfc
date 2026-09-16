@@ -184,9 +184,10 @@ export default function ProductLanding({ product }: { product: Product }) {
 
   const copy: LandingCopy | undefined = getLandingCopy(product.id);
 
-  const [color, setColor] = useState(
-    (product.colors && product.colors[0]) || copy?.coloresPorDefecto[0] || 'Negro'
-  );
+  const [color, setColor] = useState(() => {
+    const available = product.colors || copy?.coloresPorDefecto || [];
+    return available.find((c) => !c.toLowerCase().includes('negro')) || available[0] || 'Blanco Premium';
+  });
   const [businessName, setBusinessName] = useState('');
   const [hasCustomLogo, setHasCustomLogo] = useState(false);
   const [hasQrCode, setHasQrCode] = useState(false);
@@ -219,6 +220,10 @@ export default function ProductLanding({ product }: { product: Product }) {
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
+    if (color.toLowerCase().includes('negro')) {
+      alert('La variación en color Negro se encuentra agotada temporalmente. Por favor selecciona la opción en Blanco.');
+      return;
+    }
     if (!businessName) {
       alert('Por favor ingresa el nombre de tu negocio para continuar');
       return;
@@ -575,29 +580,41 @@ export default function ProductLanding({ product }: { product: Product }) {
                     Color o Acabado del {copy.nombreCorto.toLowerCase()}
                   </legend>
                   <div className="flex flex-wrap gap-2.5">
-                    {colors.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => setColor(c)}
-                        aria-pressed={color === c}
-                        className={`py-2.5 px-4 text-xs font-bold rounded-xl border transition-all flex items-center gap-2 ${
-                          color === c
-                            ? 'border-brand-950 bg-brand-950 text-white shadow-md'
-                            : 'border-brand-200 hover:border-brand-400 bg-white text-brand-800 hover:bg-brand-50'
-                        }`}
-                      >
-                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                          c.toLowerCase().includes('negro') ? 'bg-black border border-white/20' :
-                          c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
-                          c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
-                          c.toLowerCase().includes('plata') ? 'bg-slate-300' :
-                          c.toLowerCase().includes('bambú') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
-                          c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
-                        }`} />
-                        {c}
-                      </button>
-                    ))}
+                    {colors.map((c) => {
+                      const isBlack = c.toLowerCase().includes('negro');
+                      return (
+                        <button
+                          key={c}
+                          type="button"
+                          disabled={isBlack}
+                          onClick={() => !isBlack && setColor(c)}
+                          aria-pressed={color === c}
+                          title={isBlack ? 'Variación en color Negro agotada' : c}
+                          className={`py-2.5 px-4 text-xs font-bold rounded-xl border transition-all flex items-center gap-2 ${
+                            isBlack
+                              ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 line-through'
+                              : color === c
+                              ? 'border-brand-950 bg-brand-950 text-white shadow-md'
+                              : 'border-brand-200 hover:border-brand-400 bg-white text-brand-800 hover:bg-brand-50'
+                          }`}
+                        >
+                          <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                            isBlack ? 'bg-black opacity-50' :
+                            c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
+                            c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
+                            c.toLowerCase().includes('plata') ? 'bg-slate-300' :
+                            c.toLowerCase().includes('bambú') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
+                            c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
+                          }`} />
+                          <span>{c.replace(/\s*\(Agotado\)/i, '')}</span>
+                          {isBlack && (
+                            <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-100 text-red-700 no-underline">
+                              Agotado
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </fieldset>
 

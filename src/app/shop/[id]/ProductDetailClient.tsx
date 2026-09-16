@@ -16,7 +16,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
   const [product, setProduct] = useState<Product | null>(null);
   
   // Customization & Add-on States
-  const [color, setColor] = useState('Negro Premium');
+  const [color, setColor] = useState('Blanco Premium');
   const [businessName, setBusinessName] = useState('');
   const [hasCustomLogo, setHasCustomLogo] = useState(false);
   const [hasQrCode, setHasQrCode] = useState(false);
@@ -36,9 +36,10 @@ export default function ProductDetailClient({ params }: { params: { id: string }
       setSelectedImage(found.image);
       
       const defaultColors = found.colors || (found.category === 'cards' 
-        ? ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'] 
-        : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado']);
-      setColor(defaultColors[0]);
+        ? ['Blanco Premium', 'Negro Premium'] 
+        : ['Blanco Brillante', 'Negro Mate']);
+      const validColor = defaultColors.find((c) => !c.toLowerCase().includes('negro')) || defaultColors[0];
+      setColor(validColor);
     }
   }, [params.id]);
 
@@ -51,8 +52,8 @@ export default function ProductDetailClient({ params }: { params: { id: string }
   }
 
   const colors = product.colors || (product.category === 'cards' 
-    ? ['Negro Premium', 'Blanco Premium', 'Madera Bambú', 'Madera Nogal'] 
-    : ['Negro Mate', 'Blanco Brillante', 'Dorado Espejo', 'Plata Cepillado']);
+    ? ['Blanco Premium', 'Negro Premium'] 
+    : ['Blanco Brillante', 'Negro Mate']);
 
   const logoPrice = hasCustomLogo ? 5 : 0;
   const qrPrice = hasQrCode ? 3 : 0;
@@ -73,6 +74,10 @@ export default function ProductDetailClient({ params }: { params: { id: string }
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
+    if (color.toLowerCase().includes('negro')) {
+      alert('La variación en color Negro se encuentra agotada temporalmente. Por favor selecciona la opción en Blanco.');
+      return;
+    }
     if (!businessName) {
       alert('Por favor ingresa el nombre de tu negocio para continuar');
       return;
@@ -213,28 +218,40 @@ export default function ProductDetailClient({ params }: { params: { id: string }
               <div className="space-y-2.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-brand-900 block">Acabado / Material</label>
                 <div className="flex flex-wrap gap-2.5">
-                  {colors.map((c) => (
-                    <button
-                      type="button"
-                      key={c}
-                      onClick={() => setColor(c)}
-                      className={`py-2.5 px-4 text-xs font-bold uppercase tracking-wider border rounded-xl transition-all flex items-center gap-2 ${
-                        color === c
-                          ? 'border-brand-950 bg-brand-950 text-white shadow-md'
-                          : 'border-brand-200 hover:bg-brand-100 hover:text-brand-950 text-brand-600 bg-white'
-                      }`}
-                    >
-                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                        c.toLowerCase().includes('negro') ? 'bg-black border border-white/20' :
-                        c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
-                        c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
-                        c.toLowerCase().includes('plata') ? 'bg-slate-300' :
-                        c.toLowerCase().includes('bambú') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
-                        c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
-                      }`} />
-                      {c}
-                    </button>
-                  ))}
+                  {colors.map((c) => {
+                    const isBlack = c.toLowerCase().includes('negro');
+                    return (
+                      <button
+                        type="button"
+                        key={c}
+                        disabled={isBlack}
+                        onClick={() => !isBlack && setColor(c)}
+                        title={isBlack ? 'Variación en color Negro agotada' : c}
+                        className={`py-2.5 px-4 text-xs font-bold uppercase tracking-wider border rounded-xl transition-all flex items-center gap-2 ${
+                          isBlack
+                            ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 line-through'
+                            : color === c
+                            ? 'border-brand-950 bg-brand-950 text-white shadow-md'
+                            : 'border-brand-200 hover:bg-brand-100 hover:text-brand-950 text-brand-600 bg-white'
+                        }`}
+                      >
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                          isBlack ? 'bg-black opacity-50' :
+                          c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
+                          c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
+                          c.toLowerCase().includes('plata') ? 'bg-slate-300' :
+                          c.toLowerCase().includes('bambú') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
+                          c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
+                        }`} />
+                        <span>{c.replace(/\s*\(Agotado\)/i, '')}</span>
+                        {isBlack && (
+                          <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-100 text-red-700 normal-case no-underline">
+                            Agotado
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
