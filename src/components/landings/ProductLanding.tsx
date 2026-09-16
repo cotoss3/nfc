@@ -179,19 +179,11 @@ function ProductCarousel({
 }
 
 function isColorDisabled(productId: string, colorName: string): boolean {
-  const normId = (productId || '').toLowerCase();
   const normColor = (colorName || '').toLowerCase();
-
-  if (normId.includes('placa') || normId.includes('10001')) {
-    // Placa acrílica: solo Acrílico Transparente está disponible
-    return !normColor.includes('transparente');
-  }
-
-  // Tarjeta y Stand (y fallback): solo Blanco está disponible, Negro agotado
+  // Las variaciones en color Negro están agotadas
   if (normColor.includes('negro')) {
     return true;
   }
-
   return false;
 }
 
