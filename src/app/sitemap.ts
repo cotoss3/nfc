@@ -23,8 +23,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const industriaRoutes: MetadataRoute.Sitemap = INDUSTRIAS.map((i) => ({
     url: `${BASE_URL}/resenas-google/${i.slug}`,
     lastModified: now,
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
   }));
 
   const productRoutes: MetadataRoute.Sitemap = PRODUCTS.map((p) => ({
