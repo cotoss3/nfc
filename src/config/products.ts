@@ -129,28 +129,6 @@ export const PRODUCTS: ProductConfig[] = [
     shippingNote: 'Envío gratis en Ciudad de Panamá',
     spec: 'Solución Completa de Captación Local',
     type: 'google'
-  },
-  {
-    id: 'producto-prueba-060',
-    aliases: ['prueba-060', 'test-060'],
-    sku: 'STP-TEST-060',
-    mpn: 'STP-TST-01',
-    gtin13: '0745301294849',
-    ratingValue: '5.0',
-    reviewCount: '1',
-    name: 'Producto de Prueba Real ($0.60 USD)',
-    category: 'test',
-    categoryLabel: 'PRUEBA REAL PASARELA',
-    material: 'PRUEBA EN VIVO CON TARJETA REAL',
-    price: 0.6,
-    priceFormatted: '$0.60',
-    badge: 'Prueba Real $0.60',
-    description: 'Producto especial para probar transacciones reales en producción con cobro de $0.60 USD.',
-    useCase: 'Pruebas de pago real.',
-    image: '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
-    images: ['/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp'],
-    spec: 'Prueba de pasarela en vivo',
-    type: 'test'
   }
 ];
 
@@ -162,9 +140,9 @@ export function getProductById(id: string): ProductConfig | undefined {
 }
 
 export function getMainHardwareProducts(): ProductConfig[] {
-  return PRODUCTS.filter((p) => !p.isPack);
+  return PRODUCTS.filter((p) => !p.isPack && p.category !== 'test' && p.type !== 'test');
 }
 
 export function getSpecialPacks(): ProductConfig[] {
-  return PRODUCTS.filter((p) => p.isPack);
+  return PRODUCTS.filter((p) => p.isPack && p.category !== 'test' && p.type !== 'test');
 }
