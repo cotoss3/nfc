@@ -81,6 +81,20 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon.png" />
+        {/* Google Analytics Tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQH5VW4KF9" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-VQH5VW4KF9', {
+                send_page_view: true
+              });
+            `,
+          }}
+        />
       </head>
       <body className="flex flex-col min-h-screen bg-gray-50 text-gray-900 antialiased">
         {/* JSON-LD: va en el body, no en <head>. En el App Router los hijos de
