@@ -42,6 +42,16 @@ export const metadata: Metadata = {
     title: 'starTAP Panamá | Tarjetas NFC para Reseñas de Google',
     description:
       'Multiplica tus reseñas de Google Maps con un toque. Dispositivos NFC sin mensualidades, con envíos a todo Panamá.',
+    // WhatsApp, Facebook y el resto muestran esta imagen al pegar el enlace.
+    // Sin ella la vista previa sale solo con texto.
+    images: [
+      {
+        url: '/og/startap-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Stand NFC de starTAP en el mostrador de un café, un cliente acercando el celular',
+      },
+    ],
   },
   robots: {
     index: true,

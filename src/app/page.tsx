@@ -14,8 +14,20 @@ export const metadata: Metadata = {
       'Aumenta tus clientes y valoraciones en Google Maps con placas y tarjetas NFC contactless. Envío en Panamá. Sin pagos mensuales ni suscripciones. ¡Compra hoy!',
     url: 'https://startap.com.pa/',
     siteName: 'starTAP Panamá',
+    images: [
+      {
+        url: '/og/startap-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Stand NFC de starTAP en el mostrador de un café, un cliente acercando el celular',
+      },
+    ],
     locale: 'es_PA',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og/startap-og.jpg'],
   },
 };
 
