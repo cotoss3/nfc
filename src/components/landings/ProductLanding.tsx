@@ -178,6 +178,23 @@ function ProductCarousel({
   );
 }
 
+function isColorDisabled(productId: string, colorName: string): boolean {
+  const normId = (productId || '').toLowerCase();
+  const normColor = (colorName || '').toLowerCase();
+
+  if (normId.includes('placa') || normId.includes('10001')) {
+    // Placa acrílica: solo Acrílico Transparente está disponible
+    return !normColor.includes('transparente');
+  }
+
+  // Tarjeta y Stand (y fallback): solo Blanco está disponible, Negro agotado
+  if (normColor.includes('negro')) {
+    return true;
+  }
+
+  return false;
+}
+
 export default function ProductLanding({ product }: { product: Product }) {
   const router = useRouter();
   const { addToCart } = useCart();
@@ -186,7 +203,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
   const [color, setColor] = useState(() => {
     const available = product.colors || copy?.coloresPorDefecto || [];
-    return available.find((c) => !c.toLowerCase().includes('negro')) || available[0] || 'Blanco Premium';
+    return available.find((c) => !isColorDisabled(product.id, c)) || available[0] || 'Blanco Premium';
   });
   const [businessName, setBusinessName] = useState('');
   const [hasCustomLogo, setHasCustomLogo] = useState(false);
@@ -220,8 +237,8 @@ export default function ProductLanding({ product }: { product: Product }) {
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
-    if (color.toLowerCase().includes('negro')) {
-      alert('La variación en color Negro se encuentra agotada temporalmente. Por favor selecciona la opción en Blanco.');
+    if (isColorDisabled(product.id, color)) {
+      alert('La variación de color seleccionada se encuentra agotada temporalmente. Por favor selecciona una opción disponible.');
       return;
     }
     if (!businessName) {
@@ -581,17 +598,19 @@ export default function ProductLanding({ product }: { product: Product }) {
                   </legend>
                   <div className="flex flex-wrap gap-2.5">
                     {colors.map((c) => {
+                      const isDisabled = isColorDisabled(product.id, c);
+                      const isTransparente = c.toLowerCase().includes('transparente');
                       const isBlack = c.toLowerCase().includes('negro');
                       return (
                         <button
                           key={c}
                           type="button"
-                          disabled={isBlack}
-                          onClick={() => !isBlack && setColor(c)}
+                          disabled={isDisabled}
+                          onClick={() => !isDisabled && setColor(c)}
                           aria-pressed={color === c}
-                          title={isBlack ? 'Variación en color Negro agotada' : c}
+                          title={isDisabled ? `Variación ${c} agotada` : c}
                           className={`py-2.5 px-4 text-xs font-bold rounded-xl border transition-all flex items-center gap-2 ${
-                            isBlack
+                            isDisabled
                               ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 line-through'
                               : color === c
                               ? 'border-brand-950 bg-brand-950 text-white shadow-md'
@@ -599,6 +618,7 @@ export default function ProductLanding({ product }: { product: Product }) {
                           }`}
                         >
                           <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                            isTransparente ? 'bg-sky-100/90 border border-sky-400/80 shadow-inner' :
                             isBlack ? 'bg-black opacity-50' :
                             c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
                             c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
@@ -607,7 +627,7 @@ export default function ProductLanding({ product }: { product: Product }) {
                             c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
                           }`} />
                           <span>{c.replace(/\s*\(Agotado\)/i, '')}</span>
-                          {isBlack && (
+                          {isDisabled && (
                             <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-100 text-red-700 no-underline">
                               Agotado
                             </span>

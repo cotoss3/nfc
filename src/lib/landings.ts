@@ -177,7 +177,7 @@ export const LANDINGS: LandingCopy[] = [
       { q: '¿Puedo solicitar el logo de mi negocio en la placa?', a: 'Sí. La placa viene con el diseño estándar y puedes añadir la impresión de tu logo si lo requieres (+ $5.00).' },
       { q: '¿Cobran mensualidades por usar la placa?', a: 'No. Es un pago único por el dispositivo, sin suscripciones obligatorias ni renovaciones anuales.' },
     ],
-    coloresPorDefecto: ['Acrílico Blanco', 'Acrílico Negro'],
+    coloresPorDefecto: ['Acrílico Transparente', 'Acrílico Blanco', 'Acrílico Negro'],
   },
   {
     ids: ['pack-trio-comercial', 'pack-trio'],

@@ -10,6 +10,23 @@ import ProductLanding from '@/components/landings/ProductLanding';
 import { getLandingCopy } from '@/lib/landings';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 
+function isColorDisabled(productId: string, colorName: string): boolean {
+  const normId = (productId || '').toLowerCase();
+  const normColor = (colorName || '').toLowerCase();
+
+  if (normId.includes('placa') || normId.includes('10001')) {
+    // Placa acrílica: solo Acrílico Transparente está disponible
+    return !normColor.includes('transparente');
+  }
+
+  // Tarjeta y Stand (y fallback): solo Blanco está disponible, Negro agotado
+  if (normColor.includes('negro')) {
+    return true;
+  }
+
+  return false;
+}
+
 export default function ProductDetailClient({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { addToCart } = useCart();
@@ -35,10 +52,13 @@ export default function ProductDetailClient({ params }: { params: { id: string }
       setProduct(found);
       setSelectedImage(found.image);
       
-      const defaultColors = found.colors || (found.category === 'cards' 
+      const landingCopy = getLandingCopy(found.id);
+      const defaultColors = found.colors || (landingCopy?.coloresPorDefecto) || (found.category === 'cards' 
         ? ['Blanco Premium', 'Negro Premium'] 
+        : found.category === 'plates'
+        ? ['Acrílico Transparente', 'Acrílico Blanco', 'Acrílico Negro']
         : ['Blanco Brillante', 'Negro Mate']);
-      const validColor = defaultColors.find((c) => !c.toLowerCase().includes('negro')) || defaultColors[0];
+      const validColor = defaultColors.find((c) => !isColorDisabled(found.id, c)) || defaultColors[0];
       setColor(validColor);
     }
   }, [params.id]);
@@ -51,8 +71,11 @@ export default function ProductDetailClient({ params }: { params: { id: string }
     return <ProductLanding product={product} />;
   }
 
-  const colors = product.colors || (product.category === 'cards' 
+  const landingCopy = getLandingCopy(product.id);
+  const colors = product.colors || landingCopy?.coloresPorDefecto || (product.category === 'cards' 
     ? ['Blanco Premium', 'Negro Premium'] 
+    : product.category === 'plates'
+    ? ['Acrílico Transparente', 'Acrílico Blanco', 'Acrílico Negro']
     : ['Blanco Brillante', 'Negro Mate']);
 
   const logoPrice = hasCustomLogo ? 5 : 0;
@@ -74,8 +97,8 @@ export default function ProductDetailClient({ params }: { params: { id: string }
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
-    if (color.toLowerCase().includes('negro')) {
-      alert('La variación en color Negro se encuentra agotada temporalmente. Por favor selecciona la opción en Blanco.');
+    if (isColorDisabled(product.id, color)) {
+      alert('La variación de color seleccionada se encuentra agotada temporalmente. Por favor selecciona una opción disponible.');
       return;
     }
     if (!businessName) {
@@ -219,16 +242,18 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                 <label className="text-xs font-bold uppercase tracking-wider text-brand-900 block">Acabado / Material</label>
                 <div className="flex flex-wrap gap-2.5">
                   {colors.map((c) => {
+                    const isDisabled = isColorDisabled(product.id, c);
+                    const isTransparente = c.toLowerCase().includes('transparente');
                     const isBlack = c.toLowerCase().includes('negro');
                     return (
                       <button
                         type="button"
                         key={c}
-                        disabled={isBlack}
-                        onClick={() => !isBlack && setColor(c)}
-                        title={isBlack ? 'Variación en color Negro agotada' : c}
+                        disabled={isDisabled}
+                        onClick={() => !isDisabled && setColor(c)}
+                        title={isDisabled ? `Variación ${c} agotada` : c}
                         className={`py-2.5 px-4 text-xs font-bold uppercase tracking-wider border rounded-xl transition-all flex items-center gap-2 ${
-                          isBlack
+                          isDisabled
                             ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 line-through'
                             : color === c
                             ? 'border-brand-950 bg-brand-950 text-white shadow-md'
@@ -236,6 +261,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                         }`}
                       >
                         <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                          isTransparente ? 'bg-sky-100/90 border border-sky-400/80 shadow-inner' :
                           isBlack ? 'bg-black opacity-50' :
                           c.toLowerCase().includes('blanco') ? 'bg-white border border-brand-400' :
                           c.toLowerCase().includes('dorado') ? 'bg-amber-400' :
@@ -244,7 +270,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                           c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
                         }`} />
                         <span>{c.replace(/\s*\(Agotado\)/i, '')}</span>
-                        {isBlack && (
+                        {isDisabled && (
                           <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-100 text-red-700 normal-case no-underline">
                             Agotado
                           </span>
