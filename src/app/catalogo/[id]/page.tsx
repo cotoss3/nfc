@@ -43,7 +43,7 @@ export async function generateMetadata({
       url: `${BASE_URL}/catalogo/${product.id}`,
       siteName: 'starTAP Panamá',
       images: product.image ? [`${BASE_URL}${product.image}`] : undefined,
-      type: 'website', // Facebook uses og:type
+      type: 'website',
     },
     // Meta (Facebook/Instagram) Catalog Product Tags
     other: {
