@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Alerta interna de nuevo suscriptor
     sendEmail({
-      to: 'info@datakorex.com',
+      to: 'info@startap.com.pa',
       subject: `📩 Nuevo Suscriptor: ${cleanEmail}`,
       html: `
         <div style="font-family: sans-serif; padding: 20px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">

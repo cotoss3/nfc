@@ -28,8 +28,12 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
     };
   }
 
-  // Remitente predeterminado con la marca starTAP Panamá a través de DataKorex
-  const from = payload.from || 'starTAP Panamá <pedidos@datakorex.com>';
+  // Remitente predeterminado: dominio propio de starTAP.
+  // El subdominio "send." es el que está verificado en Resend (registros
+  // send._domainkey / send SPF-MX en el DNS de Vercel). El buzón real que
+  // atiende las respuestas es info@startap.com.pa, en BanaHosting.
+  const from = process.env.EMAIL_FROM?.trim() || 'starTAP Panamá <pedidos@send.startap.com.pa>';
+  const replyTo = process.env.EMAIL_REPLY_TO?.trim() || 'info@startap.com.pa';
 
   try {
     const res = await fetch(RESEND_API_URL, {
@@ -43,7 +47,7 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
         to: Array.isArray(payload.to) ? payload.to : [payload.to],
         subject: payload.subject,
         html: payload.html,
-        reply_to: payload.reply_to || 'info@datakorex.com',
+        reply_to: payload.reply_to || replyTo,
       }),
       cache: 'no-store',
     });
@@ -68,7 +72,7 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
             to: ['fbcontrerras@gmail.com'],
             subject: `[PROPIETARIO] ${payload.subject}`,
             html: payload.html,
-            reply_to: payload.reply_to || 'info@datakorex.com',
+            reply_to: payload.reply_to || replyTo,
           }),
           cache: 'no-store',
         });

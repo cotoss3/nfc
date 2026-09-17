@@ -193,7 +193,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>info@datakorex.com</span>
+                <span>info@startap.com.pa</span>
               </li>
             </ul>
           </div>

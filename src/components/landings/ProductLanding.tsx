@@ -834,6 +834,27 @@ export default function ProductLanding({ product }: { product: Product }) {
           </div>
         </div>
       </section>
+
+      {/* Sticky Mobile Buy Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-brand-200 p-3.5 shadow-[0_-8px_20px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
+        <div>
+          <span className="text-[10px] text-brand-500 block uppercase font-extrabold tracking-wider">Total con envío</span>
+          <span className="text-xl font-black text-brand-950">${totalPrice.toFixed(2)}</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            const el = document.getElementById('checkout-section');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          className="shopify-btn-primary text-xs font-black uppercase px-5 py-3 rounded-xl shadow-lg flex items-center gap-1.5"
+        >
+          <span>Ordenar Ahora</span>
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export default function Page() {
         'image': 'https://startap.com.pa/images/posicionamiento-seo-google-maps-panama-startap.webp',
         'description': 'Dispositivos NFC y códigos QR para que negocios en Panamá multipliquen sus reseñas de Google Maps, sin mensualidades.',
         'telephone': '+507 6713-4341',
-        'email': 'info@datakorex.com',
+        'email': 'info@startap.com.pa',
         'priceRange': '$20.00 - $50.00',
         'currenciesAccepted': 'USD',
         'paymentAccepted': 'Yappy, Visa, Mastercard',

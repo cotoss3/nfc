@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     // 2. Alerta al administrador
     const adminHtml = buildAdminOrderEmailHtml(body);
     const adminRes = await sendEmail({
-      to: 'info@datakorex.com',
+      to: 'ventas@startap.com.pa',
       subject: `🔔 NUEVO PEDIDO #${body.orderId} - ${body.customerName} ($${body.total.toFixed(2)} USD)`,
       html: adminHtml,
     });

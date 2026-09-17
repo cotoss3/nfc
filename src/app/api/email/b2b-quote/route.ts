@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     // Enviar a admin + copia a cliente
     const result = await sendEmail({
-      to: ['info@datakorex.com', body.email],
+      to: ['ventas@startap.com.pa', body.email],
       subject: `💼 Solicitud de Cotización B2B: ${body.businessName} (${body.quantity} uds)`,
       html,
       reply_to: body.email,

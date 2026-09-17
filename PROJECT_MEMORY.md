@@ -504,3 +504,37 @@ Todo se armó desde la documentación oficial de Tilopay.
 * `FOTOS_LANDINGS.md` — lista de las 15 fotos que faltan y cómo tomarlas.
 
 *Última actualización:* 2026-09-15 (ver bitácora, sección 10) · anterior: 2026-09-14 (ver bitácora, sección 10) · anterior: 2026-09-08 (auditoría + CLAUDE.md; anterior: 2026-09-07 (Integración de Landings, Reclamación de TAPs, Identidad Cyan y Supabase Setup)
+
+## 16 sep 2026 · Correo propio + campaña Meta
+
+**Correo startap.com.pa (terminado).** DNS en Vercel: MX `bh8954.banahosting.com` (p.0),
+SPF, DMARC y DKIM `default._domainkey`. cPanel ya firma con DKIM. Buzón único
+`info@startap.com.pa` + reenviadores `ventas@`, `soporte@`, `facturacion@` → info@.
+
+**Web (terminado).** Todo `info@datakorex.com` sustituido por el dominio propio:
+- `src/lib/resend.ts`: remitente ahora `EMAIL_FROM` (por defecto
+  `starTAP Panamá <pedidos@send.startap.com.pa>` — el subdominio verificado en Resend)
+  y `EMAIL_REPLY_TO` (por defecto `info@startap.com.pa`).
+- Pedidos y cotizaciones → `ventas@startap.com.pa`; suscripciones → `info@`.
+- Se quitó `fbcontrerras@gmail.com` de los destinatarios del callback de Tilopay.
+- Footer, structured data, envíos, privacidad, términos y plantillas de correo.
+`npx tsc --noEmit` pasa limpio.
+
+**Campaña Meta (a medias, en borrador).** Cuenta 3382566721898189.
+Campaña `starTAP | Fase 1 - Test de publicos | WhatsApp`, objetivo Interacción,
+presupuesto por conjunto (no CBO), Advantage+ de público desactivado.
+- Conjunto A `A - Admins de paginas FB`: Panamá, 28-55, comportamiento
+  "Administradores de páginas de Facebook", $5/día. LISTO.
+- Conjunto B `B - Gastronomia`: comportamiento "Administradores de páginas de comida
+  y restaurantes" + sector "Alimentación y restaurantes" + interés "Restaurantes
+  (comedor)". ~700-820 mil. LISTO.
+- Conjunto C `C - Belleza y cuidado personal`: comportamiento "Administradores de
+  páginas de salud y belleza". LISTO.
+- Conjunto D `D - Amplio`: sin intereses ni comportamientos, solo Panamá 28-55.
+  ~1,6-1,9 millones. Es la referencia del test. LISTO.
+Los cuatro a $5/día, Panamá, 28-55, ambos sexos, sin creativo.
+
+**Bloqueos que dependen de Fernando:**
+- El destino es Messenger porque WhatsApp pide "Conectar perfil" (verificación del
+  6713-4341 por código). Sin eso la campaña no cumple su propósito.
+- Meta pide confirmar datos de la cuenta en "Resumen de la cuenta" antes de publicar.

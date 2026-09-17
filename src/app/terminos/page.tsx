@@ -57,7 +57,7 @@ export default function TerminosPage() {
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
               <p><strong className="text-slate-900">Razón Comercial / Marca:</strong> KoreNet Cloud & Web / StarTAP Panamá</p>
               <p><strong className="text-slate-900">Titular Registrado:</strong> Fernando Contreras</p>
-              <p><strong className="text-slate-900">Correo Electrónico de Contacto:</strong> info@datakorex.com</p>
+              <p><strong className="text-slate-900">Correo Electrónico de Contacto:</strong> info@startap.com.pa</p>
               <p><strong className="text-slate-900">Atención Telefónica y WhatsApp:</strong> +507 6713-4341</p>
               <p><strong className="text-slate-900">Ubicación:</strong> Ciudad de Panamá, República de Panamá</p>
             </div>
@@ -130,7 +130,7 @@ export default function TerminosPage() {
               <li>Problemas derivados de cambios o bloqueos efectuados unilateralmente por Google Maps en la ficha del comercio del cliente.</li>
             </ul>
             <p>
-              Para hacer efectiva una garantía, el cliente debe reportar el inconveniente adjuntando foto o video al correo <strong className="text-slate-900">info@datakorex.com</strong> o al WhatsApp <strong className="text-slate-900">+507 6713-4341</strong>.
+              Para hacer efectiva una garantía, el cliente debe reportar el inconveniente adjuntando foto o video al correo <strong className="text-slate-900">info@startap.com.pa</strong> o al WhatsApp <strong className="text-slate-900">+507 6713-4341</strong>.
             </p>
           </section>
 

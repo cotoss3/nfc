@@ -310,7 +310,7 @@ export default function CorporativoClient() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">Correo Electrónico</span>
-                    <span>info@datakorex.com</span>
+                    <span>info@startap.com.pa</span>
                   </div>
                 </div>
 

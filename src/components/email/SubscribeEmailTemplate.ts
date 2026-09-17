@@ -178,7 +178,7 @@ export function buildWelcomeSubscriptionEmailHtml(email: string): string {
                   starTAP Panamá — Marca de DataKorex
                 </p>
                 <p style="font-size:11px; margin:0 0 8px 0; color:#cbd5e1;">
-                  Ciudad de Panamá | <a href="mailto:info@datakorex.com" style="color:#fbbf24; text-decoration:none;">info@datakorex.com</a>
+                  Ciudad de Panamá | <a href="mailto:info@startap.com.pa" style="color:#fbbf24; text-decoration:none;">info@startap.com.pa</a>
                 </p>
                 <p style="font-size:10px; margin:0; color:#64748b; line-height: 1.4;">
                   Recibiste este correo porque te suscribiste en <a href="https://startap.com.pa" style="color:#94a3b8; text-decoration:underline;">startap.com.pa</a>.<br/>

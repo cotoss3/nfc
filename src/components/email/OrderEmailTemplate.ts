@@ -192,7 +192,7 @@ export function buildCustomerOrderEmailHtml(data: OrderEmailParams): string {
                   Desarrollado y Operado por DataKorex (datakorex.com)
                 </p>
                 <p style="font-size:10px; margin:0; color:#64748b;">
-                  Ciudad de Panamá | Arraiján | Tel: +507 6713-4341 | info@datakorex.com
+                  Ciudad de Panamá | Arraiján | Tel: +507 6713-4341 | info@startap.com.pa
                 </p>
               </td>
             </tr>

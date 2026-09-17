@@ -89,7 +89,7 @@ export function buildQuoteEmailHtml(data: QuoteEmailParams): string {
                   starTAP Panamá B2B Corporativo — DataKorex
                 </p>
                 <p style="font-size:10px; margin:0; color:#64748b;">
-                  Arraiján, Panamá | info@datakorex.com
+                  Arraiján, Panamá | info@startap.com.pa
                 </p>
               </td>
             </tr>

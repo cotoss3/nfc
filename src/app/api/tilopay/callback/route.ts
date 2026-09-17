@@ -47,7 +47,7 @@ async function handleCallback(req: NextRequest) {
   }
 
   let isSuccess = false;
-  let customerEmail = 'info@datakorex.com';
+  let customerEmail = 'info@startap.com.pa';
   let totalAmount = 0;
 
   if (order) {
@@ -101,7 +101,7 @@ async function handleCallback(req: NextRequest) {
 
     // 2. ENVIAR CORREO DE CONFIRMACIÓN A CLIENTE Y VENDEDOR VÍA RESEND API
     try {
-      const recipients = Array.from(new Set([customerEmail, 'info@datakorex.com', 'fbcontrerras@gmail.com']));
+      const recipients = Array.from(new Set([customerEmail, 'ventas@startap.com.pa']));
       const html = buildCustomerOrderEmailHtml({
         orderId: order,
         customerName: customerEmail.split('@')[0] || 'Cliente',

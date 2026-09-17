@@ -57,7 +57,7 @@ export default function PrivacidadPage() {
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
               <p><strong className="text-slate-900">Razón Comercial:</strong> KoreNet Cloud & Web (StarTAP Panamá)</p>
               <p><strong className="text-slate-900">Titular Registrado:</strong> Fernando Contreras</p>
-              <p><strong className="text-slate-900">Correo Electrónico de Privacidad:</strong> info@datakorex.com</p>
+              <p><strong className="text-slate-900">Correo Electrónico de Privacidad:</strong> info@startap.com.pa</p>
               <p><strong className="text-slate-900">Teléfono / WhatsApp de Atención:</strong> +507 6713-4341</p>
               <p><strong className="text-slate-900">Jurisdicción:</strong> República de Panamá</p>
             </div>
@@ -131,7 +131,7 @@ export default function PrivacidadPage() {
               De conformidad con la Ley 81 de 2019 de Panamá, tienes derecho a acceder a tus datos personales almacenados en nuestros sistemas, solicitar su rectificación en caso de error, exigir su cancelación o ponerte a su tratamiento.
             </p>
             <p>
-              Para ejercer cualquiera de tus derechos ARCO, debes enviar una solicitud por escrito adjuntando copia de tu documento de identidad personal (Cédula o Pasaporte) a la dirección de correo: <strong className="text-slate-900">info@datakorex.com</strong>. Atenderemos tu solicitud en los plazos fijados por la legislación panameña.
+              Para ejercer cualquiera de tus derechos ARCO, debes enviar una solicitud por escrito adjuntando copia de tu documento de identidad personal (Cédula o Pasaporte) a la dirección de correo: <strong className="text-slate-900">info@startap.com.pa</strong>. Atenderemos tu solicitud en los plazos fijados por la legislación panameña.
             </p>
           </section>
 
