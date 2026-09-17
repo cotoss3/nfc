@@ -429,7 +429,7 @@ export default function ProductLanding({ product }: { product: Product }) {
               </div>
             </div>
             <Foto
-              src={fotos[3]}
+              src={fotos[copy.beneficios.length + 1]}
               alt={`Panel de control starTAP mostrando los escaneos del ${product.name}`}
               ratio="aspect-[16/9]"
             />

@@ -85,6 +85,13 @@ export const LANDINGS: LandingCopy[] = [
         icono: 'shield',
         imagenAlt: 'Detalle del acabado en PVC técnico del stand NFC starTAP',
       },
+      {
+        titulo: 'Confianza instantánea para tus clientes',
+        texto:
+          'El 93% de los consumidores leen reseñas antes de comprar. Destacar tus 5 estrellas en formato físico genera una prueba social inmediata que aumenta tu credibilidad y multiplica tus conversiones en mostrador.',
+        icono: 'sparkles',
+        imagenAlt: 'Infografía sobre el aumento de confianza al usar starTAP en el negocio',
+      },
     ],
     pasos: [
       { titulo: 'Colócalo a la vista', texto: 'En tu caja registradora, recepción o mesas. Su diseño llama la atención.' },
