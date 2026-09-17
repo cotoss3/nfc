@@ -43,6 +43,15 @@ export async function generateMetadata({
       url: `${BASE_URL}/catalogo/${product.id}`,
       siteName: 'starTAP Panamá',
       images: product.image ? [`${BASE_URL}${product.image}`] : undefined,
+      type: 'website', // Facebook uses og:type
+    },
+    // Meta (Facebook/Instagram) Catalog Product Tags
+    other: {
+      'product:price:amount': product.price.toFixed(2),
+      'product:price:currency': 'USD',
+      'product:availability': 'in stock',
+      'product:condition': 'new',
+      'product:retailer_item_id': product.sku || `STP-${product.id.toUpperCase()}`
     },
   };
 }
