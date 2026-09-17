@@ -302,7 +302,15 @@ class LocalDbService {
     if (deletedIds.includes(normalizedId)) return undefined;
 
     const fromStorage = this.getProducts().find(p => p.id.trim().toLowerCase() === normalizedId);
-    if (fromStorage) return fromStorage;
+    if (fromStorage) {
+      // Sync images with central config to prevent cache invalidation issues
+      const central = getCentralProductById(normalizedId);
+      if (central) {
+        fromStorage.image = central.image;
+        fromStorage.images = central.images;
+      }
+      return fromStorage;
+    }
 
     const central = getCentralProductById(normalizedId);
     if (central && !deletedIds.includes(central.id.trim().toLowerCase())) {
