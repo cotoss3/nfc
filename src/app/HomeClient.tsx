@@ -109,7 +109,7 @@ export default function HomeClient() {
             </h1>
 
             <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-2xl font-medium">
-              Tu cliente aproxima su teléfono al mostrador y publica la reseña en 5 segundos. Llega lista para usar, configurada con tu ficha de Google Maps y sin mensualidades.
+              Tu cliente aproxima su teléfono al mostrador y publica la reseña en 5 segundos. Es auto-configurable al llegar. Se vincula con tu ficha de Google Maps en un toque y sin mensualidades.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3.5 pt-2">
@@ -357,7 +357,7 @@ export default function HomeClient() {
                 Colócala en caja o mostrador
               </h3>
               <p className="text-slate-600 text-xs leading-relaxed">
-                Lista y configurada con el enlace oficial de tu negocio. Retiras la protección de la cinta 3M y la fijas en tu recepción o mesa.
+                Auto-configurable en segundos. Retiras la protección de la cinta 3M, la vinculas con tu celular y la fijas en tu recepción.
               </p>
             </div>
 
@@ -507,7 +507,7 @@ export default function HomeClient() {
             Comienza a Captar Reseñas de 5 Estrellas Hoy
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-            Pide tu placa en línea con pago por Yappy o tarjeta. Te la enviamos configurada y lista para colocar en tu mostrador.
+            Pide tu placa en línea con pago por Yappy o tarjeta. Te la enviamos lista para colocar en tu mostrador y auto-configurar en segundos.
           </p>
           <div className="pt-2 flex flex-col sm:flex-row gap-3.5 justify-center">
             <Link

@@ -320,7 +320,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                   <span>100% Auto-Configurable</span>
                 </div>
                 <p className="text-xs text-amber-800 leading-relaxed">
-                  Tu dispositivo llega listo y pre-programado. En tu primer toque lo vinculas a tu negocio en 30 segundos sin necesidad de ingresar URLs complicadas ahora.
+                  Tu dispositivo es auto-configurable al llegar. En tu primer toque lo vinculas a tu negocio en 30 segundos sin necesidad de ingresar URLs ahora.
                 </p>
               </div>
 

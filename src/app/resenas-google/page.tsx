@@ -293,7 +293,7 @@ export default function ResenasGoogleHub() {
                 ¿Listo para Equipar Tu Comercio en Panamá?
               </h2>
               <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-relaxed">
-                Adquiere tus dispositivos NFC + QR programados y configurados con tu enlace directo. Pago único sin mensualidades y con envío a todo Panamá.
+                Adquiere tus dispositivos NFC + QR auto-configurables en segundos con tu enlace directo. Pago único sin mensualidades y con envío a todo Panamá.
               </p>
             </div>
 

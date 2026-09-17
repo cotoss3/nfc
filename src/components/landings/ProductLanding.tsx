@@ -604,7 +604,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                   <p className="text-xs text-amber-800 leading-relaxed">
 
-                    Llega listo y pre-programado. En el primer toque lo vinculas a tu negocio en 30
+                    Es auto-configurable al llegar. En tu primer toque lo vinculas a tu negocio en 30
 
                     segundos, sin tener que darnos URLs por adelantado.
 

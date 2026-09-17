@@ -1240,7 +1240,7 @@ export default function CheckoutPage() {
                     </div>
                     <ul className="space-y-1.5 text-[11px] text-slate-500">
                       <li>• Reposición garantizada por 90 días ante cualquier falla.</li>
-                      <li>• Dispositivos configurados y listos para usar sin apps.</li>
+                      <li>• Dispositivos auto-configurables al llegar, sin apps y listos para usar.</li>
                       <li>• Soporte personalizado por WhatsApp en Panamá.</li>
                     </ul>
                   </div>

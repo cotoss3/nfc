@@ -31,7 +31,7 @@ export async function generateMetadata({
     };
   }
 
-  const shortDesc = `${product.description} Pago único sin mensualidades. Configurado y listo para usar en tu negocio en Panamá. Envíos a todo el país.`;
+  const shortDesc = `${product.description} Pago único sin mensualidades. Auto-configurable al llegar a tu negocio en Panamá. Envíos a todo el país.`;
 
   return {
     title: `${product.name} en Panamá | Pago Único Sin Mensualidades`,

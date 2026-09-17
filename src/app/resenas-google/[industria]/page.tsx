@@ -192,7 +192,7 @@ export default function IndustriaPage({
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Instalación</span>
-                <span className="font-extrabold text-emerald-700 text-sm block">100% Configurado • Listo en 0s</span>
+                <span className="font-extrabold text-emerald-700 text-sm block">Auto-configurable • Listo en segundos</span>
               </div>
             </div>
 

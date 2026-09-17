@@ -101,7 +101,7 @@ export const LANDINGS: LandingCopy[] = [
     faqs: [
       { q: '¿Necesito pagar alguna mensualidad o suscripción?', a: 'No, el pago es único. Compras tu Stand NFC una vez y te funciona para siempre, sin cobros ocultos ni mantenimiento.' },
       { q: '¿Funciona con iPhone y Android?', a: 'Sí. Todos los smartphones modernos traen lector NFC integrado. Para modelos antiguos, el Stand incluye un código QR impreso HD.' },
-      { q: '¿Cómo configuran el enlace hacia mi negocio?', a: 'Al procesar tu pedido programamos el chip para que apunte a tu perfil de Google Maps. Te llega listo para usar.' },
+      { q: '¿Cómo configuran el enlace hacia mi negocio?', a: 'No necesitas enviarnos ningún enlace al comprar. Es auto-configurable: lo vinculas a tu perfil de Google Maps en segundos cuando te llegue.' },
       { q: '¿Puedo personalizarlo con el logo de mi negocio?', a: 'Sí. Los dispositivos incluyen su diseño base y puedes solicitar la impresión de tu logo personalizado si lo deseas (+ $5.00).' },
       { q: '¿Si cambio la ubicación de mi local, debo comprar otro Stand?', a: 'No. Desde tu panel actualizas el enlace hacia donde dirige el Stand en cualquier momento, sin costo.' },
     ],
