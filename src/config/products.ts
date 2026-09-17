@@ -96,14 +96,12 @@ export const PRODUCTS: ProductConfig[] = [
     useCase: 'Mesas de restaurantes, cafeterías, escritorios y clínicas.',
     image: '/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp',
     images: [
-      '/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp',
-      '/products/NFC10002/stand-nfc-escaneo-restaurante-panama.webp',
-      '/products/NFC10002/stand-nfc-taller-mecanico-clientes-felices.webp',
-      '/products/NFC10002/stand-nfc-aumento-confianza-seo-local.webp',
-      '/products/NFC10002/panel-administracion-startap-nfc.webp',
-      '/products/NFC10002/NFC_10002_Stan.webp',
-      '/products/NFC10002/stand-nfc-resenas-google-frontal.webp'
-    ],
+        '/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp',
+        '/products/NFC10002/stand-nfc-taller-mecanico-clientes-felices.webp',
+        '/products/NFC10002/stand-nfc-aumento-confianza-seo-local.webp',
+        '/products/NFC10002/stand-nfc-escaneo-restaurante-panama.webp',
+        '/products/NFC10002/panel-administracion-startap-nfc.webp'
+      ],
     spec: 'Ángulo Inclinado Ergonómico + Antena NFC Dual',
     type: 'google'
   },
