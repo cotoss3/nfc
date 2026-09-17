@@ -432,7 +432,8 @@ export default function ProductLanding({ product }: { product: Product }) {
   const qrPrice = hasQrCode ? 3 : 0;
 
   const unitPrice = product.price + logoPrice + qrPrice;
-  const totalPrice = (unitPrice * quantity) + (addUpsellCard ? 15 * quantity : 0);
+  const productTotal = (unitPrice * quantity) * (quantity > 1 ? 0.9 : 1);
+  const totalPrice = productTotal + (addUpsellCard ? 15 * quantity : 0);
 
 
 
@@ -1007,53 +1008,32 @@ export default function ProductLanding({ product }: { product: Product }) {
 
 
                 
-                  <div className="space-y-2 pt-2">
-
-                  <p className="text-xs sm:text-sm font-bold text-brand-950">Cantidad</p>
-
-                  <div className="flex items-center space-x-3">
-
-                    <button
-
-                      type="button"
-
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-
-                      aria-label="Reducir cantidad"
-
-                      className="w-11 h-11 flex items-center justify-center rounded-xl border border-brand-200 hover:bg-brand-100 font-extrabold text-lg text-brand-800 transition-colors"
-
-                    >
-
-                      ��
-
-                    </button>
-
-                    <span className="font-black text-lg text-brand-950 w-10 text-center" aria-live="polite">
-
-                      {quantity}
-
-                    </span>
-
-                    <button
-
-                      type="button"
-
-                      onClick={() => setQuantity(quantity + 1)}
-
-                      aria-label="Aumentar cantidad"
-
-                      className="w-11 h-11 flex items-center justify-center rounded-xl border border-brand-200 hover:bg-brand-100 font-extrabold text-lg text-brand-800 transition-colors"
-
-                    >
-
-                      +
-
-                    </button>
-
+                                    <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs sm:text-sm font-bold text-brand-950">Cantidad</p>
+                      {quantity > 1 && (
+                        <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-200 shadow-sm">
+                          10% de desc. aplicado
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[1, 3, 5, 10].map((qty) => (
+                        <button
+                          key={qty}
+                          type="button"
+                          onClick={() => setQuantity(qty)}
+                          className={`py-2.5 rounded-xl border font-bold text-sm sm:text-base transition-all ${
+                            quantity === qty
+                              ? 'bg-brand-950 text-white border-brand-950 shadow-md scale-[1.02]'
+                              : 'bg-white text-brand-700 border-brand-200 hover:bg-brand-50 hover:border-brand-300'
+                          }`}
+                        >
+                          {qty} {qty === 1 ? 'ud' : 'uds'}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-
-                </div>
 
 
 
