@@ -23,6 +23,7 @@ import {
   MessageCircle,
   Image as ImageIcon,
   MapPin,
+  X,
   AlertCircle,
 } from 'lucide-react';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
@@ -199,6 +200,7 @@ export default function ProductLanding({ product }: { product: Product }) {
   });
   const [businessName, setBusinessName] = useState('');
   const [hasCustomLogo, setHasCustomLogo] = useState(false);
+  const [isMobileCheckoutOpen, setIsMobileCheckoutOpen] = useState(false);
   const [hasQrCode, setHasQrCode] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState('');
@@ -271,256 +273,10 @@ export default function ProductLanding({ product }: { product: Product }) {
     `Hola, me interesa el ${product.name} de starTAP. ¿Me das más información?`
   )}`;
 
-  return (
-    <div className="w-full bg-white font-sans text-brand-800">
-      {/* 1. HERO */}
-      <section className="bg-gradient-to-br from-white via-accent-50 to-accent-100 border-b border-accent-200 pt-16 pb-16 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 order-2 lg:order-1">
-            <div className="inline-flex items-center space-x-2 bg-white px-3 py-1 rounded-full shadow-sm text-xs font-bold text-accent-600 border border-accent-100">
-              <Star className="fill-accent-500 w-3 h-3 text-accent-500" aria-hidden="true" />
-              <span>{copy.etiqueta}</span>
-            </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-950 leading-[1.1] tracking-tight">
-              {copy.h1} <span className="text-accent-500">{copy.h1Destacado}</span>
-            </h1>
-
-            <p className="text-lg text-brand-600 max-w-lg leading-relaxed">{copy.subtitulo}</p>
-
-            <div className="pt-4 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={scrollToCheckout}
-                className="shopify-btn-primary text-lg py-4 px-10 rounded-full shadow-lg hover:scale-105 transition-transform font-bold"
-              >
-                Comprar por ${product.price.toFixed(2)}
-              </button>
-              <a
-                href={whatsappProducto}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Escribir por WhatsApp al ${WHATSAPP_NUMERO} sobre el ${product.name}`}
-                className="inline-flex items-center justify-center gap-2 text-lg py-4 px-8 rounded-full font-bold border-2 border-brand-950 text-brand-950 hover:bg-brand-950 hover:text-white transition-colors"
-              >
-                <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                Escríbenos
-              </a>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-brand-500 pt-4">
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Pago único
-              </span>
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Sin apps
-              </span>
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Envío a todo Panamá
-              </span>
-            </div>
-          </div>
-
-          <div className="order-1 lg:order-2">
-            <ProductCarousel
-              images={fotos}
-              alt={copy.heroImagenAlt}
-              ratio="aspect-[4/5]"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* 1.5 BARRA DE CONFIANZA */}
-      <section className="bg-white border-b border-brand-200 py-8 px-4" aria-label="Condiciones de compra">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: Truck, ...CONDICIONES.envio },
-            { icon: ShieldCheck, ...CONDICIONES.garantia },
-            { icon: CreditCard, ...CONDICIONES.pago },
-            { icon: Headset, ...CONDICIONES.soporte },
-          ].map(({ icon: Icon, titulo, texto }) => (
-            <div key={titulo} className="flex gap-3">
-              <Icon className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-              <div>
-                <h2 className="text-sm font-bold text-brand-950">{titulo}</h2>
-                <p className="text-xs text-brand-500 leading-relaxed mt-0.5">{texto}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 2. BENEFICIOS */}
-      <section className="py-24 px-4 bg-white">
-        <div className="max-w-6xl mx-auto space-y-24">
-          {copy.beneficios.map((b, i) => {
-            const Icon = ICONOS[b.icono];
-            const imagenPrimero = i % 2 === 0;
-            return (
-              <div key={b.titulo} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <Foto
-                  src={fotos[i + 1]}
-                  alt={b.imagenAlt}
-                  className={imagenPrimero ? '' : 'order-1 lg:order-2'}
-                />
-                <div className={`space-y-6 ${imagenPrimero ? '' : 'order-2 lg:order-1'}`}>
-                  <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center text-accent-500">
-                    <Icon className="w-6 h-6" aria-hidden="true" />
-                  </div>
-                  <h2 className="text-3xl font-black text-brand-950">{b.titulo}</h2>
-                  <p className="text-lg text-brand-600 leading-relaxed">{b.texto}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 2.5 SOFTWARE */}
-      <section className="py-20 px-4 bg-brand-50 border-y border-brand-200">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <div className="inline-flex items-center space-x-2 bg-accent-100 text-accent-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-              <span>Panel starTAP incluido</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-brand-950">
-              Control de tus enlaces y estadísticas en tiempo real
-            </h2>
-            <p className="text-brand-600 leading-relaxed">
-              Cada dispositivo viene con tu propia plataforma web, sin costo mensual. Reclamas tu equipo
-              en el panel, cambias el enlace hacia donde dirige (Google Maps, WhatsApp, Instagram) en
-              segundos y mides cuántas veces lo escanean tus clientes.
-            </p>
-            <ul className="space-y-3 text-sm font-semibold text-brand-700">
-              {[
-                'Cambio de enlace instantáneo sin reprogramar el chip',
-                'Estadísticas de escaneos por día y tipo de teléfono',
-                'Asigna dispositivos a distintos locales o empleados',
-              ].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-accent-500 flex-shrink-0" aria-hidden="true" />
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl border border-brand-200 shadow-xl space-y-4">
-            <div className="bg-brand-950 rounded-2xl p-6 text-white space-y-4">
-              <div className="flex justify-between items-center border-b border-brand-800 pb-3">
-                <span className="text-xs font-bold text-accent-400 uppercase tracking-widest">
-                  Panel starTAP
-                </span>
-                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-mono">
-                  Activo
-                </span>
-              </div>
-              <div>
-                <p className="text-xs text-brand-400">Dispositivo vinculado:</p>
-                <p className="font-bold text-sm text-white">
-                  {copy.nombreCorto} principal (STT-1001)
-                </p>
-              </div>
-              <div className="bg-brand-900 p-3 rounded-lg flex justify-between items-center text-xs">
-                <span>Enlace actual:</span>
-                <span className="font-mono text-accent-300 truncate max-w-[180px]">
-                  g.page/r/tu-negocio
-                </span>
-              </div>
-            </div>
-            <Foto
-              src={fotos[copy.beneficios.length + 1]}
-              alt={`Panel de control starTAP mostrando los escaneos del ${product.name}`}
-              ratio="aspect-[16/9]"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* 3. CÓMO FUNCIONA */}
-      <section className="py-20 bg-brand-950 text-white px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-black text-white">
-              Consigue reseñas en 3 simples pasos
-            </h2>
-            <p className="text-brand-300 text-lg">Es tan fácil que tus clientes lo harán por instinto.</p>
-          </div>
-          <ol className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {copy.pasos.map((p, i) => (
-              <li
-                key={p.titulo}
-                className="bg-brand-900 rounded-2xl p-8 border border-brand-800 text-center space-y-4"
-              >
-                <div className="w-12 h-12 bg-accent-500 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold mb-6">
-                  {i + 1}
-                </div>
-                <h3 className="text-xl font-bold text-white">{p.titulo}</h3>
-                <p className="text-brand-300 text-sm">{p.texto}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* 3.2 TESTIMONIOS — solo si hay reales */}
-      {TESTIMONIOS.length > 0 && (
-        <section className="py-20 px-4 bg-white border-b border-brand-200">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-black text-brand-950 text-center mb-12">
-              Negocios panameños que ya lo usan
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {TESTIMONIOS.map((t) => (
-                <figure
-                  key={t.negocio}
-                  className="rounded-2xl border border-brand-200 p-6 bg-white"
-                >
-                  <div className="flex gap-0.5 mb-3" aria-label="5 de 5 estrellas">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-accent-500 text-accent-500" aria-hidden="true" />
-                    ))}
-                  </div>
-                  <blockquote className="text-brand-600 text-sm leading-relaxed">{t.texto}</blockquote>
-                  <figcaption className="mt-4 text-xs">
-                    <span className="font-bold text-brand-950">{t.autor}</span>
-                    <span className="text-brand-500"> · {t.negocio}, {t.ciudad}</span>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 3.5 GUÍA DE AUTOCONFIGURACIÓN */}
-      <section className="py-12 px-4 bg-white border-b border-brand-200">
-        <div className="max-w-5xl mx-auto">
-          <AutoConfigGuide />
-        </div>
-      </section>
-
-      {/* 4. CHECKOUT */}
-      <section id="checkout-section" className="py-12 sm:py-20 px-4 sm:px-6 bg-brand-50">
-        <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-card border border-brand-200 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12">
-            {/* Left Column: Image / Gallery preview */}
-            <div className="lg:col-span-5 bg-brand-100/70 flex flex-col items-center justify-center p-6 sm:p-10 min-h-[280px] sm:min-h-[380px]">
-              <Foto
-                src={fotos[fotos.length - 1]}
-                alt={`${product.name} de starTAP, vista de producto`}
-                ratio="aspect-square"
-                className="w-full max-w-[340px] sm:max-w-[380px] mx-auto drop-shadow-md"
-              />
-              <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-brand-600 bg-white/90 px-3.5 py-1.5 rounded-full border border-brand-200/80 shadow-sm backdrop-blur-sm">
-                <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0" />
-                <span>Listo para usar en Panamá</span>
-              </div>
-            </div>
-
-            {/* Right Column: Checkout Config Form */}
-            <div className="lg:col-span-7 p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8 flex flex-col justify-between">
-              <div className="space-y-2">
+  const renderCheckoutForm = () => (
+    <div className="space-y-6 sm:space-y-8 flex flex-col justify-between">
+      <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 border border-accent-200 text-[11px] font-extrabold uppercase tracking-wide">
                   <Zap className="w-3.5 h-3.5" /> Configuración en 1 paso
                 </div>
@@ -792,6 +548,259 @@ export default function ProductLanding({ product }: { product: Product }) {
                   </p>
                 </div>
               </form>
+    </div>
+  );
+
+  return (
+    <div className="w-full bg-white font-sans text-brand-800">
+      {/* 1. HERO */}
+      <section className="bg-gradient-to-br from-white via-accent-50 to-accent-100 border-b border-accent-200 pt-16 pb-16 px-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6 order-2 lg:order-1">
+            <div className="inline-flex items-center space-x-2 bg-white px-3 py-1 rounded-full shadow-sm text-xs font-bold text-accent-600 border border-accent-100">
+              <Star className="fill-accent-500 w-3 h-3 text-accent-500" aria-hidden="true" />
+              <span>{copy.etiqueta}</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-brand-950 leading-[1.1] tracking-tight">
+              {copy.h1} <span className="text-accent-500">{copy.h1Destacado}</span>
+            </h1>
+
+            <p className="text-lg text-brand-600 max-w-lg leading-relaxed">{copy.subtitulo}</p>
+
+            <div className="pt-4 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={scrollToCheckout}
+                className="shopify-btn-primary text-lg py-4 px-10 rounded-full shadow-lg hover:scale-105 transition-transform font-bold"
+              >
+                Comprar por ${product.price.toFixed(2)}
+              </button>
+              <a
+                href={whatsappProducto}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Escribir por WhatsApp al ${WHATSAPP_NUMERO} sobre el ${product.name}`}
+                className="inline-flex items-center justify-center gap-2 text-lg py-4 px-8 rounded-full font-bold border-2 border-brand-950 text-brand-950 hover:bg-brand-950 hover:text-white transition-colors"
+              >
+                <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                Escríbenos
+              </a>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-brand-500 pt-4">
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Pago único
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Sin apps
+              </span>
+              <span className="flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Envío a todo Panamá
+              </span>
+            </div>
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <ProductCarousel
+              images={fotos}
+              alt={copy.heroImagenAlt}
+              ratio="aspect-[4/5]"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 1.5 BARRA DE CONFIANZA */}
+      <section className="bg-white border-b border-brand-200 py-8 px-4" aria-label="Condiciones de compra">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { icon: Truck, ...CONDICIONES.envio },
+            { icon: ShieldCheck, ...CONDICIONES.garantia },
+            { icon: CreditCard, ...CONDICIONES.pago },
+            { icon: Headset, ...CONDICIONES.soporte },
+          ].map(({ icon: Icon, titulo, texto }) => (
+            <div key={titulo} className="flex gap-3">
+              <Icon className="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div>
+                <h2 className="text-sm font-bold text-brand-950">{titulo}</h2>
+                <p className="text-xs text-brand-500 leading-relaxed mt-0.5">{texto}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 2. BENEFICIOS */}
+      <section className="py-24 px-4 bg-white">
+        <div className="max-w-6xl mx-auto space-y-24">
+          {copy.beneficios.map((b, i) => {
+            const Icon = ICONOS[b.icono];
+            const imagenPrimero = i % 2 === 0;
+            return (
+              <div key={b.titulo} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <Foto
+                  src={fotos[i + 1]}
+                  alt={b.imagenAlt}
+                  className={imagenPrimero ? '' : 'order-1 lg:order-2'}
+                />
+                <div className={`space-y-6 ${imagenPrimero ? '' : 'order-2 lg:order-1'}`}>
+                  <div className="w-12 h-12 bg-accent-100 rounded-xl flex items-center justify-center text-accent-500">
+                    <Icon className="w-6 h-6" aria-hidden="true" />
+                  </div>
+                  <h2 className="text-3xl font-black text-brand-950">{b.titulo}</h2>
+                  <p className="text-lg text-brand-600 leading-relaxed">{b.texto}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 2.5 SOFTWARE */}
+      <section className="py-20 px-4 bg-brand-50 border-y border-brand-200">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <div className="inline-flex items-center space-x-2 bg-accent-100 text-accent-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+              <span>Panel starTAP incluido</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-brand-950">
+              Control de tus enlaces y estadísticas en tiempo real
+            </h2>
+            <p className="text-brand-600 leading-relaxed">
+              Cada dispositivo viene con tu propia plataforma web, sin costo mensual. Reclamas tu equipo
+              en el panel, cambias el enlace hacia donde dirige (Google Maps, WhatsApp, Instagram) en
+              segundos y mides cuántas veces lo escanean tus clientes.
+            </p>
+            <ul className="space-y-3 text-sm font-semibold text-brand-700">
+              {[
+                'Cambio de enlace instantáneo sin reprogramar el chip',
+                'Estadísticas de escaneos por día y tipo de teléfono',
+                'Asigna dispositivos a distintos locales o empleados',
+              ].map((t) => (
+                <li key={t} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-accent-500 flex-shrink-0" aria-hidden="true" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-white p-6 rounded-3xl border border-brand-200 shadow-xl space-y-4">
+            <div className="bg-brand-950 rounded-2xl p-6 text-white space-y-4">
+              <div className="flex justify-between items-center border-b border-brand-800 pb-3">
+                <span className="text-xs font-bold text-accent-400 uppercase tracking-widest">
+                  Panel starTAP
+                </span>
+                <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-mono">
+                  Activo
+                </span>
+              </div>
+              <div>
+                <p className="text-xs text-brand-400">Dispositivo vinculado:</p>
+                <p className="font-bold text-sm text-white">
+                  {copy.nombreCorto} principal (STT-1001)
+                </p>
+              </div>
+              <div className="bg-brand-900 p-3 rounded-lg flex justify-between items-center text-xs">
+                <span>Enlace actual:</span>
+                <span className="font-mono text-accent-300 truncate max-w-[180px]">
+                  g.page/r/tu-negocio
+                </span>
+              </div>
+            </div>
+            <Foto
+              src={fotos[copy.beneficios.length + 1]}
+              alt={`Panel de control starTAP mostrando los escaneos del ${product.name}`}
+              ratio="aspect-[16/9]"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 3. CÓMO FUNCIONA */}
+      <section className="py-20 bg-brand-950 text-white px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-white">
+              Consigue reseñas en 3 simples pasos
+            </h2>
+            <p className="text-brand-300 text-lg">Es tan fácil que tus clientes lo harán por instinto.</p>
+          </div>
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {copy.pasos.map((p, i) => (
+              <li
+                key={p.titulo}
+                className="bg-brand-900 rounded-2xl p-8 border border-brand-800 text-center space-y-4"
+              >
+                <div className="w-12 h-12 bg-accent-500 text-white rounded-full flex items-center justify-center mx-auto text-xl font-bold mb-6">
+                  {i + 1}
+                </div>
+                <h3 className="text-xl font-bold text-white">{p.titulo}</h3>
+                <p className="text-brand-300 text-sm">{p.texto}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 3.2 TESTIMONIOS — solo si hay reales */}
+      {TESTIMONIOS.length > 0 && (
+        <section className="py-20 px-4 bg-white border-b border-brand-200">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-black text-brand-950 text-center mb-12">
+              Negocios panameños que ya lo usan
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {TESTIMONIOS.map((t) => (
+                <figure
+                  key={t.negocio}
+                  className="rounded-2xl border border-brand-200 p-6 bg-white"
+                >
+                  <div className="flex gap-0.5 mb-3" aria-label="5 de 5 estrellas">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-accent-500 text-accent-500" aria-hidden="true" />
+                    ))}
+                  </div>
+                  <blockquote className="text-brand-600 text-sm leading-relaxed">{t.texto}</blockquote>
+                  <figcaption className="mt-4 text-xs">
+                    <span className="font-bold text-brand-950">{t.autor}</span>
+                    <span className="text-brand-500"> · {t.negocio}, {t.ciudad}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 3.5 GUÍA DE AUTOCONFIGURACIÓN */}
+      <section className="py-12 px-4 bg-white border-b border-brand-200">
+        <div className="max-w-5xl mx-auto">
+          <AutoConfigGuide />
+        </div>
+      </section>
+
+      {/* 4. CHECKOUT */}
+      <section id="checkout-section" className="hidden md:block py-12 sm:py-20 px-4 sm:px-6 bg-brand-50">
+        <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-card border border-brand-200 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12">
+            {/* Left Column: Image / Gallery preview */}
+            <div className="lg:col-span-5 bg-brand-100/70 flex flex-col items-center justify-center p-6 sm:p-10 min-h-[280px] sm:min-h-[380px]">
+              <Foto
+                src={fotos[fotos.length - 1]}
+                alt={`${product.name} de starTAP, vista de producto`}
+                ratio="aspect-square"
+                className="w-full max-w-[340px] sm:max-w-[380px] mx-auto drop-shadow-md"
+              />
+              <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-brand-600 bg-white/90 px-3.5 py-1.5 rounded-full border border-brand-200/80 shadow-sm backdrop-blur-sm">
+                <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0" />
+                <span>Listo para usar en Panamá</span>
+              </div>
+            </div>
+
+            {/* Right Column: Checkout Config Form */}
+            <div className="lg:col-span-7 p-5 sm:p-8 md:p-10">
+              {renderCheckoutForm()}
             </div>
           </div>
         </div>
@@ -835,26 +844,45 @@ export default function ProductLanding({ product }: { product: Product }) {
         </div>
       </section>
 
-      {/* Sticky Mobile Buy Bar */}
+            {/* Sticky Mobile Buy Bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-brand-200 p-3.5 shadow-[0_-8px_20px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
         <div>
-          <span className="text-[10px] text-brand-500 block uppercase font-extrabold tracking-wider">Total con envío</span>
+          <span className="text-[10px] text-brand-500 block uppercase font-extrabold tracking-wider">Total con env�o</span>
           <span className="text-xl font-black text-brand-950">${totalPrice.toFixed(2)}</span>
         </div>
         <button
           type="button"
-          onClick={() => {
-            const el = document.getElementById('checkout-section');
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-          className="shopify-btn-primary text-xs font-black uppercase px-5 py-3 rounded-xl shadow-lg flex items-center gap-1.5"
+          onClick={() => setIsMobileCheckoutOpen(true)}
+          className="shopify-btn-primary flex-1 py-3.5 rounded-xl shadow-lg font-bold flex items-center justify-center gap-2"
         >
-          <span>Ordenar Ahora</span>
-          <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          Comprar <ArrowRight className="w-5 h-5" />
         </button>
       </div>
+
+      {/* Mobile Checkout Modal */}
+      {isMobileCheckoutOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex items-end justify-center bg-brand-950/60 backdrop-blur-sm" onClick={() => setIsMobileCheckoutOpen(false)}>
+          <div 
+            className="w-full bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto shadow-2xl relative" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md z-10 px-5 py-4 border-b border-brand-100 flex justify-between items-center">
+              <span className="font-black text-brand-950 text-lg">Personaliza tu pedido</span>
+              <button 
+                type="button" 
+                onClick={() => setIsMobileCheckoutOpen(false)}
+                className="w-8 h-8 flex items-center justify-center bg-brand-100 text-brand-700 hover:bg-brand-200 rounded-full font-bold transition-colors"
+                aria-label="Cerrar"
+              >
+                <X className="w-4 h-4 stroke-[3]" />
+              </button>
+            </div>
+            <div className="p-5 pb-24">
+              {renderCheckoutForm()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
