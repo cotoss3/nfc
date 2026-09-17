@@ -44,8 +44,8 @@ export const CONDICIONES = {
     texto: 'Paga con Yappy desde tu banco o con tarjeta de crédito. Facturamos con RUC a nombre de tu empresa.',
   },
   soporte: {
-    titulo: 'Te configuramos el enlace',
-    texto: 'Te lo entregamos programado y apuntando a tu ficha de Google. Si necesitas cambiarlo, lo haces tú desde el panel.',
+    titulo: 'Auto-configurable al llegar',
+    texto: 'Te lo entregamos listo para que lo vincules tú mismo a tu ficha de Google en 30 segundos. Si luego necesitas cambiarlo, puedes hacerlo desde el panel.',
   },
 };
 
