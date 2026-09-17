@@ -165,7 +165,7 @@ export default function Page() {
         '@type': 'Product',
         'name': 'Stand NFC para Reseñas de Google',
         'description': 'Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.',
-        'image': 'https://startap.com.pa/products/NFC10002/NFC_10002_Stan.webp',
+        'image': 'https://startap.com.pa/products/NFC10002/stand-nfc-google-reviews-startap-producto.webp',
         'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
         'sku': 'STP-NFC-STAND-01',
         'mpn': 'STP-STD-01',

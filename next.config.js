@@ -21,6 +21,11 @@ const nextConfig = {
         destination: '/catalogo/:path*',
         permanent: true,
       },
+      {
+        source: '/funciones',
+        destination: '/app',
+        permanent: true,
+      },
     ];
   },
 }
