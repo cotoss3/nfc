@@ -432,7 +432,16 @@ export default function ProductLanding({ product }: { product: Product }) {
   const qrPrice = hasQrCode ? 3 : 0;
 
   const unitPrice = product.price + logoPrice + qrPrice;
-  const productTotal = (unitPrice * quantity) * (quantity > 1 ? 0.9 : 1);
+  const getDiscountPercent = (q: number) => {
+    if (q >= 10) return 20;
+    if (q >= 5) return 15;
+    if (q >= 3) return 10;
+    return 0;
+  };
+  const discount = getDiscountPercent(quantity);
+  const discountMultiplier = 1 - (discount / 100);
+
+  const productTotal = (unitPrice * quantity) * discountMultiplier;
   const totalPrice = productTotal + (addUpsellCard ? 15 * quantity : 0);
 
 
@@ -1011,9 +1020,9 @@ export default function ProductLanding({ product }: { product: Product }) {
                                     <div className="space-y-2 pt-2">
                     <div className="flex items-center justify-between">
                       <p className="text-xs sm:text-sm font-bold text-brand-950">Cantidad</p>
-                      {quantity > 1 && (
+                      {discount > 0 && (
                         <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-200 shadow-sm">
-                          10% de desc. aplicado
+                          {discount}% de desc. aplicado
                         </span>
                       )}
                     </div>
