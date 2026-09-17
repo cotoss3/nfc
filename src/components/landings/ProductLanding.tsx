@@ -80,9 +80,9 @@ const ICONOS = { zap: Zap, shield: ShieldCheck, sparkles: Sparkles };
 
 /**
 
- * Muestra la imagen del producto cuando existe. Si todavÃ­a no hay foto cargada,
+ * Muestra la imagen del producto cuando existe. Si todavía no hay foto cargada,
 
- * deja un marcador discreto en vez de romper el diseÃ±o.
+ * deja un marcador discreto en vez de romper el diseño.
 
  */
 
@@ -110,9 +110,9 @@ function Foto({
 
   if (!src) {
 
-    // GuÃ­a de producciÃ³n: indica quÃ© foto va en este espacio.
+    // Guía de producción: indica qué foto va en este espacio.
 
-    // Al cargar la imagen al catÃ¡logo (product.images) el recuadro se reemplaza solo.
+    // Al cargar la imagen al catálogo (product.images) el recuadro se reemplaza solo.
 
     return (
 
@@ -158,7 +158,7 @@ function Foto({
 
 /**
 
- * Carrusel interactivo de imÃ¡genes para el producto en la landing.
+ * Carrusel interactivo de imágenes para el producto en la landing.
 
  * Permite navegar entre todas las fotos con flechas, indicadores y miniaturas.
 
@@ -258,7 +258,7 @@ function ProductCarousel({
 
 
 
-        {/* Flechas de NavegaciÃ³n del Carrusel */}
+        {/* Flechas de Navegación del Carrusel */}
 
         {validImages.length > 1 && (
 
@@ -304,7 +304,7 @@ function ProductCarousel({
 
 
 
-      {/* Miniaturas de selecciÃ³n rÃ¡pida */}
+      {/* Miniaturas de selección rápida */}
 
       {validImages.length > 1 && (
 
@@ -364,7 +364,7 @@ function isColorDisabled(productId: string, colorName: string): boolean {
 
   const normColor = (colorName || '').toLowerCase();
 
-  // Las variaciones en color Negro estÃ¡n agotadas
+  // Las variaciones en color Negro están agotadas
 
   if (normColor.includes('negro')) {
 
@@ -432,8 +432,7 @@ export default function ProductLanding({ product }: { product: Product }) {
   const qrPrice = hasQrCode ? 3 : 0;
 
   const unitPrice = product.price + logoPrice + qrPrice;
-
-  const totalPrice = unitPrice * quantity;
+  const totalPrice = (unitPrice * quantity) + (addUpsellCard ? 15 * quantity : 0);
 
 
 
@@ -465,7 +464,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
     if (isColorDisabled(product.id, color)) {
 
-      alert('La variaciÃ³n de color seleccionada se encuentra agotada temporalmente. Por favor selecciona una opciÃ³n disponible.');
+      alert('La variación de color seleccionada se encuentra agotada temporalmente. Por favor selecciona una opción disponible.');
 
       return;
 
@@ -558,7 +557,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
   const whatsappProducto = `${WHATSAPP_URL}?text=${encodeURIComponent(
 
-    `Hola, me interesa el ${product.name} de starTAP. Â¿Me das mÃ¡s informaciÃ³n?`
+    `Hola, me interesa el ${product.name} de starTAP. ¿Me das más información?`
 
   )}`;
 
@@ -574,7 +573,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 border border-accent-200 text-[11px] font-extrabold uppercase tracking-wide">
 
-                  <Zap className="w-3.5 h-3.5" /> ConfiguraciÃ³n en 1 paíso
+                  <Zap className="w-3.5 h-3.5" /> Configuración en 1 pa�so
 
                 </div>
 
@@ -586,7 +585,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                 <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
 
-                  Nosotros lo grabamos y programamos. TÃº solo ingresas el nombre de tu negocio.
+                  Nosotros lo grabamos y programamos. Tú solo ingresas el nombre de tu negocio.
 
                 </p>
 
@@ -650,7 +649,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                           aria-pressed={color === c}
 
-                          title={isDisabled ? `VariaciÃ³n ${c} agotada` : c}
+                          title={isDisabled ? `Variación ${c} agotada` : c}
 
                           className={`py-2.5 px-4 text-xs font-bold rounded-xl border transition-all flex items-center gap-2 ${
 
@@ -680,7 +679,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                             c.toLowerCase().includes('plata') ? 'bg-slate-300' :
 
-                            c.toLowerCase().includes('bambÃº') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
+                            c.toLowerCase().includes('bambú') || c.toLowerCase().includes('bambu') ? 'bg-amber-200' :
 
                             c.toLowerCase().includes('nogal') ? 'bg-amber-900' : 'bg-brand-400'
 
@@ -714,7 +713,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                   <p className="text-xs font-bold uppercase tracking-wider text-brand-900">
 
-                    PersonalizaciÃ³n opcional
+                    Personalización opcional
 
                   </p>
 
@@ -762,7 +761,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                         <span className="block text-xs text-brand-500 mt-1">
 
-                          ImpresiÃ³n de tu logo oficial en el frontal (Opcional si lo requieres).
+                          Impresión de tu logo oficial en el frontal (Opcional si lo requieres).
 
                         </span>
 
@@ -826,7 +825,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                             <span className="text-xs text-green-600 font-bold">
 
-                              âœ“ Logo adjuntado correctamente
+                              �S Logo adjuntado correctamente
 
                             </span>
 
@@ -874,7 +873,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                             <QrCode className="h-4 w-4 text-brand-600" aria-hidden="true" />
 
-                            Agregar cÃ³digo QR impreso HD
+                            Agregar código QR impreso HD
 
                           </span>
 
@@ -884,7 +883,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                         <span className="block text-xs text-brand-500 mt-1">
 
-                          Respaldo impreso HD para telÃ©fonos sin lector NFC.
+                          Respaldo impreso HD para teléfonos sin lector NFC.
 
                         </span>
 
@@ -961,7 +960,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     <p className="text-xs text-slate-600 mb-2.5 font-medium leading-snug">
 
-                      Pega aquÃ­ el enlace de tu perfil en Google Maps (o escribe el nombre exacto de tu local). Lo programamos de fÃ¡brica en tu chip NFC.
+                      Pega aquí el enlace de tu perfil en Google Maps (o escribe el nombre exacto de tu local). Lo programamos de fábrica en tu chip NFC.
 
                     </p>
 
@@ -979,7 +978,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                         onChange={(e) => setBusinessName(e.target.value)}
 
-                        placeholder="Ej: https://maps.app.goo.gl/xxx o PizzerÃ­a Roma PanamÃ¡"
+                        placeholder="Ej: https://maps.app.goo.gl/xxx o Pizzería Roma Panamá"
 
                         
 
@@ -1026,7 +1025,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     >
 
-                      âˆ’
+                      ��
 
                     </button>
 
@@ -1064,9 +1063,9 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     <div>
 
-                      <span className="text-brand-500 text-xs sm:text-sm block">Total a pagar</span>
+                      <span className="text-brand-500 text-xs sm:text-sm block">Inversión</span>
 
-                      <span className="text-[11px] text-green-700 font-semibold">EnvÃ­o a PanamÃ¡ incluido</span>
+                      <span className="text-[11px] text-green-700 font-semibold">Envío a Panamá incluido</span>
 
                     </div>
 
@@ -1088,7 +1087,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     <span className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${isSuccess ? 'opacity-0' : 'opacity-100'}`}>
 
-                      AÃ±adir al carrito <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                      Añadir al carrito <ArrowRight className="w-5 h-5" aria-hidden="true" />
 
                     </span>
 
@@ -1102,7 +1101,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     >
 
-                      Â¡Agregado! <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
+                      ¡Agregado! <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
 
                     </span>
 
@@ -1112,7 +1111,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                   <p className="text-center text-xs text-brand-400 mt-4">
 
-                    {CONDICIONES.garantia.titulo} Â· {CONDICIONES.envio.titulo}
+                    {CONDICIONES.garantia.titulo} · {CONDICIONES.envio.titulo}
 
                   </p>
 
@@ -1120,7 +1119,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                   <p className="text-center text-xs text-brand-500 mt-3">
 
-                    Â¿Dudas antes de comprar?{' '}
+                    ¿Dudas antes de comprar?{' '}
 
                     <a
 
@@ -1134,7 +1133,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     >
 
-                      EscrÃ­benos al {WHATSAPP_NUMERO}
+                      Escríbenos al {WHATSAPP_NUMERO}
 
                     </a>
 
@@ -1214,7 +1213,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                 <MessageCircle className="w-5 h-5" aria-hidden="true" />
 
-                EscrÃ­benos
+                Escríbenos
 
               </a>
 
@@ -1226,7 +1225,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
               <span className="flex items-center gap-1">
 
-                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Pago Ãºnico
+                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Pago único
 
               </span>
 
@@ -1238,7 +1237,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
               <span className="flex items-center gap-1">
 
-                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> EnvÃ­o a todo PanamÃ¡
+                <CheckCircle2 className="w-4 h-4 text-green-500" aria-hidden="true" /> Envío a todo Panamá
 
               </span>
 
@@ -1376,7 +1375,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
             <h2 className="text-3xl sm:text-4xl font-black text-brand-950">
 
-              Control de tus enlaces y estadÃ­sticas en tiempo real
+              Control de tus enlaces y estadísticas en tiempo real
 
             </h2>
 
@@ -1386,7 +1385,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
               en el panel, cambias el enlace hacia donde dirige (Google Maps, WhatsApp, Instagram) en
 
-              segundos y mides cuÃ¡ntas veces lo escanean tus clientes.
+              segundos y mides cuántas veces lo escanean tus clientes.
 
             </p>
 
@@ -1394,9 +1393,9 @@ export default function ProductLanding({ product }: { product: Product }) {
 
               {[
 
-                'Cambio de enlace instantÃ¡neo sin reprogramar el chip',
+                'Cambio de enlace instantáneo sin reprogramar el chip',
 
-                'EstadÃ­sticas de escaneos por dÃ­a y tipo de telÃ©fono',
+                'Estadísticas de escaneos por día y tipo de teléfono',
 
                 'Asigna dispositivos a distintos locales o empleados',
 
@@ -1482,7 +1481,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
 
 
-      {/* 3. CÃ“MO FUNCIONA */}
+      {/* 3. C�MO FUNCIONA */}
 
       <section className="py-20 bg-brand-950 text-white px-4">
 
@@ -1492,11 +1491,11 @@ export default function ProductLanding({ product }: { product: Product }) {
 
             <h2 className="text-3xl md:text-4xl font-black text-white">
 
-              Consigue reseÃ±as en 3 simples pasos
+              Consigue reseñas en 3 simples pasos
 
             </h2>
 
-            <p className="text-brand-300 text-lg">Es tan fÃ¡cil que tus clientes lo harÃ¡n por instinto.</p>
+            <p className="text-brand-300 text-lg">Es tan fácil que tus clientes lo harán por instinto.</p>
 
           </div>
 
@@ -1534,7 +1533,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
 
 
-      {/* 3.2 TESTIMONIOS â€” solo si hay reales */}
+      {/* 3.2 TESTIMONIOS � solo si hay reales */}
 
       {TESTIMONIOS.length > 0 && (
 
@@ -1544,7 +1543,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
             <h2 className="text-3xl font-black text-brand-950 text-center mb-12">
 
-              Negocios panameÃ±os que ya lo usan
+              Negocios panameños que ya lo usan
 
             </h2>
 
@@ -1576,7 +1575,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                     <span className="font-bold text-brand-950">{t.autor}</span>
 
-                    <span className="text-brand-500"> Â· {t.negocio}, {t.ciudad}</span>
+                    <span className="text-brand-500"> · {t.negocio}, {t.ciudad}</span>
 
                   </figcaption>
 
@@ -1594,7 +1593,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
 
 
-      {/* 3.5 GUÃ�A DE AUTOCONFIGURACIÃ“N */}
+      {/* 3.5 GU��A DE AUTOCONFIGURACI�N */}
 
       <section className="py-12 px-4 bg-white border-b border-brand-200">
 
@@ -1636,7 +1635,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
                 <CheckCircle2 className="w-4 h-4 text-accent-500 flex-shrink-0" />
 
-                <span>Listo para usar en PanamÃ¡</span>
+                <span>Listo para usar en Panamá</span>
 
               </div>
 
@@ -1672,7 +1671,7 @@ export default function ProductLanding({ product }: { product: Product }) {
 
             <p className="text-sm text-brand-500 mt-2">
 
-              Lo que necesitas saber sobre tu SEO local en PanamÃ¡.
+              Lo que necesitas saber sobre tu SEO local en Panamá.
 
             </p>
 
@@ -1739,7 +1738,7 @@ export default function ProductLanding({ product }: { product: Product }) {
                   {/* Sticky Mobile Buy Bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-brand-200 p-3.5 shadow-[0_-8px_20px_rgba(0,0,0,0.12)] flex items-center justify-between gap-3">
         <div>
-          <span className="text-[10px] text-brand-500 block uppercase font-extrabold tracking-wider">Total</span>
+          <span className="text-[10px] text-brand-500 block uppercase font-extrabold tracking-wider">Inversión</span>
           <span className="text-xl font-black text-brand-950">${totalPrice.toFixed(2)}</span>
         </div>
         <div className="flex gap-2 flex-1 justify-end">
