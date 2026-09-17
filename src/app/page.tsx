@@ -223,7 +223,7 @@ export default function Page() {
             'name': '¿Cómo se configura con mi negocio?',
             'acceptedAnswer': {
               '@type': 'Answer',
-              'text': 'Nosotros nos encargamos de la programación. Al hacer tu pedido ingresas el nombre de tu establecimiento tal como figura en Google Maps. Programamos el chip NFC y el código QR antes del despacho para que recibas el producto listo para usar en tu mostrador.'
+              'text': 'Es 100% auto-configurable al llegar. No necesitas enviarnos ningún enlace al comprar. Al recibir tu paquete, simplemente acercas tu teléfono al chip NFC o escaneas el código QR para vincularlo a tu perfil de Google Maps en menos de 30 segundos.'
             }
           },
           {

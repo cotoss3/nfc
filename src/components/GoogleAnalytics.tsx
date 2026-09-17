@@ -9,7 +9,7 @@ export const GA_MEASUREMENT_ID = 'G-VQH5VW4KF9';
 declare global {
   interface Window {
     dataLayer: any[];
-    gtag: (...args: any[]) => void;
+    gtag?: (...args: any[]) => void;
   }
 }
 

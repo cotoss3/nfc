@@ -85,6 +85,20 @@ export interface UserAccount {
   created_at: string;
 }
 
+export interface AbandonedCheckout {
+  id: string;
+  customer_email: string;
+  customer_name?: string;
+  customer_phone?: string;
+  shipping_province?: string;
+  shipping_district?: string;
+  items: OrderItem[];
+  total: number;
+  status: 'abandoned' | 'recovered' | 'completed';
+  created_at: string;
+  updated_at: string;
+}
+
 // Productos semilla predeterminados desde la constante central de productos
 const INITIAL_PRODUCTS: Product[] = PRODUCTS.map((p) => ({
   id: p.id,
@@ -292,8 +306,28 @@ class LocalDbService {
   getProducts(): Product[] {
     const products = this.getStorageItem<Product[]>('nfc_products', INITIAL_PRODUCTS);
     const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
-    if (deletedIds.length === 0) return products;
-    return products.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
+    const activeProducts = deletedIds.length === 0
+      ? products
+      : products.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
+
+    // Sincronización continua de catálogo: asegura que fotos, descripciones y especificaciones
+    // de products.ts estén 100% actualizadas en vivo sin desfasajes de caché en navegador o admin
+    return activeProducts.map(p => {
+      const central = getCentralProductById(p.id.trim().toLowerCase());
+      if (central) {
+        return {
+          ...p,
+          name: central.name,
+          description: central.description,
+          image: central.image,
+          images: central.images,
+          material: central.material,
+          category: (central.category === 'cards' ? 'cards' : central.category === 'plates' ? 'plates' : 'accessories') as any,
+          price: p.price ?? central.price,
+        };
+      }
+      return p;
+    });
   }
 
   getProductById(id: string): Product | undefined {
@@ -570,6 +604,69 @@ class LocalDbService {
         if (error) console.error('Error actualizando estado de pago en Supabase:', error);
       });
     }
+  }
+
+  // Métodos de Carritos / Pedidos Abandonados (Shopify Style)
+  getAbandonedCheckouts(): AbandonedCheckout[] {
+    return this.getStorageItem<AbandonedCheckout[]>('nfc_abandoned_checkouts', []);
+  }
+
+  saveAbandonedCheckout(data: Omit<AbandonedCheckout, 'created_at' | 'updated_at'>): AbandonedCheckout {
+    if (typeof window === 'undefined') return data as AbandonedCheckout;
+    const list = this.getAbandonedCheckouts();
+    const cleanEmail = (data.customer_email || '').trim().toLowerCase();
+    const existingIndex = list.findIndex(
+      (c) => c.id === data.id || (cleanEmail && c.customer_email.trim().toLowerCase() === cleanEmail && c.status === 'abandoned')
+    );
+
+    const now = new Date().toISOString();
+    let record: AbandonedCheckout;
+
+    if (existingIndex > -1) {
+      record = {
+        ...list[existingIndex],
+        ...data,
+        updated_at: now,
+      };
+      list[existingIndex] = record;
+    } else {
+      record = {
+        ...data,
+        created_at: now,
+        updated_at: now,
+      };
+      list.unshift(record);
+    }
+
+    this.setStorageItem('nfc_abandoned_checkouts', list);
+
+    if (supabase) {
+      supabase.from('abandoned_checkouts').upsert([record]).then();
+    }
+
+    return record;
+  }
+
+  markAbandonedCheckoutCompleted(emailOrPhone: string): void {
+    if (typeof window === 'undefined') return;
+    const list = this.getAbandonedCheckouts();
+    const clean = (emailOrPhone || '').trim().toLowerCase();
+    const updated = list.map((c) => {
+      if (
+        c.customer_email.trim().toLowerCase() === clean ||
+        (c.customer_phone && c.customer_phone.includes(clean))
+      ) {
+        return { ...c, status: 'completed' as const, updated_at: new Date().toISOString() };
+      }
+      return c;
+    });
+    this.setStorageItem('nfc_abandoned_checkouts', updated);
+  }
+
+  deleteAbandonedCheckout(id: string): void {
+    if (typeof window === 'undefined') return;
+    const list = this.getAbandonedCheckouts();
+    this.setStorageItem('nfc_abandoned_checkouts', list.filter((c) => c.id !== id));
   }
 
   // Métodos de Tarjetas NFC

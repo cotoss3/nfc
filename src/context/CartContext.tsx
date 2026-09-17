@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { OrderItem } from '@/lib/db';
 import { track } from '@/lib/fbpixel';
 import { trackTikTok } from '@/lib/tiktokpixel';
+import { trackGA } from '@/lib/googleanalytics';
 
 interface CartContextType {
   cart: OrderItem[];
@@ -61,6 +62,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       price: newItem.price,
       value: newItem.price * newItem.quantity,
       currency: 'USD',
+    });
+
+    trackGA('add_to_cart', {
+      currency: 'USD',
+      value: newItem.price * newItem.quantity,
+      items: [
+        {
+          item_id: newItem.product_id,
+          item_name: newItem.product_name,
+          price: newItem.price,
+          quantity: newItem.quantity,
+          item_variant: newItem.selected_color || 'Standard',
+        },
+      ],
     });
 
     setCart((prevCart) => {

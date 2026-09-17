@@ -2,16 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { dbLocal, Order, NfcCard, Product, ScanRecord } from '@/lib/db';
+import { dbLocal, Order, NfcCard, Product, ScanRecord, AbandonedCheckout } from '@/lib/db';
 import { Coupon, CouponType } from '@/config/shipping';
 import { 
   ShieldCheck, Package, RefreshCw, CheckCircle, Search, 
   Tag, BarChart2, Smartphone, Layers, Edit2, Trash2, DollarSign, 
   Filter, Radio, QrCode, User, Plus, Check, Printer, AlertCircle,
-  LogOut, ChevronRight, X, Image as ImageIcon, Percent
+  LogOut, ChevronRight, X, Image as ImageIcon, Percent,
+  ShoppingCart, MessageCircle, Clock, Mail
 } from 'lucide-react';
 
-type AdminTab = 'cards' | 'orders' | 'products' | 'coupons' | 'analytics' | 'stickers';
+type AdminTab = 'cards' | 'orders' | 'abandoned' | 'products' | 'coupons' | 'analytics' | 'stickers';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -20,8 +21,13 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [scans, setScans] = useState<ScanRecord[]>([]);
+  const [abandonedCheckouts, setAbandonedCheckouts] = useState<AbandonedCheckout[]>([]);
   const [activeTab, setActiveTab] = useState<AdminTab>('cards');
   const [loading, setLoading] = useState(true);
+
+  // Abandoned Checkouts Filters
+  const [abandonedSearch, setAbandonedSearch] = useState('');
+  const [abandonedStatusFilter, setAbandonedStatusFilter] = useState<'all' | 'abandoned' | 'completed'>('all');
 
   // Coupon Manager States
   const [couponSearch, setCouponSearch] = useState('');
@@ -96,12 +102,14 @@ export default function AdminPage() {
     const dbProducts = dbLocal.getProducts();
     const dbCoupons = dbLocal.getCoupons();
     const dbScans = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
+    const dbAbandoned = dbLocal.getAbandonedCheckouts();
 
     setOrders(dbOrders);
     setCards(initialCards);
     setProducts(dbProducts);
     setCoupons(dbCoupons);
     setScans(dbScans);
+    setAbandonedCheckouts(dbAbandoned);
 
     // Initial price input states
     const initPrices: { [id: string]: string } = {};
@@ -217,6 +225,18 @@ export default function AdminPage() {
   const handleUpdateStatus = (orderId: string, status: Order['status']) => {
     dbLocal.updateOrderStatus(orderId, status);
     loadData();
+  };
+
+  const handleMarkAbandonedCompleted = (emailOrPhone: string) => {
+    dbLocal.markAbandonedCheckoutCompleted(emailOrPhone);
+    loadData();
+  };
+
+  const handleDeleteAbandoned = (id: string) => {
+    if (window.confirm('¿Estás seguro de que deseas descartar este registro de carrito abandonado?')) {
+      dbLocal.deleteAbandonedCheckout(id);
+      loadData();
+    }
   };
 
   const handleQuickPriceSave = (productId: string) => {
@@ -372,6 +392,25 @@ export default function AdminPage() {
       return b.scanCount - a.scanCount;
     });
 
+  const filteredAbandoned = abandonedCheckouts.filter(item => {
+    const query = abandonedSearch.toLowerCase().trim();
+    const matchesSearch = !query || 
+      item.id.toLowerCase().includes(query) ||
+      (item.customer_name && item.customer_name.toLowerCase().includes(query)) ||
+      (item.customer_email && item.customer_email.toLowerCase().includes(query)) ||
+      (item.customer_phone && item.customer_phone.includes(query)) ||
+      (item.shipping_province && item.shipping_province.toLowerCase().includes(query)) ||
+      (item.shipping_district && item.shipping_district.toLowerCase().includes(query));
+
+    const matchesStatus = abandonedStatusFilter === 'all' || item.status === abandonedStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const pendingAbandoned = abandonedCheckouts.filter(a => a.status === 'abandoned');
+  const pendingAbandonedCount = pendingAbandoned.length;
+  const abandonedTotalAtRisk = pendingAbandoned.reduce((sum, a) => sum + (a.total || 0), 0);
+  const recoveredAbandonedCount = abandonedCheckouts.filter(a => a.status === 'completed' || a.status === 'recovered').length;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row pb-20 md:pb-0">
       
@@ -463,6 +502,29 @@ export default function AdminPage() {
             <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'orders' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
               {orders.length}
             </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('abandoned')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'abandoned'
+                ? 'bg-slate-900 text-white shadow-md font-bold'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <ShoppingCart className="w-4 h-4 text-rose-500" />
+              <span>Carritos Abandonados</span>
+            </div>
+            {pendingAbandonedCount > 0 ? (
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500 text-white font-black animate-pulse">
+                {pendingAbandonedCount}
+              </span>
+            ) : (
+              <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'abandoned' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
+                {abandonedCheckouts.length}
+              </span>
+            )}
           </button>
 
           <button
@@ -979,6 +1041,248 @@ export default function AdminPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+
+              </div>
+            )}
+
+            {/* ---------------- MODULE: CARRITOS & CHECKOUTS ABANDONADOS (RECUPERACIÓN CRO) ---------------- */}
+            {activeTab === 'abandoned' && (
+              <div className="space-y-6">
+
+                {/* KPI Metric Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white border border-rose-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-rose-600">En Abandono</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{pendingAbandonedCount}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Checkouts iniciados sin pago completado</p>
+                  </div>
+
+                  <div className="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-amber-700">Monto en Riesgo CRO</span>
+                      <DollarSign className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">${abandonedTotalAtRisk.toFixed(2)}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Valor recuperable contactando por WhatsApp</p>
+                  </div>
+
+                  <div className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Recuperados / Pagados</span>
+                      <CheckCircle className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{recoveredAbandonedCount}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Convertidos exitosamente a orden activa</p>
+                  </div>
+                </div>
+
+                {/* Filter & Search Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <ShoppingCart className="w-5 h-5 text-rose-500" />
+                        Carritos Abandonados & Recuperación por WhatsApp
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Clientes que iniciaron checkout e ingresaron su contacto. Conviértelos con 1 clic directo a WhatsApp.
+                      </p>
+                    </div>
+                    {(abandonedSearch || abandonedStatusFilter !== 'all') && (
+                      <button
+                        onClick={() => {
+                          setAbandonedSearch('');
+                          setAbandonedStatusFilter('all');
+                        }}
+                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" /> Limpiar Filtros
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="text"
+                        value={abandonedSearch}
+                        onChange={(e) => setAbandonedSearch(e.target.value)}
+                        placeholder="Buscar por cliente, email, WhatsApp, provincia..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
+                      />
+                    </div>
+
+                    <select
+                      value={abandonedStatusFilter}
+                      onChange={(e) => setAbandonedStatusFilter(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Estado: Todos ({abandonedCheckouts.length})</option>
+                      <option value="abandoned">Pendientes de Recuperar ({pendingAbandonedCount})</option>
+                      <option value="completed">Completados / Recuperados ({recoveredAbandonedCount})</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Abandoned Checkouts List */}
+                {filteredAbandoned.length === 0 ? (
+                  <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm space-y-3">
+                    <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
+                      <ShoppingCart className="w-7 h-7" />
+                    </div>
+                    <h3 className="text-base font-bold text-slate-800">No hay carritos abandonados que coincidan</h3>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      Tan pronto un visitante ingrese su correo o teléfono en el checkout y no finalice el pago, aparecerá aquí inmediatamente con su botón de contacto rápido.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredAbandoned.map((item) => {
+                      const cleanPhoneDigits = (item.customer_phone || '').replace(/\D/g, '');
+                      const formattedWaNumber = cleanPhoneDigits.startsWith('507')
+                        ? cleanPhoneDigits
+                        : cleanPhoneDigits.length === 8
+                        ? `507${cleanPhoneDigits}`
+                        : cleanPhoneDigits;
+
+                      const firstName = item.customer_name ? item.customer_name.split(' ')[0] : 'Estimado/a';
+                      const itemsSummary = item.items && item.items.length > 0
+                        ? item.items.map((i) => `${i.quantity}x ${i.product_name}`).join(', ')
+                        : 'dispositivos starTAP';
+
+                      const waMessage = `¡Hola ${firstName}! Te saluda el equipo de starTAP Panamá. 🇵🇦\n\nVimos que estuviste por completar tu pedido de ${itemsSummary} ($${item.total.toFixed(2)} USD), pero no lograste finalizar el pago.\n\n¿Tuviste algún inconveniente con el método de pago (Yappy o tarjeta) o con la dirección de entrega?\n\nSi gustas, podemos completártelo directamente por aquí por Yappy para programar tu entrega hoy mismo. ¿Te gustaría que te ayude?`;
+                      const waUrl = formattedWaNumber
+                        ? `https://wa.me/${formattedWaNumber}?text=${encodeURIComponent(waMessage)}`
+                        : null;
+
+                      const mailtoUrl = item.customer_email
+                        ? `mailto:${item.customer_email}?subject=${encodeURIComponent('Tu pedido en starTAP Panamá')}&body=${encodeURIComponent(waMessage)}`
+                        : null;
+
+                      const isCompleted = item.status === 'completed' || item.status === 'recovered';
+
+                      return (
+                        <div
+                          key={item.id}
+                          className={`bg-white border rounded-3xl p-5 md:p-6 shadow-sm transition space-y-4 ${
+                            isCompleted ? 'border-emerald-200 bg-emerald-50/20' : 'border-slate-200 hover:border-amber-300'
+                          }`}
+                        >
+                          {/* Top Header Card */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                            <div className="flex items-center gap-2.5">
+                              <span className="font-mono text-xs font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg">
+                                {item.id}
+                              </span>
+                              <span
+                                className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+                                  isCompleted
+                                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                    : 'bg-rose-100 text-rose-800 border-rose-300 animate-pulse'
+                                }`}
+                              >
+                                {isCompleted ? '✓ Recuperado / Pagado' : '⚠️ Carrito Abandonado'}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium">
+                              <Clock className="w-3.5 h-3.5 text-slate-400" />
+                              <span>{new Date(item.created_at).toLocaleString('es-PA', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                            </div>
+                          </div>
+
+                          {/* Info Grid */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
+                            <div>
+                              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[10px] mb-1">Cliente Potencial</h4>
+                              <p className="font-bold text-slate-900 text-sm">{item.customer_name || 'Nombre no provisto'}</p>
+                              <p className="text-[11px] text-slate-600 font-mono mt-0.5">{item.customer_email || 'Sin correo'}</p>
+                              {item.customer_phone ? (
+                                <p className="text-xs text-emerald-700 font-bold mt-1 flex items-center gap-1">
+                                  📱 {item.customer_phone}
+                                </p>
+                              ) : (
+                                <p className="text-[11px] text-slate-400 italic mt-0.5">Sin teléfono celular</p>
+                              )}
+                            </div>
+
+                            <div>
+                              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[10px] mb-1">Destino de Envío</h4>
+                              <p className="font-semibold text-slate-800">
+                                {item.shipping_province ? `${item.shipping_province}${item.shipping_district ? `, ${item.shipping_district}` : ''}` : 'Provincia sin seleccionar'}
+                              </p>
+                              <p className="text-[11px] text-slate-500 mt-1">
+                                Productos: <strong className="text-slate-900">{itemsSummary}</strong>
+                              </p>
+                            </div>
+
+                            <div>
+                              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[10px] mb-1">Valor en Carrito</h4>
+                              <p className="text-xl font-black text-slate-900">${item.total.toFixed(2)} USD</p>
+                              <p className="text-[10px] text-slate-500 mt-0.5">{item.items.reduce((s, i) => s + i.quantity, 0)} unidades en espera</p>
+                            </div>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5">
+                            <div className="flex flex-wrap items-center gap-2">
+                              {waUrl ? (
+                                <a
+                                  href={waUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition"
+                                >
+                                  <MessageCircle className="w-4 h-4" />
+                                  <span>Recuperar por WhatsApp (1 Clic)</span>
+                                </a>
+                              ) : (
+                                <span className="text-[11px] text-slate-400 italic py-1">
+                                  (Sin WhatsApp disponible)
+                                </span>
+                              )}
+
+                              {mailtoUrl && (
+                                <a
+                                  href={mailtoUrl}
+                                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition"
+                                >
+                                  <Mail className="w-3.5 h-3.5 text-slate-600" />
+                                  <span>Enviar Correo</span>
+                                </a>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              {!isCompleted && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleMarkAbandonedCompleted(item.customer_email || item.customer_phone || '')}
+                                  className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold rounded-xl transition"
+                                >
+                                  ✓ Marcar como Pagado
+                                </button>
+                              )}
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteAbandoned(item.id)}
+                                title="Descartar registro"
+                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -1532,7 +1836,7 @@ export default function AdminPage() {
 
         <button
           onClick={() => setActiveTab('orders')}
-          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition ${
             activeTab === 'orders' ? 'text-blue-600 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >
@@ -1541,8 +1845,21 @@ export default function AdminPage() {
         </button>
 
         <button
+          onClick={() => setActiveTab('abandoned')}
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition relative ${
+            activeTab === 'abandoned' ? 'text-rose-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <ShoppingCart className="w-5 h-5" />
+          <span className="text-[10px] font-semibold">Abandonados</span>
+          {pendingAbandonedCount > 0 && (
+            <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+          )}
+        </button>
+
+        <button
           onClick={() => setActiveTab('products')}
-          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition ${
             activeTab === 'products' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >

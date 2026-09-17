@@ -45,6 +45,7 @@ import { PRODUCTS } from '@/config/products';
 import confetti from 'canvas-confetti';
 import { track, itemsParaMeta } from '@/lib/fbpixel';
 import { trackTikTok, itemsParaTikTok } from '@/lib/tiktokpixel';
+import { trackGA, itemsParaGA } from '@/lib/googleanalytics';
 import TilopayCardForm, { type TilopayCardFormHandle } from '@/components/checkout/TilopayCardForm';
 
 export default function CheckoutPage() {
@@ -72,6 +73,25 @@ export default function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [completedOrder, setCompletedOrder] = useState<any>(null);
+  const [abandonedId, setAbandonedId] = useState<string>('');
+
+  const syncAbandonedCheckout = (emailVal: string, phoneVal: string, nameVal?: string) => {
+    if ((emailVal && emailVal.includes('@')) || (phoneVal && phoneVal.length >= 6)) {
+      const id = abandonedId || `AB-${Date.now().toString().slice(-6)}`;
+      if (!abandonedId) setAbandonedId(id);
+      dbLocal.saveAbandonedCheckout({
+        id,
+        customer_email: emailVal || 'Sin correo',
+        customer_name: nameVal || name || 'Cliente interesado',
+        customer_phone: phoneVal || phone || '',
+        shipping_province: province,
+        shipping_district: district,
+        items: cart,
+        total: getGrandTotal(),
+        status: 'abandoned',
+      });
+    }
+  };
   const [showMobileSummary, setShowMobileSummary] = useState(false);
 
   const [mounted, setMounted] = useState(false);
@@ -243,6 +263,12 @@ export default function CheckoutPage() {
       currency: 'USD',
     });
 
+    trackGA('begin_checkout', {
+      currency: 'USD',
+      value: getGrandTotal(),
+      items: itemsParaGA(cart),
+    });
+
     const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
 
     // El pedido se registra SIEMPRE como pendiente de pago.
@@ -388,6 +414,14 @@ export default function CheckoutPage() {
         currency: 'USD',
       });
 
+      trackGA('purchase', {
+        transaction_id: orderNumber,
+        value: getGrandTotal(),
+        currency: 'USD',
+        shipping: getShippingCost(),
+        items: itemsParaGA(cart),
+      });
+
       if (typeof window !== 'undefined') {
         window.open(generateCheckoutWhatsAppMessage(), '_blank');
       }
@@ -396,6 +430,8 @@ export default function CheckoutPage() {
       setIsSuccess(true);
       confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
       clearCart();
+      dbLocal.markAbandonedCheckoutCompleted(email);
+      if (phone) dbLocal.markAbandonedCheckoutCompleted(phone);
     } catch (err: any) {
       console.error('[CHECKOUT_ERROR]', err);
       setErrorMessage(err.message || 'Ocurrió un error al procesar tu pedido.');
@@ -788,6 +824,7 @@ export default function CheckoutPage() {
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
+                          onBlur={() => syncAbandonedCheckout(email, phone, name)}
                           placeholder="tu@correo.com"
                           className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
                         />
@@ -799,6 +836,7 @@ export default function CheckoutPage() {
                           required
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
+                          onBlur={() => syncAbandonedCheckout(email, phone, name)}
                           placeholder="6523-9821"
                           className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
                         />
@@ -824,6 +862,7 @@ export default function CheckoutPage() {
                           required
                           value={name}
                           onChange={(e) => setName(e.target.value)}
+                          onBlur={() => syncAbandonedCheckout(email, phone, name)}
                           placeholder="Carlos Mendoza o Nombre de tu Negocio"
                           className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none transition"
                         />

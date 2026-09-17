@@ -297,10 +297,10 @@ export default function CatalogoClient() {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-slate-900 font-bold text-sm">
                 <CheckCircle2 className="w-5 h-5 text-amber-500" />
-                <span>Configuración Incluida</span>
+                <span>Auto-Configurable en Segundos</span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Recibes tus dispositivos programados con el enlace directo a tu ficha de Google Maps. Los sacas del paquete y están listos para capturar reseñas.
+                Dispositivos listos para vincularse a tu ficha de Google Maps con un simple toque al llegar. Sin apps y sin configuraciones complejas.
               </p>
             </div>
           </div>

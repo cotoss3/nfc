@@ -62,7 +62,7 @@ export default function HomeClient() {
     },
     {
       q: '¿Cómo se configura con mi negocio?',
-      a: 'Nosotros nos encargamos de la programación. Al hacer tu pedido ingresas el nombre de tu establecimiento tal como figura en Google Maps. Programamos el chip NFC y el código QR antes del despacho para que recibas el producto listo para usar en tu mostrador.'
+      a: 'Es 100% auto-configurable al llegar. No necesitas enviarnos ningún enlace al comprar. Al recibir tu paquete, simplemente acercas tu teléfono al chip NFC o escaneas el código QR para vincularlo a tu perfil de Google Maps en menos de 30 segundos.'
     },
     {
       q: '¿Tengo que pagar mensualidades o suscripciones?',
@@ -204,7 +204,7 @@ export default function HomeClient() {
           {/* Catalog Pre-Configuration Notice */}
           <div className="mb-8 max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center shadow-sm">
             <p className="text-xs sm:text-sm font-bold text-amber-950">
-              Incluye la configuración previa con la ficha oficial de Google Maps de tu negocio sin ningún costo adicional.
+              Dispositivos 100% autoconfigurables al instante con tu ficha de Google Maps con un solo toque. Sin apps ni mensualidades.
             </p>
           </div>
 
@@ -238,7 +238,7 @@ export default function HomeClient() {
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-semibold leading-tight">
-                    Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
+                    Autoconfigurable en segundos con tu ficha de Google Maps | Sin mensualidades
                   </p>
                   <Link
                     href="/catalogo/tarjeta-nfc-bolsillo"
@@ -280,7 +280,7 @@ export default function HomeClient() {
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-600 font-semibold leading-tight">
-                    Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
+                    Autoconfigurable en segundos con tu ficha de Google Maps | Sin mensualidades
                   </p>
                   <Link
                     href="/catalogo/placa-nfc-mostrador"
@@ -296,7 +296,7 @@ export default function HomeClient() {
             <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
               <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/stand-nfc-mesa'}>
                 <img
-                  src="/products/NFC10002/NFC_10002_Stan.webp"
+                  src="/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp"
                   alt="Stand NFC para Reseñas de Google"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
@@ -319,7 +319,7 @@ export default function HomeClient() {
                     <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-semibold leading-tight">
-                    Incluye configuración con tu ficha de Google Maps lista para usar | Sin mensualidades
+                    Autoconfigurable en segundos con tu ficha de Google Maps | Sin mensualidades
                   </p>
                   <Link
                     href="/catalogo/stand-nfc-mesa"

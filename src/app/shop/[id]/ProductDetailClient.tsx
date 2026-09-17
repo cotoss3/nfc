@@ -9,6 +9,7 @@ import { ArrowLeft, Upload, Check, Info, Zap, QrCode, ChevronLeft, ChevronRight,
 import ProductLanding from '@/components/landings/ProductLanding';
 import { getLandingCopy } from '@/lib/landings';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
+import { trackGA } from '@/lib/googleanalytics';
 
 function isColorDisabled(productId: string, colorName: string): boolean {
   const normColor = (colorName || '').toLowerCase();
@@ -52,6 +53,20 @@ export default function ProductDetailClient({ params }: { params: { id: string }
         : ['Blanco Brillante', 'Negro Mate']);
       const validColor = defaultColors.find((c) => !isColorDisabled(found.id, c)) || defaultColors[0];
       setColor(validColor);
+
+      trackGA('view_item', {
+        currency: 'USD',
+        value: found.price,
+        items: [
+          {
+            item_id: found.id,
+            item_name: found.name,
+            price: found.price,
+            quantity: 1,
+            item_variant: validColor,
+          },
+        ],
+      });
     }
   }, [params.id]);
 

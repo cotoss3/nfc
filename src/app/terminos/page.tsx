@@ -32,14 +32,25 @@ export default function TerminosPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm space-y-4">
           <div className="inline-flex items-center space-x-2 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-xs uppercase px-3.5 py-1.5 rounded-full">
             <FileText className="w-4 h-4 text-amber-700" />
-            <span>Documento Legal Oficial</span>
+            <span>Ley 51 de 2008 & Ley 81 de 2019 — República de Panamá</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
-            Términos y Condiciones de Uso
+            Términos y Condiciones de Uso y Contratación
           </h1>
           <p className="text-sm text-slate-600">
-            Última actualización: 11 de septiembre de 2026 | República de Panamá
+            Última actualización: 17 de septiembre de 2026 | República de Panamá
           </p>
+
+          {/* Cláusula Legal de Consentimiento y Aceptación Automática */}
+          <div className="p-4 sm:p-5 bg-amber-50/90 border border-amber-300 rounded-2xl text-xs sm:text-sm text-amber-950 space-y-2">
+            <div className="flex items-center gap-2 font-black uppercase tracking-wider text-amber-900">
+              <Shield className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <span>Aceptación Vinculante al Utilizar el Servicio</span>
+            </div>
+            <p className="leading-relaxed">
+              El acceso, navegación o compra en <strong>startap.com.pa</strong> constituye la aceptación plena y sin reservas de los presentes Términos y Condiciones, así como de nuestra <Link href="/privacidad" className="underline font-bold">Política de Privacidad</Link> y las <Link href="/envios" className="underline font-bold">Políticas de Envío</Link>. Si el usuario no estuviere de acuerdo con alguna disposición, deberá abstenerse de utilizar el sitio web.
+            </p>
+          </div>
         </div>
 
         {/* Content Body */}

@@ -32,14 +32,25 @@ export default function PrivacidadPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm space-y-4">
           <div className="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-900 border border-emerald-300 font-extrabold text-xs uppercase px-3.5 py-1.5 rounded-full">
             <Shield className="w-4 h-4 text-emerald-700" />
-            <span>Ley 81 de 2019 — República de Panamá</span>
+            <span>Ley 81 de 2019 & Ley 51 de 2008 — República de Panamá</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
             Política de Privacidad y Protección de Datos
           </h1>
           <p className="text-sm text-slate-600">
-            Última actualización: 11 de septiembre de 2026 | KoreNet Cloud & Web
+            Última actualización: 17 de septiembre de 2026 | KoreNet Cloud & Web
           </p>
+
+          {/* Cláusula Legal Destacada de Consentimiento y Aceptación */}
+          <div className="p-4 sm:p-5 bg-amber-50/90 border border-amber-300 rounded-2xl text-xs sm:text-sm text-amber-950 space-y-2">
+            <div className="flex items-center gap-2 font-black uppercase tracking-wider text-amber-900">
+              <CheckCircle2 className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <span>Aceptación Expresa de Términos al Utilizar este Sitio</span>
+            </div>
+            <p className="leading-relaxed">
+              Al navegar, registrarse o realizar un pedido en <strong>startap.com.pa</strong>, el usuario declara ser mayor de edad y otorga su <strong>consentimiento expreso, libre, previo e informado</strong> para el tratamiento de sus datos de contacto y entrega, manifestando conocer, comprender y aceptar en su totalidad nuestra <Link href="/privacidad" className="underline font-bold">Política de Privacidad</Link>, los <Link href="/terminos" className="underline font-bold">Términos y Condiciones de Compra</Link> y la <Link href="/envios" className="underline font-bold">Política de Envíos y Garantías</Link>.
+            </p>
+          </div>
         </div>
 
         {/* Content Body */}

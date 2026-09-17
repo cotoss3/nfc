@@ -112,8 +112,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center text-white">
-              <img src="/logos/negativo.jpeg" alt="starTAP Logo" className="h-9 w-auto object-contain invert mix-blend-screen opacity-90" />
+            <Link href="/" className="inline-block w-full max-w-[240px]">
+              <img
+                src="/logos/negativo.jpeg"
+                alt="starTAP Logo"
+                className="w-[calc(100%-5px)] h-auto object-contain invert mix-blend-screen opacity-95 block"
+              />
             </Link>
             <p className="text-xs text-gray-400 leading-relaxed">
               Placas y tarjetas NFC contactless en Panamá. Multiplica tus reseñas de 5 estrellas en Google Maps y TripAdvisor directamente en tu mostrador.
