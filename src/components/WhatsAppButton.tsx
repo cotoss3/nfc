@@ -29,8 +29,10 @@ export default function WhatsAppButton() {
     trackTikTok('Contact', { method: 'whatsapp_floating_button', page: pathname });
   };
 
+  const isProductPage = pathname.startsWith('/catalogo/') || pathname.startsWith('/shop/');
+
   return (
-    <aside aria-label="Atención por WhatsApp" className="fixed bottom-6 right-6 z-40 flex items-center group">
+    <aside aria-label="Atención por WhatsApp" className={`fixed bottom-6 right-6 z-40 flex items-center group ${isProductPage ? 'hidden md:flex' : ''}`}>
       {/* Tooltip / Píldora de ayuda en pantallas medianas y grandes */}
       <a
         href={whatsappUrl}
