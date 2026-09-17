@@ -28,11 +28,8 @@ export async function sendEmail(payload: SendEmailPayload): Promise<ResendRespon
     };
   }
 
-  // Remitente predeterminado: dominio propio de starTAP.
-  // El subdominio "send." es el que está verificado en Resend (registros
-  // send._domainkey / send SPF-MX en el DNS de Vercel). El buzón real que
-  // atiende las respuestas es info@startap.com.pa, en BanaHosting.
-  const from = process.env.EMAIL_FROM?.trim() || 'starTAP Panamá <pedidos@send.startap.com.pa>';
+  // Remitente predeterminado: dominio propio verificado en Resend (startap.com.pa)
+  const from = process.env.EMAIL_FROM?.trim() || 'starTAP Panamá <pedidos@startap.com.pa>';
   const replyTo = process.env.EMAIL_REPLY_TO?.trim() || 'info@startap.com.pa';
 
   try {

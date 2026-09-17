@@ -41,13 +41,31 @@ export async function calcularTotal(
       precio = 20;
     }
 
+    // Oferta especial de Tarjeta de Bolsillo a $15 si se adquiere como upsell
+    const isUpsellCard =
+      (canonicalId === 'tarjeta-nfc-bolsillo' || rawId === 'tarjeta-nfc-bolsillo') &&
+      ((item as any).price === 15 || (item as any).is_upsell === true);
+
+    if (isUpsellCard) {
+      precio = 15;
+    }
+
     const cantidad = Math.max(1, Math.min(500, Number(item.quantity) || 1));
     if (product?.isPack) hasPack = true;
 
     const extras =
       (item.has_custom_logo ? PRECIO_LOGO : 0) + (item.has_qr_code ? PRECIO_QR : 0);
 
-    subtotal += (precio + extras) * cantidad;
+    // Descuentos escalonados por volumen (3 uds: 10% | 5 uds: 15% | 10 uds: 20%)
+    // Aplica a unidades regulares (no al pack comercial ni a ofertas fijas)
+    let discountMultiplier = 1;
+    if (!product?.isPack && !isUpsellCard) {
+      if (cantidad >= 10) discountMultiplier = 0.80;
+      else if (cantidad >= 5) discountMultiplier = 0.85;
+      else if (cantidad >= 3) discountMultiplier = 0.90;
+    }
+
+    subtotal += (precio + extras) * discountMultiplier * cantidad;
   }
 
   const baseEnvio = calculateShippingCost(subtotal, shippingMethod, hasPack);

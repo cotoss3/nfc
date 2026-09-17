@@ -94,7 +94,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prevCart.map((item) => {
+        if (item.id !== id) return item;
+
+        // Si es oferta especial de $15, conservar $15
+        if (
+          item.product_id === 'tarjeta-nfc-bolsillo' &&
+          (item.price === 15 || item.product_name?.includes('Oferta Especial'))
+        ) {
+          return { ...item, quantity, price: 15 };
+        }
+
+        // Si tiene precio base, actualizar según la escala de volumen
+        if (item.unit_price_base) {
+          const extras = (item.logo_price || 0) + (item.qr_price || 0);
+          let mult = 1;
+          if (quantity >= 10) mult = 0.80;
+          else if (quantity >= 5) mult = 0.85;
+          else if (quantity >= 3) mult = 0.90;
+          return { ...item, quantity, price: (item.unit_price_base + extras) * mult };
+        }
+
+        return { ...item, quantity };
+      })
     );
   };
 
