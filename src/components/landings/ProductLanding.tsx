@@ -71,7 +71,7 @@ function Foto({
   return (
     <div className={`${ratio} ${className} rounded-3xl overflow-hidden bg-white`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="w-full h-full object-cover" loading="lazy" />
+      <img src={src} alt={alt} className="w-full h-full object-contain" loading="lazy" />
     </div>
   );
 }
@@ -117,7 +117,7 @@ function ProductCarousel({
         <img
           src={validImages[currentIndex]}
           alt={`${alt} - Foto ${currentIndex + 1}`}
-          className="w-full h-full object-cover transition-all duration-300"
+          className="w-full h-full object-contain transition-all duration-300"
         />
 
         {/* Badge de contador de fotos */}
@@ -168,7 +168,7 @@ function ProductCarousel({
               <img
                 src={img}
                 alt={`Miniatura ${idx + 1}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </button>
           ))}
