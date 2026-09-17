@@ -398,8 +398,6 @@ export default function ProductLanding({ product }: { product: Product }) {
 
   });
 
-  const [businessName, setBusinessName] = useState('');
-
   const [hasCustomLogo, setHasCustomLogo] = useState(false);
   const [isMobileCheckoutOpen, setIsMobileCheckoutOpen] = useState(false);
   const [addUpsellCard, setAddUpsellCard] = useState(false);
@@ -480,14 +478,6 @@ export default function ProductLanding({ product }: { product: Product }) {
 
     }
 
-    if (!businessName) {
-
-      alert('Por favor ingresa el nombre de tu negocio para continuar');
-
-      return;
-
-    }
-
     if (hasCustomLogo && !logoPreview) {
 
       alert('Por favor sube el archivo de tu logo personalizado');
@@ -520,8 +510,6 @@ export default function ProductLanding({ product }: { product: Product }) {
 
       selected_color: color,
 
-      business_name: businessName,
-
       logo_url: logoPreview || undefined,
 
     });
@@ -538,7 +526,6 @@ export default function ProductLanding({ product }: { product: Product }) {
         qr_price: 0,
         quantity: quantity,
         selected_color: 'Negro Premium',
-        initial_redirect_url: businessName || '',
         
       });
     }
