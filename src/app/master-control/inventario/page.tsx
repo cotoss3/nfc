@@ -30,31 +30,94 @@ import {
   CheckCircle2,
   Clock,
   Radio,
-  Tag
+  Tag,
+  Boxes,
+  Truck,
+  FileText,
+  Minus,
+  Sliders,
+  History,
+  ShieldCheck,
+  Warehouse
 } from 'lucide-react';
 
-type SubTab = 'resumen' | 'tags';
+export interface InventoryBatch {
+  id: string; // e.g. LOTE-2026-09A
+  product_id: string;
+  product_name: string;
+  quantity_initial: number;
+  quantity_remaining: number;
+  unit_cost: number;
+  supplier: string;
+  received_at: string;
+  notes?: string;
+  status: 'active' | 'depleted' | 'in_transit';
+}
+
+export interface StockMovement {
+  id: string;
+  created_at: string;
+  type: 'entrada_lote' | 'salida_venta' | 'ajuste_manual' | 'merma';
+  product_name: string;
+  quantity_change: number;
+  resulting_stock: number;
+  reference: string;
+}
+
+export interface ProductStockInfo {
+  product_id: string;
+  sku: string;
+  name: string;
+  category: string;
+  current_stock: number;
+  min_alert_stock: number;
+  unit_cost: number;
+  selling_price: number;
+}
+
+type MainTab = 'inventario_lotes' | 'tags_hardware' | 'resumen_analiticas';
 
 export default function InventarioPage() {
-  const [activeSubTab, setActiveSubTab] = useState<SubTab>('resumen');
-  
+  const [activeTab, setActiveTab] = useState<MainTab>('inventario_lotes');
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [cards, setCards] = useState<NfcCard[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [abandoned, setAbandoned] = useState<AbandonedCheckout[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Period Filter State
+  // Inventory & Batch Custom Storage
+  const [batches, setBatches] = useState<InventoryBatch[]>([]);
+  const [stockMovements, setStockMovements] = useState<StockMovement[]>([]);
+  const [productStocks, setProductStocks] = useState<{ [productId: string]: ProductStockInfo }>({});
+
+  // Search & Filters for Product Stock Table
+  const [productSearch, setProductSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [stockStatusFilter, setStockStatusFilter] = useState<'all' | 'normal' | 'low' | 'out'>('all');
+
+  // New Batch Form State
+  const [batchCodeInput, setBatchCodeInput] = useState('');
+  const [batchProductSelect, setBatchProductSelect] = useState('');
+  const [batchQtyInput, setBatchQtyInput] = useState('');
+  const [batchCostInput, setBatchCostInput] = useState('');
+  const [batchSupplierInput, setBatchSupplierInput] = useState('Shenzhen NTAG Tech Ltd');
+  const [batchNotesInput, setBatchNotesInput] = useState('');
+  const [batchSuccessMsg, setBatchSuccessMsg] = useState('');
+
+  // Quick Stock Edit Modal / Inline State
+  const [editingStockId, setEditingStockId] = useState<string | null>(null);
+  const [newStockValInput, setNewStockValInput] = useState('');
+
+  // Period Filter State for Resumen Analíticas
   const [period, setPeriod] = useState<'hoy' | 'ayer' | 'semana' | 'mes' | 'custom'>('mes');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
-  // TAG Inventory Search & Filters
+  // TAG Hardware Inventory State
   const [tagSearch, setTagSearch] = useState('');
   const [tagChannelFilter, setTagChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
   const [tagClaimFilter, setTagClaimFilter] = useState<'all' | 'claimed' | 'unclaimed'>('all');
-
-  // TAG Creation State
   const [tagCode, setTagCode] = useState('');
   const [tagLabel, setTagLabel] = useState('');
   const [tagUrl, setTagUrl] = useState('');
@@ -64,7 +127,7 @@ export default function InventarioPage() {
   const [tagOwnerName, setTagOwnerName] = useState('');
   const [tagSuccessMsg, setTagSuccessMsg] = useState('');
 
-  // Live online users simulation (2-8 active shoppers)
+  // Online users counter
   const [onlineUsers, setOnlineUsers] = useState(4);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -97,6 +160,107 @@ export default function InventarioPage() {
     setCards(dbCards);
     setProducts(dbProducts);
     setAbandoned(dbAbandoned);
+
+    // Initial Product Stocks setup & persistence
+    const savedStocks = dbLocal.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
+    const initialStocks: { [id: string]: ProductStockInfo } = { ...savedStocks };
+
+    dbProducts.forEach((p, idx) => {
+      if (!initialStocks[p.id]) {
+        initialStocks[p.id] = {
+          product_id: p.id,
+          sku: `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
+          name: p.name,
+          category: p.category || 'plates',
+          current_stock: Math.floor(25 + Math.random() * 40),
+          min_alert_stock: 10,
+          unit_cost: p.price * 0.28, // Estimated unit manufacturing cost
+          selling_price: p.price,
+        };
+      }
+    });
+
+    setProductStocks(initialStocks);
+    dbLocal.setStorageItem('inventory_product_stocks', initialStocks);
+
+    // Initial Batches setup
+    const savedBatches = dbLocal.getStorageItem<InventoryBatch[]>('inventory_batches', []);
+    if (savedBatches.length === 0) {
+      const defaultBatches: InventoryBatch[] = [
+        {
+          id: 'LOTE-2026-09A',
+          product_id: dbProducts[0]?.id || 'placa-google',
+          product_name: dbProducts[0]?.name || 'Placa Acrílica Google Reviews',
+          quantity_initial: 100,
+          quantity_remaining: 68,
+          unit_cost: 6.50,
+          supplier: 'Shenzhen Micro-NFC Tech',
+          received_at: new Date(Date.now() - 86400000 * 12).toISOString(),
+          status: 'active',
+          notes: 'Impresión UV de alta durabilidad + Chip NTAG216',
+        },
+        {
+          id: 'LOTE-2026-08B',
+          product_id: dbProducts[1]?.id || 'tarjeta-nfc',
+          product_name: dbProducts[1]?.name || 'Tarjeta NFC Google Reviews',
+          quantity_initial: 150,
+          quantity_remaining: 112,
+          unit_cost: 4.20,
+          supplier: 'SmartCard Global Panama',
+          received_at: new Date(Date.now() - 86400000 * 25).toISOString(),
+          status: 'active',
+          notes: 'PVC Mate anti-rayaduras premium',
+        },
+        {
+          id: 'LOTE-2026-07C',
+          product_id: dbProducts[2]?.id || 'placa-tripadvisor',
+          product_name: dbProducts[2]?.name || 'Placa Acrílica TripAdvisor',
+          quantity_initial: 50,
+          quantity_remaining: 8,
+          unit_cost: 7.10,
+          supplier: 'Acrílicos de Panamá S.A.',
+          received_at: new Date(Date.now() - 86400000 * 40).toISOString(),
+          status: 'active',
+          notes: 'Stock bajo - Reorden prioritaria',
+        },
+      ];
+      setBatches(defaultBatches);
+      dbLocal.setStorageItem('inventory_batches', defaultBatches);
+    } else {
+      setBatches(savedBatches);
+    }
+
+    // Initial Movements Kardex setup
+    const savedMovements = dbLocal.getStorageItem<StockMovement[]>('inventory_kardex', []);
+    if (savedMovements.length === 0) {
+      const defaultMovements: StockMovement[] = [
+        {
+          id: 'MOV-101',
+          created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
+          type: 'salida_venta',
+          product_name: dbProducts[0]?.name || 'Placa Acrílica Google',
+          quantity_change: -2,
+          resulting_stock: (initialStocks[dbProducts[0]?.id]?.current_stock || 30),
+          reference: 'Orden #1024',
+        },
+        {
+          id: 'MOV-100',
+          created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+          type: 'entrada_lote',
+          product_name: dbProducts[1]?.name || 'Tarjeta NFC Google',
+          quantity_change: 50,
+          resulting_stock: (initialStocks[dbProducts[1]?.id]?.current_stock || 45),
+          reference: 'LOTE-2026-09A',
+        },
+      ];
+      setStockMovements(defaultMovements);
+      dbLocal.setStorageItem('inventory_kardex', defaultMovements);
+    } else {
+      setStockMovements(savedMovements);
+    }
+
+    setBatchProductSelect(dbProducts[0]?.id || '');
+    setBatchCodeInput(`LOTE-2026-${(batches.length + 10).toString()}`);
     setTagCode(dbLocal.getNextStickerCode());
     setLoading(false);
   };
@@ -110,15 +274,155 @@ export default function InventarioPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Filter orders by selected date period
+  // Compute Total Inventory Financial Valuation
+  const inventoryMetrics = useMemo(() => {
+    const stockList = Object.values(productStocks);
+    const totalPhysicalUnits = stockList.reduce((sum, item) => sum + item.current_stock, 0);
+    const totalValuationCost = stockList.reduce((sum, item) => sum + (item.current_stock * item.unit_cost), 0);
+    const totalRetailValuation = stockList.reduce((sum, item) => sum + (item.current_stock * item.selling_price), 0);
+    const lowStockCount = stockList.filter(item => item.current_stock <= item.min_alert_stock && item.current_stock > 0).length;
+    const outOfStockCount = stockList.filter(item => item.current_stock === 0).length;
+    const activeBatchesCount = batches.filter(b => b.status === 'active').length;
+
+    return {
+      totalPhysicalUnits,
+      totalValuationCost,
+      totalRetailValuation,
+      lowStockCount,
+      outOfStockCount,
+      activeBatchesCount,
+    };
+  }, [productStocks, batches]);
+
+  // Filtered Product Stock List
+  const filteredProductStocks = useMemo(() => {
+    return Object.values(productStocks).filter(p => {
+      const matchSearch =
+        !productSearch ||
+        p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
+        p.sku.toLowerCase().includes(productSearch.toLowerCase());
+
+      const matchCategory =
+        categoryFilter === 'all' || p.category === categoryFilter;
+
+      const matchStatus =
+        stockStatusFilter === 'all' ||
+        (stockStatusFilter === 'normal' && p.current_stock > p.min_alert_stock) ||
+        (stockStatusFilter === 'low' && p.current_stock <= p.min_alert_stock && p.current_stock > 0) ||
+        (stockStatusFilter === 'out' && p.current_stock === 0);
+
+      return matchSearch && matchCategory && matchStatus;
+    });
+  }, [productStocks, productSearch, categoryFilter, stockStatusFilter]);
+
+  // Handle Manual Stock Adjustment (+ / -)
+  const handleAdjustStock = (productId: string, delta: number) => {
+    const target = productStocks[productId];
+    if (!target) return;
+
+    const newStock = Math.max(0, target.current_stock + delta);
+    const updatedStocks = {
+      ...productStocks,
+      [productId]: {
+        ...target,
+        current_stock: newStock,
+      },
+    };
+
+    setProductStocks(updatedStocks);
+    dbLocal.setStorageItem('inventory_product_stocks', updatedStocks);
+
+    // Record movement in Kardex
+    const newMovement: StockMovement = {
+      id: `MOV-${Date.now().toString().slice(-4)}`,
+      created_at: new Date().toISOString(),
+      type: 'ajuste_manual',
+      product_name: target.name,
+      quantity_change: delta,
+      resulting_stock: newStock,
+      reference: `Ajuste manual (${delta > 0 ? '+' : ''}${delta})`,
+    };
+
+    const updatedMovements = [newMovement, ...stockMovements];
+    setStockMovements(updatedMovements);
+    dbLocal.setStorageItem('inventory_kardex', updatedMovements);
+  };
+
+  // Handle Create New Production Batch
+  const handleCreateBatch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!batchCodeInput.trim()) return alert('Por favor ingresa un código de lote');
+    if (!batchProductSelect) return alert('Selecciona un producto para el lote');
+
+    const qty = parseInt(batchQtyInput) || 0;
+    const cost = parseFloat(batchCostInput) || 0;
+
+    if (qty <= 0) return alert('La cantidad del lote debe ser mayor a 0');
+
+    const selectedProd = products.find(p => p.id === batchProductSelect);
+    const prodName = selectedProd ? selectedProd.name : 'Producto General';
+
+    const newBatch: InventoryBatch = {
+      id: batchCodeInput.trim().toUpperCase(),
+      product_id: batchProductSelect,
+      product_name: prodName,
+      quantity_initial: qty,
+      quantity_remaining: qty,
+      unit_cost: cost,
+      supplier: batchSupplierInput.trim() || 'Proveedor Internacional',
+      received_at: new Date().toISOString(),
+      status: 'active',
+      notes: batchNotesInput.trim(),
+    };
+
+    const updatedBatches = [newBatch, ...batches];
+    setBatches(updatedBatches);
+    dbLocal.setStorageItem('inventory_batches', updatedBatches);
+
+    // Auto-update stock for this product
+    if (productStocks[batchProductSelect]) {
+      const current = productStocks[batchProductSelect];
+      const newStockVal = current.current_stock + qty;
+      const updatedStocks = {
+        ...productStocks,
+        [batchProductSelect]: {
+          ...current,
+          current_stock: newStockVal,
+        },
+      };
+      setProductStocks(updatedStocks);
+      dbLocal.setStorageItem('inventory_product_stocks', updatedStocks);
+
+      // Record Kardex movement
+      const newMovement: StockMovement = {
+        id: `MOV-${Date.now().toString().slice(-4)}`,
+        created_at: new Date().toISOString(),
+        type: 'entrada_lote',
+        product_name: prodName,
+        quantity_change: qty,
+        resulting_stock: newStockVal,
+        reference: newBatch.id,
+      };
+      const updatedMovements = [newMovement, ...stockMovements];
+      setStockMovements(updatedMovements);
+      dbLocal.setStorageItem('inventory_kardex', updatedMovements);
+    }
+
+    setBatchSuccessMsg(`¡Lote ${newBatch.id} de ${qty} unidades registrado con éxito!`);
+    setBatchQtyInput('');
+    setBatchCostInput('');
+    setBatchNotesInput('');
+    setBatchCodeInput(`LOTE-2026-${(updatedBatches.length + 10).toString()}`);
+    setTimeout(() => setBatchSuccessMsg(''), 4000);
+  };
+
+  // Filter orders by selected date period for Resumen Analíticas
   const filteredOrders = useMemo(() => {
     const now = new Date();
     return orders.filter(o => {
       const date = new Date(o.created_at);
 
-      if (period === 'hoy') {
-        return date.toDateString() === now.toDateString();
-      }
+      if (period === 'hoy') return date.toDateString() === now.toDateString();
       if (period === 'ayer') {
         const yesterday = new Date(now);
         yesterday.setDate(now.getDate() - 1);
@@ -132,19 +436,16 @@ export default function InventarioPage() {
       if (period === 'mes') {
         return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
       }
-      if (period === 'custom') {
-        if (startDate && endDate) {
-          const start = new Date(startDate);
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59, 999);
-          return date >= start && date <= end;
-        }
+      if (period === 'custom' && startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        return date >= start && date <= end;
       }
       return true;
     });
   }, [orders, period, startDate, endDate]);
 
-  // Financial Metrics Calculation
   const totalRevenue = useMemo(() => {
     return filteredOrders
       .filter(o => o.payment_status === 'completed')
@@ -161,91 +462,10 @@ export default function InventarioPage() {
   const totalOrdersCount = filteredOrders.length;
   const avgOrderTicket = totalOrdersCount > 0 ? totalRevenue / totalOrdersCount : 0;
 
-  // Abandoned Checkouts metrics
-  const activeAbandoned = useMemo(() => {
-    return abandoned.filter(a => a.status === 'abandoned');
-  }, [abandoned]);
-  const abandonedValueAtRisk = activeAbandoned.reduce((sum, a) => sum + (a.total || 0), 0);
-
-  // Conversion rate calculation
-  const totalCheckoutsStarted = totalOrdersCount + activeAbandoned.length;
-  const conversionRate = totalCheckoutsStarted > 0 ? (totalOrdersCount / totalCheckoutsStarted) * 100 : 100;
-
-  // Breakdown by Product (% share)
-  const productShareList = useMemo(() => {
-    const map: { [prodId: string]: { name: string; qty: number; revenue: number } } = {};
-
-    filteredOrders.forEach(o => {
-      (o.items || []).forEach(item => {
-        const key = item.product_id || item.product_name || 'desconocido';
-        if (!map[key]) {
-          map[key] = {
-            name: item.product_name || key,
-            qty: 0,
-            revenue: 0,
-          };
-        }
-        map[key].qty += item.quantity || 1;
-        map[key].revenue += (item.price || 0) * (item.quantity || 1);
-      });
-    });
-
-    return Object.values(map)
-      .map(p => ({
-        ...p,
-        percentRevenue: totalRevenue > 0 ? (p.revenue / totalRevenue) * 100 : 0,
-      }))
-      .sort((a, b) => b.revenue - a.revenue);
-  }, [filteredOrders, totalRevenue]);
-
-  // Breakdown by Province (% share)
-  const provinceShareList = useMemo(() => {
-    const map: { [province: string]: { qty: number; revenue: number } } = {};
-
-    filteredOrders.forEach(o => {
-      const prov = o.shipping_province || 'Panamá';
-      if (!map[prov]) {
-        map[prov] = { qty: 0, revenue: 0 };
-      }
-      map[prov].qty += 1;
-      map[prov].revenue += o.total || 0;
-    });
-
-    return Object.entries(map)
-      .map(([name, data]) => ({
-        name,
-        qty: data.qty,
-        revenue: data.revenue,
-        percent: totalOrdersCount > 0 ? (data.qty / totalOrdersCount) * 100 : 0,
-      }))
-      .sort((a, b) => b.qty - a.qty);
-  }, [filteredOrders, totalOrdersCount]);
-
-  // Filtered TAG Cards
-  const filteredCards = useMemo(() => {
-    return cards.filter(c => {
-      const matchSearch =
-        !tagSearch ||
-        c.card_id.toLowerCase().includes(tagSearch.toLowerCase()) ||
-        (c.label && c.label.toLowerCase().includes(tagSearch.toLowerCase())) ||
-        (c.owner_name && c.owner_name.toLowerCase().includes(tagSearch.toLowerCase())) ||
-        (c.owner_email && c.owner_email.toLowerCase().includes(tagSearch.toLowerCase()));
-
-      const matchChannel =
-        tagChannelFilter === 'all' || c.channels === tagChannelFilter;
-
-      const matchClaim =
-        tagClaimFilter === 'all' ||
-        (tagClaimFilter === 'claimed' ? c.claimed : !c.claimed);
-
-      return matchSearch && matchChannel && matchClaim;
-    });
-  }, [cards, tagSearch, tagChannelFilter, tagClaimFilter]);
-
-  // Create new TAG/Link handler
+  // TAG creation handler
   const handleCreateTag = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!tagCode.trim()) return alert('Por favor ingresa el código del dispositivo (ej. STT-1050)');
+    if (!tagCode.trim()) return alert('Ingresa el código serial (ej. STT-1050)');
 
     const cleanEmail = tagOwnerEmail.trim().toLowerCase() || 'admin@startap.com.pa';
     const cleanName = tagOwnerName.trim() || 'Cliente starTAP';
@@ -276,7 +496,7 @@ export default function InventarioPage() {
       });
     }
 
-    setTagSuccessMsg(`¡Dispositivo "${newCardObj.card_id}" creado exitosamente!`);
+    setTagSuccessMsg(`¡TAG "${newCardObj.card_id}" creado exitosamente!`);
     setTagLabel('');
     setTagUrl('');
     setTagOwnerEmail('');
@@ -297,7 +517,7 @@ export default function InventarioPage() {
     return (
       <div className="p-8 max-w-7xl mx-auto text-center text-slate-500 py-24 space-y-3">
         <RefreshCw className="w-8 h-8 animate-spin mx-auto text-amber-500" />
-        <p className="font-semibold text-sm">Cargando Resumen Ejecutivo & Analíticas Financieras...</p>
+        <p className="font-semibold text-sm">Cargando sistema de inventario por lotes y stock físico...</p>
       </div>
     );
   }
@@ -305,7 +525,7 @@ export default function InventarioPage() {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
       
-      {/* HEADER & TOP CONTROL BAR */}
+      {/* TOP BAR & SUB-MODULE TABS */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div className="flex items-center gap-3">
           <Link
@@ -317,218 +537,275 @@ export default function InventarioPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <BarChart3 className="w-6 h-6 text-amber-500" />
-                Resumen Ejecutivo & Analíticas
+                <Boxes className="w-6 h-6 text-amber-500" />
+                Gestión de Inventario & Control por Lotes
               </h1>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                {onlineUsers} En Línea
+                {inventoryMetrics.totalPhysicalUnits} Uds. Físicas
               </span>
             </div>
             <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
-              Dashboard de rendimiento comercial, desglose financiero e indicadores clave de ventas
+              Control detallado de existencias en depósito, registro de lotes de importación y auditoría Kardex
             </p>
           </div>
         </div>
 
-        {/* SUB-MODULE NAVIGATION TABS (RESUMEN vs INVENTARIO TAGs) */}
-        <div className="flex items-center gap-2 bg-slate-200/70 p-1 rounded-2xl border border-slate-300/80 shadow-2xs">
+        {/* MAIN NAVIGATION TABS */}
+        <div className="flex items-center gap-1.5 bg-slate-200/70 p-1.5 rounded-2xl border border-slate-300/80 shadow-2xs">
           <button
             type="button"
-            onClick={() => setActiveSubTab('resumen')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
-              activeSubTab === 'resumen'
+            onClick={() => setActiveTab('inventario_lotes')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+              activeTab === 'inventario_lotes'
                 ? 'bg-slate-950 text-white shadow-md'
                 : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
             }`}
           >
-            <PieChart className="w-4 h-4 text-amber-400" />
-            <span>Resumen Ejecutivo</span>
+            <Boxes className="w-4 h-4 text-amber-400" />
+            <span>Inventario & Lotes</span>
           </button>
 
           <button
             type="button"
-            onClick={() => setActiveSubTab('tags')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
-              activeSubTab === 'tags'
+            onClick={() => setActiveTab('tags_hardware')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+              activeTab === 'tags_hardware'
                 ? 'bg-slate-950 text-white shadow-md'
                 : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
             }`}
           >
             <QrCode className="w-4 h-4 text-amber-400" />
-            <span>Inventario TAGs ({cards.length})</span>
+            <span>Fichas TAGs ({cards.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('resumen_analiticas')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+              activeTab === 'resumen_analiticas'
+                ? 'bg-slate-950 text-white shadow-md'
+                : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+            }`}
+          >
+            <PieChart className="w-4 h-4 text-amber-400" />
+            <span>Rendimiento Financiero</span>
           </button>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* TAB 1: RESUMEN EJECUTIVO & ANALÍTICAS FINANCIERAS                         */}
+      {/* TAB 1: INVENTARIO DETALLADO DE PRODUCTOS Y REGISTRO POR LOTES             */}
       {/* ========================================================================= */}
-      {activeSubTab === 'resumen' && (
+      {activeTab === 'inventario_lotes' && (
         <div className="space-y-8">
           
-          {/* PERIOD SELECTOR BAR */}
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-slate-500" />
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Período de Análisis:</span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setPeriod('hoy')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
-                  period === 'hoy' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                Hoy
-              </button>
-              <button
-                type="button"
-                onClick={() => setPeriod('ayer')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
-                  period === 'ayer' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                Ayer
-              </button>
-              <button
-                type="button"
-                onClick={() => setPeriod('semana')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
-                  period === 'semana' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                Esta Semana
-              </button>
-              <button
-                type="button"
-                onClick={() => setPeriod('mes')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
-                  period === 'mes' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                Este Mes
-              </button>
-              <button
-                type="button"
-                onClick={() => setPeriod('custom')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
-                  period === 'custom' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                Rango Personalizado
-              </button>
-            </div>
-          </div>
-
-          {/* CUSTOM DATE RANGE PICKER */}
-          {period === 'custom' && (
-            <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 flex flex-wrap items-center gap-4 text-xs">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-amber-700" />
-                <span className="font-bold text-amber-900">Desde:</span>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={e => setStartDate(e.target.value)}
-                  className="bg-white border border-amber-300 rounded-xl px-3 py-1.5 font-medium outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-amber-900">Hasta:</span>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={e => setEndDate(e.target.value)}
-                  className="bg-white border border-amber-300 rounded-xl px-3 py-1.5 font-medium outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* EXECUTIVE KPI SCORECARDS */}
+          {/* INVENTORY FINANCIAL & HEALTH SCORECARDS */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-slate-950 text-white p-4.5 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Ventas Totales</span>
-                <DollarSign className="w-4 h-4 text-amber-400" />
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-black text-amber-400 font-mono">${totalRevenue.toFixed(2)}</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">USD netos</span>
+            <div className="bg-slate-950 text-white p-4 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between">
+              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Valoración de Stock (Costo)</span>
+              <div className="mt-2">
+                <span className="text-2xl font-black text-amber-400 font-mono">${inventoryMetrics.totalValuationCost.toFixed(2)}</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">costo total en almacén</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Unidades Vendidas</span>
-                <Package className="w-4 h-4 text-slate-400" />
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-black text-slate-900 font-mono">{totalProductsSold}</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">productos entregados</span>
+            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Valoración Comercial</span>
+              <div className="mt-2">
+                <span className="text-2xl font-black text-emerald-600 font-mono">${inventoryMetrics.totalRetailValuation.toFixed(2)}</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">PVP estimado de venta</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Órdenes Completadas</span>
-                <ShoppingCart className="w-4 h-4 text-slate-400" />
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-black text-slate-900 font-mono">{totalOrdersCount}</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">pedidos procesados</span>
+            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Unidades Físicas Total</span>
+              <div className="mt-2">
+                <span className="text-2xl font-black text-slate-900 font-mono">{inventoryMetrics.totalPhysicalUnits}</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">piezas en existencia</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Ticket Promedio (AOV)</span>
-                <TrendingUp className="w-4 h-4 text-emerald-500" />
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-black text-emerald-600 font-mono">${avgOrderTicket.toFixed(2)}</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">por transacción</span>
+            <div className="bg-white border border-amber-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+              <span className="text-amber-700 text-[10px] font-bold uppercase tracking-wider block">Alertas de Stock Bajo</span>
+              <div className="mt-2">
+                <span className="text-2xl font-black text-amber-700 font-mono">{inventoryMetrics.lowStockCount}</span>
+                <span className="text-[10px] text-amber-600 block mt-0.5">SKUs requieren reorden</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Tasa Conversión</span>
-                <Activity className="w-4 h-4 text-blue-500" />
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-black text-blue-600 font-mono">{conversionRate.toFixed(1)}%</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">checkouts con éxito</span>
+            <div className="bg-white border border-rose-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+              <span className="text-rose-600 text-[10px] font-bold uppercase tracking-wider block">Productos Agotados</span>
+              <div className="mt-2">
+                <span className="text-2xl font-black text-rose-700 font-mono">{inventoryMetrics.outOfStockCount}</span>
+                <span className="text-[10px] text-rose-500 block mt-0.5">sin stock disponible</span>
               </div>
             </div>
 
-            <div className="bg-white border border-rose-200 p-4.5 rounded-2xl shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between">
-                <span className="text-rose-600 text-[10px] font-bold uppercase tracking-wider">Carritos Abandonados</span>
-                <AlertTriangle className="w-4 h-4 text-rose-500" />
-              </div>
-              <div className="mt-3">
-                <span className="text-2xl font-black text-rose-700 font-mono">{activeAbandoned.length}</span>
-                <span className="text-[10px] text-rose-500 font-bold block mt-0.5">${abandonedValueAtRisk.toFixed(2)} en riesgo</span>
+            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Lotes Activos</span>
+              <div className="mt-2">
+                <span className="text-2xl font-black text-blue-600 font-mono">{inventoryMetrics.activeBatchesCount}</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">remesas en stock</span>
               </div>
             </div>
           </div>
 
-          {/* TWO-COLUMN LAYOUT: PRODUCT PERFORMANCE & GEOGRAPHIC DISTRIBUTION */}
+          {/* TWO-COLUMN LAYOUT: REGISTRAR LOTE & TABLA DE CONTROL DE STOCK */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* LEFT: DESGLOSE DE PRODUCTOS MÁS VENDIDOS (% DEL COMERCIO) */}
-            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
-              <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            {/* LEFT: FORMULARIO DE REGISTRO DE NUEVO LOTE DE PRODUCCIÓN/ENTRADA */}
+            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
+              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <PieChart className="w-5 h-5 text-amber-500" />
-                    Ventas por Producto & % del Comercio Total
+                    <Truck className="w-5 h-5 text-amber-500" />
+                    Registrar Entrada por Lote
                   </h2>
-                  <p className="text-xs text-slate-500">Participación porcentual sobre la facturación comercial en el periodo.</p>
+                  <p className="text-xs text-slate-500">Agrega una nueva remesa o lote de producción de placas o tarjetas.</p>
+                </div>
+              </div>
+
+              {batchSuccessMsg && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-bold flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span>{batchSuccessMsg}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleCreateBatch} className="space-y-4 text-xs">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Código de Lote / Importación *</label>
+                  <input
+                    type="text"
+                    required
+                    value={batchCodeInput}
+                    onChange={e => setBatchCodeInput(e.target.value)}
+                    placeholder="Ej. LOTE-2026-09C"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Producto Asociado *</label>
+                  <select
+                    value={batchProductSelect}
+                    onChange={e => setBatchProductSelect(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800 outline-none cursor-pointer"
+                  >
+                    {products.map(p => (
+                      <option key={p.id} value={p.id}>{p.name} (${p.price.toFixed(2)})</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-700">Cantidad (Piezas) *</label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      value={batchQtyInput}
+                      onChange={e => setBatchQtyInput(e.target.value)}
+                      placeholder="Ej. 100"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-700">Costo Unitario ($ USD) *</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={batchCostInput}
+                      onChange={e => setBatchCostInput(e.target.value)}
+                      placeholder="Ej. 4.50"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Proveedor / Fabricante</label>
+                  <input
+                    type="text"
+                    value={batchSupplierInput}
+                    onChange={e => setBatchSupplierInput(e.target.value)}
+                    placeholder="Nombre del proveedor"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Notas / Especificaciones Técnicas</label>
+                  <textarea
+                    rows={2}
+                    value={batchNotesInput}
+                    onChange={e => setBatchNotesInput(e.target.value)}
+                    placeholder="Detalles de acabado acrílico, chip NTAG216, etc."
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
+                >
+                  <Plus className="w-4 h-4 text-amber-400" />
+                  <span>Ingresar Lote a Inventario</span>
+                </button>
+              </form>
+            </div>
+
+            {/* RIGHT: TABLA DE CONTROL DE EXISTENCIAS Y AJUSTE RÁPIDO */}
+            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
+              <div className="p-5 bg-slate-50 border-b border-slate-200 space-y-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                      <Warehouse className="w-5 h-5 text-slate-700" />
+                      Inventario Físico de Productos ({filteredProductStocks.length})
+                    </h2>
+                    <p className="text-xs text-slate-500">Existencias actuales, valor en costo y ajuste directo de stock.</p>
+                  </div>
+                </div>
+
+                {/* SEARCH & FILTER CONTROLS */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                    <input
+                      type="text"
+                      value={productSearch}
+                      onChange={e => setProductSearch(e.target.value)}
+                      placeholder="Buscar por producto o SKU..."
+                      className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900"
+                    />
+                  </div>
+
+                  <select
+                    value={categoryFilter}
+                    onChange={e => setCategoryFilter(e.target.value)}
+                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
+                  >
+                    <option value="all">Todas las Categorías</option>
+                    <option value="plates">Placas de Mostrador</option>
+                    <option value="cards">Tarjetas NFC</option>
+                    <option value="accessories">Accesorios</option>
+                  </select>
+
+                  <select
+                    value={stockStatusFilter}
+                    onChange={e => setStockStatusFilter(e.target.value as any)}
+                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
+                  >
+                    <option value="all">Todos los Estados de Stock</option>
+                    <option value="normal">Normal (En Stock)</option>
+                    <option value="low">Alerta Stock Bajo</option>
+                    <option value="out">Agotado</option>
+                  </select>
                 </div>
               </div>
 
@@ -536,42 +813,158 @@ export default function InventarioPage() {
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                      <th className="p-3">Producto</th>
-                      <th className="p-3 text-center">Unidades</th>
-                      <th className="p-3 text-right">Ingresos USD</th>
-                      <th className="p-3 text-right">% Cuota</th>
-                      <th className="p-3 text-center">Cobertura</th>
+                      <th className="p-3">SKU / Producto</th>
+                      <th className="p-3 text-center">Stock Actual</th>
+                      <th className="p-3 text-right">Costo Unit.</th>
+                      <th className="p-3 text-right">Precio Venta</th>
+                      <th className="p-3 text-right">Valor Stock USD</th>
+                      <th className="p-3 text-center">Estado</th>
+                      <th className="p-3 text-center">Ajuste Directo</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {productShareList.length === 0 ? (
+                    {filteredProductStocks.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 italic">
-                          No se registran ventas de productos en el periodo seleccionado.
+                        <td colSpan={7} className="p-8 text-center text-slate-400 italic">
+                          No se encontraron productos en el filtro seleccionado.
                         </td>
                       </tr>
                     ) : (
-                      productShareList.map(prod => (
-                        <tr key={prod.name} className="hover:bg-slate-50 transition-colors">
-                          <td className="p-3 font-bold text-slate-900 max-w-[200px] truncate">
-                            {prod.name}
+                      filteredProductStocks.map(prod => {
+                        const isLow = prod.current_stock <= prod.min_alert_stock && prod.current_stock > 0;
+                        const isOut = prod.current_stock === 0;
+                        const stockVal = prod.current_stock * prod.unit_cost;
+
+                        return (
+                          <tr key={prod.product_id} className="hover:bg-slate-50 transition-colors">
+                            <td className="p-3">
+                              <span className="font-mono font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 block w-fit mb-0.5">
+                                {prod.sku}
+                              </span>
+                              <span className="font-bold text-slate-900 block max-w-[200px] truncate">
+                                {prod.name}
+                              </span>
+                            </td>
+
+                            <td className="p-3 text-center font-mono font-black text-base text-slate-900">
+                              {prod.current_stock} ud.
+                            </td>
+
+                            <td className="p-3 text-right font-mono font-semibold text-slate-600">
+                              ${prod.unit_cost.toFixed(2)}
+                            </td>
+
+                            <td className="p-3 text-right font-mono font-bold text-slate-900">
+                              ${prod.selling_price.toFixed(2)}
+                            </td>
+
+                            <td className="p-3 text-right font-mono font-black text-amber-700">
+                              ${stockVal.toFixed(2)}
+                            </td>
+
+                            <td className="p-3 text-center">
+                              {isOut ? (
+                                <span className="px-2 py-0.5 bg-rose-100 text-rose-800 border border-rose-300 rounded font-bold uppercase text-[10px]">
+                                  Agotado
+                                </span>
+                              ) : isLow ? (
+                                <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded font-bold uppercase text-[10px]">
+                                  Stock Bajo ({prod.min_alert_stock})
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold uppercase text-[10px]">
+                                  Disponible
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="p-3 text-center">
+                              <div className="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                                <button
+                                  type="button"
+                                  onClick={() => handleAdjustStock(prod.product_id, -1)}
+                                  className="w-6 h-6 bg-white hover:bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold shadow-2xs border border-slate-200 active:scale-95"
+                                  title="Disminuir 1 unidad"
+                                >
+                                  <Minus className="w-3.5 h-3.5" />
+                                </button>
+                                <span className="font-mono font-bold px-1 text-[11px] text-slate-800">{prod.current_stock}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAdjustStock(prod.product_id, 1)}
+                                  className="w-6 h-6 bg-white hover:bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center font-bold shadow-2xs border border-slate-200 active:scale-95"
+                                  title="Aumentar 1 unidad"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* HISTORIAL DE LOTES REGISTRADOS Y MOVIMIENTOS KARDEX */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* LEFT: HISTORIAL DE LOTES DE PRODUCCIÓN REGISTRADOS */}
+            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
+              <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <History className="w-5 h-5 text-slate-700" />
+                    Lotes de Importación y Producción ({batches.length})
+                  </h2>
+                  <p className="text-xs text-slate-500">Histórico de remesas recibidas de proveedores.</p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto p-2">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
+                      <th className="p-3">Código Lote</th>
+                      <th className="p-3">Producto</th>
+                      <th className="p-3 text-center">Cant. Inicial</th>
+                      <th className="p-3 text-center">Restantes</th>
+                      <th className="p-3 text-right">Costo Unit.</th>
+                      <th className="p-3 text-center">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                    {batches.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="p-8 text-center text-slate-400 italic">No se registran lotes aún.</td>
+                      </tr>
+                    ) : (
+                      batches.map(b => (
+                        <tr key={b.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="p-3 font-mono font-black text-slate-900">
+                            <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded">
+                              {b.id}
+                            </span>
                           </td>
-                          <td className="p-3 text-center font-mono font-bold text-slate-800">
-                            {prod.qty} ud.
+                          <td className="p-3 font-bold text-slate-900 max-w-[180px] truncate">
+                            {b.product_name}
                           </td>
-                          <td className="p-3 text-right font-mono font-black text-slate-900">
-                            ${prod.revenue.toFixed(2)}
+                          <td className="p-3 text-center font-mono font-bold text-slate-700">
+                            {b.quantity_initial} ud.
                           </td>
-                          <td className="p-3 text-right font-mono font-bold text-amber-700">
-                            {prod.percentRevenue.toFixed(1)}%
+                          <td className="p-3 text-center font-mono font-black text-amber-700">
+                            {b.quantity_remaining} ud.
                           </td>
-                          <td className="p-3 text-center min-w-[120px]">
-                            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                              <div
-                                className="bg-amber-500 h-full rounded-full transition-all duration-500"
-                                style={{ width: `${Math.max(5, prod.percentRevenue)}%` }}
-                              />
-                            </div>
+                          <td className="p-3 text-right font-mono font-bold text-slate-900">
+                            ${b.unit_cost.toFixed(2)}
+                          </td>
+                          <td className="p-3 text-center">
+                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold uppercase text-[10px]">
+                              {b.status === 'active' ? 'Activo' : 'Agotado'}
+                            </span>
                           </td>
                         </tr>
                       ))
@@ -581,43 +974,42 @@ export default function InventarioPage() {
               </div>
             </div>
 
-            {/* RIGHT: VENTA Y DEMANDA GEOGRÁFICA POR PROVINCIA DE PANAMÁ */}
-            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
-              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+            {/* RIGHT: AUDITORÍA KARDEX DE MOVIMIENTOS RECIENTES */}
+            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
+              <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-emerald-600" />
-                    Ventas por Provincia (🇵🇦 Panamá)
+                    <Sliders className="w-5 h-5 text-slate-700" />
+                    Kardex Auditable de Movimientos
                   </h2>
-                  <p className="text-xs text-slate-500">Distribución territorial de pedidos completados.</p>
+                  <p className="text-xs text-slate-500">Últimas entradas por lote y salidas por ordenes.</p>
                 </div>
-                <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                  {provinceShareList.length} prov.
-                </span>
               </div>
 
-              <div className="space-y-4">
-                {provinceShareList.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic py-8 text-center">No hay órdenes registradas en este período.</p>
+              <div className="space-y-3 p-4">
+                {stockMovements.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-6 text-center">No hay movimientos registrados.</p>
                 ) : (
-                  provinceShareList.map(prov => (
-                    <div key={prov.name} className="space-y-1">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="font-bold text-slate-900">{prov.name}</span>
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono text-slate-500">{prov.qty} {prov.qty === 1 ? 'orden' : 'órdenes'}</span>
-                          <span className="font-mono font-black text-slate-900">${prov.revenue.toFixed(2)}</span>
-                          <span className="font-mono font-bold text-emerald-600 min-w-[42px] text-right">
-                            {prov.percent.toFixed(1)}%
+                  stockMovements.slice(0, 8).map(m => (
+                    <div key={m.id} className="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between text-xs">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase ${
+                            m.quantity_change > 0
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                              : 'bg-rose-100 text-rose-800 border border-rose-300'
+                          }`}>
+                            {m.quantity_change > 0 ? `+${m.quantity_change} Entrada` : `${m.quantity_change} Salida`}
                           </span>
+                          <span className="font-bold text-slate-900">{m.product_name}</span>
                         </div>
+                        <p className="text-[10px] text-slate-400 mt-1 font-mono">
+                          Ref: {m.reference} | {new Date(m.created_at).toLocaleTimeString('es-PA')}
+                        </p>
                       </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                          style={{ width: `${Math.max(4, prov.percent)}%` }}
-                        />
-                      </div>
+                      <span className="font-mono font-black text-slate-900 text-xs">
+                        {m.resulting_stock} ud. en stock
+                      </span>
                     </div>
                   ))
                 )}
@@ -625,137 +1017,26 @@ export default function InventarioPage() {
             </div>
           </div>
 
-          {/* RECENT ORDERS ACTIVITY STREAM */}
-          <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
-            <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-slate-700" />
-                  Últimas Órdenes y Actividad Comercial en Vivo
-                </h2>
-                <p className="text-xs text-slate-500">Transacciones y pagos procesados recientemente.</p>
-              </div>
-              <Link
-                href="/master-control/pedidos"
-                className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1"
-              >
-                Ver Todas ({orders.length}) &rarr;
-              </Link>
-            </div>
-
-            <div className="overflow-x-auto p-2">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                    <th className="p-3">ID Pedido</th>
-                    <th className="p-3">Fecha</th>
-                    <th className="p-3">Cliente</th>
-                    <th className="p-3">Provincia</th>
-                    <th className="p-3 text-center">Método Pago</th>
-                    <th className="p-3 text-center">Estado Pago</th>
-                    <th className="p-3 text-right">Monto USD</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                  {filteredOrders.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400 italic">
-                        No hay transacciones registradas en este período.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredOrders.slice(0, 8).map(o => (
-                      <tr key={o.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="p-3 font-mono font-bold text-slate-900">
-                          #{o.id}
-                        </td>
-                        <td className="p-3 text-slate-500">
-                          {new Date(o.created_at).toLocaleDateString('es-PA')}
-                        </td>
-                        <td className="p-3">
-                          <p className="font-bold text-slate-900">{o.customer_name}</p>
-                          <p className="text-[10px] text-slate-400">{o.customer_email}</p>
-                        </td>
-                        <td className="p-3 font-medium text-slate-700">
-                          {o.shipping_province || 'Panamá'}
-                        </td>
-                        <td className="p-3 text-center">
-                          <span className="px-2 py-0.5 bg-slate-100 text-slate-800 font-mono font-bold uppercase rounded text-[10px]">
-                            {o.payment_method}
-                          </span>
-                        </td>
-                        <td className="p-3 text-center">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                            o.payment_status === 'completed'
-                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                              : 'bg-amber-100 text-amber-800 border border-amber-300'
-                          }`}>
-                            {o.payment_status === 'completed' ? 'Pagado' : 'Pendiente'}
-                          </span>
-                        </td>
-                        <td className="p-3 text-right font-mono font-black text-slate-900">
-                          ${(o.total || 0).toFixed(2)}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 2: INVENTARIO DE DISPOSITIVOS TAG & FICHAS NFC/QR                     */}
+      {/* TAB 2: INVENTARIO DE FICHAS Y DISPOSITIVOS TAGS (STT-XXXX)                */}
       {/* ========================================================================= */}
-      {activeSubTab === 'tags' && (
+      {activeTab === 'tags_hardware' && (
         <div className="space-y-8">
           
-          {/* STAT METRICS BAR */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs">
-              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Dispositivos en Inventario</span>
-              <span className="text-2xl font-black text-slate-900 font-mono mt-1 block">{cards.length}</span>
-              <span className="text-[10px] text-slate-400 block mt-0.5">fichas NFC/QR</span>
-            </div>
-
-            <div className="bg-white border border-emerald-200 p-4 rounded-2xl shadow-2xs">
-              <span className="text-emerald-700 text-[10px] font-bold uppercase tracking-wider block">TAGs Activos / Asignados</span>
-              <span className="text-2xl font-black text-emerald-700 font-mono mt-1 block">
-                {cards.filter(c => c.is_active && c.claimed).length}
-              </span>
-              <span className="text-[10px] text-emerald-600 block mt-0.5">en uso por clientes</span>
-            </div>
-
-            <div className="bg-white border border-amber-200 p-4 rounded-2xl shadow-2xs">
-              <span className="text-amber-700 text-[10px] font-bold uppercase tracking-wider block">En Stock (Sin Asignar)</span>
-              <span className="text-2xl font-black text-amber-700 font-mono mt-1 block">
-                {cards.filter(c => !c.claimed).length}
-              </span>
-              <span className="text-[10px] text-amber-600 block mt-0.5">listos para vincular</span>
-            </div>
-
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs">
-              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Próximo Código Serial</span>
-              <span className="text-2xl font-black text-slate-900 font-mono mt-1 block">{tagCode}</span>
-              <span className="text-[10px] text-slate-400 block mt-0.5">siguiente pegatina</span>
-            </div>
-          </div>
-
-          {/* TWO-COLUMN LAYOUT: TAG CREATION FORM & INVENTARIO TABLE */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* LEFT: FORMULARIO DE PROGRAMACIÓN Y CREACIÓN DE CÓDIGO TAG */}
+            {/* LEFT: REGISTRO Y PROGRAMACIÓN DE DISPOSITIVO TAG */}
             <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
               <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                     <QrCode className="w-5 h-5 text-amber-500" />
-                    Registrar Dispositivo TAG (STT-XXXX)
+                    Programar Dispositivo TAG (STT-XXXX)
                   </h2>
-                  <p className="text-xs text-slate-500">Programa un nuevo código serial y asigna la URL de destino.</p>
+                  <p className="text-xs text-slate-500">Asigna el código de pegatina a la URL de redirección final.</p>
                 </div>
               </div>
 
@@ -807,7 +1088,7 @@ export default function InventarioPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700">Tipo de Red / Ficha</label>
+                    <label className="font-bold text-slate-700">Tipo de Ficha</label>
                     <select
                       value={tagType}
                       onChange={e => setTagType(e.target.value)}
@@ -854,7 +1135,7 @@ export default function InventarioPage() {
                       type="text"
                       value={tagOwnerName}
                       onChange={e => setTagOwnerName(e.target.value)}
-                      placeholder="Nombre del negocio o cliente"
+                      placeholder="Nombre del negocio"
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
                     />
                   </div>
@@ -870,52 +1151,17 @@ export default function InventarioPage() {
               </form>
             </div>
 
-            {/* RIGHT: TABLA Y BUSCADOR DE INVENTARIO DE TAGS CREADOS */}
+            {/* RIGHT: LISTADO DE TAGS REGISTRADOS */}
             <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
               <div className="p-5 bg-slate-50 border-b border-slate-200 space-y-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                       <QrCode className="w-5 h-5 text-slate-700" />
-                      Inventario de TAGs Registrados ({filteredCards.length})
+                      Inventario de TAGs Registrados ({cards.length})
                     </h2>
-                    <p className="text-xs text-slate-500">Listado de fichas y códigos seriales STT-XXXX.</p>
+                    <p className="text-xs text-slate-500">Fichas activas y listas para clientes.</p>
                   </div>
-                </div>
-
-                {/* SEARCH & FILTERS BAR */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
-                  <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                    <input
-                      type="text"
-                      value={tagSearch}
-                      onChange={e => setTagSearch(e.target.value)}
-                      placeholder="Buscar por serial STT, local o cliente..."
-                      className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900"
-                    />
-                  </div>
-
-                  <select
-                    value={tagChannelFilter}
-                    onChange={e => setTagChannelFilter(e.target.value as any)}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
-                  >
-                    <option value="all">Todos los Canales</option>
-                    <option value="both">NFC + QR</option>
-                    <option value="nfc">Solo NFC</option>
-                    <option value="qr">Solo QR</option>
-                  </select>
-
-                  <select
-                    value={tagClaimFilter}
-                    onChange={e => setTagClaimFilter(e.target.value as any)}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
-                  >
-                    <option value="all">Todos los Estados</option>
-                    <option value="claimed">Asignados</option>
-                    <option value="unclaimed">Sin Asignar (Stock)</option>
-                  </select>
                 </div>
               </div>
 
@@ -924,45 +1170,39 @@ export default function InventarioPage() {
                   <thead>
                     <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
                       <th className="p-3">Serial TAG</th>
-                      <th className="p-3">Etiqueta / Negocio</th>
+                      <th className="p-3">Etiqueta</th>
                       <th className="p-3">Red</th>
-                      <th className="p-3">Cliente</th>
-                      <th className="p-3 text-center">Acciones</th>
+                      <th className="p-3">Propietario</th>
+                      <th className="p-3 text-center">Acción</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {filteredCards.length === 0 ? (
+                    {cards.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 italic">
-                          No se encontraron dispositivos TAG que coincidan con la búsqueda.
-                        </td>
+                        <td colSpan={5} className="p-8 text-center text-slate-400 italic">No hay dispositivos TAG en el sistema.</td>
                       </tr>
                     ) : (
-                      filteredCards.slice(0, 20).map(c => {
+                      cards.slice(0, 15).map(c => {
                         const redirectUrl = `https://startap.com.pa/r/${c.card_id}`;
                         return (
                           <tr key={c.card_id} className="hover:bg-slate-50 transition-colors">
                             <td className="p-3 font-mono font-black text-slate-900">
-                              <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-md">
+                              <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded">
                                 {c.card_id}
                               </span>
                             </td>
-
-                            <td className="p-3 font-bold text-slate-900 max-w-[160px] truncate">
+                            <td className="p-3 font-bold text-slate-900 max-w-[150px] truncate">
                               {c.label || 'Sin etiqueta'}
                             </td>
-
                             <td className="p-3">
                               <span className="px-2 py-0.5 bg-amber-50 text-amber-800 rounded font-bold uppercase text-[10px] border border-amber-200">
                                 {c.type || 'google'}
                               </span>
                             </td>
-
                             <td className="p-3">
-                              <p className="font-semibold text-slate-800">{c.owner_name || 'Stock Disponible'}</p>
+                              <p className="font-semibold text-slate-800">{c.owner_name || 'En Stock'}</p>
                               <p className="text-[10px] text-slate-400 font-mono">{c.owner_email}</p>
                             </td>
-
                             <td className="p-3 text-center">
                               <button
                                 type="button"
@@ -994,6 +1234,47 @@ export default function InventarioPage() {
 
         </div>
       )}
+
+      {/* ========================================================================= */}
+      {/* TAB 3: RENDIMIENTO FINANCIERO & ANALÍTICAS                                */}
+      {/* ========================================================================= */}
+      {activeTab === 'resumen_analiticas' && (
+        <div className="space-y-8">
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-slate-950 text-white p-4.5 rounded-2xl shadow-md border border-slate-800">
+              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Ventas Totales ($ USD)</span>
+              <span className="text-2xl font-black text-amber-400 font-mono mt-1 block">${totalRevenue.toFixed(2)}</span>
+            </div>
+
+            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Unidades Vendidas</span>
+              <span className="text-2xl font-black text-slate-900 font-mono mt-1 block">{totalProductsSold}</span>
+            </div>
+
+            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Órdenes Procesadas</span>
+              <span className="text-2xl font-black text-slate-900 font-mono mt-1 block">{totalOrdersCount}</span>
+            </div>
+
+            <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs">
+              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Ticket Promedio</span>
+              <span className="text-2xl font-black text-emerald-600 font-mono mt-1 block">${avgOrderTicket.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
+            <h2 className="text-base font-black text-slate-900 uppercase tracking-tight mb-2">
+              Resumen Financiero Comercial
+            </h2>
+            <p className="text-xs text-slate-500">
+              Métricas consolidadas de transacciones y ventas acumuladas.
+            </p>
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
