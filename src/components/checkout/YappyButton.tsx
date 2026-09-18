@@ -22,7 +22,7 @@ export default function YappyButton({ onInitiatePayment, onSuccess, onError, the
 
     const handleSuccess = (e: any) => {
       console.log('[Yappy] eventSuccess:', e.detail);
-      trackGA('purchase_yappy', { transaction_id: currentOrderId });
+      trackGA('purchase', { transaction_id: currentOrderId });
       if (onSuccess && currentOrderId) {
         onSuccess(currentOrderId);
       }
