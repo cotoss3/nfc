@@ -33,7 +33,8 @@ import {
   Compass,
   ExternalLink,
   Tag,
-  Sparkles
+  Sparkles,
+  Trash2
 } from 'lucide-react';
 
 export interface LiveVisitor {
@@ -157,76 +158,6 @@ export default function MasterControlDashboard() {
       dbLocal.setStorageItem('nfc_abandoned_checkouts', seedAbandoned);
     }
 
-    // Seed default live online visitors tracking data
-    const initialLiveVisitors: LiveVisitor[] = [
-      {
-        id: 'VIS-9410',
-        country: '🇵🇦 Panamá',
-        cityProvince: 'Panamá (Bella Vista)',
-        referrer: 'Google Search (SEO Organico)',
-        currentPage: '/catalogo/placa-google',
-        timeOnPage: '1m 45s',
-        timeOnSite: '4m 20s',
-        hasCartItems: true,
-        cartTotal: 49.90,
-        cartItemsSummary: '1x Placa Acrílica Google Reviews',
-        device: 'iPhone 15 Pro (Safari)'
-      },
-      {
-        id: 'VIS-9408',
-        country: '🇵🇦 Panamá',
-        cityProvince: 'Chiriquí (David)',
-        referrer: 'Instagram Ads (@startap.pa)',
-        currentPage: '/checkout',
-        timeOnPage: '2m 10s',
-        timeOnSite: '6m 15s',
-        hasCartItems: true,
-        cartTotal: 39.80,
-        cartItemsSummary: '2x Tarjeta NFC Google Reviews',
-        device: 'Samsung Galaxy S24 (Chrome)'
-      },
-      {
-        id: 'VIS-9405',
-        country: '🇵🇦 Panamá',
-        cityProvince: 'Panamá (Costa del Este)',
-        referrer: 'Enlace Directo / WhatsApp',
-        currentPage: '/catalogo',
-        timeOnPage: '0m 42s',
-        timeOnSite: '1m 15s',
-        hasCartItems: false,
-        cartTotal: 0,
-        cartItemsSummary: 'Sin productos aún',
-        device: 'MacBook Pro (Chrome)'
-      },
-      {
-        id: 'VIS-9401',
-        country: '🇵🇦 Panamá',
-        cityProvince: 'Panamá Oeste (Arraiján)',
-        referrer: 'Facebook Ads',
-        currentPage: '/blog/como-pedir-resenas-google-sin-penalizacion',
-        timeOnPage: '3m 05s',
-        timeOnSite: '3m 05s',
-        hasCartItems: false,
-        cartTotal: 0,
-        cartItemsSummary: 'Sin productos aún',
-        device: 'Android Mobile (Chrome)'
-      },
-      {
-        id: 'VIS-9399',
-        country: '🇵🇦 Panamá',
-        cityProvince: 'Colón (Zona Libre)',
-        referrer: 'Google Search',
-        currentPage: '/corporativo',
-        timeOnPage: '1m 18s',
-        timeOnSite: '2m 40s',
-        hasCartItems: false,
-        cartTotal: 0,
-        cartItemsSummary: 'Sin productos aún',
-        device: 'Windows PC (Edge)'
-      }
-    ];
-
-    setLiveVisitors(initialLiveVisitors);
     setOrders(dbOrders);
     setProducts(dbProducts);
     setAbandoned(dbAbandoned);
@@ -236,18 +167,6 @@ export default function MasterControlDashboard() {
 
   useEffect(() => {
     loadData();
-
-    // Randomize live visitor times for realistic real-time simulation
-    const interval = setInterval(() => {
-      setLiveVisitors(prev =>
-        prev.map(v => ({
-          ...v,
-          timeOnPage: `${Math.floor(1 + Math.random() * 3)}m ${Math.floor(Math.random() * 59)}s`,
-          timeOnSite: `${Math.floor(3 + Math.random() * 8)}m ${Math.floor(Math.random() * 59)}s`
-        }))
-      );
-    }, 10000);
-    return () => clearInterval(interval);
   }, []);
 
   // Filter orders by selected date period
@@ -367,6 +286,33 @@ export default function MasterControlDashboard() {
     dbLocal.setStorageItem('nfc_abandoned_checkouts', updated);
     setActionSuccessMsg(`¡Carrito #${item.id} marcado como RECUPERADO!`);
     setTimeout(() => setActionSuccessMsg(''), 3500);
+  };
+
+  const handleDeleteAbandoned = (id: string) => {
+    if (window.confirm(`¿Seguro que deseas descartar y eliminar el carrito #${id}?`)) {
+      const updated = abandoned.filter(a => a.id !== id);
+      setAbandoned(updated);
+      dbLocal.setStorageItem('nfc_abandoned_checkouts', updated);
+      if (supabase) {
+        supabase.from('abandoned_checkouts').delete().eq('id', id).then(({ error }) => {
+          if (error) console.error('Error eliminando carrito en Supabase:', error);
+        });
+      }
+      setActionSuccessMsg(`Carrito #${id} descartado y eliminado del sistema.`);
+      setTimeout(() => setActionSuccessMsg(''), 3500);
+    }
+  };
+
+  const handleClearAllAbandoned = () => {
+    if (window.confirm('¿Deseas descartar todos los carritos irrecuperables de la lista?')) {
+      setAbandoned([]);
+      dbLocal.setStorageItem('nfc_abandoned_checkouts', []);
+      if (supabase) {
+        supabase.from('abandoned_checkouts').delete().neq('id', '').then(() => {});
+      }
+      setActionSuccessMsg('Todos los carritos irrecuperables han sido descartados.');
+      setTimeout(() => setActionSuccessMsg(''), 3500);
+    }
   };
 
   // Print Packing Slip
@@ -907,16 +853,30 @@ export default function MasterControlDashboard() {
                 </p>
               </div>
 
-              {/* SEARCH FILTER */}
-              <div className="relative w-full sm:w-72">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  value={abandonedSearch}
-                  onChange={e => setAbandonedSearch(e.target.value)}
-                  placeholder="Buscar por cliente, email o teléfono..."
-                  className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-slate-900"
-                />
+              {/* SEARCH FILTER & CLEAR ALL BUTTON */}
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-72">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    value={abandonedSearch}
+                    onChange={e => setAbandonedSearch(e.target.value)}
+                    placeholder="Buscar por cliente, email o teléfono..."
+                    className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-slate-900"
+                  />
+                </div>
+
+                {activeAbandoned.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearAllAbandoned}
+                    className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs rounded-xl transition flex items-center gap-1.5"
+                    title="Descartar todos los carritos irrecuperables"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                    <span>Limpiar Irrecuperables</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1016,100 +976,80 @@ export default function MasterControlDashboard() {
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 3: MÓDULO DETALLADO DE CLIENTES ACTIVOS EN VIVO (LIVE ONLINE TRACKER) */}
+      {/* TAB 3: TRÁFICO EN TIEMPO REAL & GOOGLE ANALYTICS 4                        */}
       {/* ========================================================================= */}
       {activeTab === 'live_visitors' && (
         <div className="space-y-6">
           
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xs space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+                  <span className="w-3 h-3 rounded-full bg-blue-500 animate-ping" />
                   <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Users className="w-6 h-6 text-emerald-600" />
-                    Rastreador de Clientes Activos en Vivo ({liveVisitors.length})
+                    <Globe className="w-6 h-6 text-blue-600" />
+                    Tráfico en Tiempo Real (Google Analytics 4)
                   </h2>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Monitorización en tiempo real de compradores explorando la tienda, páginas visitadas y estado del carrito.
+                <p className="text-xs text-slate-500 mt-1">
+                  Medición oficial y en vivo de usuarios activos navegando en la tienda starTAP Panamá.
                 </p>
               </div>
 
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-full font-mono font-bold text-xs flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Actualizado en Vivo
+              <span className="px-3.5 py-1.5 bg-blue-50 text-blue-900 border border-blue-200 rounded-full font-mono font-bold text-xs flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+                GA4 ID: G-VQH5VW4KF9
               </span>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                    <th className="p-3.5">ID Sesión / Usuario</th>
-                    <th className="p-3.5">Ubicación & Área</th>
-                    <th className="p-3.5">Fuente de Tráfico (Origen)</th>
-                    <th className="p-3.5">Página Actual Navegando</th>
-                    <th className="p-3.5 text-center">Tiempo en Página</th>
-                    <th className="p-3.5 text-center">Tiempo en Web</th>
-                    <th className="p-3.5 text-center">Estado del Carrito</th>
-                    <th className="p-3.5">Dispositivo</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                  {liveVisitors.map(v => (
-                    <tr key={v.id} className="hover:bg-emerald-50/20 transition-colors">
-                      <td className="p-3.5 font-mono font-bold text-slate-900">
-                        <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded">
-                          {v.id}
-                        </span>
-                      </td>
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 text-xs text-slate-800 space-y-2">
+              <div className="flex items-center gap-2 font-black text-amber-900 text-sm">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <span>Claridad sobre la medición en vivo</span>
+              </div>
+              <p className="text-slate-700 leading-relaxed">
+                Google Analytics 4 (`G-VQH5VW4KF9`) es la única consola oficial que mide cada usuario en tiempo real sin simulaciones locales. La lista previa era una plantilla de prueba local. Para monitorear el tráfico vivo exacto, utiliza el enlace directo de GA4.
+              </p>
+            </div>
 
-                      <td className="p-3.5">
-                        <p className="font-bold text-slate-900">{v.country}</p>
-                        <p className="text-[10px] text-slate-500 font-medium">{v.cityProvince}</p>
-                      </td>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              <div className="border border-slate-200 rounded-2xl p-6 bg-slate-50 space-y-3 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-black text-slate-900 text-sm uppercase tracking-wide flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-blue-600" /> Console GA4 en Tiempo Real
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Inspecciona ubicaciones exactas, páginas vistas y fuentes de tráfico de tus clientes en tiempo real.
+                  </p>
+                </div>
+                <a
+                  href="https://analytics.google.com/analytics/web/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-sm transition flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Abrir Google Analytics 4 (Tiempo Real)</span>
+                </a>
+              </div>
 
-                      <td className="p-3.5 font-semibold text-slate-800">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[11px]">
-                          <Compass className="w-3 h-3 text-slate-500" />
-                          {v.referrer}
-                        </span>
-                      </td>
-
-                      <td className="p-3.5">
-                        <span className="font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[11px] block w-fit truncate max-w-[200px]">
-                          {v.currentPage}
-                        </span>
-                      </td>
-
-                      <td className="p-3.5 text-center font-mono font-bold text-slate-900">
-                        {v.timeOnPage}
-                      </td>
-
-                      <td className="p-3.5 text-center font-mono font-bold text-slate-500">
-                        {v.timeOnSite}
-                      </td>
-
-                      <td className="p-3.5 text-center">
-                        {v.hasCartItems ? (
-                          <div className="space-y-0.5">
-                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold text-[10px] inline-block">
-                              🛒 {v.cartItemsSummary} (${v.cartTotal.toFixed(2)})
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400 italic text-[11px]">⚪ Carrito vacío</span>
-                        )}
-                      </td>
-
-                      <td className="p-3.5 text-slate-500 font-mono text-[11px]">
-                        {v.device}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="border border-slate-200 rounded-2xl p-6 bg-slate-50 space-y-3 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-black text-slate-900 text-sm uppercase tracking-wide flex items-center gap-2">
+                    <ShoppingCart className="w-4 h-4 text-rose-600" /> Carritos Abandonados Reales
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Revisa las sesiones donde los clientes completaron sus datos pero no finalizaron el pago.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('abandoned')}
+                  className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-sm transition flex items-center justify-center gap-2"
+                >
+                  <ShoppingCart className="w-4 h-4 text-amber-400" />
+                  <span>Ver Carritos Abandonados Reales</span>
+                </button>
+              </div>
             </div>
           </div>
 
