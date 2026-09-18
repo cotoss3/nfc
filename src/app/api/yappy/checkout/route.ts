@@ -8,13 +8,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Faltan datos obligatorios' }, { status: 400 });
     }
 
-    const merchantId = process.env.YAPPY_MERCHANT_ID;
-    const domain = process.env.NEXT_PUBLIC_SITE_URL || 'https://startap.com.pa';
-
-    if (!merchantId) {
-      console.warn('YAPPY_MERCHANT_ID no está configurado en .env');
-      return NextResponse.json({ success: false, error: 'Yappy no está configurado' }, { status: 500 });
-    }
+    const merchantId = process.env.YAPPY_MERCHANT_ID || '49bccdf9-4185-4732-83e0-e0cdf851b6de';
+    // Yappy exige exactamente el dominio registrado en el Portal Comercial (sin barras finales o puertos locales)
+    const domain = 'https://startap.com.pa';
 
     // Paso 1: Validar comercio y obtener token
     const validateRes = await fetch('https://apipagosbg.bgeneral.cloud/payments/validate/merchant', {
@@ -29,8 +25,9 @@ export async function POST(req: Request) {
     const validateData = await validateRes.json();
     
     if (!validateData?.body?.token) {
-      console.error('[Yappy Validate Error]', validateData);
-      return NextResponse.json({ success: false, error: 'Error al validar comercio en Yappy' }, { status: 500 });
+      console.error('[Yappy Validate Error]', JSON.stringify(validateData));
+      const errorMsg = validateData?.status?.description || 'Error al validar comercio en Yappy';
+      return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
     }
 
     const token = validateData.body.token;
@@ -59,8 +56,9 @@ export async function POST(req: Request) {
     const orderData = await createOrderRes.json();
 
     if (!orderData?.body?.transactionId || !orderData?.body?.documentName) {
-      console.error('[Yappy Create Order Error]', orderData);
-      return NextResponse.json({ success: false, error: 'Error al crear orden en Yappy' }, { status: 500 });
+      console.error('[Yappy Create Order Error]', JSON.stringify(orderData));
+      const errorMsg = orderData?.status?.description || 'Error al generar la orden en Yappy';
+      return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
     }
 
     return NextResponse.json({
