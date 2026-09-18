@@ -169,7 +169,7 @@ export default function CheckoutPage() {
     (item) =>
       item.product_id === 'pack-trio-comercial' ||
       item.product_id === 'pack-trio' ||
-      item.product_name.toLowerCase().includes('pack')
+      item.product_name?.toLowerCase().includes('pack')
   );
 
   const getShippingCost = () => {
@@ -315,7 +315,7 @@ export default function CheckoutPage() {
               has_custom_logo: i.has_custom_logo,
               has_qr_code: i.has_qr_code,
               price: i.price,
-              is_upsell: i.product_id === 'tarjeta-nfc-bolsillo' && (i.price === 15 || i.product_name.includes('Oferta Especial')),
+              is_upsell: i.product_id === 'tarjeta-nfc-bolsillo' && (i.price === 15 || i.product_name?.includes('Oferta Especial')),
             })),
             total: getGrandTotal(),
           }),
