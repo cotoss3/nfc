@@ -18,6 +18,14 @@ interface YappyButtonProps {
   theme?: 'blue' | 'darkBlue' | 'orange' | 'dark' | 'sky' | 'light';
 }
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'btn-yappy': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & { theme?: string }, HTMLElement>;
+    }
+  }
+}
+
 export default function YappyButton({ onInitiatePayment, onSuccess, onError, theme = 'blue' }: YappyButtonProps) {
   const btnRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(false);
