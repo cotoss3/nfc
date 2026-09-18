@@ -23,7 +23,9 @@ import {
   Sparkles,
   Flame,
   Award,
-  Lock
+  Lock,
+  Tag,
+  ShoppingBag
 } from 'lucide-react';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 
@@ -152,7 +154,7 @@ export default function HomeClient() {
                 className="shopify-btn-primary text-center py-4 px-8 tracking-wider text-xs sm:text-sm uppercase font-bold text-white bg-slate-950 hover:bg-slate-900 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
               >
                 <ShoppingCart className="w-4 h-4 text-amber-400" />
-                <span>Ver Productos ($19 - $35 USD)</span>
+                <span>Ver Productos ($20 - $35 USD)</span>
               </a>
 
               <a
@@ -462,6 +464,73 @@ export default function HomeClient() {
             )}
 
           </div>
+
+          {/* Banner Pack Especial Recomendado (Mismo estilo que en /catalogo) */}
+          <div className="mt-10 bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 relative overflow-hidden">
+            <div className="absolute top-4 right-4 bg-amber-400 text-slate-950 font-black text-[10px] sm:text-xs uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow z-10">
+              <Star className="w-3.5 h-3.5 fill-slate-950" /> Pack Recomendado
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+              <div className="md:col-span-8 space-y-3">
+                <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider">
+                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $20.00)
+                </div>
+                
+                <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+                  Pack Comercio Completo (1 Placa + 2 Tarjetas NFC)
+                </h3>
+
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                  Equipa tu caja de cobro y a tu personal en movimiento con la solución completa para capturar reseñas.
+                </p>
+
+                <div className="bg-slate-800/80 rounded-2xl p-3.5 border border-slate-700 space-y-1.5">
+                  <div className="flex items-center gap-2 text-xs text-slate-200">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span><strong>1 Placa NFC de Mostrador (Acrílico 3mm)</strong> para la caja registradora</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-200">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span><strong>2 Tarjetas NFC de Bolsillo (PVC 0.76mm)</strong> para tu equipo en movimiento</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-emerald-400 font-bold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span><strong>ENVÍO GRATIS A TODO PANAMÁ</strong> + Auto-configuración incluida</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="md:col-span-4 space-y-4 text-left md:text-right border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
+                <div>
+                  <div className="flex items-baseline gap-2 md:justify-end">
+                    <span className="text-3xl font-black text-amber-400 font-mono">$50.00</span>
+                    <span className="text-xs text-slate-400 line-through font-semibold">$70.00</span>
+                  </div>
+                  <span className="inline-block mt-1 text-[10px] font-black text-slate-950 bg-amber-400 px-2.5 py-0.5 rounded shadow-xs">
+                    AHORRAS $20.00 USD
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    addToCart({
+                      product_id: 'pack-negocio-3in1',
+                      product_name: 'Pack Comercio Completo (1 Placa + 2 Tarjetas NFC)',
+                      price: 50.00,
+                      quantity: 1,
+                      selected_color: 'Acrílico 3mm + PVC 0.76mm'
+                    });
+                    router.push('/checkout');
+                  }}
+                  className="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-5 py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Comprar Pack ($50 USD)</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -571,7 +640,7 @@ export default function HomeClient() {
               href="#catalogo-home"
               className="shopify-btn-primary py-4 px-8 uppercase font-bold tracking-wider text-xs inline-block rounded-xl bg-white text-slate-950 hover:bg-slate-100 shadow-lg"
             >
-              Ver Productos ($19 - $35)
+              Ver Productos ($20 - $35)
             </a>
             <a
               href={whatsappUrl}
@@ -588,7 +657,7 @@ export default function HomeClient() {
       {/* 7. STICKY MOBILE BOTTOM FLOATING ACTION BAR */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950 text-white border-t border-slate-800 p-3 flex items-center justify-between shadow-2xl">
         <div>
-          <div className="text-xs font-black text-amber-400 font-mono">Dispositivos desde $19</div>
+          <div className="text-xs font-black text-amber-400 font-mono">Dispositivos desde $20</div>
           <div className="text-[10px] text-slate-400 font-medium">Envío Panamá · Yappy & Tarjetas</div>
         </div>
         <a

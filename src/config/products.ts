@@ -94,8 +94,9 @@ export const PRODUCTS: ProductConfig[] = [
     badge: 'PVC Blanco Mate Autoportante',
     description: 'Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.',
     useCase: 'Mesas de restaurantes, cafeterías, escritorios y clínicas.',
-    image: '/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp',
+    image: '/products/NFC10002/NFC_10002_Stan.webp',
     images: [
+      '/products/NFC10002/NFC_10002_Stan.webp',
       '/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp',
       '/products/NFC10002/stand-nfc-taller-mecanico-clientes-felices.webp',
       '/products/NFC10002/stand-nfc-aumento-confianza-seo-local.webp',
