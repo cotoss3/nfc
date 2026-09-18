@@ -311,14 +311,14 @@ export default function HomeClient() {
             </p>
           </div>
 
-          {/* Catalog Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Catalog Responsive Layout: Horizontal Touch Scroll on Mobile (<768px), 3-Column Grid on Desktop */}
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 px-4 -mx-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-none">
             
             {/* Item 1: Tarjeta NFC de Bolsillo */}
             {homeProducts[0] && (
-              <div className="bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
+              <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
                 <div>
-                  <div className="aspect-square relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
+                  <div className="aspect-[4/3] max-h-44 sm:max-h-52 md:aspect-square md:max-h-none relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
                     <img
                       src={homeProducts[0].image}
                       alt={homeProducts[0].name}
@@ -328,46 +328,48 @@ export default function HomeClient() {
                       Portátil
                     </span>
                   </div>
-                  <div className="p-5 space-y-3">
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide cursor-pointer hover:text-amber-600 transition-colors" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
+                  <div className="p-4 sm:p-5 space-y-2">
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
                       {homeProducts[0].name}
                     </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                    <p className="text-xs text-slate-600 leading-snug font-medium line-clamp-2">
                       PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para entregas o eventos.
                     </p>
-                    <div className="flex items-baseline justify-between pt-2">
-                      <span className="text-2xl font-black text-slate-950 font-mono">${homeProducts[0].price.toFixed(2)} USD</span>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Envío Panamá</span>
+                    <div className="flex items-baseline justify-between pt-1">
+                      <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">${homeProducts[0].price.toFixed(2)} USD</span>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Envío Panamá</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-5 pt-0 space-y-2">
-                  <button
-                    onClick={() => handleQuickAdd(homeProducts[0], true)}
-                    className="w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
-                  >
-                    <span>Comprar Ahora &rarr;</span>
-                  </button>
-                  <button
-                    onClick={() => handleQuickAdd(homeProducts[0], false)}
-                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
-                  >
-                    <ShoppingCart className="w-3.5 h-3.5" />
-                    <span>Añadir al Carrito</span>
-                  </button>
+                <div className="p-4 pt-0 sm:p-5 sm:pt-0">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleQuickAdd(homeProducts[0], true)}
+                      className="flex-1 py-3 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1"
+                    >
+                      <span>Comprar Ahora &rarr;</span>
+                    </button>
+                    <button
+                      onClick={() => handleQuickAdd(homeProducts[0], false)}
+                      className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center justify-center shrink-0"
+                      title="Añadir al Carrito"
+                    >
+                      <ShoppingCart className="w-4 h-4 text-slate-800" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
 
             {/* Item 2: Placa NFC Mostrador (DESTACADO) */}
             {homeProducts[1] && (
-              <div className="bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-slate-950 flex flex-col justify-between relative transform hover:-translate-y-1 transition-all">
-                <span className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3.5 py-1 rounded-full shadow-md z-20">
-                  🔥 Más Vendida en Panamá
+              <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-slate-950 flex flex-col justify-between relative transform hover:-translate-y-1 transition-all">
+                <span className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3 py-0.5 rounded-full shadow-md z-20">
+                  🔥 Más Vendida
                 </span>
                 <div>
-                  <div className="aspect-square relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
+                  <div className="aspect-[4/3] max-h-44 sm:max-h-52 md:aspect-square md:max-h-none relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
                     <img
                       src={homeProducts[1].image}
                       alt={homeProducts[1].name}
@@ -377,43 +379,45 @@ export default function HomeClient() {
                       Acrílico 3mm
                     </span>
                   </div>
-                  <div className="p-5 space-y-3">
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide cursor-pointer hover:text-amber-600 transition-colors" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
+                  <div className="p-4 sm:p-5 space-y-2">
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
                       {homeProducts[1].name}
                     </h3>
-                    <p className="text-xs text-slate-700 leading-relaxed font-semibold">
+                    <p className="text-xs text-slate-700 leading-snug font-semibold line-clamp-2">
                       Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para capturar reseñas al cobrar.
                     </p>
-                    <div className="flex items-baseline justify-between pt-2">
-                      <span className="text-2xl font-black text-slate-950 font-mono">${homeProducts[1].price.toFixed(2)} USD</span>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Envío Panamá</span>
+                    <div className="flex items-baseline justify-between pt-1">
+                      <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">${homeProducts[1].price.toFixed(2)} USD</span>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Envío Panamá</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-5 pt-0 space-y-2">
-                  <button
-                    onClick={() => handleQuickAdd(homeProducts[1], true)}
-                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
-                  >
-                    <span>Comprar Ahora &rarr;</span>
-                  </button>
-                  <button
-                    onClick={() => handleQuickAdd(homeProducts[1], false)}
-                    className="w-full py-2.5 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
-                  >
-                    <ShoppingCart className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Añadir al Carrito</span>
-                  </button>
+                <div className="p-4 pt-0 sm:p-5 sm:pt-0">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleQuickAdd(homeProducts[1], true)}
+                      className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1"
+                    >
+                      <span>Comprar Ahora &rarr;</span>
+                    </button>
+                    <button
+                      onClick={() => handleQuickAdd(homeProducts[1], false)}
+                      className="p-3 bg-slate-950 hover:bg-slate-900 text-white font-bold rounded-xl transition flex items-center justify-center shrink-0"
+                      title="Añadir al Carrito"
+                    >
+                      <ShoppingCart className="w-4 h-4 text-amber-400" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
 
             {/* Item 3: Stand NFC Mesa */}
             {homeProducts[2] && (
-              <div className="bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
+              <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
                 <div>
-                  <div className="aspect-square relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
+                  <div className="aspect-[4/3] max-h-44 sm:max-h-52 md:aspect-square md:max-h-none relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
                     <img
                       src={homeProducts[2].image}
                       alt={homeProducts[2].name}
@@ -423,34 +427,36 @@ export default function HomeClient() {
                       Stand de Mesa
                     </span>
                   </div>
-                  <div className="p-5 space-y-3">
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide cursor-pointer hover:text-amber-600 transition-colors" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
+                  <div className="p-4 sm:p-5 space-y-2">
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
                       {homeProducts[2].name}
                     </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                    <p className="text-xs text-slate-600 leading-snug font-medium line-clamp-2">
                       Estructura rígida autoportante ideal para mesas de restaurantes, cafeterías, escritorios y clínicas.
                     </p>
-                    <div className="flex items-baseline justify-between pt-2">
-                      <span className="text-2xl font-black text-slate-950 font-mono">${homeProducts[2].price.toFixed(2)} USD</span>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Envío Panamá</span>
+                    <div className="flex items-baseline justify-between pt-1">
+                      <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">${homeProducts[2].price.toFixed(2)} USD</span>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Envío Panamá</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-5 pt-0 space-y-2">
-                  <button
-                    onClick={() => handleQuickAdd(homeProducts[2], true)}
-                    className="w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
-                  >
-                    <span>Comprar Ahora &rarr;</span>
-                  </button>
-                  <button
-                    onClick={() => handleQuickAdd(homeProducts[2], false)}
-                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
-                  >
-                    <ShoppingCart className="w-3.5 h-3.5" />
-                    <span>Añadir al Carrito</span>
-                  </button>
+                <div className="p-4 pt-0 sm:p-5 sm:pt-0">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleQuickAdd(homeProducts[2], true)}
+                      className="flex-1 py-3 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1"
+                    >
+                      <span>Comprar Ahora &rarr;</span>
+                    </button>
+                    <button
+                      onClick={() => handleQuickAdd(homeProducts[2], false)}
+                      className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center justify-center shrink-0"
+                      title="Añadir al Carrito"
+                    >
+                      <ShoppingCart className="w-4 h-4 text-slate-800" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
