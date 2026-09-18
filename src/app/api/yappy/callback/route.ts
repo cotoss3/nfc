@@ -12,11 +12,12 @@ export async function GET(req: Request) {
     const hash = searchParams.get('hash');
     const domain = searchParams.get('domain');
 
-    let rawSecret = (process.env.YAPPY_SECRET_KEY || '').trim().replace(/['"]/g, '');
-    if (!rawSecret || !rawSecret.startsWith('WVBf') || rawSecret.length < 50) {
-      rawSecret = 'WVBfMjNBQ0EwNzktOEM3Ri0zMDU2LTg3ODctQTA0MkZDMkQ5RDJDLjQ5YmNjZGY5LTQxODUtNDczMi04M2UwLWUwY2RmODUxYjZkZQ==';
+    const CLAVE_SECRETA = (process.env.YAPPY_SECRET_KEY || '').trim().replace(/['"]/g, '');
+
+    if (!CLAVE_SECRETA) {
+      console.error('[YAPPY_IPN] YAPPY_SECRET_KEY no está configurada');
+      return NextResponse.json({ success: false, error: 'Configuración de YAPPY_SECRET_KEY faltante en el servidor' }, { status: 500 });
     }
-    const CLAVE_SECRETA = rawSecret;
 
     if (!orderId || !status || !hash || !domain) {
       return NextResponse.json({ success: false, error: 'Parámetros faltantes' });

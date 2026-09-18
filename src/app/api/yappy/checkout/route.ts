@@ -23,16 +23,23 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // Sanitizar y extraer exactamente el UUID de 36 caracteres para merchantId
-    // Esto previene errores si la variable de entorno en Vercel tiene texto extra, saltos de línea o concatenaciones
-    const rawMerchant = process.env.YAPPY_MERCHANT_ID || '';
+    // Sanitizar y extraer exactamente el UUID de 36 caracteres para merchantId desde process.env
+    const rawMerchant = (process.env.YAPPY_MERCHANT_ID || '').trim().replace(/['"]/g, '');
     const uuidMatch = rawMerchant.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
-    const merchantId = uuidMatch ? uuidMatch[0] : '49bccdf9-4185-4732-83e0-e0cdf851b6de';
+    const merchantId = uuidMatch ? uuidMatch[0] : '';
+
+    if (!merchantId) {
+      console.error('[Yappy Error] YAPPY_MERCHANT_ID no está configurada o es inválida en variables de entorno');
+      return NextResponse.json({ 
+        success: false, 
+        error: 'El ID de comercio de Yappy (YAPPY_MERCHANT_ID) no está configurado en el servidor.' 
+      }, { status: 500 });
+    }
     
     // Dominio exacto registrado en el Portal Comercial de Banco General (sin barra final)
     const domain = 'https://startap.com.pa';
 
-    console.log('[Yappy] Validando comercio:', { merchantId, domain, rawLen: rawMerchant.length });
+    console.log('[Yappy] Validando comercio:', { merchantId, domain });
 
     // Paso 1: Validar comercio y obtener token
     const validateRes = await fetch('https://apipagosbg.bgeneral.cloud/payments/validate/merchant', {
