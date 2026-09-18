@@ -10,6 +10,7 @@ import MetaPixel from '@/components/MetaPixel';
 import TikTokPixel from '@/components/TikTokPixel';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import RealTimeTracker from '@/components/RealTimeTracker';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://startap.com.pa'),
@@ -110,6 +111,7 @@ export default function RootLayout({
           <GoogleAnalytics />
         </Suspense>
         <CartProvider>
+          <RealTimeTracker />
           <Navbar />
           <MainWrapper>
             {children}
