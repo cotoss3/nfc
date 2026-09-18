@@ -419,13 +419,13 @@ export default function HomeClient() {
             {homeProducts[2] && (
               <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
                 <div>
-                  <div className="aspect-[4/3] max-h-44 sm:max-h-52 md:aspect-square md:max-h-none relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
+                  <div className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
                     <img
                       src={homeProducts[2].image}
                       alt={homeProducts[2].name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
                       Stand de Mesa
                     </span>
                   </div>
@@ -503,6 +503,28 @@ export default function HomeClient() {
 
               <div className="md:col-span-4 space-y-4 text-left md:text-right border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
                 <div>
+                  {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $50.00 */}
+                  <div className="flex items-center gap-1.5 md:justify-end mb-2.5">
+                    <img
+                      src="/products/NFC_10001/NFC_10001_Placa.webp"
+                      alt="1x Placa Acrílica de Mostrador"
+                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain bg-white rounded-xl p-1 border-2 border-amber-400 shadow-sm"
+                      title="1x Placa Acrílica de Mostrador (3mm)"
+                    />
+                    <img
+                      src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
+                      alt="1x Tarjeta NFC de Bolsillo"
+                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain bg-white rounded-xl p-1 border border-slate-700 shadow-sm"
+                      title="1x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
+                    />
+                    <img
+                      src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
+                      alt="2x Tarjeta NFC de Bolsillo"
+                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain bg-white rounded-xl p-1 border border-slate-700 shadow-sm"
+                      title="2x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
+                    />
+                  </div>
+
                   <div className="flex items-baseline gap-2 md:justify-end">
                     <span className="text-3xl font-black text-amber-400 font-mono">$50.00</span>
                     <span className="text-xs text-slate-400 line-through font-semibold">$70.00</span>
@@ -534,62 +556,85 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* 4. SECCIÓN "¿CÓMO FUNCIONA EN TU COMERCIO?" */}
+      {/* 4. SECCIÓN UNIFICADA: ¿CÓMO FUNCIONA EL SISTEMA STARTAP EN TU COMERCIO? */}
       <section className="py-12 sm:py-16 bg-white border-y border-slate-200">
-        <div className="shopify-container max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center space-y-2.5 mb-10 sm:mb-14">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              Sistema Completo Hardware + Panel Software
+            </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
-              ¿Cómo Funciona en Tu Comercio?
+              ¿Cómo Funciona el Sistema starTAP en Tu Comercio?
             </h2>
-            <p className="text-slate-600 text-xs sm:text-base max-w-xl mx-auto font-medium">
-              3 pasos simples orientados a la atención presencial en la caja o mostrador.
+            <p className="text-slate-600 text-xs sm:text-base max-w-2xl mx-auto font-medium">
+              Hardware NFC & QR en tu mostrador conectado a tu Panel Gratuito de Gestión de Enlaces.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Step 1 */}
+            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 relative hover:border-amber-400 transition">
               <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
                 1
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                Colócala en caja o mostrador
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                <span>Colócala en Caja</span> 📦
               </h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Auto-configurable en segundos. Retiras la protección de la cinta 3M, la vinculas con tu celular y la fijas en tu recepción.
+              <p className="text-slate-600 text-xs leading-relaxed font-medium">
+                Auto-configurable en 30 segundos. Retiras la protección de la cinta 3M, la vinculas con tu celular y la fijas en tu recepción sin enviarnos links largos.
               </p>
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+            {/* Step 2 */}
+            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 relative hover:border-amber-400 transition">
               <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
                 2
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                El cliente acerca el teléfono
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                <span>Cliente Acerca Celular</span> 📱
               </h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Abre directamente la pantalla de 5 estrellas en Google sin instalar aplicaciones ni buscar manualmente el nombre de la empresa.
+              <p className="text-slate-600 text-xs leading-relaxed font-medium">
+                Abre directamente el formulario de 5 estrellas en Google Maps (NFC o QR). Compatible con el 100% de iPhones y Androids sin descargar apps.
               </p>
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+            {/* Step 3 (PANEL GRATUITO DE GESTIÓN DE ENLACES) */}
+            <div className="bg-amber-500/10 p-6 rounded-3xl border-2 border-amber-400 space-y-3 relative hover:shadow-md transition">
+              <span className="absolute -top-3 right-4 bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-xs">
+                Panel Incluido
+              </span>
               <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
                 3
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                Sube en el ranking local
+              <h3 className="text-sm sm:text-base font-bold text-slate-950 flex items-center gap-1.5">
+                <span>Panel Gratuito de URLs</span> 💻
               </h3>
-              <p className="text-slate-600 text-xs leading-relaxed">
-                Más reseñas recientes significan más clientes buscando en Google Maps en Panamá que eligen tu establecimiento sobre la competencia.
+              <p className="text-slate-800 text-xs leading-relaxed font-bold">
+                Acceso de por vida a tu Dashboard Gratuito. Cambia tu enlace de Google Maps, redirige a WhatsApp, Menú Digital o Instagram cuando quieras sin pagar nada extra.
+              </p>
+            </div>
+
+            {/* Step 4 */}
+            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 relative hover:border-amber-400 transition">
+              <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
+                4
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                <span>Sube en Google Maps</span> 🚀
+              </h3>
+              <p className="text-slate-600 text-xs leading-relaxed font-medium">
+                Multiplica tus opiniones semanales de 5 estrellas. Más valoraciones posicionan tu negocio por encima de tu competencia en Panamá.
               </p>
             </div>
           </div>
+
+          <div className="mt-8 bg-slate-950 text-white rounded-2xl p-4 flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-slate-300">
+            <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-emerald-400" /> 0 Mensualidades ni suscripciones</span>
+            <span className="flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-amber-400" /> Cambios de enlace ilimitados en el panel</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-blue-400" /> Doble tecnología NFC + Código QR HD</span>
+          </div>
         </div>
       </section>
-
-      {/* Auto-Configurable 3-Step Guide Component */}
-      <div className="shopify-container max-w-6xl mx-auto px-4 pt-12">
-        <AutoConfigGuide />
-      </div>
 
       {/* 5. PREGUNTAS FRECUENTES (FAQ) */}
       <section className="py-12 sm:py-16 bg-slate-50">
