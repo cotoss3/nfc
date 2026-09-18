@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   CreditCard, Package, Users, Tag, BarChart2, QrCode, 
-  LogOut, AlertCircle, ShoppingCart 
+  LogOut, AlertCircle, ShoppingCart, Layers 
 } from 'lucide-react';
 import AdminAuthGuard from '@/components/AdminAuthGuard';
 
 const navItems = [
   { id: 'dashboard', label: 'Resumen', icon: BarChart2, href: '/master-control' },
+  { id: 'inventario', label: 'Inventario & Financials', icon: Layers, href: '/master-control/inventario' },
   { id: 'pedidos', label: 'Pedidos (OMS)', icon: ShoppingCart, href: '/master-control/pedidos' },
   { id: 'cards', label: 'Tarjetas NFC', icon: CreditCard, href: '/master-control/cards' },
   { id: 'productos', label: 'Productos', icon: Package, href: '/master-control/productos' },
