@@ -504,28 +504,28 @@ export default function HomeClient() {
               <div className="md:col-span-4 space-y-4 text-left md:text-right border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
                 <div>
                   {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $50.00 */}
-                  <div className="grid grid-cols-3 gap-2 w-full mb-3">
-                    <div className="aspect-square bg-white rounded-xl p-1.5 border-2 border-amber-400 shadow-xs flex items-center justify-center">
+                  <div className="grid grid-cols-3 gap-2.5 w-full mb-3.5">
+                    <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border-2 border-amber-400 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/NFC_10001/NFC_10001_Placa.webp"
                         alt="1x Placa Acrílica de Mostrador"
-                        className="w-full h-full object-contain"
+                        className="max-h-full max-w-full object-contain hover:scale-105 transition-transform"
                         title="1x Placa Acrílica de Mostrador (3mm)"
                       />
                     </div>
-                    <div className="aspect-square bg-white rounded-xl p-1.5 border border-slate-700 shadow-xs flex items-center justify-center">
+                    <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
                         alt="1x Tarjeta NFC de Bolsillo"
-                        className="w-full h-full object-contain"
+                        className="max-h-full max-w-full object-contain hover:scale-105 transition-transform"
                         title="1x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
                       />
                     </div>
-                    <div className="aspect-square bg-white rounded-xl p-1.5 border border-slate-700 shadow-xs flex items-center justify-center">
+                    <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
                         alt="2x Tarjeta NFC de Bolsillo"
-                        className="w-full h-full object-contain"
+                        className="max-h-full max-w-full object-contain hover:scale-105 transition-transform"
                         title="2x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
                       />
                     </div>

@@ -24,6 +24,7 @@ export interface ActiveSessionData {
 const globalRef = global as unknown as { 
   __activeSessions?: Map<string, ActiveSessionData>;
   __ipCache?: Map<string, { country: string; country_code: string; province: string; district: string; fullLocation: string }>;
+  __totalVisitsToday?: { date: string; sessions: Set<string> };
 };
 
 if (!globalRef.__activeSessions) {
@@ -32,9 +33,23 @@ if (!globalRef.__activeSessions) {
 if (!globalRef.__ipCache) {
   globalRef.__ipCache = new Map<string, { country: string; country_code: string; province: string; district: string; fullLocation: string }>();
 }
+if (!globalRef.__totalVisitsToday) {
+  globalRef.__totalVisitsToday = { date: new Date().toISOString().split('T')[0], sessions: new Set<string>() };
+}
 
 const activeSessions = globalRef.__activeSessions;
 const ipCache = globalRef.__ipCache;
+
+function recordVisit(sessionId?: string): number {
+  const todayStr = new Date().toISOString().split('T')[0];
+  if (!globalRef.__totalVisitsToday || globalRef.__totalVisitsToday.date !== todayStr) {
+    globalRef.__totalVisitsToday = { date: todayStr, sessions: new Set<string>() };
+  }
+  if (sessionId) {
+    globalRef.__totalVisitsToday.sessions.add(sessionId);
+  }
+  return Math.max(globalRef.__totalVisitsToday.sessions.size, activeSessions.size);
+}
 
 const CLEANUP_INTERVAL_MS = 180000; // 3 minutes timeout
 
@@ -113,9 +128,11 @@ async function resolveLocation(ip: string, userProvince?: string, userDistrict?:
 
 export async function GET() {
   const sessions = getCleanActiveSessions();
+  const totalVisitsToday = recordVisit();
   return NextResponse.json({
     success: true,
     active_count: sessions.length,
+    total_visits_today: totalVisitsToday,
     sessions,
   });
 }
@@ -170,10 +187,12 @@ export async function POST(req: Request) {
     activeSessions.set(session_id, updatedSession);
 
     const sessions = getCleanActiveSessions();
+    const totalVisitsToday = recordVisit(session_id);
 
     return NextResponse.json({
       success: true,
       active_count: sessions.length,
+      total_visits_today: totalVisitsToday,
       session: updatedSession,
       sessions,
     });

@@ -79,6 +79,7 @@ export default function MasterControlDashboard() {
 
   // Live Online Visitors State (100% Real Data)
   const [realActiveSessions, setRealActiveSessions] = useState<any[]>([]);
+  const [totalVisitsToday, setTotalVisitsToday] = useState<number>(0);
 
   const fetchLiveSessions = async () => {
     try {
@@ -86,6 +87,9 @@ export default function MasterControlDashboard() {
       const data = await res.json();
       if (data.success && Array.isArray(data.sessions)) {
         setRealActiveSessions(data.sessions);
+        if (typeof data.total_visits_today === 'number') {
+          setTotalVisitsToday(data.total_visits_today);
+        }
       }
     } catch (e) {
       console.error('Error cargando sesiones activas:', e);
@@ -201,9 +205,19 @@ export default function MasterControlDashboard() {
     });
   }, [activeAbandoned, abandonedSearch]);
 
-  const conversionRate = (totalOrdersCount + activeAbandoned.length) > 0
-    ? (totalOrdersCount / (totalOrdersCount + activeAbandoned.length)) * 100
-    : 100;
+  const totalVisits = useMemo(() => {
+    const calculatedVisits = Math.max(
+      totalVisitsToday,
+      realActiveSessions.length,
+      totalOrdersCount + activeAbandoned.length
+    );
+    return calculatedVisits;
+  }, [totalVisitsToday, realActiveSessions.length, totalOrdersCount, activeAbandoned.length]);
+
+  const conversionRate = useMemo(() => {
+    if (totalVisits === 0) return 0;
+    return (totalOrdersCount / totalVisits) * 100;
+  }, [totalOrdersCount, totalVisits]);
 
   const pendingOrders = useMemo(() => {
     return orders.filter(o => o.status === 'pending' || o.status === 'processing' || o.payment_status === 'pending');
@@ -543,8 +557,8 @@ export default function MasterControlDashboard() {
             </div>
             <div className="text-right border-l border-slate-100 pl-3">
               <div className="text-xs font-bold text-slate-800 font-mono flex items-center justify-end gap-1">
-                <span>{totalOrdersCount + activeAbandoned.length}</span>
-                <span className="text-[10px] text-slate-500 font-normal">visitas</span>
+                <span>{totalVisits}</span>
+                <span className="text-[10px] text-slate-500 font-normal">visitas reales</span>
               </div>
               <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">
                 {totalOrdersCount} conversiones ({realActiveSessions.length} en vivo)
