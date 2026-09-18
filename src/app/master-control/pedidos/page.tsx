@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { dbLocal, Order } from '@/lib/db';
+import { dbLocal, Order, supabase } from '@/lib/db';
 import { 
   Search, Filter, Package, AlertCircle, TrendingUp, CheckCircle, Clock, Truck
 } from 'lucide-react';
@@ -14,11 +14,29 @@ export default function PedidosPage() {
   const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
-    const data = dbLocal.getOrders();
-    // Sort descending by date
-    data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    setOrders(data);
-    setLoading(false);
+    const fetchOrders = async () => {
+      let data: Order[] = [];
+      if (supabase) {
+        try {
+          const { data: dbData, error } = await supabase
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (!error && dbData && dbData.length > 0) {
+            data = dbData as Order[];
+          }
+        } catch (e) {
+          console.error('[PEDIDOS_SUPABASE_ERROR]', e);
+        }
+      }
+      if (data.length === 0) {
+        data = dbLocal.getOrders();
+      }
+      data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setOrders(data);
+      setLoading(false);
+    };
+    fetchOrders();
   }, []);
 
   const filteredOrders = orders.filter(o => {

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { dbLocal, Order } from '@/lib/db';
+import { dbLocal, Order, supabase } from '@/lib/db';
 import Link from 'next/link';
 import { 
   ArrowLeft, Package, User, MapPin, Truck, CheckCircle2, 
@@ -22,14 +22,32 @@ export default function OrderDetailPage() {
   const [trackingNumber, setTrackingNumber] = useState('');
   
   useEffect(() => {
-    if (id) {
-      const data = dbLocal.getOrderById(id);
-      if (data) {
-        setOrder(data);
-        setTrackingNumber(data.tracking_number || '');
+    const fetchOrder = async () => {
+      if (id) {
+        if (supabase) {
+          try {
+            const { data, error } = await supabase
+              .from('orders')
+              .select('*')
+              .eq('id', id)
+              .single();
+            if (!error && data) {
+              setOrder(data as Order);
+              setTrackingNumber(data.tracking_number || '');
+              setLoading(false);
+              return;
+            }
+          } catch (e) {}
+        }
+        const data = dbLocal.getOrderById(id);
+        if (data) {
+          setOrder(data);
+          setTrackingNumber(data.tracking_number || '');
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
+    };
+    fetchOrder();
   }, [id]);
 
   if (loading) return <div className="p-8 text-center text-slate-500">Cargando detalles...</div>;

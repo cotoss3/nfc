@@ -1123,6 +1123,10 @@ export default function CheckoutPage() {
                             return data;
                           }}
                           onSuccess={(orderId) => {
+                            dbLocal.updateOrderDetails(orderId, {
+                              payment_status: 'completed',
+                              status: 'processing'
+                            });
                             setCompletedOrder({ id: orderId, paymentMethod: 'yappy', email });
                             setIsProcessing(false);
                             setIsSuccess(true);

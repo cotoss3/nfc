@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { dbLocal } from '@/lib/db';
+import { dbLocal, supabase } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,18 +34,21 @@ export async function GET(req: Request) {
     const success = hash === signature;
 
     if (success) {
-      console.log(`[YAPPY_IPN] Orden ${orderId} validada. Estado: ${status}`);
+      console.log(`[YAPPY_IPN] Orden ${orderId} validada. Estado recibido de Yappy: ${status}`);
       
       // status = 'E' (Ejecutado), 'R' (Rechazado), 'C' (Cancelado), 'X' (Expirado)
       if (status === 'E') {
-        const order = dbLocal.getOrderById(orderId);
-        if (order) {
-           dbLocal.updateOrderDetails(orderId, {
-             payment_status: 'completed',
-             status: 'processing'
-           });
-           console.log(`[YAPPY_IPN] Orden ${orderId} marcada como pagada`);
+        dbLocal.updateOrderDetails(orderId, {
+          payment_status: 'completed',
+          status: 'processing'
+        });
+        if (supabase) {
+          await supabase.from('orders').update({
+            payment_status: 'completed',
+            status: 'processing'
+          }).eq('id', orderId);
         }
+        console.log(`[YAPPY_IPN] Orden ${orderId} marcada exitosamente como pagada (completed)`);
       }
     } else {
       console.warn(`[YAPPY_IPN] Hash inválido para orden ${orderId}`);

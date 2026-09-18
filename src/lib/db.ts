@@ -563,7 +563,12 @@ class LocalDbService {
       id: orderData.id || `PED-${Math.floor(1000 + Math.random() * 9000)}`,
       created_at: new Date().toISOString()
     };
-    orders.unshift(newOrder);
+    const existingIdx = orders.findIndex(o => o.id === newOrder.id);
+    if (existingIdx !== -1) {
+      orders[existingIdx] = { ...orders[existingIdx], ...newOrder };
+    } else {
+      orders.unshift(newOrder);
+    }
     this.setStorageItem('nfc_orders', orders);
 
     // Crear tarjetas NFC asociadas a este pedido con etiquetas STT-XXXX
