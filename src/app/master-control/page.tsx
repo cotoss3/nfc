@@ -2,17 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { dbLocal, Order, NfcCard, Product, ScanRecord, AbandonedCheckout } from '@/lib/db';
+import { dbLocal, Order, NfcCard, Product, ScanRecord, AbandonedCheckout, CustomerSummary, B2bQuote } from '@/lib/db';
 import { Coupon, CouponType } from '@/config/shipping';
 import { 
   ShieldCheck, Package, RefreshCw, CheckCircle, Search, 
   Tag, BarChart2, Smartphone, Layers, Edit2, Trash2, DollarSign, 
   Filter, Radio, QrCode, User, Plus, Check, Printer, AlertCircle,
   LogOut, ChevronRight, X, Image as ImageIcon, Percent,
-  ShoppingCart, MessageCircle, Clock, Mail
+  ShoppingCart, MessageCircle, Clock, Mail, Users, Building2,
+  Download, Truck, FileText, CheckCircle2, TrendingUp, MapPin,
+  CreditCard, Send, Eye, Archive
 } from 'lucide-react';
 
-type AdminTab = 'cards' | 'orders' | 'abandoned' | 'products' | 'coupons' | 'analytics' | 'stickers';
+type AdminTab = 'cards' | 'orders' | 'customers' | 'abandoned' | 'b2b' | 'products' | 'coupons' | 'analytics' | 'stickers';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -22,8 +24,24 @@ export default function AdminPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [scans, setScans] = useState<ScanRecord[]>([]);
   const [abandonedCheckouts, setAbandonedCheckouts] = useState<AbandonedCheckout[]>([]);
+  const [customers, setCustomers] = useState<CustomerSummary[]>([]);
+  const [b2bQuotes, setB2bQuotes] = useState<B2bQuote[]>([]);
   const [activeTab, setActiveTab] = useState<AdminTab>('cards');
   const [loading, setLoading] = useState(true);
+
+  // Order Detail Modal State
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [trackingCourierInput, setTrackingCourierInput] = useState('');
+  const [trackingNumberInput, setTrackingNumberInput] = useState('');
+  const [adminNotesInput, setAdminNotesInput] = useState('');
+
+  // CRM Customers Filters
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [customerFilter, setCustomerFilter] = useState<'all' | 'vip' | 'single'>('all');
+
+  // B2B Quotes Filters
+  const [b2bSearch, setB2bSearch] = useState('');
+  const [b2bStatusFilter, setB2bStatusFilter] = useState<'all' | 'pending' | 'contacted' | 'won' | 'lost'>('all');
 
   // Abandoned Checkouts Filters
   const [abandonedSearch, setAbandonedSearch] = useState('');
@@ -103,6 +121,8 @@ export default function AdminPage() {
     const dbCoupons = dbLocal.getCoupons();
     const dbScans = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
     const dbAbandoned = dbLocal.getAbandonedCheckouts();
+    const dbCustomers = dbLocal.getCustomersSummary();
+    const dbB2b = dbLocal.getB2bQuotes();
 
     setOrders(dbOrders);
     setCards(initialCards);
@@ -110,6 +130,8 @@ export default function AdminPage() {
     setCoupons(dbCoupons);
     setScans(dbScans);
     setAbandonedCheckouts(dbAbandoned);
+    setCustomers(dbCustomers);
+    setB2bQuotes(dbB2b);
 
     // Initial price input states
     const initPrices: { [id: string]: string } = {};
@@ -125,6 +147,197 @@ export default function AdminPage() {
       console.error('Error cargando tarjetas en Master Control:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const exportOrdersToCsv = () => {
+    if (orders.length === 0) return alert('No hay órdenes para exportar.');
+    const headers = ['ID Orden', 'Fecha', 'Cliente', 'Email', 'Telefono', 'Provincia', 'Distrito', 'Direccion', 'Metodo Pago', 'Estado Pago', 'Estado Orden', 'Courier', 'Tracking', 'Total USD', 'Productos'];
+    const rows = orders.map(o => [
+      `"${o.id}"`,
+      `"${new Date(o.created_at).toLocaleString('es-PA')}"`,
+      `"${(o.customer_name || '').replace(/"/g, '""')}"`,
+      `"${o.customer_email || ''}"`,
+      `"${o.customer_phone || ''}"`,
+      `"${(o.shipping_province || '').replace(/"/g, '""')}"`,
+      `"${(o.shipping_district || '').replace(/"/g, '""')}"`,
+      `"${(o.shipping_address || '').replace(/"/g, '""')}"`,
+      `"${o.payment_method}"`,
+      `"${o.payment_status}"`,
+      `"${o.status}"`,
+      `"${o.tracking_courier || 'Pendiente'}"`,
+      `"${o.tracking_number || ''}"`,
+      `"${o.total.toFixed(2)}"`,
+      `"${(o.items || []).map(i => `${i.quantity}x ${i.product_name}`).join(' | ').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `starTAP_Ordenes_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportCustomersToCsv = () => {
+    if (customers.length === 0) return alert('No hay clientes para exportar.');
+    const headers = ['Cliente', 'Email', 'Telefono', 'Provincia', 'Distrito', 'Ordenes Totales', 'LTV Gasto USD', 'Ultima Compra', 'Dispositivos TAP'];
+    const rows = customers.map(c => [
+      `"${(c.name || '').replace(/"/g, '""')}"`,
+      `"${c.email}"`,
+      `"${c.phone || ''}"`,
+      `"${c.province || ''}"`,
+      `"${c.district || ''}"`,
+      `"${c.ordersCount}"`,
+      `"${c.totalSpent.toFixed(2)}"`,
+      `"${new Date(c.lastOrderDate).toLocaleDateString('es-PA')}"`,
+      `"${c.cardCount}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `starTAP_Clientes_CRM_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrintPackingSlip = (order: Order) => {
+    const printWindow = window.open('', '_blank', 'width=800,height=900');
+    if (!printWindow) return alert('Por favor habilita las ventanas emergentes en tu navegador.');
+
+    const itemsHtml = order.items.map(item => `
+      <tr>
+        <td style="padding:10px; border-bottom:1px solid #eee; text-align:center;">[ &nbsp; ]</td>
+        <td style="padding:10px; border-bottom:1px solid #eee;">
+          <strong>${item.product_name}</strong>
+          ${item.selected_color ? `<br><small style="color:#666;">Color: ${item.selected_color}</small>` : ''}
+          ${item.business_name ? `<br><small style="color:#666;">Ficha: ${item.business_name}</small>` : ''}
+        </td>
+        <td style="padding:10px; border-bottom:1px solid #eee; text-align:center; font-weight:bold;">${item.quantity}</td>
+        <td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">$${(item.price * item.quantity).toFixed(2)}</td>
+      </tr>
+    `).join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Remisión de Empaque - Pedido #${order.id}</title>
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 13px; color: #111; padding: 25px; line-height: 1.5; }
+          .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #111; padding-bottom: 15px; margin-bottom: 20px; }
+          .brand { font-size: 22px; font-weight: 900; }
+          .badge { background: #111; color: #f59e0b; padding: 3px 8px; border-radius: 4px; font-size: 11px; }
+          .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+          .box { background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+          th { background: #111; color: #fff; text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; }
+          .footer { margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center; font-size: 11px; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="brand">starTAP Panamá 🇵🇦</div>
+            <div style="font-size:11px; color:#666;">Tecnología NFC & QR para Reseñas en Panamá</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px; font-weight:bold;">COMPROBANTE DE EMPAQUE</div>
+            <div class="badge">#${order.id}</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="box">
+            <strong style="text-transform:uppercase; font-size:10px; color:#666;">Datos del Comercio / Cliente</strong>
+            <div style="font-weight:bold; font-size:14px; margin-top:3px;">${order.customer_name}</div>
+            <div>📧 ${order.customer_email}</div>
+            <div>📱 ${order.customer_phone}</div>
+          </div>
+
+          <div class="box">
+            <strong style="text-transform:uppercase; font-size:10px; color:#666;">Destino de Envío en Panamá</strong>
+            <div style="font-weight:bold; margin-top:3px;">${order.shipping_province}, ${order.shipping_district}</div>
+            <div style="font-size:11px;">${order.shipping_address}</div>
+            <div style="margin-top:5px; font-size:11px;"><strong>Paquetería:</strong> ${order.tracking_courier || 'Envío Estándar'} | <strong>Guía:</strong> ${order.tracking_number || 'Por Asignar'}</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px; text-align:center;">Verif.</th>
+              <th>Producto & Descripción</th>
+              <th style="width:60px; text-align:center;">Cant.</th>
+              <th style="width:80px; text-align:right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+
+        <div style="margin-top:20px; text-align:right; font-size:15px; font-weight:bold;">
+          Monto Total: $${order.total.toFixed(2)} USD (${order.payment_method.toUpperCase()})
+        </div>
+
+        <div class="footer">
+          <p><strong>starTAP Panamá</strong> — ¡Gracias por confiar en nosotros!</p>
+          <p>Soporte post-venta: pedidos@startap.com.pa | WhatsApp +507 6713-4341</p>
+        </div>
+      </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 500);
+  };
+
+  const handleOpenOrderModal = (o: Order) => {
+    setSelectedOrder(o);
+    setTrackingCourierInput(o.tracking_courier || 'UnoExpress');
+    setTrackingNumberInput(o.tracking_number || '');
+    setAdminNotesInput(o.admin_notes || '');
+  };
+
+  const handleSaveOrderDetails = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOrder) return;
+
+    dbLocal.updateOrderDetails(selectedOrder.id, {
+      tracking_courier: trackingCourierInput,
+      tracking_number: trackingNumberInput,
+      admin_notes: adminNotesInput,
+    });
+
+    loadData();
+    setSelectedOrder(prev => prev ? { ...prev, tracking_courier: trackingCourierInput, tracking_number: trackingNumberInput, admin_notes: adminNotesInput } : null);
+    alert('¡Datos de seguimiento y envío guardados correctamente!');
+  };
+
+  const handleToggleProductStock = (id: string, currentStock: boolean | undefined) => {
+    const nextStock = currentStock === undefined ? false : !currentStock;
+    dbLocal.toggleProductStock(id, nextStock);
+    loadData();
+  };
+
+  const handleUpdateB2bStatus = (id: string, status: B2bQuote['status']) => {
+    dbLocal.updateB2bQuoteStatus(id, status);
+    loadData();
+  };
+
+  const handleDeleteB2bQuote = (id: string) => {
+    if (window.confirm('¿Deseas eliminar esta solicitud de cotización B2B?')) {
+      dbLocal.deleteB2bQuote(id);
+      loadData();
     }
   };
 
@@ -411,6 +624,54 @@ export default function AdminPage() {
   const abandonedTotalAtRisk = pendingAbandoned.reduce((sum, a) => sum + (a.total || 0), 0);
   const recoveredAbandonedCount = abandonedCheckouts.filter(a => a.status === 'completed' || a.status === 'recovered').length;
 
+  // CRM Clientes Filtering & Metrics
+  const filteredCustomers = customers.filter(c => {
+    const q = customerSearch.toLowerCase().trim();
+    const matchesSearch = !q ||
+      (c.name && c.name.toLowerCase().includes(q)) ||
+      (c.email && c.email.toLowerCase().includes(q)) ||
+      (c.phone && c.phone.includes(q)) ||
+      (c.province && c.province.toLowerCase().includes(q));
+
+    const matchesFilter = customerFilter === 'all' || (customerFilter === 'vip' ? c.ordersCount > 1 : c.ordersCount <= 1);
+    return matchesSearch && matchesFilter;
+  });
+
+  const vipCustomersCount = customers.filter(c => c.ordersCount > 1).length;
+  const totalLtvSum = customers.reduce((s, c) => s + c.totalSpent, 0);
+  const avgLtv = customers.length > 0 ? totalLtvSum / customers.length : 0;
+
+  // B2B Quotes Filtering & Metrics
+  const filteredB2bQuotes = b2bQuotes.filter(q => {
+    const s = b2bSearch.toLowerCase().trim();
+    const matchesSearch = !s ||
+      (q.business_name && q.business_name.toLowerCase().includes(s)) ||
+      (q.name && q.name.toLowerCase().includes(s)) ||
+      (q.email && q.email.toLowerCase().includes(s)) ||
+      (q.phone && q.phone.includes(s));
+
+    const matchesStatus = b2bStatusFilter === 'all' || q.status === b2bStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const pendingB2bCount = b2bQuotes.filter(q => q.status === 'pending').length;
+  const wonB2bCount = b2bQuotes.filter(q => q.status === 'won').length;
+
+  // Financial E-commerce Metrics
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
+  const fulfillmentRate = orders.length > 0 ? Math.round((orders.filter(o => o.status === 'delivered' || o.status === 'shipped').length / orders.length) * 100) : 0;
+
+  const yappyOrdersCount = orders.filter(o => o.payment_method === 'yappy').length;
+  const cardOrdersCount = orders.filter(o => o.payment_method === 'tarjeta').length;
+
+  const provinceDemandMap: { [prov: string]: number } = {};
+  orders.forEach(o => {
+    const prov = o.shipping_province || 'Sin especificar';
+    provinceDemandMap[prov] = (provinceDemandMap[prov] || 0) + 1;
+  });
+  const topProvinces = Object.entries(provinceDemandMap).sort((a, b) => b[1] - a[1]);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row pb-20 md:pb-0">
       
@@ -505,6 +766,23 @@ export default function AdminPage() {
           </button>
 
           <button
+            onClick={() => setActiveTab('customers')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'customers'
+                ? 'bg-slate-900 text-white shadow-md font-bold'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Users className="w-4 h-4 text-emerald-500" />
+              <span>Clientes & CRM</span>
+            </div>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'customers' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
+              {customers.length}
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('abandoned')}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
               activeTab === 'abandoned'
@@ -523,6 +801,29 @@ export default function AdminPage() {
             ) : (
               <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'abandoned' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
                 {abandonedCheckouts.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('b2b')}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+              activeTab === 'b2b'
+                ? 'bg-slate-900 text-white shadow-md font-bold'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Building2 className="w-4 h-4 text-indigo-500" />
+              <span>Cotizaciones B2B</span>
+            </div>
+            {pendingB2bCount > 0 ? (
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black animate-pulse">
+                {pendingB2bCount}
+              </span>
+            ) : (
+              <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'b2b' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
+                {b2bQuotes.length}
               </span>
             )}
           </button>
@@ -900,26 +1201,37 @@ export default function AdminPage() {
 
                 {/* Filter & Search Bar */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
                         <Package className="w-5 h-5 text-blue-500" />
-                        Gestión & Fulfillment de Pedidos
+                        Gestión & Fulfillment de Pedidos (Shopify Style)
                       </h2>
-                      <p className="text-xs text-slate-500">Administra el estado de preparación, grabación NFC y despacho en Panamá.</p>
+                      <p className="text-xs text-slate-500">Administra el estado de preparación, grabación NFC, guías y despachos en Panamá.</p>
                     </div>
-                    {(orderSearch || orderStatusFilter !== 'all' || orderPaymentFilter !== 'all') && (
+
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => {
-                          setOrderSearch('');
-                          setOrderStatusFilter('all');
-                          setOrderPaymentFilter('all');
-                        }}
-                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                        onClick={exportOrdersToCsv}
+                        className="py-2 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center gap-1.5 shrink-0"
                       >
-                        <X className="w-3 h-3" /> Limpiar Filtros
+                        <Download className="w-4 h-4 text-amber-400" />
+                        <span>Exportar Pedidos CSV</span>
                       </button>
-                    )}
+
+                      {(orderSearch || orderStatusFilter !== 'all' || orderPaymentFilter !== 'all') && (
+                        <button
+                          onClick={() => {
+                            setOrderSearch('');
+                            setOrderStatusFilter('all');
+                            setOrderPaymentFilter('all');
+                          }}
+                          className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                        >
+                          <X className="w-3 h-3" /> Limpiar
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
@@ -969,7 +1281,7 @@ export default function AdminPage() {
                     {filteredOrders.map((order) => (
                       <div
                         key={order.id}
-                        className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm"
+                        className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm hover:border-blue-300 transition"
                       >
                         {/* Order Header */}
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-3 border-b border-slate-100">
@@ -994,7 +1306,7 @@ export default function AdminPage() {
 
                           {/* Quick Status Changers */}
                           <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Cambiar Estado:</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Estado:</span>
                             <button
                               onClick={() => handleUpdateStatus(order.id, 'processing')}
                               className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 font-bold text-[10px] rounded-lg uppercase tracking-wider"
@@ -1039,10 +1351,222 @@ export default function AdminPage() {
                             <p className="text-base font-black text-slate-900 mt-1">${order.total.toFixed(2)}</p>
                           </div>
                         </div>
+
+                        {/* Order Card Actions */}
+                        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 text-xs">
+                            {order.tracking_number ? (
+                              <span className="font-semibold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-1 rounded-lg">
+                                📦 {order.tracking_courier || 'Guía'}: <strong>{order.tracking_number}</strong>
+                              </span>
+                            ) : (
+                              <span className="text-[11px] text-slate-400 italic">Sin guía asignada</span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handlePrintPackingSlip(order)}
+                              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition flex items-center gap-1"
+                            >
+                              <Printer className="w-3.5 h-3.5 text-slate-600" /> Imprimir Remisión
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleOpenOrderModal(order)}
+                              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow-xs"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-amber-400" /> Ver Detalle & Guía
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
+
+              </div>
+            )}
+
+            {/* ---------------- MODULE: CLIENTES & CRM (DIRECTORIO DE COMPRADORES) ---------------- */}
+            {activeTab === 'customers' && (
+              <div className="space-y-6">
+
+                {/* KPI Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Total Clientes CRM</span>
+                      <Users className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{customers.length}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Compradores y registros únicos</p>
+                  </div>
+
+                  <div className="bg-white border border-blue-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Clientes VIP Recurrentes</span>
+                      <TrendingUp className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{vipCustomersCount}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Con 2 o más pedidos realizados</p>
+                  </div>
+
+                  <div className="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-amber-700">Valor de Vida Promedio (LTV)</span>
+                      <DollarSign className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">${avgLtv.toFixed(2)} USD</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Gasto promedio acumulado por cliente</p>
+                  </div>
+                </div>
+
+                {/* Filter & Search Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-emerald-500" />
+                        Directorio de Clientes & CRM (Shopify Style)
+                      </h2>
+                      <p className="text-xs text-slate-500">Historial unificado de compradores, valor acumulado LTV y contacto directo.</p>
+                    </div>
+
+                    <button
+                      onClick={exportCustomersToCsv}
+                      className="py-2 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center gap-1.5 shrink-0"
+                    >
+                      <Download className="w-4 h-4 text-amber-400" />
+                      <span>Exportar Clientes CSV</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="text"
+                        value={customerSearch}
+                        onChange={(e) => setCustomerSearch(e.target.value)}
+                        placeholder="Buscar por cliente, correo, celular o provincia..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
+                      />
+                    </div>
+
+                    <select
+                      value={customerFilter}
+                      onChange={(e) => setCustomerFilter(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Segmento: Todos ({customers.length})</option>
+                      <option value="vip">Clientes VIP / Recurrentes ({vipCustomersCount})</option>
+                      <option value="single">Primera Compra ({customers.length - vipCustomersCount})</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Customers Table */}
+                <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                  <div className="p-4 bg-slate-50 border-b border-slate-200">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                      Directorio de Compradores ({filteredCustomers.length})
+                    </h3>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
+                          <th className="p-3.5">Cliente / Comercio</th>
+                          <th className="p-3.5">Celular / WhatsApp</th>
+                          <th className="p-3.5">Ubicación</th>
+                          <th className="p-3.5 text-center">Pedidos</th>
+                          <th className="p-3.5 text-right">Gasto Acumulado (LTV)</th>
+                          <th className="p-3.5 text-center">Acción Directa</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                        {filteredCustomers.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="p-8 text-center text-slate-400 text-xs italic">
+                              No hay clientes registrados que coincidan con la búsqueda.
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredCustomers.map((c) => {
+                            const cleanPhoneDigits = (c.phone || '').replace(/\D/g, '');
+                            const formattedWaNumber = cleanPhoneDigits.startsWith('507')
+                              ? cleanPhoneDigits
+                              : cleanPhoneDigits.length === 8
+                              ? `507${cleanPhoneDigits}`
+                              : cleanPhoneDigits;
+
+                            const firstName = c.name ? c.name.split(' ')[0] : 'Estimado/a';
+                            const waMessage = `¡Hola ${firstName}! Te saluda el equipo de starTAP Panamá. 🇵🇦\n\n¿Cómo ha sido tu experiencia con tus dispositivos TAP para reseñas de Google Maps?\n\nSi necesitas personalizar un nuevo equipo o agregar sucursales a tu cuenta, cuenta con nosotros.`;
+                            const waUrl = formattedWaNumber
+                              ? `https://wa.me/${formattedWaNumber}?text=${encodeURIComponent(waMessage)}`
+                              : null;
+
+                            return (
+                              <tr key={c.email} className="hover:bg-slate-50">
+                                <td className="p-3.5">
+                                  <p className="font-bold text-slate-900">{c.name}</p>
+                                  <p className="text-[10px] text-slate-400 font-mono">{c.email}</p>
+                                </td>
+                                <td className="p-3.5">
+                                  {c.phone ? (
+                                    <span className="font-mono font-semibold text-slate-800">📱 {c.phone}</span>
+                                  ) : (
+                                    <span className="text-slate-400 italic text-[11px]">Sin teléfono</span>
+                                  )}
+                                </td>
+                                <td className="p-3.5 font-medium text-slate-700">
+                                  {c.province ? `${c.province}${c.district ? `, ${c.district}` : ''}` : 'No registrada'}
+                                </td>
+                                <td className="p-3.5 text-center">
+                                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border ${
+                                    c.ordersCount > 1
+                                      ? 'bg-blue-100 text-blue-800 border-blue-300'
+                                      : 'bg-slate-100 text-slate-700 border-slate-300'
+                                  }`}>
+                                    {c.ordersCount} {c.ordersCount === 1 ? 'pedido' : 'pedidos'}
+                                  </span>
+                                </td>
+                                <td className="p-3.5 text-right font-black text-emerald-700 font-mono text-sm">
+                                  ${c.totalSpent.toFixed(2)}
+                                </td>
+                                <td className="p-3.5 text-center">
+                                  {waUrl ? (
+                                    <a
+                                      href={waUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] rounded-lg shadow-xs transition"
+                                    >
+                                      <MessageCircle className="w-3.5 h-3.5" />
+                                      <span>WhatsApp</span>
+                                    </a>
+                                  ) : (
+                                    <a
+                                      href={`mailto:${c.email}`}
+                                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[10px] rounded-lg transition"
+                                    >
+                                      <Mail className="w-3.5 h-3.5" />
+                                      <span>Correo</span>
+                                    </a>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
               </div>
             )}
@@ -1289,6 +1813,191 @@ export default function AdminPage() {
               </div>
             )}
 
+            {/* ---------------- MODULE: COTIZACIONES CORPORATIVAS B2B ---------------- */}
+            {activeTab === 'b2b' && (
+              <div className="space-y-6">
+
+                {/* KPI Summary Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white border border-indigo-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-indigo-700">Solicitudes B2B</span>
+                      <Building2 className="w-4 h-4 text-indigo-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{b2bQuotes.length}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Cotizaciones corporativas recibidas</p>
+                  </div>
+
+                  <div className="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-amber-700">Pendientes</span>
+                      <Clock className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{pendingB2bCount}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Por atender o enviar propuesta</p>
+                  </div>
+
+                  <div className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Ganadas / Cerradas</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{wonB2bCount}</div>
+                    <p className="text-[11px] text-slate-500 mt-1">Contratos B2B concretados</p>
+                  </div>
+                </div>
+
+                {/* Filter & Search Bar */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <Building2 className="w-5 h-5 text-indigo-600" />
+                        Bandeja de Cotizaciones B2B Corporativas
+                      </h2>
+                      <p className="text-xs text-slate-500">Solicitudes masivas de empresas, cadenas y hoteles enviadas desde /corporativo.</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <div className="relative">
+                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="text"
+                        value={b2bSearch}
+                        onChange={(e) => setB2bSearch(e.target.value)}
+                        placeholder="Buscar por empresa, contacto, correo..."
+                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
+                      />
+                    </div>
+
+                    <select
+                      value={b2bStatusFilter}
+                      onChange={(e) => setB2bStatusFilter(e.target.value as any)}
+                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                    >
+                      <option value="all">Estado: Todos ({b2bQuotes.length})</option>
+                      <option value="pending">Pendiente de Atención ({pendingB2bCount})</option>
+                      <option value="contacted">En Contacto / Negociación</option>
+                      <option value="won">Ganada / Venta Cerrada ({wonB2bCount})</option>
+                      <option value="lost">Desestimada / Perdida</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* B2B Quotes List */}
+                {filteredB2bQuotes.length === 0 ? (
+                  <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm space-y-3">
+                    <div className="w-14 h-14 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto">
+                      <Building2 className="w-7 h-7" />
+                    </div>
+                    <h3 className="text-base font-bold text-slate-800">No hay solicitudes B2B que coincidan</h3>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      Las cotizaciones de volumen y planes corporativos solicitados desde la página /corporativo aparecerán aquí.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredB2bQuotes.map((quote) => {
+                      const cleanPhoneDigits = (quote.phone || '').replace(/\D/g, '');
+                      const formattedWaNumber = cleanPhoneDigits.startsWith('507')
+                        ? cleanPhoneDigits
+                        : cleanPhoneDigits.length === 8
+                        ? `507${cleanPhoneDigits}`
+                        : cleanPhoneDigits;
+
+                      const firstName = quote.name ? quote.name.split(' ')[0] : 'Estimado/a';
+                      const b2bMessage = `¡Hola ${firstName}! Te saluda el equipo B2B de starTAP Panamá. 🇵🇦\n\nRecibimos tu solicitud de cotización corporativa para ${quote.business_name} (${quote.quantity} unidades).\n\nNos encantaría enviarte nuestra propuesta formal con descuento por volumen, branding personalizado y factura fiscal. ¿A qué hora podemos llamarte o coordinar la presentación?`;
+                      const waUrl = formattedWaNumber
+                        ? `https://wa.me/${formattedWaNumber}?text=${encodeURIComponent(b2bMessage)}`
+                        : null;
+
+                      return (
+                        <div
+                          key={quote.id}
+                          className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 shadow-sm space-y-4 hover:border-indigo-300 transition"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                            <div className="flex items-center gap-2.5">
+                              <span className="font-mono text-xs font-black text-indigo-900 bg-indigo-50 px-2.5 py-1 rounded-lg">
+                                {quote.id}
+                              </span>
+                              <span className="font-bold text-slate-900 text-sm">{quote.business_name}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Estado:</span>
+                              <select
+                                value={quote.status}
+                                onChange={(e) => handleUpdateB2bStatus(quote.id, e.target.value as any)}
+                                className="bg-slate-50 border border-slate-300 text-xs font-bold rounded-lg px-2.5 py-1 text-slate-800 focus:outline-none"
+                              >
+                                <option value="pending">🟡 Pendiente</option>
+                                <option value="contacted">🔵 En Contacto</option>
+                                <option value="won">🟢 Ganada / Cerrada</option>
+                                <option value="lost">🔴 Perdida</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
+                            <div>
+                              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[10px] mb-1">Contacto Empresarial</h4>
+                              <p className="font-bold text-slate-900">{quote.name}</p>
+                              <p className="text-[11px] text-slate-500 font-mono mt-0.5">{quote.email}</p>
+                              <p className="text-xs text-emerald-700 font-bold mt-1">📱 {quote.phone}</p>
+                            </div>
+
+                            <div>
+                              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[10px] mb-1">Volumen Solicitado</h4>
+                              <span className="px-3 py-1 bg-indigo-50 text-indigo-800 border border-indigo-200 rounded-lg font-black text-xs uppercase inline-block">
+                                {quote.quantity} unidades
+                              </span>
+                              <p className="text-[10px] text-slate-400 mt-1 font-mono">
+                                Solicitado: {new Date(quote.created_at).toLocaleDateString('es-PA')}
+                              </p>
+                            </div>
+
+                            <div>
+                              <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[10px] mb-1">Requerimientos Específicos</h4>
+                              <p className="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 italic leading-relaxed">
+                                {quote.notes || 'Sin notas adicionales especificadas.'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                            {waUrl ? (
+                              <a
+                                href={waUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition"
+                              >
+                                <MessageCircle className="w-4 h-4" />
+                                <span>Enviar Propuesta Formal por WhatsApp (1 Clic)</span>
+                              </a>
+                            ) : (
+                              <span className="text-xs text-slate-400 italic">Sin teléfono disponible</span>
+                            )}
+
+                            <button
+                              onClick={() => handleDeleteB2bQuote(quote.id)}
+                              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
+                              title="Eliminar registro B2B"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+              </div>
+            )}
+
             {/* ---------------- MODULE 3: CATÁLOGO & EDICIÓN DE PRECIOS Y PRODUCTOS ---------------- */}
             {activeTab === 'products' && (
               <div className="space-y-6">
@@ -1383,6 +2092,7 @@ export default function AdminPage() {
                           <th className="p-3.5">Nombre & Descripción</th>
                           <th className="p-3.5">Categoría / Tipo</th>
                           <th className="p-3.5">Material</th>
+                          <th className="p-3.5 text-center">Stock</th>
                           <th className="p-3.5 text-right">Precio ($ USD)</th>
                           <th className="p-3.5 text-center">Acciones</th>
                         </tr>
@@ -1416,6 +2126,19 @@ export default function AdminPage() {
                             </td>
                             <td className="p-3.5 text-slate-600 font-semibold">
                               {p.material || 'Estándar'}
+                            </td>
+                            <td className="p-3.5 text-center">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleProductStock(p.id, p.in_stock)}
+                                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition ${
+                                  p.in_stock === false
+                                    ? 'bg-rose-100 text-rose-800 border-rose-300'
+                                    : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                }`}
+                              >
+                                {p.in_stock === false ? '🔴 Agotado' : '🟢 En Stock'}
+                              </button>
                             </td>
                             <td className="p-3.5 text-right font-mono">
                               <div className="inline-flex items-center gap-1 bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-1">
@@ -1465,95 +2188,193 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* ---------------- MODULE 4: ANALÍTICAS POR USUARIO ---------------- */}
+            {/* ---------------- MODULE 4: ANALÍTICAS Y FINANZAS E-COMMERCE ---------------- */}
             {activeTab === 'analytics' && (
               <div className="space-y-6">
 
-                {/* Filter & Search Bar */}
-                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                        <BarChart2 className="w-5 h-5 text-purple-500" />
-                        Analíticas por Comercio / Usuario
-                      </h2>
-                      <p className="text-xs text-slate-500">Métricas consolidadas de escaneos NFC y QR agrupadas por correo de propietario.</p>
+                {/* Header informativo */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 text-purple-600 font-bold text-xs uppercase tracking-wider bg-purple-50 px-2.5 py-1 rounded-full mb-1">
+                      <BarChart2 className="w-3.5 h-3.5" /> Dashboard Financiero & Operativo
                     </div>
-                    {analyticsSearch && (
-                      <button
-                        onClick={() => setAnalyticsSearch('')}
-                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
-                      >
-                        <X className="w-3 h-3" /> Limpiar Buscador
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                    <div className="relative">
-                      <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                      <input
-                        type="text"
-                        value={analyticsSearch}
-                        onChange={(e) => setAnalyticsSearch(e.target.value)}
-                        placeholder="Buscar por usuario o correo de comercio..."
-                        className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
-                      />
-                    </div>
-
-                    <select
-                      value={analyticsSort}
-                      onChange={(e) => setAnalyticsSort(e.target.value as any)}
-                      className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
-                    >
-                      <option value="scans">Ordenar por: Mayor N° de Escaneos Totales 📈</option>
-                      <option value="cards">Ordenar por: Mayor N° de Dispositivos TAP 📱</option>
-                    </select>
+                    <h2 className="text-xl font-black text-slate-900 uppercase">Analíticas E-Commerce starTAP Panamá</h2>
+                    <p className="text-xs text-slate-500 mt-1">Ingresos, ticket promedio, cumplimiento de pedidos, pasarelas de pago y demografía regional.</p>
                   </div>
                 </div>
 
-                {/* User Metrics Table */}
-                <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-                  <div className="p-4 bg-slate-50 border-b border-slate-200">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-                      Rendimiento Consolidado por Comercio ({userMetricsList.length})
-                    </h3>
+                {/* KPI Financial Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
+                      <span>Ventas Totales</span>
+                      <DollarSign className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2 font-mono">${totalRevenue.toFixed(2)} USD</div>
+                    <p className="text-[11px] text-slate-400 mt-1">Ingresos brutos acumulados</p>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                          <th className="p-3.5">Usuario / Comercio</th>
-                          <th className="p-3.5 text-center">Dispositivos TAP</th>
-                          <th className="p-3.5 text-center">Escaneos NFC</th>
-                          <th className="p-3.5 text-center">Escaneos QR</th>
-                          <th className="p-3.5 text-right">Escaneos Totales</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                        {userMetricsList.map((u) => (
-                          <tr key={u.email} className="hover:bg-slate-50">
-                            <td className="p-3.5">
-                              <p className="font-bold text-slate-900">{u.name}</p>
-                              <p className="text-[10px] text-slate-400 font-mono">{u.email}</p>
-                            </td>
-                            <td className="p-3.5 text-center font-bold text-amber-700">
-                              {u.cardCount}
-                            </td>
-                            <td className="p-3.5 text-center font-bold text-emerald-600">
-                              {u.nfcCount}
-                            </td>
-                            <td className="p-3.5 text-center font-bold text-blue-600">
-                              {u.qrCount}
-                            </td>
-                            <td className="p-3.5 text-right font-black text-slate-900 text-sm">
-                              {u.scanCount}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
+                      <span>Ticket Promedio (AOV)</span>
+                      <TrendingUp className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2 font-mono">${avgOrderValue.toFixed(2)} USD</div>
+                    <p className="text-[11px] text-slate-400 mt-1">Valor promedio por pedido</p>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
+                      <span>Tasa de Despacho</span>
+                      <Truck className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900 mt-2">{fulfillmentRate}%</div>
+                    <p className="text-[11px] text-slate-400 mt-1">Pedidos entregados / enviados</p>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
+                      <span>Métodos de Pago</span>
+                      <CreditCard className="w-4 h-4 text-indigo-500" />
+                    </div>
+                    <div className="text-base font-black text-slate-900 mt-2 space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-sky-700 font-bold">💙 Yappy:</span>
+                        <span className="font-mono font-bold">{yappyOrdersCount} ({orders.length ? Math.round((yappyOrdersCount/orders.length)*100) : 0}%)</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-indigo-700 font-bold">💳 Tarjeta (Tilopay):</span>
+                        <span className="font-mono font-bold">{cardOrdersCount} ({orders.length ? Math.round((cardOrdersCount/orders.length)*100) : 0}%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Panama Province Demand Ranking & Scans Breakdown */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                  {/* Top Provinces */}
+                  <div className="md:col-span-5 bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-rose-500" /> Demanda por Provincia (Panamá)
+                      </h3>
+                      <span className="text-[10px] font-bold bg-slate-100 px-2 py-0.5 rounded-full text-slate-600">{topProvinces.length} regiones</span>
+                    </div>
+
+                    {topProvinces.length === 0 ? (
+                      <p className="text-xs text-slate-400 text-center py-6">No hay registros de envío aún.</p>
+                    ) : (
+                      <div className="space-y-2.5">
+                        {topProvinces.map(([prov, count], idx) => {
+                          const percentage = orders.length > 0 ? Math.round((count / orders.length) * 100) : 0;
+                          return (
+                            <div key={prov} className="space-y-1">
+                              <div className="flex justify-between items-center text-xs font-bold text-slate-800">
+                                <span className="flex items-center gap-2">
+                                  <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-600 text-[10px] flex items-center justify-center font-mono">{idx + 1}</span>
+                                  {prov}
+                                </span>
+                                <span className="font-mono">{count} pedidos ({percentage}%)</span>
+                              </div>
+                              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div className="bg-slate-900 h-full rounded-full transition-all" style={{ width: `${percentage}%` }}></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Comercio/Usuario Table */}
+                  <div className="md:col-span-7 space-y-4">
+                    {/* Filter & Search Bar */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-xs">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                            <Users className="w-4 h-4 text-purple-500" />
+                            Uso por Comercio / Propietario TAP
+                          </h3>
+                          <p className="text-[11px] text-slate-500">Métricas de escaneos NFC y QR agrupadas por cliente.</p>
+                        </div>
+                        {analyticsSearch && (
+                          <button
+                            onClick={() => setAnalyticsSearch('')}
+                            className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1"
+                          >
+                            <X className="w-3 h-3" /> Limpiar
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        <div className="relative">
+                          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                          <input
+                            type="text"
+                            value={analyticsSearch}
+                            onChange={(e) => setAnalyticsSearch(e.target.value)}
+                            placeholder="Buscar por usuario o correo..."
+                            className="w-full bg-slate-50 border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900 font-medium"
+                          />
+                        </div>
+
+                        <select
+                          value={analyticsSort}
+                          onChange={(e) => setAnalyticsSort(e.target.value as any)}
+                          className="bg-slate-50 border border-slate-300 text-xs rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none"
+                        >
+                          <option value="scans">Mayor N° Escaneos 📈</option>
+                          <option value="cards">Mayor N° Dispositivos 📱</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* User Metrics Table */}
+                    <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+                      <div className="p-3 bg-slate-50 border-b border-slate-200">
+                        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                          Comercios Registrados ({userMetricsList.length})
+                        </h4>
+                      </div>
+
+                      <div className="overflow-x-auto max-h-96">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                              <th className="p-3">Usuario / Comercio</th>
+                              <th className="p-3 text-center">TAP</th>
+                              <th className="p-3 text-center">NFC</th>
+                              <th className="p-3 text-center">QR</th>
+                              <th className="p-3 text-right">Total</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                            {userMetricsList.map((u) => (
+                              <tr key={u.email} className="hover:bg-slate-50">
+                                <td className="p-3">
+                                  <p className="font-bold text-slate-900">{u.name}</p>
+                                  <p className="text-[10px] text-slate-400 font-mono truncate max-w-[160px]">{u.email}</p>
+                                </td>
+                                <td className="p-3 text-center font-bold text-amber-700">
+                                  {u.cardCount}
+                                </td>
+                                <td className="p-3 text-center font-bold text-emerald-600">
+                                  {u.nfcCount}
+                                </td>
+                                <td className="p-3 text-center font-bold text-blue-600">
+                                  {u.qrCount}
+                                </td>
+                                <td className="p-3 text-right font-black text-slate-900">
+                                  {u.scanCount}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1823,35 +2644,55 @@ export default function AdminPage() {
 
 
       {/* ---------------- MOBILE APP STICKY BOTTOM NAVIGATION BAR ---------------- */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 px-1 shadow-lg shadow-slate-900/10">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 px-1 shadow-lg shadow-slate-900/10 overflow-x-auto">
         <button
           onClick={() => setActiveTab('cards')}
-          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition ${
             activeTab === 'cards' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >
-          <Smartphone className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Dispositivos</span>
+          <Smartphone className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">Equipos</span>
         </button>
 
         <button
           onClick={() => setActiveTab('orders')}
-          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition ${
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition ${
             activeTab === 'orders' ? 'text-blue-600 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >
-          <Package className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Pedidos</span>
+          <Package className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">Pedidos</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('customers')}
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition ${
+            activeTab === 'customers' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">CRM</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('b2b')}
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition ${
+            activeTab === 'b2b' ? 'text-indigo-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <Building2 className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">B2B</span>
         </button>
 
         <button
           onClick={() => setActiveTab('abandoned')}
-          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition relative ${
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition relative ${
             activeTab === 'abandoned' ? 'text-rose-600 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >
-          <ShoppingCart className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Abandonados</span>
+          <ShoppingCart className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">Carritos</span>
           {pendingAbandonedCount > 0 && (
             <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
           )}
@@ -1859,44 +2700,227 @@ export default function AdminPage() {
 
         <button
           onClick={() => setActiveTab('products')}
-          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl transition ${
-            activeTab === 'products' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition ${
+            activeTab === 'products' ? 'text-slate-800 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >
-          <Tag className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Precios</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('coupons')}
-          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
-            activeTab === 'coupons' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-          }`}
-        >
-          <Percent className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Cupones</span>
+          <Tag className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">Precios</span>
         </button>
 
         <button
           onClick={() => setActiveTab('analytics')}
-          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+          className={`flex flex-col items-center gap-1 py-1 px-2 shrink-0 rounded-xl transition ${
             activeTab === 'analytics' ? 'text-purple-600 font-bold' : 'text-slate-400 hover:text-slate-600'
           }`}
         >
-          <BarChart2 className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Analíticas</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('stickers')}
-          className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
-            activeTab === 'stickers' ? 'text-rose-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-          }`}
-        >
-          <Layers className="w-5 h-5" />
-          <span className="text-[10px] font-semibold">Lotes</span>
+          <BarChart2 className="w-4 h-4" />
+          <span className="text-[9px] font-semibold">Métricas</span>
         </button>
       </nav>
+
+      {/* ---------------- ORDER DETAIL & COURIER DISPATCH MODAL ---------------- */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl relative my-8">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-sm font-black text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-lg border border-amber-200">
+                    #{selectedOrder.id}
+                  </span>
+                  <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full ${
+                    selectedOrder.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
+                    selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                    selectedOrder.status === 'cancelled' ? 'bg-rose-100 text-rose-800' :
+                    'bg-amber-100 text-amber-800'
+                  }`}>
+                    {selectedOrder.status === 'delivered' ? 'Entregado' : selectedOrder.status === 'shipped' ? 'Enviado' : selectedOrder.status === 'cancelled' ? 'Cancelado' : 'Pendiente'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  Fecha de pedido: {new Date(selectedOrder.created_at).toLocaleString('es-PA')}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Customer & Address Details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Cliente & Contacto</span>
+                <p className="font-bold text-slate-900 text-sm">{selectedOrder.customer_name}</p>
+                <p className="text-slate-600 font-mono text-[11px]">{selectedOrder.customer_email}</p>
+                <p className="text-emerald-700 font-bold">📱 {selectedOrder.customer_phone}</p>
+                {selectedOrder.customer_phone && (
+                  <div className="pt-2">
+                    <a
+                      href={`https://wa.me/${(selectedOrder.customer_phone || '').replace(/\D/g, '').startsWith('507') ? (selectedOrder.customer_phone || '').replace(/\D/g, '') : `507${(selectedOrder.customer_phone || '').replace(/\D/g, '')}`}?text=${encodeURIComponent(`¡Hola ${selectedOrder.customer_name.split(' ')[0]}! Te escribimos de starTAP Panamá respecto a tu pedido #${selectedOrder.id}. 🇵🇦`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-lg transition"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" /> Abrir WhatsApp
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Dirección de Entrega</span>
+                <p className="font-bold text-slate-900">{selectedOrder.shipping_province}, {selectedOrder.shipping_district}</p>
+                <p className="text-slate-600 text-[11px] leading-relaxed">{selectedOrder.shipping_address}</p>
+                <p className="text-[11px] text-slate-500 font-semibold pt-1">
+                  Método de Pago: <span className="font-extrabold text-slate-800 uppercase">{selectedOrder.payment_method}</span> ({selectedOrder.payment_status})
+                </p>
+              </div>
+            </div>
+
+            {/* Courier Tracking & Admin Notes Form */}
+            <form onSubmit={handleSaveOrderDetails} className="bg-amber-50/50 border border-amber-200 rounded-2xl p-4 space-y-3">
+              <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <Truck className="w-4 h-4 text-amber-600" /> Datos de Envío & Courier Paquetería
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-700 block">Empresa de Courier / Entrega</label>
+                  <select
+                    value={trackingCourierInput}
+                    onChange={(e) => setTrackingCourierInput(e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  >
+                    <option value="UnoExpress">UnoExpress Panamá 🚚</option>
+                    <option value="ServiEntrega">ServiEntrega Panamá 📦</option>
+                    <option value="FletesChavale">Fletes Chavale 🚛</option>
+                    <option value="MensajeriaLocal">Mensajería Local / Delivery 🛵</option>
+                    <option value="RetiroOficina">Retiro en Oficina / Local 🏢</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-700 block">Número de Guía / Tracking</label>
+                  <input
+                    type="text"
+                    value={trackingNumberInput}
+                    onChange={(e) => setTrackingNumberInput(e.target.value)}
+                    placeholder="Ej: GUIA-987654"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-bold text-slate-700 block">Notas Internas de Administración</label>
+                <input
+                  type="text"
+                  value={adminNotesInput}
+                  onChange={(e) => setAdminNotesInput(e.target.value)}
+                  placeholder="Ej: Entregado en recepción del edificio, contacto con Don Carlos"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                />
+              </div>
+
+              <div className="flex justify-end pt-1">
+                <button
+                  type="submit"
+                  className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5"
+                >
+                  <CheckCircle className="w-3.5 h-3.5 text-amber-400" /> Guardar Cambios de Seguimiento
+                </button>
+              </div>
+            </form>
+
+            {/* Purchased Items Table */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <Package className="w-4 h-4 text-slate-700" /> Productos del Pedido
+              </h4>
+
+              <div className="border border-slate-200 rounded-2xl overflow-hidden">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-500">
+                    <tr>
+                      <th className="p-3">Producto</th>
+                      <th className="p-3">Ficha de Google / Logo</th>
+                      <th className="p-3 text-center">Cant.</th>
+                      <th className="p-3 text-right">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                    {(selectedOrder.items || []).map((item, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50">
+                        <td className="p-3">
+                          <p className="font-bold text-slate-900">{item.product_name}</p>
+                          {item.selected_color && (
+                            <span className="text-[10px] text-slate-500 block">Color: {item.selected_color}</span>
+                          )}
+                        </td>
+                        <td className="p-3 text-slate-600">
+                          {item.business_name ? (
+                            <span className="font-semibold text-slate-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-[11px]">
+                              {item.business_name}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 italic">Autoconfiguración</span>
+                          )}
+                        </td>
+                        <td className="p-3 text-center font-bold text-slate-900">{item.quantity}</td>
+                        <td className="p-3 text-right font-mono font-bold text-slate-900">${(item.price * item.quantity).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="border-t border-slate-100 pt-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="text-base font-black text-slate-900">
+                Total: <span className="text-amber-600 font-mono">${selectedOrder.total.toFixed(2)} USD</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handlePrintPackingSlip(selectedOrder)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl border border-slate-300 transition flex items-center gap-1.5"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Imprimir Remisión</span>
+                </button>
+
+                {trackingNumberInput && selectedOrder.customer_phone && (
+                  <a
+                    href={`https://wa.me/${(selectedOrder.customer_phone || '').replace(/\D/g, '').startsWith('507') ? (selectedOrder.customer_phone || '').replace(/\D/g, '') : `507${(selectedOrder.customer_phone || '').replace(/\D/g, '')}`}?text=${encodeURIComponent(`¡Hola ${selectedOrder.customer_name.split(' ')[0]}! Te informamos que tu pedido #${selectedOrder.id} de starTAP Panamá ha sido despachado vía ${trackingCourierInput}.\n\nTu número de guía es: ${trackingNumberInput}.\n\n¡Muchas gracias por tu compra!`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Notificar Guía por WhatsApp</span>
+                  </a>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedOrder(null)}
+                  className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

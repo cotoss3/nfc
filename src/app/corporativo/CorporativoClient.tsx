@@ -22,6 +22,8 @@ import {
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 import CorporativoCalculator from '@/components/CorporativoCalculator';
 
+import { dbLocal } from '@/lib/db';
+
 export default function CorporativoClient() {
   const [companyName, setCompanyName] = useState('');
   const [contactName, setContactName] = useState('');
@@ -35,6 +37,21 @@ export default function CorporativoClient() {
 
   const handleQuoteSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Guardar solicitud B2B localmente para gestión en Master Control
+    try {
+      dbLocal.saveB2bQuote({
+        name: contactName,
+        email,
+        phone,
+        business_name: companyName,
+        quantity,
+        notes,
+        status: 'pending',
+      });
+    } catch (err) {
+      console.error('[SAVE_B2B_LOCAL_ERROR]', err);
+    }
 
     // Enviar correo transaccional vía Resend API
     fetch('/api/email/b2b-quote', {

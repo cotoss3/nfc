@@ -13,6 +13,7 @@ export interface Product {
   images?: string[];
   colors?: string[];
   material?: string;
+  in_stock?: boolean;
   category: 'plates' | 'cards' | 'accessories';
   type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'airbnb' | 'custom';
 }
@@ -42,12 +43,15 @@ export interface Order {
   shipping_province: string;
   shipping_district: string;
   shipping_address: string;
-  payment_method: 'tarjeta' | 'yappy';
+  payment_method: 'tarjeta' | 'yappy' | 'transfer';
   payment_status: 'pending' | 'completed';
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   total: number;
   items: OrderItem[];
   created_at: string;
+  tracking_number?: string;
+  tracking_courier?: string;
+  admin_notes?: string;
 }
 
 export interface NfcCard {
@@ -97,6 +101,30 @@ export interface AbandonedCheckout {
   status: 'abandoned' | 'recovered' | 'completed';
   created_at: string;
   updated_at: string;
+}
+
+export interface CustomerSummary {
+  email: string;
+  name: string;
+  phone: string;
+  ordersCount: number;
+  totalSpent: number;
+  lastOrderDate: string;
+  province?: string;
+  district?: string;
+  cardCount: number;
+}
+
+export interface B2bQuote {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  business_name: string;
+  quantity: number | string;
+  notes?: string;
+  status: 'pending' | 'contacted' | 'won' | 'lost';
+  created_at: string;
 }
 
 // Productos semilla predeterminados desde la constante central de productos
@@ -396,6 +424,10 @@ class LocalDbService {
     return false;
   }
 
+  toggleProductStock(id: string, in_stock: boolean): boolean {
+    return this.updateFullProduct(id, { in_stock });
+  }
+
   createProduct(product: Product): boolean {
     const normalizedId = product.id.trim().toLowerCase();
 
@@ -604,6 +636,142 @@ class LocalDbService {
         if (error) console.error('Error actualizando estado de pago en Supabase:', error);
       });
     }
+  }
+
+  updateOrderDetails(orderId: string, updates: Partial<Order>): void {
+    const orders = this.getOrders();
+    const updated = orders.map(o => o.id === orderId ? { ...o, ...updates } : o);
+    this.setStorageItem('nfc_orders', updated);
+    if (supabase) {
+      supabase.from('orders').update(updates).eq('id', orderId).then();
+    }
+  }
+
+  deleteOrder(orderId: string): boolean {
+    const orders = this.getOrders();
+    const filtered = orders.filter(o => o.id !== orderId);
+    this.setStorageItem('nfc_orders', filtered);
+    if (supabase) {
+      supabase.from('orders').delete().eq('id', orderId).then();
+    }
+    return true;
+  }
+
+  // Métodos CRM de Clientes
+  getCustomersSummary(): CustomerSummary[] {
+    const orders = this.getOrders();
+    const cards = this.getCards();
+    const users = this.getUsers();
+
+    const map: { [email: string]: CustomerSummary } = {};
+
+    orders.forEach((o) => {
+      const email = (o.customer_email || '').trim().toLowerCase();
+      if (!email) return;
+
+      if (!map[email]) {
+        map[email] = {
+          email,
+          name: o.customer_name || email.split('@')[0],
+          phone: o.customer_phone || '',
+          ordersCount: 0,
+          totalSpent: 0,
+          lastOrderDate: o.created_at,
+          province: o.shipping_province,
+          district: o.shipping_district,
+          cardCount: 0,
+        };
+      }
+
+      map[email].ordersCount += 1;
+      map[email].totalSpent += o.total || 0;
+      if (new Date(o.created_at) > new Date(map[email].lastOrderDate)) {
+        map[email].lastOrderDate = o.created_at;
+      }
+      if (o.customer_phone && !map[email].phone) {
+        map[email].phone = o.customer_phone;
+      }
+      if (o.customer_name && map[email].name === email.split('@')[0]) {
+        map[email].name = o.customer_name;
+      }
+      if (o.shipping_province) {
+        map[email].province = o.shipping_province;
+        map[email].district = o.shipping_district;
+      }
+    });
+
+    cards.forEach((c) => {
+      const email = (c.owner_email || '').trim().toLowerCase();
+      if (!email) return;
+
+      if (!map[email]) {
+        map[email] = {
+          email,
+          name: c.owner_name || email.split('@')[0],
+          phone: '',
+          ordersCount: 0,
+          totalSpent: 0,
+          lastOrderDate: c.created_at || new Date().toISOString(),
+          cardCount: 0,
+        };
+      }
+
+      map[email].cardCount += 1;
+      if (c.owner_name && map[email].name === email.split('@')[0]) {
+        map[email].name = c.owner_name;
+      }
+    });
+
+    users.forEach((u) => {
+      const email = (u.email || '').trim().toLowerCase();
+      if (!email) return;
+
+      if (!map[email]) {
+        map[email] = {
+          email,
+          name: u.name || email.split('@')[0],
+          phone: '',
+          ordersCount: 0,
+          totalSpent: 0,
+          lastOrderDate: u.created_at,
+          cardCount: 0,
+        };
+      }
+    });
+
+    return Object.values(map).sort((a, b) => b.totalSpent - a.totalSpent);
+  }
+
+  // Métodos de Cotizaciones Corporativas B2B
+  getB2bQuotes(): B2bQuote[] {
+    return this.getStorageItem<B2bQuote[]>('nfc_b2b_quotes', []);
+  }
+
+  saveB2bQuote(data: Omit<B2bQuote, 'id' | 'created_at'> & { id?: string }): B2bQuote {
+    const list = this.getB2bQuotes();
+    const newQuote: B2bQuote = {
+      ...data,
+      id: data.id || `B2B-${Math.floor(1000 + Math.random() * 9000)}`,
+      status: data.status || 'pending',
+      created_at: new Date().toISOString(),
+    };
+    list.unshift(newQuote);
+    this.setStorageItem('nfc_b2b_quotes', list);
+    if (supabase) {
+      supabase.from('b2b_quotes').upsert([newQuote]).then();
+    }
+    return newQuote;
+  }
+
+  updateB2bQuoteStatus(id: string, status: B2bQuote['status']): void {
+    const list = this.getB2bQuotes();
+    const updated = list.map((q) => (q.id === id ? { ...q, status } : q));
+    this.setStorageItem('nfc_b2b_quotes', updated);
+  }
+
+  deleteB2bQuote(id: string): void {
+    const list = this.getB2bQuotes();
+    this.setStorageItem('nfc_b2b_quotes', list.filter((q) => q.id !== id));
   }
 
   // Métodos de Carritos / Pedidos Abandonados (Shopify Style)
