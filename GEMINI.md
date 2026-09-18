@@ -28,3 +28,13 @@ Este documento establece las reglas obligatorias de diseÃ±o, arquitectura, flujo
 - **Pago Ãšnico:** Destacar siempre el beneficio diferencial: *"Pago Ãºnico de por vida, sin contratos y sin mensualidades"*.
 - **Estrategia B2B / Corporativo:** Promover el aumento del valor promedio del pedido (AOV) mediante el **Pack TrÃ­o Comercial** (28% OFF) y opciones de personalizaciÃ³n de logo (+ $5.00).
 - **Soporte Post-Venta Simplificado:** Mantener la guÃ­a de auto-configuraciÃ³n y ruteo dinÃ¡mico para minimizar consultas de soporte post-entrega.
+
+---
+
+## 4. Arquitectura y Reglas del Panel de Administración (OMS)
+- **URLs Independientes:** El Master Control no debe ser un SPA monolítico. Cada módulo (Pedidos, Productos, Clientes, Analíticas) debe tener su propia ruta (ej. /master-control/pedidos).
+- **Separación de Roles (Admin vs. Trabajador):**
+  - *Admin:* Visibilidad financiera completa, control de reembolsos, edición de órdenes y KPIs globales.
+  - *Trabajador:* Interfaz enfocada en la operación (Pick & Pack). Visibilidad de items y variaciones, ocultando montos financieros. Flujo por estados claros (Por preparar -> Empacado -> Enviado).
+- **Eficiencia UX:** Uso de etiquetas de colores para estados (Shopify-style), filtros rápidos de estado y botones grandes para uso en tablets/móviles en bodega.
+- **Vistas de Detalle:** El detalle de un pedido debe mostrar el historial a la izquierda (líneas de producto) y los datos del cliente/envío a la derecha, priorizando la lectura rápida.
