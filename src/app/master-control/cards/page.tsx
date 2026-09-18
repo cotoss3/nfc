@@ -610,7 +610,7 @@ export default function CardsManagementPage() {
                             {/* COPIAR ENLACE NFC */}
                             <button
                               type="button"
-                              onClick={() => copyToClipboard(`https://startap.com.pa/r/${c.card_id}?src=nfc`, `${c.card_id}_nfc`)}
+                              onClick={() => copyToClipboard(`https://startap.com.pa/r/${c.card_id}?m=nfc`, `${c.card_id}_nfc`)}
                               className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-lg text-[10px] font-bold transition flex items-center gap-1"
                               title="Copiar Enlace Contactless NFC"
                             >
@@ -630,7 +630,7 @@ export default function CardsManagementPage() {
                             {/* COPIAR ENLACE QR */}
                             <button
                               type="button"
-                              onClick={() => copyToClipboard(`https://startap.com.pa/r/${c.card_id}?src=qr`, `${c.card_id}_qr`)}
+                              onClick={() => copyToClipboard(`https://startap.com.pa/r/${c.card_id}?m=qr`, `${c.card_id}_qr`)}
                               className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1"
                               title="Copiar Enlace Código QR"
                             >
@@ -835,7 +835,7 @@ export default function CardsManagementPage() {
 
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl inline-block">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://startap.com.pa/r/${qrModalCard.card_id}`}
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://startap.com.pa/r/${qrModalCard.card_id}?m=qr`}
                 alt={`Código QR ${qrModalCard.card_id}`}
                 className="w-48 h-48 mx-auto object-contain rounded-lg"
               />
@@ -844,7 +844,7 @@ export default function CardsManagementPage() {
             <div className="space-y-2 pt-1 text-xs">
               <button
                 type="button"
-                onClick={() => copyToClipboard(`https://startap.com.pa/r/${qrModalCard.card_id}?src=nfc`, `modal_nfc_${qrModalCard.card_id}`)}
+                onClick={() => copyToClipboard(`https://startap.com.pa/r/${qrModalCard.card_id}?m=nfc`, `modal_nfc_${qrModalCard.card_id}`)}
                 className="w-full py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold rounded-xl transition flex items-center justify-center gap-1.5"
               >
                 {copiedId === `modal_nfc_${qrModalCard.card_id}` ? (
@@ -862,7 +862,7 @@ export default function CardsManagementPage() {
 
               <button
                 type="button"
-                onClick={() => copyToClipboard(`https://startap.com.pa/r/${qrModalCard.card_id}?src=qr`, `modal_qr_${qrModalCard.card_id}`)}
+                onClick={() => copyToClipboard(`https://startap.com.pa/r/${qrModalCard.card_id}?m=qr`, `modal_qr_${qrModalCard.card_id}`)}
                 className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold rounded-xl transition flex items-center justify-center gap-1.5"
               >
                 {copiedId === `modal_qr_${qrModalCard.card_id}` ? (
@@ -879,7 +879,7 @@ export default function CardsManagementPage() {
               </button>
 
               <a
-                href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://startap.com.pa/r/${qrModalCard.card_id}`}
+                href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://startap.com.pa/r/${qrModalCard.card_id}?m=qr`}
                 target="_blank"
                 download={`QR_${qrModalCard.card_id}.png`}
                 className="w-full py-2.5 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 mt-2"
