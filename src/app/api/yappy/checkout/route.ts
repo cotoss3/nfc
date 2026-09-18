@@ -47,7 +47,17 @@ export async function POST(req: Request) {
     if (!validateData?.body?.token) {
       console.error('[Yappy Validate Error]', JSON.stringify(validateData));
       const errorMsg = validateData?.status?.description || 'Error al validar comercio en Yappy';
-      return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
+      return NextResponse.json({ 
+        success: false, 
+        step: 'validate',
+        error: errorMsg,
+        debug: {
+          code: validateData?.status?.code,
+          merchantIdLength: merchantId.length,
+          merchantIdPreview: `${merchantId.slice(0, 5)}...${merchantId.slice(-5)}`,
+          domain
+        }
+      }, { status: 500 });
     }
 
     const token = validateData.body.token;
@@ -88,7 +98,17 @@ export async function POST(req: Request) {
     if (!orderData?.body?.transactionId || !orderData?.body?.documentName) {
       console.error('[Yappy Create Order Error]', JSON.stringify(orderData));
       const errorMsg = orderData?.status?.description || 'Error al generar la orden en Yappy';
-      return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
+      return NextResponse.json({ 
+        success: false, 
+        step: 'create_order',
+        error: errorMsg,
+        debug: {
+          code: orderData?.status?.code,
+          orderId: cleanOrderId,
+          aliasYappy,
+          total: formattedTotal
+        }
+      }, { status: 500 });
     }
 
     console.log('[Yappy] Orden creada exitosamente:', {
