@@ -994,7 +994,8 @@ export default function CheckoutPage() {
                               onChange={() => setPaymentMethod('yappy')}
                               className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
                             />
-                            <span className="text-sm font-bold text-slate-900">Yappy Panamá (WhatsApp)</span>
+                            <span className="text-sm font-bold text-slate-900">Yappy</span>
+                            <span className="text-xs text-blue-600 font-semibold hover:underline">¿Qué es Yappy?</span>
                           </div>
                           <div className="flex items-center gap-1.5">
                             <Image
@@ -1009,14 +1010,15 @@ export default function CheckoutPage() {
 
                         {paymentMethod === 'yappy' && (
                           <div className="p-4 sm:p-5 bg-slate-50/40 border-t border-slate-200 space-y-4">
-                            <div className="flex items-start gap-2.5 text-xs text-slate-600 bg-blue-50/70 p-3.5 rounded-xl border border-blue-100">
-                              <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                              <span>
-                                Paga al instante sin ingresar datos de tarjeta, de manera segura y directa con el Botón de Pago Yappy oficial.
-                              </span>
-                            </div>
+                            <p className="text-xs text-slate-600 font-medium">
+                              Ten a mano tu celular y paga en línea por medio de Yappy de Banco General.
+                            </p>
+                            
+                            <p className="text-[11px] text-slate-400 italic">
+                              * Al completar esta compra declaro que he leído y acepto los <Link href="/terminos" className="underline hover:text-slate-600">Términos y Condiciones</Link>.
+                            </p>
 
-                            <div className="w-full">
+                            <div className="w-full pt-1">
                               <YappyButton 
                                 onInitiatePayment={async () => {
                                   if (!name || !email || !phone || !address || !district) {
