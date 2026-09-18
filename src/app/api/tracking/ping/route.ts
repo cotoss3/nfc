@@ -10,6 +10,8 @@ export interface ActiveSessionData {
   cart_total: number;
   cart_summary: string;
   location: string;
+  country: string;
+  country_code: string;
   province: string;
   district: string;
   page_start_time: string;
@@ -21,14 +23,14 @@ export interface ActiveSessionData {
 // In-memory active session cache in Node.js global object
 const globalRef = global as unknown as { 
   __activeSessions?: Map<string, ActiveSessionData>;
-  __ipCache?: Map<string, { province: string; district: string; fullLocation: string }>;
+  __ipCache?: Map<string, { country: string; country_code: string; province: string; district: string; fullLocation: string }>;
 };
 
 if (!globalRef.__activeSessions) {
   globalRef.__activeSessions = new Map<string, ActiveSessionData>();
 }
 if (!globalRef.__ipCache) {
-  globalRef.__ipCache = new Map<string, { province: string; district: string; fullLocation: string }>();
+  globalRef.__ipCache = new Map<string, { country: string; country_code: string; province: string; district: string; fullLocation: string }>();
 }
 
 const activeSessions = globalRef.__activeSessions;
@@ -52,12 +54,14 @@ function getCleanActiveSessions(): ActiveSessionData[] {
   return valid.sort((a, b) => new Date(b.last_seen).getTime() - new Date(a.last_seen).getTime());
 }
 
-async function resolveLocation(ip: string, userProvince?: string, userDistrict?: string): Promise<{ province: string; district: string; fullLocation: string }> {
+async function resolveLocation(ip: string, userProvince?: string, userDistrict?: string): Promise<{ country: string; country_code: string; province: string; district: string; fullLocation: string }> {
   if (userProvince && userDistrict) {
     return {
+      country: 'Panamá',
+      country_code: 'PA',
       province: userProvince,
       district: userDistrict,
-      fullLocation: `Panamá (${userProvince} - ${userDistrict})`,
+      fullLocation: `PA Panamá - ${userProvince} (${userDistrict})`,
     };
   }
 
@@ -67,28 +71,34 @@ async function resolveLocation(ip: string, userProvince?: string, userDistrict?:
 
   // Fallback default if local or lookup fails
   let resolved = {
+    country: 'Panamá',
+    country_code: 'PA',
     province: 'Panamá',
     district: 'Bella Vista',
-    fullLocation: 'Panamá (Bella Vista)',
+    fullLocation: 'PA Panamá - Panamá (Bella Vista)',
   };
 
   if (ip && ip !== '127.0.0.1' && ip !== '::1' && !ip.startsWith('192.168.') && !ip.startsWith('10.')) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 1000);
-      const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,regionName,city`, {
+      const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,regionName,city`, {
         signal: controller.signal,
       });
       clearTimeout(timeout);
       if (res.ok) {
         const data = await res.json();
         if (data.status === 'success') {
+          const country = data.country || 'Panamá';
+          const countryCode = data.countryCode || 'PA';
           const prov = data.regionName || 'Panamá';
           const dist = data.city || 'Bella Vista';
           resolved = {
+            country,
+            country_code: countryCode,
             province: prov,
             district: dist,
-            fullLocation: `${prov} (${dist})`,
+            fullLocation: `${countryCode} ${country} - ${prov} (${dist})`,
           };
         }
       }
@@ -146,6 +156,8 @@ export async function POST(req: Request) {
       cart_count: Number(cart_count) || 0,
       cart_total: Number(cart_total) || 0,
       cart_summary: cart_summary || 'Carrito vacío',
+      country: locInfo.country,
+      country_code: locInfo.country_code,
       province: locInfo.province,
       district: locInfo.district,
       location: locInfo.fullLocation,

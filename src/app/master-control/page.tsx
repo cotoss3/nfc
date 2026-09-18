@@ -1091,6 +1091,8 @@ export default function MasterControlDashboard() {
                       const timeOnPageStr = pageSec < 60 ? `${pageSec}s` : `${Math.floor(pageSec / 60)}m ${pageSec % 60}s`;
                       const timeOnSiteStr = siteSec < 60 ? `${siteSec}s` : `${Math.floor(siteSec / 60)}m ${siteSec % 60}s`;
 
+                      const cCode = session.country_code || 'PA';
+                      const countryDisplay = cCode === 'PA' ? 'PA Panamá' : cCode === 'US' ? 'US Estados Unidos' : `${cCode} ${session.country || ''}`;
                       const prov = session.province || 'Panamá';
                       const dist = session.district || 'Bella Vista';
 
@@ -1103,7 +1105,7 @@ export default function MasterControlDashboard() {
                           </td>
 
                           <td className="p-3.5">
-                            <p className="font-bold text-slate-900">PA Panamá</p>
+                            <p className="font-bold text-slate-900">{countryDisplay}</p>
                             <p className="text-[10px] text-slate-500 font-semibold">{prov} ({dist})</p>
                           </td>
 
