@@ -1064,6 +1064,7 @@ export default function MasterControlDashboard() {
                     <th className="p-3.5">Página Actual Navegando</th>
                     <th className="p-3.5 text-center">Tiempo en Página</th>
                     <th className="p-3.5 text-center">Tiempo en Web</th>
+                    <th className="p-3.5 text-center">Última Actividad</th>
                     <th className="p-3.5 text-center">Estado del Carrito</th>
                     <th className="p-3.5">Dispositivo</th>
                   </tr>
@@ -1071,7 +1072,7 @@ export default function MasterControlDashboard() {
                 <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                   {realActiveSessions.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="p-12 text-center text-slate-400 space-y-2">
+                      <td colSpan={9} className="p-12 text-center text-slate-400 space-y-2">
                         <Users className="w-8 h-8 text-slate-300 mx-auto" />
                         <p className="font-bold text-slate-700 text-sm">No hay compradores navegando la tienda en este segundo exacto</p>
                         <p className="text-xs text-slate-400 max-w-md mx-auto">
@@ -1084,6 +1085,8 @@ export default function MasterControlDashboard() {
                       const nowMs = Date.now();
                       const pageSec = Math.max(0, Math.floor((nowMs - new Date(session.page_start_time || session.last_seen).getTime()) / 1000));
                       const siteSec = Math.max(0, Math.floor((nowMs - new Date(session.first_seen || session.last_seen).getTime()) / 1000));
+                      const lastSeenSecAgo = Math.floor((nowMs - new Date(session.last_seen).getTime()) / 1000);
+                      const activeStatusText = lastSeenSecAgo < 15 ? 'Activo ahora' : `Hace ${lastSeenSecAgo}s`;
 
                       const timeOnPageStr = pageSec < 60 ? `${pageSec}s` : `${Math.floor(pageSec / 60)}m ${pageSec % 60}s`;
                       const timeOnSiteStr = siteSec < 60 ? `${siteSec}s` : `${Math.floor(siteSec / 60)}m ${siteSec % 60}s`;
@@ -1123,6 +1126,12 @@ export default function MasterControlDashboard() {
 
                           <td className="p-3.5 text-center font-mono font-bold text-slate-500">
                             {timeOnSiteStr}
+                          </td>
+
+                          <td className="p-3.5 text-center font-mono font-bold">
+                            <span className={`px-2 py-0.5 rounded text-[10px] ${lastSeenSecAgo < 15 ? 'bg-emerald-100 text-emerald-800 font-extrabold' : 'bg-slate-100 text-slate-600'}`}>
+                              ⚡ {activeStatusText}
+                            </span>
                           </td>
 
                           <td className="p-3.5 text-center">
