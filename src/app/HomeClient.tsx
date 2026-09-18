@@ -504,25 +504,31 @@ export default function HomeClient() {
               <div className="md:col-span-4 space-y-4 text-left md:text-right border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
                 <div>
                   {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $50.00 */}
-                  <div className="flex items-center gap-1.5 md:justify-end mb-2.5">
-                    <img
-                      src="/products/NFC_10001/NFC_10001_Placa.webp"
-                      alt="1x Placa Acrílica de Mostrador"
-                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain bg-white rounded-xl p-1 border-2 border-amber-400 shadow-sm"
-                      title="1x Placa Acrílica de Mostrador (3mm)"
-                    />
-                    <img
-                      src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
-                      alt="1x Tarjeta NFC de Bolsillo"
-                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain bg-white rounded-xl p-1 border border-slate-700 shadow-sm"
-                      title="1x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
-                    />
-                    <img
-                      src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
-                      alt="2x Tarjeta NFC de Bolsillo"
-                      className="w-10 h-10 sm:w-11 sm:h-11 object-contain bg-white rounded-xl p-1 border border-slate-700 shadow-sm"
-                      title="2x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
-                    />
+                  <div className="grid grid-cols-3 gap-2 w-full mb-3">
+                    <div className="aspect-square bg-white rounded-xl p-1.5 border-2 border-amber-400 shadow-xs flex items-center justify-center">
+                      <img
+                        src="/products/NFC_10001/NFC_10001_Placa.webp"
+                        alt="1x Placa Acrílica de Mostrador"
+                        className="w-full h-full object-contain"
+                        title="1x Placa Acrílica de Mostrador (3mm)"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded-xl p-1.5 border border-slate-700 shadow-xs flex items-center justify-center">
+                      <img
+                        src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
+                        alt="1x Tarjeta NFC de Bolsillo"
+                        className="w-full h-full object-contain"
+                        title="1x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
+                      />
+                    </div>
+                    <div className="aspect-square bg-white rounded-xl p-1.5 border border-slate-700 shadow-xs flex items-center justify-center">
+                      <img
+                        src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
+                        alt="2x Tarjeta NFC de Bolsillo"
+                        className="w-full h-full object-contain"
+                        title="2x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
+                      />
+                    </div>
                   </div>
 
                   <div className="flex items-baseline gap-2 md:justify-end">
