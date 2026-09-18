@@ -120,7 +120,7 @@ export default function OrderDetailPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">Pedido #{order.id}</h1>
-              {order.payment_status === 'paid' && (
+              {order.payment_status === 'completed' && (
                 <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Pagado
                 </span>
@@ -321,7 +321,7 @@ export default function OrderDetailPage() {
                   <CreditCard className="w-5 h-5 text-slate-400" />
                   <span className="text-sm font-bold uppercase">{order.payment_method}</span>
                 </div>
-                {order.payment_status === 'paid' 
+                {order.payment_status === 'completed' 
                   ? <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Pagado</span>
                   : <span className="px-2 py-0.5 rounded text-xs font-bold bg-slate-200 text-slate-700">Pendiente</span>
                 }
@@ -330,13 +330,13 @@ export default function OrderDetailPage() {
               <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
                 <button 
                   onClick={() => {
-                    const newStatus = order.payment_status === 'paid' ? 'pending' : 'paid';
+                    const newStatus = order.payment_status === 'completed' ? 'pending' : 'completed';
                     dbLocal.updateOrder(order.id, { payment_status: newStatus });
                     setOrder({ ...order, payment_status: newStatus });
                   }}
                   className="w-full text-center text-sm font-bold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg py-2 hover:bg-slate-50"
                 >
-                  Marcar como {order.payment_status === 'paid' ? 'No Pagado' : 'Pagado'}
+                  Marcar como {order.payment_status === 'completed' ? 'No Pagado' : 'Pagado'}
                 </button>
               </div>
             </div>

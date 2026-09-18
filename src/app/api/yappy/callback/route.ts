@@ -39,7 +39,7 @@ export async function GET(req: Request) {
         const order = dbLocal.getOrderById(orderId);
         if (order) {
            dbLocal.updateOrderDetails(orderId, {
-             payment_status: 'paid',
+             payment_status: 'completed',
              status: 'processing'
            });
            console.log(`[YAPPY_IPN] Orden ${orderId} marcada como pagada`);
