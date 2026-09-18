@@ -36,12 +36,12 @@ export default function OrderDetailPage() {
   if (!order) return <div className="p-8 text-center text-red-500">Pedido no encontrado.</div>;
 
   const handleUpdateStatus = (newStatus: Order['status']) => {
-    dbLocal.updateOrder(order.id, { status: newStatus });
+    dbLocal.updateOrderDetails(order.id, { status: newStatus });
     setOrder({ ...order, status: newStatus });
   };
 
   const handleUpdateTracking = () => {
-    dbLocal.updateOrder(order.id, { tracking_number: trackingNumber, status: 'shipped' });
+    dbLocal.updateOrderDetails(order.id, { tracking_number: trackingNumber, status: 'shipped' });
     setOrder({ ...order, tracking_number: trackingNumber, status: 'shipped' });
     alert('Guía actualizada y orden marcada como enviada.');
   };
@@ -331,7 +331,7 @@ export default function OrderDetailPage() {
                 <button 
                   onClick={() => {
                     const newStatus = order.payment_status === 'completed' ? 'pending' : 'completed';
-                    dbLocal.updateOrder(order.id, { payment_status: newStatus });
+                    dbLocal.updateOrderDetails(order.id, { payment_status: newStatus });
                     setOrder({ ...order, payment_status: newStatus });
                   }}
                   className="w-full text-center text-sm font-bold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg py-2 hover:bg-slate-50"
