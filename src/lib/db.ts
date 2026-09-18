@@ -583,7 +583,7 @@ class LocalDbService {
           target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
           is_active: true,
           claimed: true,
-          type: item.product_id.includes('google') ? 'google' : item.product_id.includes('tripadvisor') ? 'tripadvisor' : item.product_id.includes('instagram') ? 'instagram' : 'vcard',
+          type: (item.product_id || '').includes('google') ? 'google' : (item.product_id || '').includes('tripadvisor') ? 'tripadvisor' : (item.product_id || '').includes('instagram') ? 'instagram' : 'vcard',
           created_at: new Date().toISOString()
         };
         cards.push(cardObj);
