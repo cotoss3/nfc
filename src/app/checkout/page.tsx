@@ -1026,6 +1026,12 @@ export default function CheckoutPage() {
                                     return { success: false, error: 'Faltan campos' };
                                   }
 
+                                  const cleanPhone = phone.replace(/[^0-9]/g, '');
+                                  if (cleanPhone.length < 8) {
+                                    alert('Por favor ingresa un número de teléfono celular panameño de 8 dígitos registrado en Yappy.');
+                                    return { success: false, error: 'Teléfono de Yappy inválido' };
+                                  }
+
                                   const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
 
                                   const baseOrder = {

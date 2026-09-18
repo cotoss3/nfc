@@ -8,6 +8,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Faltan datos obligatorios' }, { status: 400 });
     }
 
+    const digits = (phone || '').replace(/[^0-9]/g, '');
+    const aliasYappy = digits.length >= 8 ? digits.slice(-8) : '';
+
+    if (!aliasYappy || aliasYappy.length !== 8) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Por favor ingresa tu número de celular de Panamá de 8 dígitos registrado en Yappy.' 
+      }, { status: 400 });
+    }
+
     const merchantId = process.env.YAPPY_MERCHANT_ID || '49bccdf9-4185-4732-83e0-e0cdf851b6de';
     // Yappy exige exactamente el dominio registrado en el Portal Comercial (sin barras finales o puertos locales)
     const domain = 'https://startap.com.pa';
@@ -44,7 +54,7 @@ export async function POST(req: Request) {
         orderId: orderNumber.replace(/[^A-Za-z0-9]/g, '').slice(0, 15), // Máximo 15 caracteres alfanuméricos
         domain,
         paymentDate: Math.floor(Date.now() / 1000), // epoch time
-        aliasYappy: phone ? phone.replace(/[^0-9]/g, '').slice(0, 8) : undefined, // Número panameño (opcional)
+        aliasYappy, // Requerido obligatoriamente por Yappy (número de 8 dígitos)
         ipnUrl: `${domain}/api/yappy/callback`,
         discount: "0.00",
         taxes: "0.00",
