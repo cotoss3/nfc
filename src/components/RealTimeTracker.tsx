@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
@@ -10,7 +10,7 @@ function getDeviceType(): string {
   if (/iPhone/i.test(ua)) return 'iPhone (Safari)';
   if (/iPad/i.test(ua)) return 'iPad (Safari)';
   if (/Android/i.test(ua)) return 'Android Mobile (Chrome)';
-  if (/Macintosh/i.test(ua)) return 'MacBook (Safari)';
+  if (/Macintosh/i.test(ua)) return 'MacBook Pro (Safari)';
   if (/Windows/i.test(ua)) return 'Windows PC (Chrome)';
   if (/Linux/i.test(ua)) return 'Linux PC';
   return 'Navegador Web';
@@ -30,6 +30,15 @@ function getOrSetSessionId(): string {
 export default function RealTimeTracker() {
   const pathname = usePathname();
   const { cart, getCartTotal, getItemCount } = useCart();
+  const pageStartTimeRef = useRef<string>(new Date().toISOString());
+  const prevPathnameRef = useRef<string>(pathname || '/');
+
+  useEffect(() => {
+    if (pathname !== prevPathnameRef.current) {
+      pageStartTimeRef.current = new Date().toISOString();
+      prevPathnameRef.current = pathname || '/';
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -39,24 +48,27 @@ export default function RealTimeTracker() {
 
     const sessionId = getOrSetSessionId();
     const device = getDeviceType();
-    let referrer = 'Enlace Directo / Navegador';
+    let referrer = 'Enlace Directo / WhatsApp';
     if (document.referrer) {
       try {
         const host = new URL(document.referrer).hostname;
-        if (host.includes('google')) referrer = 'Google Search';
-        else if (host.includes('instagram')) referrer = 'Instagram Ads';
+        if (host.includes('google')) referrer = 'Google Search (SEO Organico)';
+        else if (host.includes('instagram')) referrer = 'Instagram Ads (@startap.pa)';
         else if (host.includes('facebook')) referrer = 'Facebook Ads';
         else referrer = host;
       } catch (e) {
-        referrer = 'Navegador / Directo';
+        referrer = 'Enlace Directo / Navegador';
       }
     }
 
     const cartCount = getItemCount ? getItemCount() : 0;
     const cartTotal = getCartTotal ? getCartTotal() : 0;
-    const cartSummary = cartCount > 0 
-      ? `${cartCount}x producto${cartCount > 1 ? 's' : ''} ($${cartTotal.toFixed(2)})`
-      : 'Carrito vacío';
+    
+    let cartSummary = 'Carrito vacío';
+    if (cartCount > 0 && cart && cart.length > 0) {
+      const firstItem = cart[0];
+      cartSummary = `${cartCount}x ${firstItem.product_name} ($${cartTotal.toFixed(2)})`;
+    }
 
     const payload = {
       session_id: sessionId,
@@ -67,6 +79,7 @@ export default function RealTimeTracker() {
       cart_count: cartCount,
       cart_total: cartTotal,
       cart_summary: cartSummary,
+      page_start_time: pageStartTimeRef.current,
     };
 
     const sendPing = () => {
@@ -77,11 +90,8 @@ export default function RealTimeTracker() {
       }).catch(err => console.debug('Tracking ping error:', err));
     };
 
-    // Send immediate ping on route change
     sendPing();
-
-    // Ping every 10 seconds to maintain active heartbeat
-    const interval = setInterval(sendPing, 10000);
+    const interval = setInterval(sendPing, 8000);
 
     return () => clearInterval(interval);
   }, [pathname, cart, getCartTotal, getItemCount]);
