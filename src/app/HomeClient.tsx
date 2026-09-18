@@ -2,58 +2,69 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { dbLocal, Product } from '@/lib/db';
-import { ShieldCheck, Truck, RotateCcw, ArrowRight, Star, MapPin, Smartphone, CheckCircle2, ChevronDown, ChevronUp, Check, MessageSquare, Zap } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import {
+  ShieldCheck,
+  Truck,
+  RotateCcw,
+  ArrowRight,
+  Star,
+  MapPin,
+  Smartphone,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Check,
+  MessageSquare,
+  Zap,
+  ShoppingCart,
+  Sparkles,
+  Flame,
+  Award,
+  Lock
+} from 'lucide-react';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 
-const HoverableImage = ({ product, altText }: { product: Product; altText?: string }) => {
-  const [imgSrc, setImgSrc] = useState(product.image);
-
-  useEffect(() => {
-    setImgSrc(product.image);
-  }, [product.image]);
-
-  const handleMouseEnter = () => {
-    if (product.images && product.images.length > 1) {
-      setImgSrc(product.images[1]);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setImgSrc(product.image);
-  };
-
-  return (
-    <img
-      src={imgSrc}
-      alt={altText || product.name}
-      width={600}
-      height={600}
-      loading="lazy"
-      decoding="async"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="w-full h-full object-cover transition-all duration-500 hover:scale-105"
-    />
-  );
-};
-
 export default function HomeClient() {
-  // Los 3 productos que se muestran en el home — precios leídos dinámicamente
+  const router = useRouter();
+  const { addToCart, getItemCount } = useCart();
+
+  // Los 3 productos principales del home
   const HOME_PRODUCT_IDS = ['tarjeta-nfc-bolsillo', 'placa-nfc-mostrador', 'stand-nfc-mesa'];
   const allProducts = dbLocal.getProducts();
   const homeProducts = HOME_PRODUCT_IDS.map(id =>
     allProducts.find(p => p.id === id)
   ).filter(Boolean) as typeof allProducts;
 
-  // Precios individuales con fallback a config central
-  const p1Price = (homeProducts[0]?.price ?? 20).toFixed(2);
-  const p2Price = (homeProducts[1]?.price ?? 30).toFixed(2);
-  const p3Price = (homeProducts[2]?.price ?? 35).toFixed(2);
+  // Feedback Toast de Carrito
+  const [addedItemName, setAddedItemName] = useState<string | null>(null);
+
+  // FAQ Accordion State
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
-  const whatsappMessage = encodeURIComponent("Hola StarTAP, quiero pedir una placa NFC personalizada con el logo de mi negocio en Panamá.");
+  const whatsappMessage = encodeURIComponent(
+    "Hola StarTAP, quiero pedir una placa NFC personalizada con el logo de mi negocio en Panamá."
+  );
   const whatsappUrl = `https://wa.me/50767134341?text=${whatsappMessage}`;
+
+  const handleQuickAdd = (product: Product, redirect: boolean = false) => {
+    addToCart({
+      product_id: product.id,
+      product_name: product.name,
+      quantity: 1,
+      price: product.price,
+      selected_color: product.id === 'placa-nfc-mostrador' ? 'Blanco Pro' : undefined,
+    });
+
+    if (redirect) {
+      router.push('/checkout');
+    } else {
+      setAddedItemName(product.name);
+      setTimeout(() => setAddedItemName(null), 4000);
+    }
+  };
 
   const faqs = [
     {
@@ -79,20 +90,40 @@ export default function HomeClient() {
   ];
 
   return (
-    <div className="bg-brand-50 min-h-screen font-sans text-slate-900">
+    <div className="bg-brand-50 min-h-screen font-sans text-slate-900 pb-20 md:pb-0">
       
-      {/* Promo Bar */}
-      <div className="bg-slate-950 text-white text-xs py-2.5 px-4 text-center font-bold tracking-wider">
-        Envíos en 24-48 horas a Ciudad de Panamá y despachos a todo el país | Pagos por Yappy, Visa y Mastercard
+      {/* 0. PROMO & URGENCY TOP BAR */}
+      <div className="bg-slate-950 text-white text-xs py-2.5 px-4 text-center font-bold tracking-wider flex items-center justify-center gap-2">
+        <Flame className="w-4 h-4 text-amber-400 animate-pulse flex-shrink-0" />
+        <span>Envíos 24-48h a todo Panamá | Pagos por Yappy, Visa y Mastercard | 0 Suscripciones</span>
       </div>
 
-      {/* 1. HERO SECTION */}
-      <section className="bg-gradient-to-br from-white via-amber-50/50 to-amber-100/30 border-b border-slate-200 relative overflow-hidden">
+      {/* FLOATING CART FEEDBACK TOAST */}
+      {addedItemName && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950 text-white px-6 py-3.5 rounded-2xl shadow-2xl border border-emerald-500 flex items-center gap-4 animate-bounce">
+          <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            <span>¡{addedItemName} añadido al carrito!</span>
+          </div>
+          <Link
+            href="/checkout"
+            className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl uppercase tracking-wider transition"
+          >
+            Pagar Ahora &rarr;
+          </Link>
+        </div>
+      )}
+
+      {/* 1. HIGH-CONVERTING HERO SECTION */}
+      <section className="bg-gradient-to-br from-white via-amber-50/40 to-amber-100/30 border-b border-slate-200 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-white rounded-full opacity-40 blur-3xl pointer-events-none" />
         
-        <div className="shopify-container max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+        <div className="shopify-container max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+          
           {/* Text Content Column */}
           <div className="lg:col-span-7 space-y-6 order-2 lg:order-1">
+            
+            {/* Social Proof Badge */}
             <div className="inline-flex items-center space-x-2 bg-amber-400/20 text-slate-950 px-3.5 py-1.5 rounded-full text-xs font-extrabold border border-amber-400/40">
               <div className="flex text-amber-500">
                 <Star className="fill-current w-3.5 h-3.5" />
@@ -101,24 +132,28 @@ export default function HomeClient() {
                 <Star className="fill-current w-3.5 h-3.5" />
                 <Star className="fill-current w-3.5 h-3.5" />
               </div>
-              <span>Más de 500 comercios activos en Panamá</span>
+              <span className="font-bold">4.9/5 · Más de 500 comercios activos en Panamá</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 leading-[1.15] tracking-tight">
-              Placas y Tarjetas NFC para Reseñas de Google en Panamá
+            {/* High-Impact Benefit Headline */}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 leading-[1.12] tracking-tight">
+              Multiplica tus Reseñas de 5★ en Google Maps en tu Mostrador 🇵🇦
             </h1>
 
+            {/* Clear Value Proposition */}
             <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-2xl font-medium">
-              Tu cliente aproxima su teléfono al mostrador y publica la reseña en 5 segundos. Es auto-configurable al llegar. Se vincula con tu ficha de Google Maps en un toque y sin mensualidades.
+              Tu cliente aproxima el celular a la placa al pagar y publica la reseña en 5 segundos. Sin descargar apps, sin mensualidades y 100% auto-configurable al llegar.
             </p>
 
+            {/* Action Buttons (CRO-Optimized) */}
             <div className="flex flex-col sm:flex-row gap-3.5 pt-2">
-              <Link
-                href="/catalogo"
+              <a
+                href="#catalogo-home"
                 className="shopify-btn-primary text-center py-4 px-8 tracking-wider text-xs sm:text-sm uppercase font-bold text-white bg-slate-950 hover:bg-slate-900 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
               >
-                Pedir mi Placa Ahora <ArrowRight className="w-4 h-4" />
-              </Link>
+                <ShoppingCart className="w-4 h-4 text-amber-400" />
+                <span>Ver Productos ($19 - $35 USD)</span>
+              </a>
 
               <a
                 href={whatsappUrl}
@@ -127,30 +162,31 @@ export default function HomeClient() {
                 className="shopify-btn-secondary text-center py-4 px-6 tracking-wider text-xs sm:text-sm uppercase font-bold rounded-xl border-2 border-slate-950 text-slate-950 hover:bg-slate-950 hover:text-white transition-all flex items-center justify-center gap-2 bg-white shadow-sm"
               >
                 <MessageSquare className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>Consultas y Pedidos con Logo por WhatsApp</span>
+                <span>Pedir con Logo por WhatsApp</span>
               </a>
             </div>
 
-            {/* Trust Bar */}
+            {/* Trust Badges */}
             <div className="pt-4 border-t border-slate-200">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-bold text-slate-800">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Envíos a todo el país</span>
+                  <span>Envíos 24-48h en Panamá</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Pago directo con Yappy</span>
+                  <span>Pago con Yappy & Tarjetas</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>0 suscripciones mensuales</span>
+                  <span>0 Mensualidades (Pago Único)</span>
                 </div>
               </div>
             </div>
+
           </div>
 
-          {/* Hero Image Column with desktop padding to prevent floating badge overlap */}
+          {/* Hero Image Column */}
           <div className="lg:col-span-5 relative order-1 lg:order-2 px-2 sm:px-4 lg:pb-12">
             <div className="aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 relative">
               <img
@@ -166,7 +202,7 @@ export default function HomeClient() {
               />
             </div>
 
-            {/* Floating badge positioned cleanly with room on desktop */}
+            {/* Floating Badge */}
             <div className="absolute -bottom-4 -left-2 sm:-bottom-6 sm:-left-4 bg-white p-4 rounded-2xl shadow-xl border border-slate-200 hidden sm:block">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-600 text-white flex items-center justify-center rounded-xl font-bold text-lg">
@@ -180,175 +216,262 @@ export default function HomeClient() {
                     <Star className="fill-current w-3.5 h-3.5" />
                     <Star className="fill-current w-3.5 h-3.5" />
                   </div>
-                  <p className="font-bold text-xs text-slate-950 mt-0.5">Captura opiniones en el mostrador</p>
-                  <p className="text-[11px] text-slate-500">Sin pedirle buscar tu negocio en Google</p>
+                  <p className="font-bold text-xs text-slate-950 mt-0.5">Captura reseñas en el mostrador</p>
+                  <p className="text-[11px] text-slate-500">Abre directamente el formulario de 5 estrellas</p>
                 </div>
               </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 2. ROI & COMPARISON SECTION (POR QUÉ TU NEGOCIO NECESITA STARTAP) */}
+      <section className="py-10 bg-white border-b border-slate-200">
+        <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 space-y-2">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              Impacto Inmediato en Ventas
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950 uppercase tracking-tight">
+              ¿Por qué el 90% de tus clientes no dejan reseña?
+            </h2>
+            <p className="text-slate-600 text-xs sm:text-sm max-w-xl mx-auto">
+              Pedirle a un cliente que busque tu negocio en Google Maps genera demasiada fricción. starTAP elimina los pasos.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* SIN STARTAP */}
+            <div className="bg-rose-50/60 border border-rose-200 rounded-3xl p-6 space-y-4">
+              <div className="flex items-center gap-2 text-rose-700 font-black text-sm uppercase tracking-wide">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                Sin starTAP (Método Antiguo)
+              </div>
+              <ul className="space-y-2.5 text-xs text-slate-700 font-medium">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">✕</span>
+                  El cliente promete dejar reseña en casa y lo olvida.
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">✕</span>
+                  Tiene que abrir el mapa, escribir el nombre y buscar la empresa.
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-500 font-bold">✕</span>
+                  Solo 1 de cada 50 clientes publica una valoracion (98% de pérdida).
+                </li>
+              </ul>
+            </div>
+
+            {/* CON STARTAP */}
+            <div className="bg-emerald-50/70 border-2 border-emerald-500 rounded-3xl p-6 space-y-4 shadow-sm relative">
+              <span className="absolute -top-3 right-6 bg-emerald-600 text-white text-[10px] font-black uppercase px-3 py-0.5 rounded-full">
+                Recomendado
+              </span>
+              <div className="flex items-center gap-2 text-emerald-800 font-black text-sm uppercase tracking-wide">
+                <Zap className="w-4 h-4 text-emerald-600" />
+                Con starTAP Contactless
+              </div>
+              <ul className="space-y-2.5 text-xs text-slate-800 font-bold">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  El cliente acerca su celular al pagar en la caja o mesa.
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  Se le abre el formulario directo de 5 estrellas en 5 segundos.
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  Multiplicas tus valoraciones semanales y dominas la zona local.
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. CATÁLOGO DE PRODUCTOS (Sin scroll vertical infinito en móvil) */}
-      <section className="py-12 sm:py-20 bg-slate-50">
+      {/* 3. CATÁLOGO DE PRODUCTOS (CON BOTÓN DE COMPRA DIRECTA) */}
+      <section id="catalogo-home" className="py-12 sm:py-16 bg-slate-50 scroll-mt-6">
         <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6">
+          
           <div className="text-center space-y-3 mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
               Catálogo de Dispositivos NFC y QR
             </h2>
-            <p className="text-slate-600 text-xs sm:text-base max-w-2xl mx-auto">
-              Selecciona el formato ideal para la caja registradora, mesas o entregas presenciales de tu negocio en Panamá.
+            <p className="text-slate-600 text-xs sm:text-base max-w-2xl mx-auto font-medium">
+              Haz tu pedido hoy con envío express en Panamá. Todos vienen listos para autoconfigurar en 30 segundos.
             </p>
           </div>
 
-          {/* Catalog Pre-Configuration Notice */}
-          <div className="mb-8 max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center shadow-sm">
+          <div className="mb-8 max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center shadow-xs">
             <p className="text-xs sm:text-sm font-bold text-amber-950">
-              Dispositivos 100% autoconfigurables al instante con tu ficha de Google Maps con un solo toque. Sin apps ni mensualidades.
+              ⚡ Incluye chip NFC de respuesta rápida + Código QR impreso en alta resolución. 0 mensualidades.
             </p>
           </div>
 
-          {/* Responsive Layout: Horizontal Touch Scroll on Mobile (<768px), 3-Column Grid on Desktop */}
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 px-4 -mx-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible md:pb-0 scrollbar-none">
+          {/* Catalog Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Item 1: Tarjeta NFC de Bolsillo */}
-            <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/tarjeta-nfc-bolsillo'}>
-                <img
-                  src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
-                  alt="Tarjeta NFC de Bolsillo para Reseñas de Google Panamá"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
-                  Portátil
-                </span>
-              </div>
-              <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
+            {homeProducts[0] && (
+              <div className="bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5 hover:text-amber-600 cursor-pointer transition-colors" onClick={() => window.location.href='/catalogo/tarjeta-nfc-bolsillo'}>
-                    Tarjeta NFC de Bolsillo
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-slate-100 space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">${p1Price} USD</span>
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
+                  <div className="aspect-square relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
+                    <img
+                      src={homeProducts[0].image}
+                      alt={homeProducts[0].name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                      Portátil
+                    </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 font-semibold leading-tight">
-                    Autoconfigurable en segundos con tu ficha de Google Maps | Sin mensualidades
-                  </p>
-                  <Link
-                    href="/catalogo/tarjeta-nfc-bolsillo"
-                    className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
-                  >
-                    Ver Producto — ${p1Price}
-                  </Link>
+                  <div className="p-5 space-y-3">
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide cursor-pointer hover:text-amber-600 transition-colors" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
+                      {homeProducts[0].name}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para entregas o eventos.
+                    </p>
+                    <div className="flex items-baseline justify-between pt-2">
+                      <span className="text-2xl font-black text-slate-950 font-mono">${homeProducts[0].price.toFixed(2)} USD</span>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Envío Panamá</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Item 2: Placa NFC para Reseñas de Google */}
-            <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border-2 border-slate-950 flex flex-col justify-between relative">
-              <div className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3.5 py-1 rounded-full shadow-md z-20">
-                Más Vendida
-              </div>
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/placa-nfc-mostrador'}>
-                <img
-                  src="/products/NFC_10001/NFC_10001_Placa.webp"
-                  alt="Placa NFC para Reseñas de Google en Panamá"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
-                  Acrílico 3mm
-                </span>
-              </div>
-              <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
-                <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5 hover:text-amber-600 cursor-pointer transition-colors" onClick={() => window.location.href='/catalogo/placa-nfc-mostrador'}>
-                    Placa NFC para Reseñas de Google
-                  </h3>
-                  <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                    Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para que los clientes califiquen antes de salir de tu negocio.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-slate-100 space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">${p2Price} USD</span>
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
-                  </div>
-                  <p className="text-[11px] text-slate-600 font-semibold leading-tight">
-                    Autoconfigurable en segundos con tu ficha de Google Maps | Sin mensualidades
-                  </p>
-                  <Link
-                    href="/catalogo/placa-nfc-mostrador"
-                    className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
+                <div className="p-5 pt-0 space-y-2">
+                  <button
+                    onClick={() => handleQuickAdd(homeProducts[0], true)}
+                    className="w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
                   >
-                    Ver Producto — ${p2Price}
-                  </Link>
+                    <span>Comprar Ahora &rarr;</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickAdd(homeProducts[0], false)}
+                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
+                  >
+                    <ShoppingCart className="w-3.5 h-3.5" />
+                    <span>Añadir al Carrito</span>
+                  </button>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Item 3: Stand NFC para Reseñas de Google */}
-            <div className="w-[82vw] sm:w-[320px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-card border border-slate-200 flex flex-col justify-between">
-              <div className="aspect-[4/3] md:aspect-square max-h-56 sm:max-h-64 md:max-h-none relative bg-slate-100 overflow-hidden cursor-pointer" onClick={() => window.location.href='/catalogo/stand-nfc-mesa'}>
-                <img
-                  src="/products/NFC10002/stand-nfc-resenas-google-startap-panama.webp"
-                  alt="Stand NFC para Reseñas de Google"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
-                  Stand de Mesa
+            {/* Item 2: Placa NFC Mostrador (DESTACADO) */}
+            {homeProducts[1] && (
+              <div className="bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-slate-950 flex flex-col justify-between relative transform hover:-translate-y-1 transition-all">
+                <span className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3.5 py-1 rounded-full shadow-md z-20">
+                  🔥 Más Vendida en Panamá
                 </span>
-              </div>
-              <div className="p-5 sm:p-6 space-y-4 flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-wide mb-1.5 hover:text-amber-600 cursor-pointer transition-colors" onClick={() => window.location.href='/catalogo/stand-nfc-mesa'}>
-                    Stand NFC para Reseñas de Google
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Estructura rígida autoportante con ángulo de lectura optimizado para mesas de restaurantes, cafeterías, escritorios y clínicas.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-slate-100 space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black text-slate-900">${p3Price} USD</span>
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Envío Panamá</span>
+                  <div className="aspect-square relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
+                    <img
+                      src={homeProducts[1].image}
+                      alt={homeProducts[1].name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                      Acrílico 3mm
+                    </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 font-semibold leading-tight">
-                    Autoconfigurable en segundos con tu ficha de Google Maps | Sin mensualidades
-                  </p>
-                  <Link
-                    href="/catalogo/stand-nfc-mesa"
-                    className="shopify-btn-primary w-full py-3.5 uppercase text-xs font-bold tracking-wider block text-center rounded-xl bg-slate-950 text-white hover:bg-slate-900 mt-2"
+                  <div className="p-5 space-y-3">
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide cursor-pointer hover:text-amber-600 transition-colors" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
+                      {homeProducts[1].name}
+                    </h3>
+                    <p className="text-xs text-slate-700 leading-relaxed font-semibold">
+                      Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para capturar reseñas al cobrar.
+                    </p>
+                    <div className="flex items-baseline justify-between pt-2">
+                      <span className="text-2xl font-black text-slate-950 font-mono">${homeProducts[1].price.toFixed(2)} USD</span>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Envío Panamá</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 pt-0 space-y-2">
+                  <button
+                    onClick={() => handleQuickAdd(homeProducts[1], true)}
+                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
                   >
-                    Ver Producto — ${p3Price}
-                  </Link>
+                    <span>Comprar Ahora &rarr;</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickAdd(homeProducts[1], false)}
+                    className="w-full py-2.5 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
+                  >
+                    <ShoppingCart className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Añadir al Carrito</span>
+                  </button>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Item 3: Stand NFC Mesa */}
+            {homeProducts[2] && (
+              <div className="bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
+                <div>
+                  <div className="aspect-square relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
+                    <img
+                      src={homeProducts[2].image}
+                      alt={homeProducts[2].name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                      Stand de Mesa
+                    </span>
+                  </div>
+                  <div className="p-5 space-y-3">
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide cursor-pointer hover:text-amber-600 transition-colors" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
+                      {homeProducts[2].name}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      Estructura rígida autoportante ideal para mesas de restaurantes, cafeterías, escritorios y clínicas.
+                    </p>
+                    <div className="flex items-baseline justify-between pt-2">
+                      <span className="text-2xl font-black text-slate-950 font-mono">${homeProducts[2].price.toFixed(2)} USD</span>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Envío Panamá</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 pt-0 space-y-2">
+                  <button
+                    onClick={() => handleQuickAdd(homeProducts[2], true)}
+                    className="w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2"
+                  >
+                    <span>Comprar Ahora &rarr;</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickAdd(homeProducts[2], false)}
+                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-1.5"
+                  >
+                    <ShoppingCart className="w-3.5 h-3.5" />
+                    <span>Añadir al Carrito</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
       </section>
 
-      {/* 3. SECCIÓN "¿CÓMO FUNCIONA?" EN EL MOSTRADOR */}
-      <section className="py-12 sm:py-20 bg-white border-y border-slate-200">
+      {/* 4. SECCIÓN "¿CÓMO FUNCIONA EN TU COMERCIO?" */}
+      <section className="py-12 sm:py-16 bg-white border-y border-slate-200">
         <div className="shopify-container max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center space-y-2.5 mb-10 sm:mb-14">
             <h2 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
               ¿Cómo Funciona en Tu Comercio?
             </h2>
-            <p className="text-slate-600 text-xs sm:text-base max-w-xl mx-auto">
-              Tres pasos simples orientados a la atención presencial en el mostrador.
+            <p className="text-slate-600 text-xs sm:text-base max-w-xl mx-auto font-medium">
+              3 pasos simples orientados a la atención presencial en la caja o mostrador.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {/* Step 1 */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
               <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
                 1
@@ -361,7 +484,6 @@ export default function HomeClient() {
               </p>
             </div>
 
-            {/* Step 2 */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
               <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
                 2
@@ -374,7 +496,6 @@ export default function HomeClient() {
               </p>
             </div>
 
-            {/* Step 3 */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
               <div className="w-10 h-10 bg-slate-950 text-amber-400 font-mono rounded-xl flex items-center justify-center font-black text-lg shadow-sm">
                 3
@@ -395,78 +516,8 @@ export default function HomeClient() {
         <AutoConfigGuide />
       </div>
 
-      {/* 4. SECCIÓN SEO CON PALABRAS CLAVE LOCALES */}
-      <section className="py-12 sm:py-16 bg-slate-50 border-t border-slate-200">
-        <div className="shopify-container max-w-4xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8 text-slate-700">
-          
-          {/* Block 1 */}
-          <div className="space-y-3 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
-            <h2 className="text-lg sm:text-2xl font-black text-slate-950 tracking-tight">
-              Placas NFC para Google Maps en Panamá: Cómo superar a tus competidores locales
-            </h2>
-            <h3 className="text-xs sm:text-sm font-bold text-slate-800">
-              La solución directa para restaurantes, clínicas y comercios en Panamá
-            </h3>
-            <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
-              En Panamá, el 87% de los consumidores consultan Google Maps antes de elegir dónde comer, atenderse o comprar. Cuando dos restaurantes o clínicas compiten en la misma zona —como San Francisco, Casco Antiguo o Costa del Este—, el negocio con más valoraciones de 5 estrellas recibe la mayor cantidad de clientes.
-            </p>
-            <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
-              Pedir a un cliente que busque tu nombre en internet, abra el mapa y escriba un comentario genera demasiada fricción. Con las placas NFC de StarTAP, el proceso ocurre en el punto de venta. El cliente acerca su dispositivo Android o iPhone, toca la pantalla y deja la reseña antes de retirarse.
-            </p>
-          </div>
-
-          {/* Block 2 */}
-          <div className="space-y-3 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
-            <h2 className="text-lg sm:text-2xl font-black text-slate-950 tracking-tight">
-              Placas QR y tecnología contactless para captar reseñas sin fricción
-            </h2>
-            <h3 className="text-xs sm:text-sm font-bold text-slate-800">
-              Compatibilidad total con cualquier modelo de celular
-            </h3>
-            <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
-              Cada placa integra un chip NFC de respuesta inmediata junto a un código QR impreso en alta resolución. Si el teléfono del cliente no tiene el sensor NFC activo, solo requiere abrir la cámara para escanear el QR.
-            </p>
-            <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
-              El sistema funciona sin baterías, sin cables y sin obligar al cliente a instalar aplicaciones. Pagas una sola vez por el equipo físico y obtienes acceso permanente al panel de control para actualizar el enlace cuando lo necesites.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 4.1 SECCIÓN NUMERADA NEGRA (Espaciado optimizado & Alto contraste) */}
-      <section className="bg-slate-950 text-white py-8 sm:py-16 border-y border-slate-800">
-        <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-800">
-          
-          <div className="flex flex-col items-center space-y-2 pt-4 md:pt-0">
-            <span className="text-amber-400 font-mono text-3xl font-black">01</span>
-            <h4 className="font-bold text-base text-white">Envíos a todo Panamá</h4>
-            <p className="text-slate-300 text-xs leading-relaxed max-w-xs">
-              Entregas en 24-48 horas en Ciudad de Panamá y despachos al interior por Uno Express y Servientrega.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center space-y-2 pt-4 md:pt-0">
-            <span className="text-amber-400 font-mono text-3xl font-black">02</span>
-            <h4 className="font-bold text-base text-white">Materiales Premium</h4>
-            <p className="text-slate-300 text-xs leading-relaxed max-w-xs">
-              Acrílico blanco pulido 3mm de alta durabilidad y PVC ultrarresistente para alto tráfico comercial.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center space-y-2 pt-4 md:pt-0">
-            <span className="text-amber-400 font-mono text-3xl font-black">03</span>
-            <h4 className="font-bold text-base text-white">Pago Único</h4>
-            <p className="text-slate-300 text-xs leading-relaxed max-w-xs">
-              Cero cuotas mensuales. Software e integración con Google Maps incluida de por vida.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 5. ACORDEÓN DE PREGUNTAS FRECUENTES (FAQ con tarjetas independientes) */}
-      <section className="py-12 sm:py-20 bg-slate-50">
+      {/* 5. PREGUNTAS FRECUENTES (FAQ) */}
+      <section className="py-12 sm:py-16 bg-slate-50">
         <div className="shopify-container max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
@@ -479,7 +530,7 @@ export default function HomeClient() {
 
           <div className="space-y-3">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5 sm:p-6 transition-all hover:border-slate-300">
+              <div key={index} className="bg-white border border-slate-200 rounded-2xl shadow-xs p-5 sm:p-6 transition-all hover:border-slate-300">
                 <button
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                   className="w-full text-left flex justify-between items-center focus:outline-none"
@@ -500,7 +551,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* Final Contact / CTA */}
+      {/* 6. FINAL BOTTOM CTA */}
       <section className="bg-slate-950 py-12 sm:py-16 text-center px-4">
         <div className="max-w-2xl mx-auto space-y-5">
           <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
@@ -510,12 +561,12 @@ export default function HomeClient() {
             Pide tu placa en línea con pago por Yappy o tarjeta. Te la enviamos lista para colocar en tu mostrador y auto-configurar en segundos.
           </p>
           <div className="pt-2 flex flex-col sm:flex-row gap-3.5 justify-center">
-            <Link
-              href="/catalogo"
+            <a
+              href="#catalogo-home"
               className="shopify-btn-primary py-4 px-8 uppercase font-bold tracking-wider text-xs inline-block rounded-xl bg-white text-slate-950 hover:bg-slate-100 shadow-lg"
             >
-              Pedir mi Placa Ahora
-            </Link>
+              Ver Productos ($19 - $35)
+            </a>
             <a
               href={whatsappUrl}
               target="_blank"
@@ -528,8 +579,21 @@ export default function HomeClient() {
         </div>
       </section>
 
+      {/* 7. STICKY MOBILE BOTTOM FLOATING ACTION BAR */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950 text-white border-t border-slate-800 p-3 flex items-center justify-between shadow-2xl">
+        <div>
+          <div className="text-xs font-black text-amber-400 font-mono">Dispositivos desde $19</div>
+          <div className="text-[10px] text-slate-400 font-medium">Envío Panamá · Yappy & Tarjetas</div>
+        </div>
+        <a
+          href="#catalogo-home"
+          className="bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl uppercase tracking-wider flex items-center gap-1.5 shadow-md"
+        >
+          <ShoppingCart className="w-3.5 h-3.5" />
+          <span>Comprar</span>
+        </a>
+      </div>
+
     </div>
   );
 }
-
-
