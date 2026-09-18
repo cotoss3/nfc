@@ -536,9 +536,20 @@ export default function MasterControlDashboard() {
               <Activity className="w-4 h-4 text-blue-600" />
             </span>
           </div>
-          <div className="mt-2">
-            <span className="text-3xl font-black text-blue-600 font-mono">{conversionRate.toFixed(1)}%</span>
-            <span className="text-xs text-slate-500 block mt-0.5">pedidos completados / checkouts</span>
+          <div className="mt-2.5 flex items-center justify-between gap-3 border-t border-slate-100 pt-2">
+            <div>
+              <span className="text-xl font-extrabold text-blue-600 font-mono block leading-none">{conversionRate.toFixed(1)}%</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight block mt-1">Tasa Conversión</span>
+            </div>
+            <div className="text-right border-l border-slate-100 pl-3">
+              <div className="text-xs font-bold text-slate-800 font-mono flex items-center justify-end gap-1">
+                <span>{totalOrdersCount + activeAbandoned.length}</span>
+                <span className="text-[10px] text-slate-500 font-normal">visitas</span>
+              </div>
+              <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">
+                {totalOrdersCount} conversiones ({realActiveSessions.length} en vivo)
+              </div>
+            </div>
           </div>
         </div>
 
