@@ -4,6 +4,7 @@ import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import MainWrapper from '@/components/MainWrapper';
 import StructuredData from '@/components/StructuredData';
 import MetaPixel from '@/components/MetaPixel';
 import TikTokPixel from '@/components/TikTokPixel';
@@ -110,9 +111,9 @@ export default function RootLayout({
         </Suspense>
         <CartProvider>
           <Navbar />
-          <main className="flex-grow pt-20">
+          <MainWrapper>
             {children}
-          </main>
+          </MainWrapper>
           <Footer />
           <WhatsAppButton />
         </CartProvider>

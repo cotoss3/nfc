@@ -10,14 +10,13 @@ import {
 import AdminAuthGuard from '@/components/AdminAuthGuard';
 
 const navItems = [
-  { id: 'dashboard', label: 'Resumen', icon: BarChart2, href: '/master-control' },
-  { id: 'inventario', label: 'Inventario & Financials', icon: Layers, href: '/master-control/inventario' },
+  { id: 'dashboard', label: 'Resumen Ejecutivo', icon: BarChart2, href: '/master-control' },
+  { id: 'inventario', label: 'Inventario & Lotes', icon: Layers, href: '/master-control/inventario' },
   { id: 'pedidos', label: 'Pedidos (OMS)', icon: ShoppingCart, href: '/master-control/pedidos' },
-  { id: 'cards', label: 'Tarjetas NFC', icon: CreditCard, href: '/master-control/cards' },
   { id: 'productos', label: 'Productos', icon: Package, href: '/master-control/productos' },
   { id: 'clientes', label: 'Clientes & CRM', icon: Users, href: '/master-control/clientes' },
+  { id: 'cards', label: 'Dispositivos TAG', icon: CreditCard, href: '/master-control/cards' },
   { id: 'cupones', label: 'Cupones', icon: Tag, href: '/master-control/cupones' },
-  { id: 'stickers', label: 'Lotes QR', icon: QrCode, href: '/master-control/stickers' },
 ];
 
 export default function MasterControlLayout({ children }: { children: React.ReactNode }) {
@@ -53,19 +52,22 @@ export default function MasterControlLayout({ children }: { children: React.Reac
 
         {/* DESKTOP SIDEBAR */}
         <aside className="hidden md:flex w-64 bg-slate-900 text-white flex-col sticky top-0 h-screen overflow-y-auto">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 font-black rounded-xl flex items-center justify-center text-sm shadow-lg border border-amber-300/20">
-                MC
+          <div className="p-6 border-b border-slate-800/80">
+            <Link href="/master-control" className="block group">
+              <div className="flex items-center gap-3">
+                <img
+                  src="/logos/Logo.webp"
+                  alt="starTAP Logo"
+                  className="h-9 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform"
+                />
               </div>
-              <div>
-                <h1 className="font-bold text-lg leading-tight tracking-tight text-white">starTAP</h1>
-                <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Master Control</p>
-              </div>
-            </div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 block mt-1.5">
+                Master Control Panel
+              </span>
+            </Link>
           </div>
           
-          <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto">
+          <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
             {navItems.map((tab) => {
               const isActive = pathname === tab.href || (tab.href !== '/master-control' && pathname.startsWith(tab.href));
               const Icon = tab.icon;
@@ -87,17 +89,9 @@ export default function MasterControlLayout({ children }: { children: React.Reac
           </nav>
 
           <div className="p-4 mt-auto border-t border-slate-800/50">
-            <div className="bg-slate-800/50 rounded-xl p-3.5 mb-3 border border-slate-700/50">
-              <div className="flex items-center gap-2 text-xs text-amber-500 font-semibold mb-1">
-                <AlertCircle className="w-3.5 h-3.5" /> Nivel de Acceso
-              </div>
-              <div className="text-[10px] text-slate-400 leading-relaxed">
-                Estás operando en la base de datos de producción local.
-              </div>
-            </div>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
             >
               <LogOut className="w-4 h-4" />
               Cerrar Sesión

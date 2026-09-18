@@ -12,6 +12,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  if (pathname?.startsWith('/master-control')) {
+    return null;
+  }
+
   useEffect(() => {
     setMounted(true);
   }, []);
