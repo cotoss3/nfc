@@ -383,56 +383,12 @@ export default function CheckoutPage() {
         }).catch(e => console.error('[ORDER_EMAIL_TRIGGER_ERROR]', e));
       };
 
-      // Yappy: queda registrado y se coordina por WhatsApp
-      const orderObj = {
-        ...baseOrder,
-        id: orderNumber,
-        yappy_reference: 'Yappy WhatsApp',
-        items: cart.map(i => ({
-          product_name: i.product_name,
-          quantity: i.quantity,
-          price: i.price,
-          selected_color: i.selected_color,
-          business_name: i.business_name,
-        })),
-      };
-      dbLocal.createOrder(orderObj as any);
-      setCompletedOrder(orderObj);
-      sessionStorage.setItem('current_user_email', email);
-      sessionStorage.setItem('current_user_name', name);
-      triggerOrderEmail(orderNumber);
-
-      track('Purchase', {
-        ...itemsParaMeta(cart),
-        value: getGrandTotal(),
-        currency: 'USD',
-        order_id: orderNumber,
-      });
-
-      trackTikTok('CompletePayment', {
-        ...itemsParaTikTok(cart),
-        value: getGrandTotal(),
-        currency: 'USD',
-      });
-
-      trackGA('purchase', {
-        transaction_id: orderNumber,
-        value: getGrandTotal(),
-        currency: 'USD',
-        shipping: getShippingCost(),
-        items: itemsParaGA(cart),
-      });
-
-      if (typeof window !== 'undefined') {
-        window.open(generateCheckoutWhatsAppMessage(), '_blank');
+      // Para Yappy el pago se procesa directamente con el Web Component oficial de Yappy
+      if (paymentMethod === 'yappy') {
+        setIsProcessing(false);
+        alert('Por favor haz clic en el botón oficial de Yappy para completar tu pago.');
+        return;
       }
-
-      setIsProcessing(false);
-      setIsSuccess(true);
-      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-      clearCart();
-      dbLocal.markAbandonedCheckoutCompleted(email);
-      if (phone) dbLocal.markAbandonedCheckoutCompleted(phone);
     } catch (err: any) {
       console.error('[CHECKOUT_ERROR]', err);
       setErrorMessage(err.message || 'Ocurrió un error al procesar tu pedido.');
@@ -1142,26 +1098,85 @@ export default function CheckoutPage() {
                       <span>Volver al carrito</span>
                     </Link>
 
-                    <button
-                      form="checkout-form"
-                      type="submit"
-                      disabled={isProcessing}
-                      className="w-full sm:w-auto sm:min-w-[280px] py-4 px-8 bg-slate-950 hover:bg-slate-900 text-white font-bold text-sm rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 order-1 sm:order-2"
-                    >
-                      {isProcessing ? (
-                        <>
-                          <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
-                          <span>Procesando pedido...</span>
-                        </>
-                      ) : paymentMethod === 'tarjeta' ? (
-                        <span>Pagar ahora • ${getGrandTotal().toFixed(2)} USD</span>
-                      ) : (
-                        <>
-                          <MessageCircle className="w-4 h-4" />
-                          <span>Confirmar pedido por Yappy</span>
-                        </>
-                      )}
-                    </button>
+                    {paymentMethod === 'tarjeta' ? (
+                      <button
+                        form="checkout-form"
+                        type="submit"
+                        disabled={isProcessing}
+                        className="w-full sm:w-auto sm:min-w-[280px] py-4 px-8 bg-slate-950 hover:bg-slate-900 text-white font-bold text-sm rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 order-1 sm:order-2"
+                      >
+                        {isProcessing ? (
+                          <>
+                            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full inline-block align-middle"></span>
+                            <span>Procesando pedido...</span>
+                          </>
+                        ) : (
+                          <span>Pagar ahora • ${getGrandTotal().toFixed(2)} USD</span>
+                        )}
+                      </button>
+                    ) : (
+                      <div className="w-full sm:w-auto sm:min-w-[280px] order-1 sm:order-2">
+                        <YappyButton 
+                          onInitiatePayment={async () => {
+                            if (!name || !email || !phone || !address || !district) {
+                              alert('Por favor completa todos los campos de información de envío');
+                              return { success: false, error: 'Faltan campos' };
+                            }
+
+                            const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
+
+                            const baseOrder = {
+                              customer_name: name,
+                              customer_email: email,
+                              customer_phone: phone,
+                              shipping_province: province,
+                              shipping_district: district,
+                              shipping_address: address,
+                              payment_method: 'yappy' as const,
+                              payment_status: 'pending' as const,
+                              status: 'pending' as const,
+                              total: getGrandTotal(),
+                              items: cart,
+                            };
+
+                            dbLocal.createOrder({ ...baseOrder, id: orderNumber } as any);
+                            sessionStorage.setItem('current_user_email', email);
+                            sessionStorage.setItem('current_user_name', name);
+
+                            const res = await fetch('/api/yappy/checkout', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                orderNumber,
+                                total: getGrandTotal(),
+                                name,
+                                email,
+                                phone
+                              })
+                            });
+                            
+                            const data = await res.json();
+                            if(data.success) {
+                              data.orderId = orderNumber;
+                            }
+                            return data;
+                          }}
+                          onSuccess={(orderId) => {
+                            setCompletedOrder({ id: orderId, paymentMethod: 'yappy', email });
+                            setIsProcessing(false);
+                            setIsSuccess(true);
+                            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                            clearCart();
+                            dbLocal.markAbandonedCheckoutCompleted(email);
+                            if (phone) dbLocal.markAbandonedCheckoutCompleted(phone);
+                          }}
+                          onError={(err) => {
+                            console.error('[YAPPY_PAYMENT_ERROR]', err);
+                            setErrorMessage(typeof err === 'string' ? err : 'Ocurrió un error al procesar el pago con Yappy.');
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-2 text-center text-[11px] text-slate-400">
