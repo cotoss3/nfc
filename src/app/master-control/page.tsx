@@ -962,6 +962,16 @@ export default function MasterControlDashboard() {
                               <Check className="w-3.5 h-3.5 text-emerald-400" />
                               <span>Marcar Recuperado</span>
                             </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteAbandoned(item.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg font-bold text-[11px] transition"
+                              title="Descartar y sacar carrito irrecuperable"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                              <span>Descartar / Sacar</span>
+                            </button>
                           </td>
                         </tr>
                       );
