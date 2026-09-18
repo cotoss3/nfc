@@ -38,7 +38,7 @@ export async function GET(req: Request) {
       if (status === 'E') {
         const order = dbLocal.getOrderById(orderId);
         if (order) {
-           dbLocal.updateOrder(orderId, {
+           dbLocal.updateOrderDetails(orderId, {
              payment_status: 'paid',
              status: 'processing'
            });
