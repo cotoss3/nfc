@@ -680,6 +680,16 @@ class LocalDbService {
     return true;
   }
 
+  clearAllOrders(): boolean {
+    this.setStorageItem('nfc_orders', []);
+    if (supabase) {
+      supabase.from('orders').delete().neq('id', '0').then(({ error }) => {
+        if (error) console.error('Error eliminando todas las órdenes en Supabase:', error);
+      });
+    }
+    return true;
+  }
+
   // Métodos CRM de Clientes
   getCustomersSummary(): CustomerSummary[] {
     const orders = this.getOrders();

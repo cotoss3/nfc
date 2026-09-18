@@ -449,6 +449,20 @@ export default function AdminPage() {
     loadData();
   };
 
+  const handleDeleteOrder = (orderId: string) => {
+    if (window.confirm(`¿Estás seguro de eliminar el pedido #${orderId}?`)) {
+      dbLocal.deleteOrder(orderId);
+      loadData();
+    }
+  };
+
+  const handleClearAllOrders = () => {
+    if (window.confirm('¿Estás seguro de eliminar TODOS los pedidos de prueba? Esta acción eliminará permanentemente todos los registros.')) {
+      dbLocal.clearAllOrders();
+      loadData();
+    }
+  };
+
   const handleMarkAbandonedCompleted = (emailOrPhone: string) => {
     dbLocal.markAbandonedCheckoutCompleted(emailOrPhone);
     loadData();
@@ -999,6 +1013,17 @@ export default function AdminPage() {
                         <Download className="w-4 h-4 text-amber-400" />
                         <span>Exportar Pedidos CSV</span>
                       </button>
+
+                      {orders.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleClearAllOrders}
+                          className="py-2 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-1.5 shrink-0"
+                        >
+                          <Trash2 className="w-4 h-4 text-rose-600" />
+                          <span>Vaciar Pedidos de Prueba</span>
+                        </button>
+                      )}
 
                       {(orderSearch || orderStatusFilter !== 'all' || orderPaymentFilter !== 'all') && (
                         <button

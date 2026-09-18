@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { dbLocal, Order, supabase } from '@/lib/db';
 import { 
-  Search, Filter, Package, AlertCircle, TrendingUp, CheckCircle, Clock, Truck
+  Search, Filter, Package, AlertCircle, TrendingUp, CheckCircle, Clock, Truck, Trash2
 } from 'lucide-react';
 
 export default function PedidosPage() {
@@ -13,31 +13,46 @@ export default function PedidosPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      let data: Order[] = [];
-      if (supabase) {
-        try {
-          const { data: dbData, error } = await supabase
-            .from('orders')
-            .select('*')
-            .order('created_at', { ascending: false });
-          if (!error && dbData && dbData.length > 0) {
-            data = dbData as Order[];
-          }
-        } catch (e) {
-          console.error('[PEDIDOS_SUPABASE_ERROR]', e);
+  const fetchOrders = async () => {
+    let data: Order[] = [];
+    if (supabase) {
+      try {
+        const { data: dbData, error } = await supabase
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && dbData && dbData.length > 0) {
+          data = dbData as Order[];
         }
+      } catch (e) {
+        console.error('[PEDIDOS_SUPABASE_ERROR]', e);
       }
-      if (data.length === 0) {
-        data = dbLocal.getOrders();
-      }
-      data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      setOrders(data);
-      setLoading(false);
-    };
+    }
+    if (data.length === 0) {
+      data = dbLocal.getOrders();
+    }
+    data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    setOrders(data);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchOrders();
   }, []);
+
+  const handleDeleteOrder = (orderId: string) => {
+    if (window.confirm(`¿Estás seguro de eliminar el pedido #${orderId}?`)) {
+      dbLocal.deleteOrder(orderId);
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+    }
+  };
+
+  const handleClearAllOrders = () => {
+    if (window.confirm('¿Estás seguro de eliminar TODOS los pedidos de prueba? Esta acción eliminará permanentemente todos los registros.')) {
+      dbLocal.clearAllOrders();
+      setOrders([]);
+    }
+  };
 
   const filteredOrders = orders.filter(o => {
     const q = search.toLowerCase();
@@ -65,6 +80,17 @@ export default function PedidosPage() {
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Pedidos (OMS)</h1>
           <p className="text-slate-500 text-sm mt-1">Gestión de órdenes y fulfillment</p>
         </div>
+
+        {orders.length > 0 && (
+          <button
+            type="button"
+            onClick={handleClearAllOrders}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition shadow-xs"
+          >
+            <Trash2 className="w-4 h-4 text-rose-600" />
+            <span>Vaciar Todos los Pedidos de Prueba</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -139,12 +165,13 @@ export default function PedidosPage() {
                 <th className="p-4">Estado</th>
                 <th className="p-4">Pago</th>
                 <th className="p-4 text-right">Total</th>
+                <th className="p-4 text-center">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500">No se encontraron pedidos.</td>
+                  <td colSpan={7} className="p-8 text-center text-slate-500">No se encontraron pedidos.</td>
                 </tr>
               ) : (
                 filteredOrders.map(order => (
@@ -177,6 +204,16 @@ export default function PedidosPage() {
                     </td>
                     <td className="p-4 text-right font-black text-slate-900">
                       ${order.total.toFixed(2)}
+                    </td>
+                    <td className="p-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteOrder(order.id)}
+                        title="Eliminar pedido de prueba"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))
