@@ -1023,13 +1023,13 @@ export default function CheckoutPage() {
                                 onInitiatePayment={async () => {
                                   if (!name || !email || !phone || !address || !district) {
                                     alert('Por favor completa todos los campos de información de envío');
-                                    return { success: false, error: 'Faltan campos' };
+                                    return { success: false, error: 'Por favor completa todos los campos de envío (Nombre, Teléfono, Provincia, Distrito y Dirección).' };
                                   }
 
                                   const cleanPhone = phone.replace(/[^0-9]/g, '');
                                   if (cleanPhone.length < 8) {
                                     alert('Por favor ingresa un número de teléfono celular panameño de 8 dígitos registrado en Yappy.');
-                                    return { success: false, error: 'Teléfono de Yappy inválido' };
+                                    return { success: false, error: 'Por favor ingresa tu número de celular registrado en Yappy (8 dígitos).' };
                                   }
 
                                   const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
@@ -1128,7 +1128,13 @@ export default function CheckoutPage() {
                           onInitiatePayment={async () => {
                             if (!name || !email || !phone || !address || !district) {
                               alert('Por favor completa todos los campos de información de envío');
-                              return { success: false, error: 'Faltan campos' };
+                              return { success: false, error: 'Por favor completa todos los campos de envío (Nombre, Teléfono, Provincia, Distrito y Dirección).' };
+                            }
+
+                            const cleanPhone = phone.replace(/[^0-9]/g, '');
+                            if (cleanPhone.length < 8) {
+                              alert('Por favor ingresa un número de teléfono celular panameño de 8 dígitos registrado en Yappy.');
+                              return { success: false, error: 'Por favor ingresa tu número de celular registrado en Yappy (8 dígitos).' };
                             }
 
                             const orderNumber = `STP-${Date.now().toString().slice(-8)}`;

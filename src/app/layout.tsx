@@ -83,7 +83,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon.png" />
         {/* Google Analytics Tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQH5VW4KF9" />
-        <script async src="https://bt-cdn.yappy.cloud/v1/cdn/web-component-btn-yappy.js" />
+        <script type="module" src="https://bt-cdn.yappy.cloud/v1/cdn/web-component-btn-yappy.js"></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
