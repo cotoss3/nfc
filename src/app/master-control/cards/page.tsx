@@ -606,23 +606,54 @@ export default function CardsManagementPage() {
                         </td>
 
                         <td className="p-3 text-center">
-                          <div className="inline-flex items-center gap-1">
+                          <div className="inline-flex flex-wrap items-center justify-center gap-1">
+                            {/* COPIAR ENLACE NFC */}
                             <button
                               type="button"
-                              onClick={() => copyToClipboard(redirectUrl, c.card_id)}
-                              className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition"
-                              title="Copiar Enlace de Redirección"
+                              onClick={() => copyToClipboard(`https://startap.com.pa/r/${c.card_id}?src=nfc`, `${c.card_id}_nfc`)}
+                              className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-lg text-[10px] font-bold transition flex items-center gap-1"
+                              title="Copiar Enlace Contactless NFC"
                             >
-                              {copiedId === c.card_id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                              {copiedId === `${c.card_id}_nfc` ? (
+                                <>
+                                  <Check className="w-3 h-3 text-emerald-600" />
+                                  <span className="text-emerald-700">¡NFC Copiado!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Radio className="w-3 h-3 text-amber-600" />
+                                  <span>Enlace NFC</span>
+                                </>
+                              )}
+                            </button>
+
+                            {/* COPIAR ENLACE QR */}
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(`https://startap.com.pa/r/${c.card_id}?src=qr`, `${c.card_id}_qr`)}
+                              className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1"
+                              title="Copiar Enlace Código QR"
+                            >
+                              {copiedId === `${c.card_id}_qr` ? (
+                                <>
+                                  <Check className="w-3 h-3 text-emerald-600" />
+                                  <span className="text-emerald-700">¡QR Copiado!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <QrCode className="w-3 h-3 text-slate-700" />
+                                  <span>Enlace QR</span>
+                                </>
+                              )}
                             </button>
 
                             <button
                               type="button"
                               onClick={() => setQrModalCard(c)}
                               className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition"
-                              title="Ver Código QR"
+                              title="Ver y Descargar Código QR"
                             >
-                              <QrCode className="w-3.5 h-3.5 text-slate-600" />
+                              <Eye className="w-3.5 h-3.5 text-slate-600" />
                             </button>
 
                             <button
@@ -810,12 +841,48 @@ export default function CardsManagementPage() {
               />
             </div>
 
-            <div className="pt-2">
+            <div className="space-y-2 pt-1 text-xs">
+              <button
+                type="button"
+                onClick={() => copyToClipboard(`https://startap.com.pa/r/${qrModalCard.card_id}?src=nfc`, `modal_nfc_${qrModalCard.card_id}`)}
+                className="w-full py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold rounded-xl transition flex items-center justify-center gap-1.5"
+              >
+                {copiedId === `modal_nfc_${qrModalCard.card_id}` ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-600" />
+                    <span className="text-emerald-700">¡Enlace NFC Copiado!</span>
+                  </>
+                ) : (
+                  <>
+                    <Radio className="w-4 h-4 text-amber-600" />
+                    <span>Copiar Enlace NFC (Contactless)</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => copyToClipboard(`https://startap.com.pa/r/${qrModalCard.card_id}?src=qr`, `modal_qr_${qrModalCard.card_id}`)}
+                className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold rounded-xl transition flex items-center justify-center gap-1.5"
+              >
+                {copiedId === `modal_qr_${qrModalCard.card_id}` ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-600" />
+                    <span className="text-emerald-700">¡Enlace QR Copiado!</span>
+                  </>
+                ) : (
+                  <>
+                    <QrCode className="w-4 h-4 text-slate-700" />
+                    <span>Copiar Enlace Código QR</span>
+                  </>
+                )}
+              </button>
+
               <a
                 href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://startap.com.pa/r/${qrModalCard.card_id}`}
                 target="_blank"
                 download={`QR_${qrModalCard.card_id}.png`}
-                className="w-full py-2.5 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2 mt-2"
               >
                 <Download className="w-4 h-4 text-amber-400" />
                 <span>Descargar Código QR (Alta Res)</span>
