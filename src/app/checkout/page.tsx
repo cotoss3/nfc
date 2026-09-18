@@ -1009,82 +1009,19 @@ export default function CheckoutPage() {
                         </div>
 
                         {paymentMethod === 'yappy' && (
-                          <div className="p-4 sm:p-5 bg-slate-50/40 border-t border-slate-200 space-y-4">
-                            <p className="text-xs text-slate-600 font-medium">
+                          <div className="p-4 sm:p-5 bg-slate-50/40 border-t border-slate-200 space-y-3">
+                            <p className="text-xs text-slate-700 font-medium">
                               Ten a mano tu celular y paga en línea por medio de Yappy de Banco General.
                             </p>
                             
+                            <div className="p-3 bg-blue-50/70 border border-blue-100 rounded-lg text-xs text-blue-900 flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse inline-block flex-shrink-0"></span>
+                              <span>Al hacer clic en el botón inferior se abrirá la pasarela oficial para confirmar tu pago.</span>
+                            </div>
+
                             <p className="text-[11px] text-slate-400 italic">
                               * Al completar esta compra declaro que he leído y acepto los <Link href="/terminos" className="underline hover:text-slate-600">Términos y Condiciones</Link>.
                             </p>
-
-                            <div className="w-full pt-1">
-                              <YappyButton 
-                                onInitiatePayment={async () => {
-                                  if (!name || !email || !phone || !address || !district) {
-                                    alert('Por favor completa todos los campos de información de envío');
-                                    return { success: false, error: 'Por favor completa todos los campos de envío (Nombre, Teléfono, Provincia, Distrito y Dirección).' };
-                                  }
-
-                                  const cleanPhone = phone.replace(/[^0-9]/g, '');
-                                  if (cleanPhone.length < 8) {
-                                    alert('Por favor ingresa un número de teléfono celular panameño de 8 dígitos registrado en Yappy.');
-                                    return { success: false, error: 'Por favor ingresa tu número de celular registrado en Yappy (8 dígitos).' };
-                                  }
-
-                                  const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
-
-                                  const baseOrder = {
-                                    customer_name: name,
-                                    customer_email: email,
-                                    customer_phone: phone,
-                                    shipping_province: province,
-                                    shipping_district: district,
-                                    shipping_address: address,
-                                    payment_method: 'yappy' as const,
-                                    payment_status: 'pending' as const,
-                                    status: 'pending' as const,
-                                    total: getGrandTotal(),
-                                    items: cart,
-                                  };
-
-                                  dbLocal.createOrder({ ...baseOrder, id: orderNumber } as any);
-                                  sessionStorage.setItem('current_user_email', email);
-                                  sessionStorage.setItem('current_user_name', name);
-
-                                  const res = await fetch('/api/yappy/checkout', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                      orderNumber,
-                                      total: getGrandTotal(),
-                                      name,
-                                      email,
-                                      phone
-                                    })
-                                  });
-                                  
-                                  const data = await res.json();
-                                  if(data.success) {
-                                    data.orderId = orderNumber;
-                                  }
-                                  return data;
-                                }}
-                                onSuccess={(orderId) => {
-                                  setCompletedOrder({ id: orderId, paymentMethod: 'yappy', email });
-                                  setIsProcessing(false);
-                                  setIsSuccess(true);
-                                  confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                                  clearCart();
-                                  dbLocal.markAbandonedCheckoutCompleted(email);
-                                  if (phone) dbLocal.markAbandonedCheckoutCompleted(phone);
-                                }}
-                                onError={(err) => {
-                                  console.error('[YAPPY_PAYMENT_ERROR]', err);
-                                  setErrorMessage(typeof err === 'string' ? err : 'Ocurrió un error al procesar el pago con Yappy.');
-                                }}
-                              />
-                            </div>
                           </div>
                         )}
                       </div>
@@ -1126,15 +1063,25 @@ export default function CheckoutPage() {
                       <div className="w-full sm:w-auto sm:min-w-[280px] order-1 sm:order-2">
                         <YappyButton 
                           onInitiatePayment={async () => {
-                            if (!name || !email || !phone || !address || !district) {
-                              alert('Por favor completa todos los campos de información de envío');
-                              return { success: false, error: 'Por favor completa todos los campos de envío (Nombre, Teléfono, Provincia, Distrito y Dirección).' };
+                            if (!name.trim() || !email.trim() || !phone.trim() || !address.trim() || !district.trim()) {
+                              const err = 'Por favor completa todos los campos de información de envío (Nombre, Teléfono, Provincia, Distrito y Dirección).';
+                              alert(err);
+                              return { success: false, error: err };
                             }
 
                             const cleanPhone = phone.replace(/[^0-9]/g, '');
-                            if (cleanPhone.length < 8) {
-                              alert('Por favor ingresa un número de teléfono celular panameño de 8 dígitos registrado en Yappy.');
-                              return { success: false, error: 'Por favor ingresa tu número de celular registrado en Yappy (8 dígitos).' };
+                            const aliasYappy = cleanPhone.length >= 8 ? cleanPhone.slice(-8) : '';
+                            if (!aliasYappy || aliasYappy.length !== 8) {
+                              const err = 'Por favor ingresa tu número de teléfono celular panameño de 8 dígitos registrado en Yappy.';
+                              alert(err);
+                              return { success: false, error: err };
+                            }
+
+                            const grandTotal = getGrandTotal();
+                            if (isNaN(grandTotal) || grandTotal <= 0) {
+                              const err = 'El monto total a pagar debe ser mayor a $0.00 USD.';
+                              alert(err);
+                              return { success: false, error: err };
                             }
 
                             const orderNumber = `STP-${Date.now().toString().slice(-8)}`;
@@ -1149,7 +1096,7 @@ export default function CheckoutPage() {
                               payment_method: 'yappy' as const,
                               payment_status: 'pending' as const,
                               status: 'pending' as const,
-                              total: getGrandTotal(),
+                              total: grandTotal,
                               items: cart,
                             };
 
@@ -1162,15 +1109,15 @@ export default function CheckoutPage() {
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
                                 orderNumber,
-                                total: getGrandTotal(),
+                                total: grandTotal,
                                 name,
                                 email,
-                                phone
+                                phone: aliasYappy
                               })
                             });
                             
                             const data = await res.json();
-                            if(data.success) {
+                            if (data && data.success) {
                               data.orderId = orderNumber;
                             }
                             return data;

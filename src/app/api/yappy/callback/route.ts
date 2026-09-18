@@ -12,12 +12,8 @@ export async function GET(req: Request) {
     const hash = searchParams.get('hash');
     const domain = searchParams.get('domain');
 
-    const CLAVE_SECRETA = process.env.YAPPY_SECRET_KEY;
-
-    if (!CLAVE_SECRETA) {
-      console.error('[YAPPY_IPN] YAPPY_SECRET_KEY no está configurada');
-      return NextResponse.json({ success: false, error: 'Configuración faltante' });
-    }
+    const rawSecret = process.env.YAPPY_SECRET_KEY || 'WVBfMjNBQ0EwNzktOEM3Ri0zMDU2LTg3ODctQTA0MkZDMkQ5RDJDLjQ5YmNjZGY5LTQxODUtNDczMi04M2UwLWUwY2RmODUxYjZkZQ==';
+    const CLAVE_SECRETA = rawSecret.trim().replace(/['"]/g, '');
 
     if (!orderId || !status || !hash || !domain) {
       return NextResponse.json({ success: false, error: 'Parámetros faltantes' });

@@ -29,8 +29,15 @@ declare global {
 export default function YappyButton({ onInitiatePayment, onSuccess, onError, theme = 'blue' }: YappyButtonProps) {
   const btnRef = useRef<HTMLElement>(null);
   const [loading, setLoading] = useState(false);
-  const [currentOrderId, setCurrentOrderId] = useState<string>('');
   const [useFallback, setUseFallback] = useState(false);
+  
+  const currentOrderIdRef = useRef<string>('');
+  const onInitiatePaymentRef = useRef(onInitiatePayment);
+  onInitiatePaymentRef.current = onInitiatePayment;
+  const onSuccessRef = useRef(onSuccess);
+  onSuccessRef.current = onSuccess;
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
 
   useEffect(() => {
     const btnyappy = btnRef.current;
@@ -39,26 +46,27 @@ export default function YappyButton({ onInitiatePayment, onSuccess, onError, the
     const handleSuccess = (e: any) => {
       console.log('[Yappy] eventSuccess:', e.detail);
       setLoading(false);
-      trackGA('purchase', { transaction_id: currentOrderId });
-      if (onSuccess && currentOrderId) {
-        onSuccess(currentOrderId);
+      const orderId = currentOrderIdRef.current;
+      if (orderId) trackGA('purchase', { transaction_id: orderId });
+      if (onSuccessRef.current && orderId) {
+        onSuccessRef.current(orderId);
       }
     };
 
     const handleError = (e: any) => {
       console.error('[Yappy] eventError:', e.detail);
       setLoading(false);
-      if (onError) onError(e.detail);
+      if (onErrorRef.current) onErrorRef.current(e.detail);
     };
 
     const handleClick = async () => {
       setLoading(true);
       try {
-        console.log('[Yappy] Initiating payment on backend...');
-        const result = await onInitiatePayment();
+        console.log('[Yappy] Iniciando pago en backend...');
+        const result = await onInitiatePaymentRef.current();
         
         if (result && result.success && result.token && result.transactionId && result.documentName) {
-          if (result.orderId) setCurrentOrderId(result.orderId);
+          if (result.orderId) currentOrderIdRef.current = result.orderId;
           const params = {
             transactionId: result.transactionId,
             documentName: result.documentName,
@@ -68,18 +76,26 @@ export default function YappyButton({ onInitiatePayment, onSuccess, onError, the
           if ((btnyappy as any).eventPayment) {
             (btnyappy as any).eventPayment(params);
           } else {
-            console.error('[Yappy] eventPayment missing on web component');
-            if (onError) onError('No se pudo abrir el modal de Yappy');
+            console.error('[Yappy] eventPayment no existe en web component');
+            if (onErrorRef.current) onErrorRef.current('No se pudo abrir el modal de Yappy');
           }
         } else {
-          console.error('[Yappy] Payment initiation failed:', result.error);
+          console.error('[Yappy] Falló la iniciación de pago:', result?.error);
           setLoading(false);
-          if (onError) onError(result.error || 'No se pudo iniciar el pago con Yappy');
+          try {
+            (btnyappy as any).isButtonLoading = false;
+            btnyappy.classList.remove('disable-btn');
+          } catch (e) {}
+          if (onErrorRef.current) onErrorRef.current(result?.error || 'No se pudo iniciar el pago con Yappy');
         }
       } catch (err) {
-        console.error('[Yappy] Click exception:', err);
+        console.error('[Yappy] Error en handleClick:', err);
         setLoading(false);
-        if (onError) onError(err);
+        try {
+          (btnyappy as any).isButtonLoading = false;
+          btnyappy.classList.remove('disable-btn');
+        } catch (e) {}
+        if (onErrorRef.current) onErrorRef.current(err);
       }
     };
 
@@ -87,12 +103,12 @@ export default function YappyButton({ onInitiatePayment, onSuccess, onError, the
     btnyappy.addEventListener('eventError', handleError);
     btnyappy.addEventListener('eventClick', handleClick);
 
-    // Timeout check: if the web component shadow DOM fails to render within 1.5s, enable fallback UI
+    // Timeout check: si el custom element no renderiza shadowRoot en 2s, activar fallback visual
     const timer = setTimeout(() => {
       if (!btnyappy.shadowRoot && btnyappy.children.length === 0) {
         setUseFallback(true);
       }
-    }, 1500);
+    }, 2000);
 
     return () => {
       clearTimeout(timer);
@@ -100,7 +116,7 @@ export default function YappyButton({ onInitiatePayment, onSuccess, onError, the
       btnyappy.removeEventListener('eventError', handleError);
       btnyappy.removeEventListener('eventClick', handleClick);
     };
-  }, [onInitiatePayment, onSuccess, onError, currentOrderId]);
+  }, [theme]);
 
   const triggerPaymentManual = () => {
     const btnyappy = btnRef.current;

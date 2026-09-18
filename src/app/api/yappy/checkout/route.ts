@@ -2,13 +2,18 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { orderNumber, total, name, email, phone } = await req.json();
+    const body = await req.json();
+    const { orderNumber, total, name, email, phone } = body || {};
 
-    if (!orderNumber || !total) {
-      return NextResponse.json({ success: false, error: 'Faltan datos obligatorios' }, { status: 400 });
+    const numTotal = typeof total === 'number' ? total : parseFloat(total);
+    if (!orderNumber || isNaN(numTotal) || numTotal <= 0) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'El total de la orden debe ser mayor a $0.00 USD.' 
+      }, { status: 400 });
     }
 
-    const digits = (phone || '').replace(/[^0-9]/g, '');
+    const digits = (phone || '').toString().replace(/[^0-9]/g, '');
     const aliasYappy = digits.length >= 8 ? digits.slice(-8) : '';
 
     if (!aliasYappy || aliasYappy.length !== 8) {
@@ -18,9 +23,14 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    const merchantId = process.env.YAPPY_MERCHANT_ID || '49bccdf9-4185-4732-83e0-e0cdf851b6de';
-    // Yappy exige exactamente el dominio registrado en el Portal Comercial (sin barras finales o puertos locales)
+    // Sanitizar merchantId (limpiar comillas o espacios residuales)
+    const rawMerchantId = process.env.YAPPY_MERCHANT_ID || '49bccdf9-4185-4732-83e0-e0cdf851b6de';
+    const merchantId = rawMerchantId.trim().replace(/['"]/g, '');
+    
+    // Dominio exacto registrado en el Portal Comercial de Banco General
     const domain = 'https://startap.com.pa';
+
+    console.log('[Yappy] Validando comercio:', { merchantId, domain });
 
     // Paso 1: Validar comercio y obtener token
     const validateRes = await fetch('https://apipagosbg.bgeneral.cloud/payments/validate/merchant', {
@@ -43,6 +53,16 @@ export async function POST(req: Request) {
     const token = validateData.body.token;
 
     // Paso 2: Crear la orden
+    const cleanOrderId = (orderNumber || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 15);
+    const formattedTotal = numTotal.toFixed(2);
+
+    console.log('[Yappy] Creando orden en Yappy:', {
+      merchantId,
+      orderId: cleanOrderId,
+      aliasYappy,
+      total: formattedTotal
+    });
+
     const createOrderRes = await fetch('https://apipagosbg.bgeneral.cloud/payments/payment-wc', {
       method: 'POST',
       headers: {
@@ -51,15 +71,15 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         merchantId,
-        orderId: orderNumber.replace(/[^A-Za-z0-9]/g, '').slice(0, 15), // Máximo 15 caracteres alfanuméricos
+        orderId: cleanOrderId,
         domain,
-        paymentDate: Math.floor(Date.now() / 1000), // epoch time
-        aliasYappy, // Requerido obligatoriamente por Yappy (número de 8 dígitos)
+        paymentDate: Math.floor(Date.now() / 1000), // epoch time en segundos
+        aliasYappy, // Requerido: 8 dígitos panameños
         ipnUrl: `${domain}/api/yappy/callback`,
         discount: "0.00",
         taxes: "0.00",
-        subtotal: total.toFixed(2),
-        total: total.toFixed(2)
+        subtotal: formattedTotal,
+        total: formattedTotal
       })
     });
 
@@ -70,6 +90,11 @@ export async function POST(req: Request) {
       const errorMsg = orderData?.status?.description || 'Error al generar la orden en Yappy';
       return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
     }
+
+    console.log('[Yappy] Orden creada exitosamente:', {
+      transactionId: orderData.body.transactionId,
+      documentName: orderData.body.documentName
+    });
 
     return NextResponse.json({
       success: true,
