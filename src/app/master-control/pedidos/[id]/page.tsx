@@ -330,7 +330,7 @@ export default function OrderDetailPage() {
               <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
                 <button 
                   onClick={() => {
-                    const newStatus = order.payment_status === 'completed' ? 'pending' : 'delivered';
+                    const newStatus = order.payment_status === 'completed' ? 'pending' : 'completed';
                     dbLocal.updateOrderDetails(order.id, { payment_status: newStatus });
                     setOrder({ ...order, payment_status: newStatus });
                   }}
