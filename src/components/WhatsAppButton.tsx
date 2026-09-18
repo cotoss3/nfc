@@ -32,7 +32,7 @@ export default function WhatsAppButton() {
   const isProductPage = pathname.startsWith('/catalogo/') || pathname.startsWith('/shop/');
 
   return (
-    <aside aria-label="Atención por WhatsApp" className={`fixed bottom-6 right-6 z-40 flex items-center group ${isProductPage ? 'hidden md:flex' : ''}`}>
+    <aside aria-label="Atención por WhatsApp" className={`fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 flex items-center group ${isProductPage ? 'hidden md:flex' : ''}`}>
       {/* Tooltip / Píldora de ayuda en pantallas medianas y grandes */}
       <a
         href={whatsappUrl}

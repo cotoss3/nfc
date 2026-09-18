@@ -318,13 +318,13 @@ export default function HomeClient() {
             {homeProducts[0] && (
               <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
                 <div>
-                  <div className="aspect-[4/3] max-h-44 sm:max-h-52 md:aspect-square md:max-h-none relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
+                  <div className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
                     <img
                       src={homeProducts[0].image}
                       alt={homeProducts[0].name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
                       Portátil
                     </span>
                   </div>
@@ -369,13 +369,13 @@ export default function HomeClient() {
                   🔥 Más Vendida
                 </span>
                 <div>
-                  <div className="aspect-[4/3] max-h-44 sm:max-h-52 md:aspect-square md:max-h-none relative bg-slate-100 cursor-pointer overflow-hidden" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
+                  <div className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
                     <img
                       src={homeProducts[1].image}
                       alt={homeProducts[1].name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm">
+                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
                       Acrílico 3mm
                     </span>
                   </div>
