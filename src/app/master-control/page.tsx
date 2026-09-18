@@ -141,10 +141,19 @@ export default function AdminPage() {
     setPriceInputs(initPrices);
 
     try {
-      const remoteCards = await dbLocal.getCardsAsync();
+      const [remoteCards, remoteOrders, remoteAbandoned, remoteB2b] = await Promise.all([
+        dbLocal.getCardsAsync(),
+        dbLocal.getOrdersAsync(),
+        dbLocal.getAbandonedCheckoutsAsync(),
+        dbLocal.getB2bQuotesAsync(),
+      ]);
       setCards(remoteCards);
+      setOrders(remoteOrders);
+      setAbandonedCheckouts(remoteAbandoned);
+      setB2bQuotes(remoteB2b);
+      setCustomers(dbLocal.getCustomersSummary());
     } catch (err) {
-      console.error('Error cargando tarjetas en Master Control:', err);
+      console.error('Error cargando datos remotos en Master Control:', err);
     } finally {
       setLoading(false);
     }

@@ -533,6 +533,24 @@ class LocalDbService {
     return this.getStorageItem('nfc_orders', []);
   }
 
+  async getOrdersAsync(): Promise<Order[]> {
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          this.setStorageItem('nfc_orders', data);
+          return data;
+        }
+      } catch (err) {
+        console.error('Error cargando órdenes desde Supabase:', err);
+      }
+    }
+    return this.getOrders();
+  }
+
   getOrderById(id: string): Order | undefined {
     return this.getOrders().find(o => o.id === id);
   }
@@ -752,6 +770,24 @@ class LocalDbService {
     return this.getStorageItem<B2bQuote[]>('nfc_b2b_quotes', []);
   }
 
+  async getB2bQuotesAsync(): Promise<B2bQuote[]> {
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('b2b_quotes')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          this.setStorageItem('nfc_b2b_quotes', data);
+          return data;
+        }
+      } catch (err) {
+        console.error('Error cargando cotizaciones B2B desde Supabase:', err);
+      }
+    }
+    return this.getB2bQuotes();
+  }
+
   saveB2bQuote(data: Omit<B2bQuote, 'id' | 'created_at'> & { id?: string }): B2bQuote {
     const list = this.getB2bQuotes();
     const newQuote: B2bQuote = {
@@ -772,16 +808,40 @@ class LocalDbService {
     const list = this.getB2bQuotes();
     const updated = list.map((q) => (q.id === id ? { ...q, status } : q));
     this.setStorageItem('nfc_b2b_quotes', updated);
+    if (supabase) {
+      supabase.from('b2b_quotes').update({ status }).eq('id', id).then();
+    }
   }
 
   deleteB2bQuote(id: string): void {
     const list = this.getB2bQuotes();
     this.setStorageItem('nfc_b2b_quotes', list.filter((q) => q.id !== id));
+    if (supabase) {
+      supabase.from('b2b_quotes').delete().eq('id', id).then();
+    }
   }
 
   // Métodos de Carritos / Pedidos Abandonados (Shopify Style)
   getAbandonedCheckouts(): AbandonedCheckout[] {
     return this.getStorageItem<AbandonedCheckout[]>('nfc_abandoned_checkouts', []);
+  }
+
+  async getAbandonedCheckoutsAsync(): Promise<AbandonedCheckout[]> {
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('abandoned_checkouts')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+          this.setStorageItem('nfc_abandoned_checkouts', data);
+          return data;
+        }
+      } catch (err) {
+        console.error('Error cargando carritos abandonados desde Supabase:', err);
+      }
+    }
+    return this.getAbandonedCheckouts();
   }
 
   saveAbandonedCheckout(data: Omit<AbandonedCheckout, 'created_at' | 'updated_at'>): AbandonedCheckout {
@@ -834,12 +894,20 @@ class LocalDbService {
       return c;
     });
     this.setStorageItem('nfc_abandoned_checkouts', updated);
+    if (supabase) {
+      supabase.from('abandoned_checkouts')
+        .update({ status: 'completed', updated_at: new Date().toISOString() })
+        .or(`customer_email.ilike.%${clean}%,customer_phone.ilike.%${clean}%`).then();
+    }
   }
 
   deleteAbandonedCheckout(id: string): void {
     if (typeof window === 'undefined') return;
     const list = this.getAbandonedCheckouts();
     this.setStorageItem('nfc_abandoned_checkouts', list.filter((c) => c.id !== id));
+    if (supabase) {
+      supabase.from('abandoned_checkouts').delete().eq('id', id).then();
+    }
   }
 
   // Métodos de Tarjetas NFC
