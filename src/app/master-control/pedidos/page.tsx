@@ -34,7 +34,7 @@ export default function PedidosPage() {
   const pendingCount = orders.filter(o => o.status === 'pending').length;
   const processingCount = orders.filter(o => o.status === 'processing').length;
   const shippedCount = orders.filter(o => o.status === 'shipped').length;
-  const totalRevenue = orders.filter(o => o.payment_status === 'delivered').reduce((acc, o) => acc + o.total, 0);
+  const totalRevenue = orders.filter(o => o.payment_status === 'completed').reduce((acc, o) => acc + o.total, 0);
 
   if (loading) return <div className="p-8 text-center text-slate-500">Cargando pedidos...</div>;
 
@@ -151,7 +151,7 @@ export default function PedidosPage() {
                       {order.status === 'cancelled' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-50 text-red-700 text-xs font-bold border border-red-200"><AlertCircle className="w-3.5 h-3.5" /> Cancelado</span>}
                     </td>
                     <td className="p-4">
-                      {order.payment_status === 'delivered' 
+                      {order.payment_status === 'completed' 
                         ? <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Pagado</span>
                         : <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600">Pendiente</span>
                       }
