@@ -116,64 +116,11 @@ export default function MasterControlDashboard() {
 
         if (!resOrders.error && resOrders.data && resOrders.data.length > 0) dbOrders = resOrders.data as Order[];
         if (!resProducts.error && resProducts.data && resProducts.data.length > 0) dbProducts = resProducts.data as Product[];
-        if (!resAbandoned.error && resAbandoned.data && resAbandoned.data.length > 0) dbAbandoned = resAbandoned.data as AbandonedCheckout[];
+        if (!resAbandoned.error && resAbandoned.data) dbAbandoned = resAbandoned.data as AbandonedCheckout[];
         if (!resB2b.error && resB2b.data && resB2b.data.length > 0) dbB2b = resB2b.data as B2bQuote[];
       } catch (err) {
         console.error('Error sincronizando con Supabase:', err);
       }
-    }
-
-    // Seed default abandoned checkouts if empty for rich testing
-    if (dbAbandoned.length === 0) {
-      const seedAbandoned: AbandonedCheckout[] = [
-        {
-          id: 'CAR-1094',
-          customer_name: 'Roberto Varela',
-          customer_email: 'r.varela@panama-cafe.com',
-          customer_phone: '67123904',
-          shipping_province: 'Panamá',
-          shipping_district: 'San Francisco',
-          items: [
-            { id: '1', product_id: 'placa-google', product_name: 'Placa Acrílica Google Reviews (Blanca)', quantity: 1, price: 49.90, selected_color: 'Blanco Pro' }
-          ],
-          total: 49.90,
-          status: 'abandoned',
-          created_at: new Date(Date.now() - 3600000 * 2.5).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 2.5).toISOString()
-        },
-        {
-          id: 'CAR-1092',
-          customer_name: 'Elena Guardia',
-          customer_email: 'elena.guardia@boutique.pa',
-          customer_phone: '66881122',
-          shipping_province: 'Chiriquí',
-          shipping_district: 'David',
-          items: [
-            { id: '2', product_id: 'tarjeta-nfc', product_name: 'Tarjeta NFC Google Reviews (Negra)', quantity: 2, price: 19.90, selected_color: 'Negro Mate' }
-          ],
-          total: 39.80,
-          status: 'abandoned',
-          created_at: new Date(Date.now() - 3600000 * 7).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 7).toISOString()
-        },
-        {
-          id: 'CAR-1088',
-          customer_name: 'David De La Guardia',
-          customer_email: 'david@constructora.pa',
-          customer_phone: '65449900',
-          shipping_province: 'Panamá Oeste',
-          shipping_district: 'Arraiján',
-          items: [
-            { id: '3', product_id: 'placa-google-black', product_name: 'Placa Acrílica Google Reviews (Negro Premium)', quantity: 1, price: 49.90 }
-          ],
-          total: 49.90,
-          status: 'abandoned',
-          created_at: new Date(Date.now() - 3600000 * 18).toISOString(),
-          updated_at: new Date(Date.now() - 3600000 * 18).toISOString()
-        }
-      ];
-      dbAbandoned = seedAbandoned;
-      dbLocal.setStorageItem('nfc_abandoned_checkouts', seedAbandoned);
     }
 
     setOrders(dbOrders);
@@ -310,12 +257,7 @@ export default function MasterControlDashboard() {
     if (window.confirm(`¿Seguro que deseas descartar y eliminar el carrito #${id}?`)) {
       const updated = abandoned.filter(a => a.id !== id);
       setAbandoned(updated);
-      dbLocal.setStorageItem('nfc_abandoned_checkouts', updated);
-      if (supabase) {
-        supabase.from('abandoned_checkouts').delete().eq('id', id).then(({ error }) => {
-          if (error) console.error('Error eliminando carrito en Supabase:', error);
-        });
-      }
+      dbLocal.deleteAbandonedCheckout(id);
       setActionSuccessMsg(`Carrito #${id} descartado y eliminado del sistema.`);
       setTimeout(() => setActionSuccessMsg(''), 3500);
     }
