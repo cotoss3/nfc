@@ -12,8 +12,11 @@ export async function GET(req: Request) {
     const hash = searchParams.get('hash');
     const domain = searchParams.get('domain');
 
-    const rawSecret = process.env.YAPPY_SECRET_KEY || 'WVBfMjNBQ0EwNzktOEM3Ri0zMDU2LTg3ODctQTA0MkZDMkQ5RDJDLjQ5YmNjZGY5LTQxODUtNDczMi04M2UwLWUwY2RmODUxYjZkZQ==';
-    const CLAVE_SECRETA = rawSecret.trim().replace(/['"]/g, '');
+    let rawSecret = (process.env.YAPPY_SECRET_KEY || '').trim().replace(/['"]/g, '');
+    if (!rawSecret || !rawSecret.startsWith('WVBf') || rawSecret.length < 50) {
+      rawSecret = 'WVBfMjNBQ0EwNzktOEM3Ri0zMDU2LTg3ODctQTA0MkZDMkQ5RDJDLjQ5YmNjZGY5LTQxODUtNDczMi04M2UwLWUwY2RmODUxYjZkZQ==';
+    }
+    const CLAVE_SECRETA = rawSecret;
 
     if (!orderId || !status || !hash || !domain) {
       return NextResponse.json({ success: false, error: 'Parámetros faltantes' });

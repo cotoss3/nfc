@@ -23,14 +23,16 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // Sanitizar merchantId (limpiar comillas o espacios residuales)
-    const rawMerchantId = process.env.YAPPY_MERCHANT_ID || '49bccdf9-4185-4732-83e0-e0cdf851b6de';
-    const merchantId = rawMerchantId.trim().replace(/['"]/g, '');
+    // Sanitizar y extraer exactamente el UUID de 36 caracteres para merchantId
+    // Esto previene errores si la variable de entorno en Vercel tiene texto extra, saltos de línea o concatenaciones
+    const rawMerchant = process.env.YAPPY_MERCHANT_ID || '';
+    const uuidMatch = rawMerchant.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+    const merchantId = uuidMatch ? uuidMatch[0] : '49bccdf9-4185-4732-83e0-e0cdf851b6de';
     
-    // Dominio exacto registrado en el Portal Comercial de Banco General
+    // Dominio exacto registrado en el Portal Comercial de Banco General (sin barra final)
     const domain = 'https://startap.com.pa';
 
-    console.log('[Yappy] Validando comercio:', { merchantId, domain });
+    console.log('[Yappy] Validando comercio:', { merchantId, domain, rawLen: rawMerchant.length });
 
     // Paso 1: Validar comercio y obtener token
     const validateRes = await fetch('https://apipagosbg.bgeneral.cloud/payments/validate/merchant', {
@@ -47,17 +49,7 @@ export async function POST(req: Request) {
     if (!validateData?.body?.token) {
       console.error('[Yappy Validate Error]', JSON.stringify(validateData));
       const errorMsg = validateData?.status?.description || 'Error al validar comercio en Yappy';
-      return NextResponse.json({ 
-        success: false, 
-        step: 'validate',
-        error: errorMsg,
-        debug: {
-          code: validateData?.status?.code,
-          merchantIdLength: merchantId.length,
-          merchantIdPreview: `${merchantId.slice(0, 5)}...${merchantId.slice(-5)}`,
-          domain
-        }
-      }, { status: 500 });
+      return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
     }
 
     const token = validateData.body.token;
@@ -98,17 +90,7 @@ export async function POST(req: Request) {
     if (!orderData?.body?.transactionId || !orderData?.body?.documentName) {
       console.error('[Yappy Create Order Error]', JSON.stringify(orderData));
       const errorMsg = orderData?.status?.description || 'Error al generar la orden en Yappy';
-      return NextResponse.json({ 
-        success: false, 
-        step: 'create_order',
-        error: errorMsg,
-        debug: {
-          code: orderData?.status?.code,
-          orderId: cleanOrderId,
-          aliasYappy,
-          total: formattedTotal
-        }
-      }, { status: 500 });
+      return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
     }
 
     console.log('[Yappy] Orden creada exitosamente:', {
