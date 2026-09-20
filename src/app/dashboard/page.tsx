@@ -1415,7 +1415,7 @@ function DashboardContent() {
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-bold text-slate-900 text-sm">Vincular Nueva Placa STT-XXXX</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Vincular Nueva Placa STTT-XXXX</h3>
               <button
                 onClick={() => setIsClaimModalOpen(false)}
                 className="text-slate-400 hover:text-slate-900 text-xs font-bold"
@@ -1438,7 +1438,7 @@ function DashboardContent() {
                   required
                   value={claimInput}
                   onChange={(e) => setClaimInput(e.target.value)}
-                  placeholder="Ej. STT-1002"
+                  placeholder="Ej. STTT-1002"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 font-mono uppercase focus:outline-none focus:border-slate-900"
                 />
               </div>

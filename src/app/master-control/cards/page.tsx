@@ -160,7 +160,7 @@ export default function CardsManagementPage() {
   // Create New TAG Handler
   const handleCreateCard = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCardId.trim()) return alert('Por favor ingresa un código serial para el TAG (ej. STT-1050)');
+    if (!newCardId.trim()) return alert('Por favor ingresa un código serial para el TAG (ej. STTT-1050)');
 
     const cleanCode = newCardId.trim().toUpperCase();
     const cleanEmail = newOwnerEmail.trim().toLowerCase() || 'admin@startap.com.pa';
@@ -300,7 +300,7 @@ export default function CardsManagementPage() {
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
                 <CreditCard className="w-6 h-6 text-amber-500" />
-                Gestión & Edición de Dispositivos TAG (STT-XXXX)
+                Gestión & Edición de Dispositivos TAG (STTT-XXXX)
               </h1>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-900 border border-amber-300">
                 {stats.total} Registrados
@@ -366,7 +366,7 @@ export default function CardsManagementPage() {
                 <QrCode className="w-5 h-5 text-amber-500" />
                 Registrar & Programar Dispositivo TAG
               </h2>
-              <p className="text-xs text-slate-500">Crea o actualiza el código serial STT-XXXX asignando la URL final.</p>
+              <p className="text-xs text-slate-500">Crea o actualiza el código serial STTT-XXXX asignando la URL final.</p>
             </div>
           </div>
 
@@ -379,7 +379,7 @@ export default function CardsManagementPage() {
                   required
                   value={newCardId}
                   onChange={e => setNewCardId(e.target.value)}
-                  placeholder="Ej. STT-1050"
+                  placeholder="Ej. STTT-1050"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
                 />
               </div>

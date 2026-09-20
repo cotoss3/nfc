@@ -153,12 +153,12 @@ export const supabase = isRealSupabaseConfigured
 
 export const DEFAULT_SEED_CARDS: NfcCard[] = [
   {
-    card_id: 'STT-1001',
-    activation_code: 'STT-1001',
+    card_id: 'STTT-1001',
+    activation_code: 'STTT-1001',
     owner_id: 'unassigned',
     owner_name: 'Sin Asignar (Stock)',
     owner_email: 'admin@startap.com.pa',
-    label: 'Placa de Mostrador (STT-1001)',
+    label: 'Placa de Mostrador (STTT-1001)',
     target_url: 'https://google.com',
     is_active: false,
     claimed: false,
@@ -555,13 +555,13 @@ class LocalDbService {
     return this.getOrders().find(o => o.id === id);
   }
 
-  // Generador de Códigos Secuenciales para Etiquetas de Sticker STT-XXXX
+  // Generador de Códigos Secuenciales para Etiquetas de Sticker STTT-XXXX
   getNextStickerCode(): string {
     const cards = this.getCards();
     let maxNumber = 1000;
 
     cards.forEach(c => {
-      const codeMatch = (c.activation_code || c.card_id).match(/STT-(\d+)/i);
+      const codeMatch = (c.activation_code || c.card_id).match(/STT{1,2}-(\d+)/i);
       if (codeMatch && codeMatch[1]) {
         const num = parseInt(codeMatch[1], 10);
         if (!isNaN(num) && num > maxNumber && num <= 1050) {
@@ -572,9 +572,9 @@ class LocalDbService {
 
     const nextNum = maxNumber + 1;
     if (nextNum > 1050) {
-      return `STT-1050`;
+      return `STTT-1050`;
     }
-    return `STT-${nextNum}`;
+    return `STTT-${nextNum}`;
   }
 
   createOrder(orderData: Omit<Order, 'id' | 'created_at'> & { id?: string }): Order {
@@ -1009,27 +1009,31 @@ class LocalDbService {
     );
     if (direct) return direct.card_id;
 
-    // Pattern STT-X -> STT-100X (ej. STT-1 -> STT-1001)
-    const sttMatch = clean.match(/^stt-(\d+)$/i);
-    if (sttMatch) {
+    // Pattern STTT-X or STT-X -> STTT-100X (ej. STTT-1 -> STTT-1001)
+    const sttMatch = clean.match(/^(?:sttt|stt)-(\d+)$/i);
+    if (sttMatch && sttMatch[1]) {
       const num = parseInt(sttMatch[1], 10);
-      if (num < 1000) {
-        const fullCode = `stt-${1000 + num}`;
+      if (num <= 1050) {
+        const fullCode = num < 1000 ? `sttt-${1000 + num}` : `sttt-${num}`;
+        const altCode = num < 1000 ? `stt-${1000 + num}` : `stt-${num}`;
         const found = cards.find(c => 
           c.card_id.toLowerCase() === fullCode || 
-          (c.activation_code && c.activation_code.toLowerCase() === fullCode)
+          c.card_id.toLowerCase() === altCode ||
+          (c.activation_code && (c.activation_code.toLowerCase() === fullCode || c.activation_code.toLowerCase() === altCode))
         );
         if (found) return found.card_id;
       }
     }
 
-    // Number only "1" -> "STT-1001"
+    // Number only "1" -> "STTT-1001"
     const numOnly = parseInt(clean, 10);
     if (!isNaN(numOnly)) {
-      const targetCode = numOnly < 1000 ? `stt-${1000 + numOnly}` : `stt-${numOnly}`;
+      const targetCode = numOnly < 1000 ? `sttt-${1000 + numOnly}` : `sttt-${numOnly}`;
+      const altTarget = numOnly < 1000 ? `stt-${1000 + numOnly}` : `stt-${numOnly}`;
       const found = cards.find(c => 
         c.card_id.toLowerCase() === targetCode || 
-        (c.activation_code && c.activation_code.toLowerCase() === targetCode)
+        c.card_id.toLowerCase() === altTarget ||
+        (c.activation_code && (c.activation_code.toLowerCase() === targetCode || c.activation_code.toLowerCase() === altTarget))
       );
       if (found) return found.card_id;
     }
@@ -1291,8 +1295,11 @@ class LocalDbService {
     }
 
     const rawCode = codeOrCardId.trim().toUpperCase();
+    const formattedCardId = rawCode.startsWith('STTT-') || rawCode.startsWith('STT-') || rawCode.startsWith('TAP-')
+      ? rawCode
+      : `STTT-${rawCode}`;
     const newCard: NfcCard = {
-      card_id: rawCode.startsWith('STT-') || rawCode.startsWith('TAP-') ? rawCode : `STT-${rawCode}`,
+      card_id: formattedCardId,
       activation_code: rawCode,
       owner_id: 'user-' + Date.now(),
       owner_name: ownerName || cleanEmail.split('@')[0],
