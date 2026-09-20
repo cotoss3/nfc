@@ -560,3 +560,85 @@ Google Cloud: proyecto `gen-lang-client-0012367217` ("DataKorex - Produ"),
 Vertex AI / Agent Platform API **habilitada**, facturación **vinculada**.
 Falta solo que Fernando genere la llave en aistudio.google.com/apikey y la
 ponga en `.env.veo` — no la maneja la sesión.
+
+## 20 sep 2026 (cont.) · Correcciones aplicadas + traspaso a Antigravity
+
+**Hecho en código** (compila limpio, `npx tsc --noEmit` = 0; sin commit ni push):
+1. `/api/yappy/checkout` recalcula el total con `calcularTotal` y rechaza 409 si
+   el navegador manda otro. Antes cobraba lo que dijera el cliente.
+2. ID de orden unificado: checkout devuelve `yappyOrderId`; el callback busca por
+   `yappy_order_id` o `id` con `.or(...)`, usa `.select()` y loguea
+   `[YAPPY_IPN_SIN_COINCIDENCIA]` si no actualizó ninguna fila.
+3. Nueva `src/app/api/pedidos/route.ts`: upsert en `orders` con service_role
+   antes de cobrar; `checkout/page.tsx` la llama en las ramas Tilopay y Yappy.
+4. `master-control/productos` → `/api/admin/precio` (contrato real: `{id, precio}`)
+   y muestra el error en vez de decir "guardado" siempre.
+5. `isPack` en vez de `product_name.includes('pack')` en el checkout.
+6. `escaparHtml()` en `/r/[id]` — era XSS reflejado en el dominio principal.
+7. `cleanEmail.includes('admin')` eliminado de `db.ts`.
+8. Producto no reconocido lanza (antes se cobraba a $20); `handleLogout` ahora
+   llama a `authService.signOut()`.
+
+**Nuevos archivos:** `AUDITORIA_ESTRUCTURAL.md`, `INSTRUCCIONES_ANTIGRAVITY.md`,
+`migracion_20260920_seguridad.sql` (PARTE A segura; PARTE B comentada a propósito).
+
+**Para Antigravity** (ver `INSTRUCCIONES_ANTIGRAVITY.md`): correr la PARTE A del
+SQL (bloqueante: `/api/pedidos` inserta `yappy_order_id` que aún no existe),
+verificar `SUPABASE_SERVICE_ROLE_KEY` y `ADMIN_EMAILS` en Vercel, rotar la
+service_role, y subir a GitHub. La PARTE B (cerrar escritura pública de
+`nfc_cards`) requiere antes crear `/api/tarjetas` con service_role, porque el
+navegador escribe esa tabla en 8 puntos de `db.ts`.
+
+**Yappy — sin resolver:** el manual que mandó Fernando es del conector de comercio
+afiliado (`/v1/session/login`, `/v1/movement/*`), NO del Botón de Pago
+(`apipagosbg.bgeneral.cloud/payments/payment-wc`) que usa el sitio. La firma del
+IPN sigue sin verificar contra documentación oficial.
+
+**Veo 3: en pausa** por decisión de Fernando. Queda todo listo en
+`herramientas/veo.mjs` + `herramientas/prompts/creativo1.txt`; Google Cloud
+(`gen-lang-client-0012367217`) con API habilitada y facturación vinculada. Solo
+falta que él genere la llave en aistudio.google.com/apikey y la ponga en `.env.veo`.
+
+## 20 sep 2026 (cont. 2) · Yappy confirmado y callback corregido
+
+Fernando pasó la documentación correcta del Botón de Pago:
+https://www.yappy.com.pa/comercial/desarrolladores/boton-de-pago-yappy-nueva-integracion/
+
+- **Firma del IPN CONFIRMADA.** HMAC-SHA256 sobre `orderId + status + domain`,
+  clave secreta en base64 partida por `.` usando la primera parte. La
+  implementación ya era correcta. Deja de ser un "sin confirmar".
+- `orderId`: máximo 15 caracteres alfanuméricos (error E009). El `.slice(0,15)`
+  del checkout es correcto.
+- Estados: E (ejecutado), R (rechazado, no confirmó en 5 min), C (cancelado en
+  la app), X (expirado, nunca inició).
+
+**Corregido en `api/yappy/callback/route.ts`:**
+1. Usaba el cliente **anon**, que RLS bloquea sobre `orders` → el UPDATE nunca
+   habría funcionado. Ahora usa service_role, igual que `/api/pedidos`.
+2. Solo manejaba `E`: R, C y X dejaban el pedido en `pending` para siempre.
+   Ahora los tres lo marcan `failed`/`cancelled`.
+3. La comparación del hash pasó a `crypto.timingSafeEqual`.
+
+`npx tsc --noEmit` limpio.
+
+## 20 sep 2026 (cont. 3) · Ajustes de UI, métrica de visitas, aislamiento de tarjetas e inventario STT-1001..1050
+
+**1. Ajuste Banner Pack Especial (`HomeClient.tsx`):**
+- Se convirtió el bloque de miniaturas en retícula de 3 columnas (`grid grid-cols-3 gap-2.5 w-full mb-3.5`).
+- Se amplió la altura de los contenedores a `h-20 sm:h-24` (`rounded-2xl`), haciendo que las fotos (1x Placa + 2x Tarjetas) abarquen el ancho completo alineado con el botón de `$50.00 USD`.
+
+**2. Corrección Contador de Visitas en Tiempo Real (`api/tracking/ping/route.ts` & `master-control/page.tsx`):**
+- Se eliminó el cálculo defectuoso que sumaba únicamente órdenes + carritos abandonados.
+- `/api/tracking/ping` ahora registra y devuelve `total_visits_today` (visitantes únicos diarios).
+- El cuadro directivo de **Resumen Ejecutivo** calcula las visitas con `Math.max(totalVisitsToday, realActiveSessions.length, totalOrdersCount + activeAbandoned.length)` eliminando el falso "0 visitas".
+
+**3. Reinicio de Tarjetas y Aislamiento por Cliente (`db.ts`, `db_store.json`, `master-control/cards/page.tsx`):**
+- Se desvincularon las tarjetas de prueba asociadas a Fernando Contreras (`cotoss3@gmail.com`) en `db_store.json` y `DEFAULT_SEED_CARDS`.
+- `getCardsByOwner()` e `getCardsByOwnerAsync()` ahora filtran estrictamente por `c.claimed === true` y `c.owner_email === email`, asegurando que las cuentas nuevas empiecen con 0 tarjetas hasta que reclamen su serial.
+- En **Master Control Cards** (`/master-control/cards`), se mejoró el buscador unificado por **Cliente (Nombre/Email)** y **Código Serial (`STT-XXXX`)**, agregando badge de `RECLAMADA POR CLIENTE` vs `EN STOCK`.
+
+**4. Depuración de Inventario Físico (`STT-1001` a `STT-1050`):**
+- Se eliminaron 60 tarjetas ficticias superiores a `STT-1050` de `db_store.json`.
+- `getCards()` y `getNextStickerCode()` en `db.ts` restringen el inventario exclusivamente a las 50 unidades reales (`STT-1001` a `STT-1050`).
+
+`npx tsc --noEmit` limpio, cambios subidos a `origin main`.
