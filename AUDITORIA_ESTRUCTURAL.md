@@ -168,10 +168,11 @@ terceros desde un dominio legítimo.
 
 ## Sin confirmar
 
-- **Firma del IPN de Yappy** (`yappy/callback/route.ts:27-34`): el HMAC coincide
-  con ejemplos públicos de Banco General, pero sin su guía oficial no se puede
-  verificar el orden de concatenación. Si el formato fuera distinto, **todo IPN
-  válido se descartaría**.
+- ~~**Firma del IPN de Yappy**~~ — **CONFIRMADA** el 20/09/2026 contra la
+  documentación oficial del Botón de Pago Yappy. HMAC-SHA256 sobre
+  `orderId + status + domain`, con la clave secreta decodificada de base64 y
+  partida por `.`, usando la primera parte. La implementación era correcta.
+  Fuente: https://www.yappy.com.pa/comercial/desarrolladores/boton-de-pago-yappy-nueva-integracion/
 - **Tilopay**: el callback sí verifica autenticidad contra `/consult`, así que
   nadie puede falsificar un "pagado". Lo que no se pudo confirmar es si existe
   un webhook servidor-a-servidor. Si no lo hay y el cliente cierra la pestaña
