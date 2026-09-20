@@ -1,16 +1,65 @@
 import { NextResponse } from 'next/server';
+import { calcularTotal, type ItemEntrada } from '@/lib/checkout-total';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { orderNumber, total, name, email, phone } = body || {};
+    const { orderNumber, total, name, email, phone, items, shippingMethod, couponCode } = body || {};
 
-    const numTotal = typeof total === 'number' ? total : parseFloat(total);
-    if (!orderNumber || isNaN(numTotal) || numTotal <= 0) {
+    if (!orderNumber) {
+      return NextResponse.json({
+        success: false,
+        error: 'Falta el numero de orden.'
+      }, { status: 400 });
+    }
+
+    // El carrito manda: nunca se cobra el total que diga el navegador.
+    if (!Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({
+        success: false,
+        error: 'El pedido no tiene productos.'
+      }, { status: 400 });
+    }
+
+    let subtotalCalculado: number;
+    let envioCalculado: number;
+    let numTotal: number;
+    try {
+      const calculo = await calcularTotal(
+        items as ItemEntrada[],
+        String(shippingMethod || 'local'),
+        couponCode ? String(couponCode) : undefined
+      );
+      subtotalCalculado = calculo.subtotal;
+      envioCalculado = calculo.envio;
+      numTotal = calculo.total;
+    } catch (e: any) {
+      console.error('[YAPPY_CALCULO_TOTAL_ERROR]', e);
+      return NextResponse.json({
+        success: false,
+        error: e?.message || 'No pudimos calcular el total del pedido.'
+      }, { status: 400 });
+    }
+
+    if (isNaN(numTotal) || numTotal <= 0) {
       return NextResponse.json({ 
         success: false, 
         error: 'El total de la orden debe ser mayor a $0.00 USD.' 
       }, { status: 400 });
+    }
+
+    // Validacion de Integridad Financiera: si el cliente envia un total que difiere del catalogo, rechazar
+    if (total !== undefined && Math.abs(Number(total) - numTotal) > 0.05) {
+      console.error(
+        `[YAPPY_PRICE_TAMPERING_BLOCKED] cliente=${total} servidor=${numTotal} subtotal=${subtotalCalculado} envio=${envioCalculado} cupon=${couponCode}`
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'El monto del pedido no coincide con nuestro catálogo oficial. Vuelve a cargar el carrito o contáctanos por WhatsApp.',
+        },
+        { status: 409 }
+      );
     }
 
     const digits = (phone || '').toString().replace(/[^0-9]/g, '');
@@ -110,7 +159,9 @@ export async function POST(req: Request) {
       transactionId: orderData.body.transactionId,
       documentName: orderData.body.documentName,
       token: orderData.body.token,
-      orderId: orderNumber
+      orderId: orderNumber,
+      // Yappy solo conoce el id limpio; el IPN vuelve con este valor.
+      yappyOrderId: cleanOrderId
     });
 
   } catch (error: any) {

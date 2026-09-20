@@ -41,7 +41,7 @@ import {
   type Coupon,
   type ShippingMethodId,
 } from '@/config/shipping';
-import { PRODUCTS } from '@/config/products';
+import { PRODUCTS, getProductById } from '@/config/products';
 import confetti from 'canvas-confetti';
 import { track, itemsParaMeta } from '@/lib/fbpixel';
 import { trackTikTok, itemsParaTikTok } from '@/lib/tiktokpixel';
@@ -165,11 +165,9 @@ export default function CheckoutPage() {
     'Darién'
   ];
 
+  // Mismo criterio que el servidor: manda el catalogo (isPack), no el nombre.
   const isPackInCart = cart.some(
-    (item) =>
-      item.product_id === 'pack-trio-comercial' ||
-      item.product_id === 'pack-trio' ||
-      item.product_name?.toLowerCase().includes('pack')
+    (item) => getProductById(item.product_id)?.isPack === true
   );
 
   const getShippingCost = () => {
@@ -288,6 +286,17 @@ export default function CheckoutPage() {
       items: cart,
     };
 
+    const itemsParaServidor = cart.map((i) => ({
+      product_id: i.product_id,
+      quantity: i.quantity,
+      has_custom_logo: i.has_custom_logo,
+      has_qr_code: i.has_qr_code,
+      price: i.price,
+      is_upsell:
+        i.product_id === 'tarjeta-nfc-bolsillo' &&
+        (i.price === 15 || i.product_name?.includes('Oferta Especial')),
+    }));
+
     try {
       if (paymentMethod === 'tarjeta') {
         // Tarjeta: el formulario vive aqui, pero los datos van del navegador
@@ -295,6 +304,26 @@ export default function CheckoutPage() {
         dbLocal.createOrder({ ...baseOrder, id: orderNumber } as any);
         sessionStorage.setItem('current_user_email', email);
         sessionStorage.setItem('current_user_name', name);
+
+        // El pedido se registra en el servidor ANTES de cobrar.
+        const resPedido = await fetch('/api/pedidos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderNumber,
+            items: itemsParaServidor,
+            shippingMethod,
+            couponCode: appliedCoupon?.code,
+            paymentMethod: 'tarjeta',
+            customer: { name, email, phone, province, district, address },
+          }),
+        });
+        const dataPedido = await resPedido.json().catch(() => null);
+        if (!resPedido.ok || !dataPedido?.success) {
+          throw new Error(
+            dataPedido?.error || 'No pudimos registrar tu pedido. Intenta de nuevo o contáctanos por WhatsApp.'
+          );
+        }
 
         const res = await fetch('/api/tilopay/sdk-session', {
           method: 'POST',
@@ -309,14 +338,7 @@ export default function CheckoutPage() {
             address,
             shippingMethod,
             couponCode: appliedCoupon?.code,
-            items: cart.map((i) => ({
-              product_id: i.product_id,
-              quantity: i.quantity,
-              has_custom_logo: i.has_custom_logo,
-              has_qr_code: i.has_qr_code,
-              price: i.price,
-              is_upsell: i.product_id === 'tarjeta-nfc-bolsillo' && (i.price === 15 || i.product_name?.includes('Oferta Especial')),
-            })),
+            items: itemsParaServidor,
             total: getGrandTotal(),
           }),
         });
@@ -1104,6 +1126,43 @@ export default function CheckoutPage() {
                             sessionStorage.setItem('current_user_email', email);
                             sessionStorage.setItem('current_user_name', name);
 
+                            const itemsParaServidor = cart.map((i) => ({
+                              product_id: i.product_id,
+                              quantity: i.quantity,
+                              has_custom_logo: i.has_custom_logo,
+                              has_qr_code: i.has_qr_code,
+                              price: i.price,
+                              is_upsell:
+                                i.product_id === 'tarjeta-nfc-bolsillo' &&
+                                (i.price === 15 || i.product_name?.includes('Oferta Especial')),
+                            }));
+
+                            // Mismo id limpio que registra Yappy, para que el IPN encuentre el pedido.
+                            const yappyOrderId = orderNumber.replace(/[^A-Za-z0-9]/g, '').slice(0, 15);
+
+                            // El pedido se registra en el servidor ANTES de cobrar.
+                            const resPedido = await fetch('/api/pedidos', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                orderNumber,
+                                items: itemsParaServidor,
+                                shippingMethod,
+                                couponCode: appliedCoupon?.code,
+                                paymentMethod: 'yappy',
+                                yappyOrderId,
+                                customer: { name, email, phone, province, district, address },
+                              }),
+                            });
+                            const dataPedido = await resPedido.json().catch(() => null);
+                            if (!resPedido.ok || !dataPedido?.success) {
+                              const err =
+                                dataPedido?.error ||
+                                'No pudimos registrar tu pedido. Intenta de nuevo o contáctanos por WhatsApp.';
+                              setErrorMessage(err);
+                              return { success: false, error: err };
+                            }
+
                             const res = await fetch('/api/yappy/checkout', {
                               method: 'POST',
                               headers: { 'Content-Type': 'application/json' },
@@ -1112,7 +1171,10 @@ export default function CheckoutPage() {
                                 total: grandTotal,
                                 name,
                                 email,
-                                phone: aliasYappy
+                                phone: aliasYappy,
+                                items: itemsParaServidor,
+                                shippingMethod,
+                                couponCode: appliedCoupon?.code
                               })
                             });
                             

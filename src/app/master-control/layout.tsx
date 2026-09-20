@@ -8,6 +8,7 @@ import {
   LogOut, AlertCircle, ShoppingCart, Layers 
 } from 'lucide-react';
 import AdminAuthGuard from '@/components/AdminAuthGuard';
+import { authService } from '@/lib/auth';
 
 const navItems = [
   { id: 'dashboard', label: 'Resumen Ejecutivo', icon: BarChart2, href: '/master-control' },
@@ -23,9 +24,17 @@ export default function MasterControlLayout({ children }: { children: React.Reac
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (window.confirm('¿Seguro que deseas salir del Master Control?')) {
+      // Cierra la sesion real de Supabase, no solo la marca del navegador.
+      try {
+        await authService.signOut();
+      } catch (e) {
+        console.error('Error cerrando sesión de Supabase:', e);
+      }
       sessionStorage.removeItem('admin_auth_code');
+      sessionStorage.removeItem('current_user_email');
+      localStorage.removeItem('admin_authenticated_email');
       router.push('/catalogo');
     }
   };

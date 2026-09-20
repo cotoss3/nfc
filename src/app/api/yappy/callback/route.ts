@@ -43,10 +43,33 @@ export async function GET(req: Request) {
           status: 'processing'
         });
         if (supabase) {
-          await supabase.from('orders').update({
-            payment_status: 'completed',
-            status: 'processing'
-          }).eq('id', orderId);
+          // Yappy devuelve el id limpio (STP12345678) pero el pedido se guarda
+          // como STP-12345678: se busca por ambas columnas para tolerar los dos.
+          let idReal: string | null = null;
+          const { data: encontrados } = await supabase
+            .from('orders')
+            .select('id')
+            .or(`yappy_order_id.eq.${orderId},id.eq.${orderId}`)
+            .limit(1);
+
+          if (encontrados && encontrados.length > 0) {
+            idReal = String(encontrados[0].id);
+          }
+
+          const { data: actualizados, error: errorUpdate } = idReal
+            ? await supabase.from('orders').update({
+                payment_status: 'completed',
+                status: 'processing'
+              }).eq('id', idReal).select()
+            : { data: [] as any[], error: null };
+
+          if (errorUpdate) {
+            console.error(`[YAPPY_IPN_ERROR_UPDATE] orderId=${orderId}`, errorUpdate);
+          }
+
+          if (!actualizados || actualizados.length === 0) {
+            console.error(`[YAPPY_IPN_SIN_COINCIDENCIA] orderId=${orderId}`);
+          }
         }
         console.log(`[YAPPY_IPN] Orden ${orderId} marcada exitosamente como pagada (completed)`);
       }

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { dbLocal, Product, supabase } from '@/lib/db';
+import { authService } from '@/lib/auth';
 import {
   ArrowLeft,
   Search,
@@ -30,6 +31,7 @@ export default function ProductosPage() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [priceInputs, setPriceInputs] = useState<{ [id: string]: string }>({});
   const [priceSuccess, setPriceSuccess] = useState<{ [id: string]: boolean }>({});
+  const [priceError, setPriceError] = useState<{ [id: string]: string }>({});
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -58,22 +60,59 @@ export default function ProductosPage() {
     fetchProducts();
   }, []);
 
-  const handleQuickPriceSave = (productId: string) => {
+  // El precio se guarda en el servidor (llave service_role), no en localStorage:
+  // con la llave publica cualquiera podria poner los precios en cero.
+  const handleQuickPriceSave = async (productId: string) => {
     const newPriceVal = parseFloat(priceInputs[productId]);
+    setPriceError(prev => ({ ...prev, [productId]: '' }));
+
     if (isNaN(newPriceVal) || newPriceVal <= 0) {
-      alert('Por favor ingresa un precio válido mayor a $0.00');
+      setPriceError(prev => ({ ...prev, [productId]: 'Ingresa un precio válido mayor a $0.00' }));
       return;
     }
 
-    dbLocal.updateProductPrice(productId, newPriceVal);
-    setPriceSuccess(prev => ({ ...prev, [productId]: true }));
-    setTimeout(() => {
-      setPriceSuccess(prev => ({ ...prev, [productId]: false }));
-    }, 2000);
+    try {
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      if (!token) {
+        setPriceError(prev => ({ ...prev, [productId]: 'Sesión expirada. Vuelve a iniciar sesión.' }));
+        return;
+      }
 
-    setProducts(prev =>
-      prev.map(p => (p.id === productId ? { ...p, price: newPriceVal } : p))
-    );
+      const res = await fetch('/api/admin/precio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({ id: productId, precio: newPriceVal }),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (res.status !== 200 || !data?.success) {
+        setPriceError(prev => ({
+          ...prev,
+          [productId]: data?.error || `No se pudo guardar el precio (HTTP ${res.status}).`,
+        }));
+        return;
+      }
+
+      setPriceSuccess(prev => ({ ...prev, [productId]: true }));
+      setTimeout(() => {
+        setPriceSuccess(prev => ({ ...prev, [productId]: false }));
+      }, 2000);
+
+      setProducts(prev =>
+        prev.map(p => (p.id === productId ? { ...p, price: newPriceVal } : p))
+      );
+    } catch (e: any) {
+      console.error('[ADMIN_PRECIO_UI]', e);
+      setPriceError(prev => ({
+        ...prev,
+        [productId]: e?.message || 'Error de red al guardar el precio.',
+      }));
+    }
   };
 
   const handleToggleStock = (productId: string, currentStock?: boolean) => {
@@ -349,6 +388,11 @@ export default function ProductosPage() {
                           {priceSuccess[p.id] ? '✓' : 'Guardar'}
                         </button>
                       </div>
+                      {priceError[p.id] && (
+                        <p className="mt-1 text-[10px] font-bold text-rose-600 text-right max-w-[220px] ml-auto">
+                          {priceError[p.id]}
+                        </p>
+                      )}
                     </td>
 
                     <td className="p-4 text-center">

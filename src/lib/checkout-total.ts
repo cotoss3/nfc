@@ -38,7 +38,8 @@ export async function calcularTotal(
       precio = (item as any).price;
     }
     if (precio === undefined) {
-      precio = 20;
+      // Antes se asumia $20: se cobraba un precio inventado. Mejor fallar.
+      throw new Error(`Producto no reconocido: ${rawId}`);
     }
 
     // Oferta especial de Tarjeta de Bolsillo a $15 si se adquiere como upsell

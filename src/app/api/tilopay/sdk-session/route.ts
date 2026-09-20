@@ -21,11 +21,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { subtotal, envio, total: calculatedTotal } = await calcularTotal(
-      items as ItemEntrada[],
-      String(shippingMethod || 'local'),
-      couponCode ? String(couponCode) : undefined
-    );
+    let subtotal: number;
+    let envio: number;
+    let calculatedTotal: number;
+    try {
+      const calculo = await calcularTotal(
+        items as ItemEntrada[],
+        String(shippingMethod || 'local'),
+        couponCode ? String(couponCode) : undefined
+      );
+      subtotal = calculo.subtotal;
+      envio = calculo.envio;
+      calculatedTotal = calculo.total;
+    } catch (e: any) {
+      console.error('[TILOPAY_CALCULO_TOTAL_ERROR]', e);
+      return NextResponse.json(
+        { success: false, error: e?.message || 'No pudimos calcular el total del pedido.' },
+        { status: 400 }
+      );
+    }
 
     if (calculatedTotal <= 0) {
       return NextResponse.json(

@@ -4,6 +4,19 @@ import { dbLocal, supabase } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+/**
+ * Escapa valores antes de meterlos en el HTML que se devuelve.
+ * El id viene de la URL sin sanitizar: sin esto se podia inyectar marcado.
+ */
+function escaparHtml(s: string): string {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -97,7 +110,7 @@ export async function GET(
             <span class="inline-block px-3 py-1 bg-slate-800 text-rose-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
               DISPOSITIVO INACTIVO
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${resolvedCardId}</h1>
+            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(resolvedCardId)}</h1>
             <p class="text-slate-400 text-sm mt-2">
               Este ID de dispositivo está inactivo. El administrador debe habilitar este código desde el Panel Administrativo para permitir la redirección.
             </p>
@@ -135,7 +148,7 @@ export async function GET(
             <span class="inline-block px-3 py-1 bg-slate-800 text-amber-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
               CANAL QR DESHABILITADO
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${resolvedCardId}</h1>
+            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(resolvedCardId)}</h1>
             <p class="text-slate-400 text-sm mt-2">
               Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-400">Chip NFC</strong>.
             </p>
@@ -168,7 +181,7 @@ export async function GET(
             <span class="inline-block px-3 py-1 bg-slate-800 text-amber-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
               CANAL NFC DESHABILITADO
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${resolvedCardId}</h1>
+            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(resolvedCardId)}</h1>
             <p class="text-slate-400 text-sm mt-2">
               Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-400">Código QR</strong>.
             </p>
@@ -234,11 +247,11 @@ export async function GET(
           </div>
           <div>
             <span class="inline-block px-3 py-1 bg-slate-800 text-slate-400 text-xs font-semibold rounded-full mb-3 uppercase tracking-wider">
-              ${resolvedCardId} • ${groupName}
+              ${escaparHtml(resolvedCardId)} • ${escaparHtml(groupName)}
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${cardLabel}</h1>
+            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(cardLabel)}</h1>
             <p class="text-slate-400 text-sm mt-2">
-              Este dispositivo no tiene un enlace asignado para escaneo mediante <strong class="text-amber-400 font-semibold">${channelName}</strong>.
+              Este dispositivo no tiene un enlace asignado para escaneo mediante <strong class="text-amber-400 font-semibold">${escaparHtml(channelName)}</strong>.
             </p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl text-xs text-slate-400 border border-slate-800 text-left space-y-1">

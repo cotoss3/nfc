@@ -538,3 +538,25 @@ Los cuatro a $5/día, Panamá, 28-55, ambos sexos, sin creativo.
 - El destino es Messenger porque WhatsApp pide "Conectar perfil" (verificación del
   6713-4341 por código). Sin eso la campaña no cumple su propósito.
 - Meta pide confirmar datos de la cuenta en "Resumen de la cuenta" antes de publicar.
+
+## 20 sep 2026 · Auditoría estructural + generador de video Veo 3
+
+**Auditoría** → `AUDITORIA_ESTRUCTURAL.md` (nuevo). 25 hallazgos sobre BDD,
+master-control y flujo de cliente. Los cuatro críticos:
+1. Los pedidos no llegan al servidor: `nfc_orders` no está en `ALLOWED_KEYS` de
+   `/api/cards` (403) y `public.orders` tiene RLS sin políticas. Un pedido pagado
+   vive solo en el localStorage del cliente.
+2. `/api/yappy/checkout` cobra el `total` que manda el navegador, sin recalcular.
+3. El IPN de Yappy usa el id sin guiones (`STP12345678`) y el pedido se guardó con
+   guion: el UPDATE afecta cero filas en silencio.
+4. `nfc_cards` tiene política `FOR ALL USING(true)`: con la anon key del bundle
+   cualquiera reescribe los `target_url` de los 107 dispositivos.
+
+**Veo 3** → `herramientas/veo.mjs` (nuevo). Genera video por la Gemini API
+(`veo-3.1-generate-preview`), 9:16 por defecto para Reels. Lee la llave de
+`GEMINI_API_KEY` o de `.env.veo` en la raíz (ya está en `.gitignore`, junto con
+`herramientas/videos/`). Prompt del creativo 1 en `herramientas/prompts/creativo1.txt`.
+Google Cloud: proyecto `gen-lang-client-0012367217` ("DataKorex - Produ"),
+Vertex AI / Agent Platform API **habilitada**, facturación **vinculada**.
+Falta solo que Fernando genere la llave en aistudio.google.com/apikey y la
+ponga en `.env.veo` — no la maneja la sesión.

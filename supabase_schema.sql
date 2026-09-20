@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS public.orders (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- Id limpio que registra Yappy (sin guiones, max 15) para casar el IPN
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS yappy_order_id TEXT;
+
 -- 3. Tabla de Tarjetas / Placas NFC (Dispositivos TAP)
 CREATE TABLE IF NOT EXISTS public.nfc_cards (
   card_id TEXT PRIMARY KEY,

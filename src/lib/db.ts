@@ -564,13 +564,16 @@ class LocalDbService {
       const codeMatch = (c.activation_code || c.card_id).match(/STT-(\d+)/i);
       if (codeMatch && codeMatch[1]) {
         const num = parseInt(codeMatch[1], 10);
-        if (!isNaN(num) && num > maxNumber) {
+        if (!isNaN(num) && num > maxNumber && num <= 1050) {
           maxNumber = num;
         }
       }
     });
 
     const nextNum = maxNumber + 1;
+    if (nextNum > 1050) {
+      return `STT-1050`;
+    }
     return `STT-${nextNum}`;
   }
 
@@ -922,7 +925,15 @@ class LocalDbService {
 
   // Métodos de Tarjetas NFC
   getCards(): NfcCard[] {
-    return this.getStorageItem('nfc_cards', DEFAULT_SEED_CARDS);
+    const raw = this.getStorageItem('nfc_cards', DEFAULT_SEED_CARDS);
+    return raw.filter(c => {
+      const match = (c.activation_code || c.card_id || '').match(/STT-(\d+)/i);
+      if (match && match[1]) {
+        const num = parseInt(match[1], 10);
+        return num <= 1050;
+      }
+      return true;
+    });
   }
 
   async getCardsAsync(): Promise<NfcCard[]> {
@@ -930,8 +941,16 @@ class LocalDbService {
       try {
         const { data, error } = await supabase.from('nfc_cards').select('*').order('created_at', { ascending: false });
         if (!error && data && data.length > 0) {
-          this.setStorageItem('nfc_cards', data);
-          return data;
+          const validOnly = (data as NfcCard[]).filter(c => {
+            const match = (c.activation_code || c.card_id || '').match(/STT-(\d+)/i);
+            if (match && match[1]) {
+              const num = parseInt(match[1], 10);
+              return num <= 1050;
+            }
+            return true;
+          });
+          this.setStorageItem('nfc_cards', validOnly);
+          return validOnly;
         }
       } catch (err) {
         console.error('Error cargando tarjetas desde Supabase:', err);
@@ -1216,7 +1235,9 @@ class LocalDbService {
     }
 
     const card = cards[cardIndex];
-    const isAdmin = cleanEmail === 'admin@startap.com.pa' || cleanEmail.includes('admin');
+    // Solo comparacion exacta: con includes('admin') cualquier correo que
+    // contuviera esa subcadena (ej. admincito@gmail.com) obtenia permisos.
+    const isAdmin = cleanEmail === 'admin@startap.com.pa';
     
     if (!isAdmin && card.owner_email && card.owner_email.trim().toLowerCase() !== cleanEmail) {
       return { success: false, message: 'Acceso Denegado: No tienes permisos para desvincular un dispositivo de otro comercio.' };

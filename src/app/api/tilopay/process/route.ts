@@ -38,7 +38,21 @@ export async function POST(req: NextRequest) {
     }
 
     // Monto autoritativo: se calcula aquí, nunca se toma del navegador.
-    const { subtotal, envio, total } = await calcularTotal(items as ItemEntrada[], String(shippingMethod || 'local'));
+    let subtotal: number;
+    let envio: number;
+    let total: number;
+    try {
+      const calculo = await calcularTotal(items as ItemEntrada[], String(shippingMethod || 'local'));
+      subtotal = calculo.subtotal;
+      envio = calculo.envio;
+      total = calculo.total;
+    } catch (e: any) {
+      console.error('[TILOPAY_CALCULO_TOTAL_ERROR]', e);
+      return NextResponse.json(
+        { success: false, error: e?.message || 'No pudimos calcular el total del pedido.' },
+        { status: 400 }
+      );
+    }
 
     if (total <= 0) {
       return NextResponse.json(
