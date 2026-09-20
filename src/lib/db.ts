@@ -143,12 +143,12 @@ const INITIAL_PRODUCTS: Product[] = PRODUCTS.map((p) => ({
 
 // Inicializar cliente real de Supabase si existen variables de entorno
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-const isRealSupabaseConfigured = supabaseUrl !== '' && supabaseAnonKey !== '';
+const isRealSupabaseConfigured = supabaseUrl !== '' && supabaseKey !== '';
 
 export const supabase = isRealSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseKey)
   : null;
 
 export const DEFAULT_SEED_CARDS: NfcCard[] = [

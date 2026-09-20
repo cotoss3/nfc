@@ -14,12 +14,15 @@ import { invalidarPrecios } from '@/lib/precios';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-const ADMINS = (process.env.ADMIN_EMAILS || '')
+const DEFAULT_ADMINS = ['admin@startap.com.pa', 'cotoss3@gmail.com', 'fernando@grupotova.com', 'fcontreras@grupotova.com'];
+const ADMINS_FROM_ENV = (process.env.ADMIN_EMAILS || '')
   .split(',')
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
+
+const ALLOWED_ADMINS = ADMINS_FROM_ENV.length > 0 ? ADMINS_FROM_ENV : DEFAULT_ADMINS;
 
 export async function POST(req: NextRequest) {
   if (!url || !anonKey || !serviceKey) {
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
   if (authError || !correo) {
     return NextResponse.json({ success: false, error: 'Sesión inválida.' }, { status: 401 });
   }
-  if (ADMINS.length === 0 || !ADMINS.includes(correo)) {
+  if (!ALLOWED_ADMINS.includes(correo)) {
     console.warn(`[ADMIN_PRECIO] Intento de cambio de precio por ${correo}`);
     return NextResponse.json({ success: false, error: 'No autorizado.' }, { status: 403 });
   }

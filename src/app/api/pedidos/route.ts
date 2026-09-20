@@ -13,16 +13,16 @@ import { calcularTotal, type ItemEntrada } from '@/lib/checkout-total';
 export const dynamic = 'force-dynamic';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function POST(req: NextRequest) {
   try {
     if (!url || !serviceKey) {
-      console.error('[PEDIDOS] Falta NEXT_PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY.');
+      console.error('[PEDIDOS] Falta NEXT_PUBLIC_SUPABASE_URL o llave de Supabase.');
       return NextResponse.json(
         {
           success: false,
-          error: 'El servidor no tiene configurada la llave de servicio de Supabase (SUPABASE_SERVICE_ROLE_KEY). No se puede registrar el pedido.',
+          error: 'El servidor no tiene configurada la llave de Supabase (SUPABASE_SERVICE_ROLE_KEY / NEXT_PUBLIC_SUPABASE_ANON_KEY). No se puede registrar el pedido.',
         },
         { status: 500 }
       );
