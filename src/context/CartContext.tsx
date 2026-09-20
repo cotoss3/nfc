@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { OrderItem } from '@/lib/db';
+import { dbLocal, OrderItem } from '@/lib/db';
 import { track } from '@/lib/fbpixel';
 import { trackTikTok } from '@/lib/tiktokpixel';
 import { trackGA } from '@/lib/googleanalytics';
@@ -45,6 +45,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [cart, isInitialized]);
 
   const addToCart = (newItem: Omit<OrderItem, 'id'>) => {
+    const availableStock = dbLocal.getProductStock(newItem.product_id);
+    if (availableStock <= 0) {
+      alert(`Lo sentimos, el producto "${newItem.product_name}" se encuentra AGOTADO (stock 0) y no se puede vender.`);
+      return;
+    }
+
     track('AddToCart', {
       content_type: 'product',
       content_ids: [newItem.product_id],
@@ -79,7 +85,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
 
     setCart((prevCart) => {
-      // Verificar si ya existe un item idéntico (mismo producto, color y url inicial)
       const existingItemIndex = prevCart.findIndex(
         (item) =>
           item.product_id === newItem.product_id &&
@@ -87,13 +92,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           item.initial_redirect_url === newItem.initial_redirect_url
       );
 
+      const existingQty = existingItemIndex > -1 ? prevCart[existingItemIndex].quantity : 0;
+      const desiredQty = existingQty + newItem.quantity;
+
+      if (desiredQty > availableStock) {
+        alert(`Solo hay ${availableStock} unidad(es) disponible(s) de "${newItem.product_name}". No puedes añadir más al carrito.`);
+        return prevCart;
+      }
+
       if (existingItemIndex > -1) {
         const updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity += newItem.quantity;
+        updatedCart[existingItemIndex].quantity = desiredQty;
         return updatedCart;
       }
 
-      // De lo contrario, agregar nuevo
       const id = `cart-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       return [...prevCart, { ...newItem, id } as OrderItem];
     });
@@ -107,6 +119,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (quantity <= 0) {
       removeFromCart(id);
       return;
+    }
+
+    const itemToUpdate = cart.find(i => i.id === id);
+    if (itemToUpdate) {
+      const availableStock = dbLocal.getProductStock(itemToUpdate.product_id);
+      if (quantity > availableStock) {
+        alert(`Solo hay ${availableStock} unidad(es) disponible(s) en inventario para "${itemToUpdate.product_name}".`);
+        return;
+      }
     }
     setCart((prevCart) =>
       prevCart.map((item) => {

@@ -104,6 +104,17 @@ export default function ProductDetailClient({ params }: { params: { id: string }
 
   const handleAddToCart = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const availStock = dbLocal.getProductStock(product.id);
+    if (availStock <= 0) {
+      alert(`Lo sentimos, el producto "${product.name}" se encuentra AGOTADO (stock 0) y no se puede vender.`);
+      return;
+    }
+    if (quantity > availStock) {
+      alert(`Solo quedan ${availStock} unidad(es) disponible(s) en inventario de "${product.name}". No es posible seleccionar ${quantity}.`);
+      return;
+    }
+
     if (isColorDisabled(product.id, color)) {
       alert('La variación de color seleccionada se encuentra agotada temporalmente. Por favor selecciona una opción disponible.');
       return;

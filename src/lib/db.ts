@@ -400,6 +400,68 @@ class LocalDbService {
     return undefined;
   }
 
+  // Consultar stock físico disponible por ID de producto o alias
+  getProductStock(productId: string): number {
+    const normId = (productId || '').trim().toLowerCase();
+    const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
+
+    // Normalizar ID de producto a las llaves principales del inventario
+    let stockKey = normId;
+    if (normId.includes('placa') || normId === 'nfc_10001') {
+      stockKey = 'placa-nfc-mostrador';
+    } else if (normId.includes('tarjeta') || normId === 'tarjeta-nfc') {
+      stockKey = 'tarjeta-nfc-bolsillo';
+    } else if (normId.includes('stand') || normId === 'nfc10002') {
+      stockKey = 'stand-nfc-mesa';
+    } else if (normId.includes('pack')) {
+      stockKey = 'pack-trio-comercial';
+    }
+
+    if (stockKey === 'pack-trio-comercial') {
+      const placaStock = productStocks['placa-nfc-mostrador']?.current_stock ?? 50;
+      const tarjetaStock = productStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 20;
+      return Math.min(placaStock, Math.floor(tarjetaStock / 2));
+    }
+
+    if (productStocks[stockKey]) {
+      return Math.max(0, productStocks[stockKey].current_stock);
+    }
+
+    // Default fallbacks para productos no inicializados
+    if (stockKey === 'placa-nfc-mostrador') return 50;
+    if (stockKey === 'tarjeta-nfc-bolsillo') return 20;
+    if (stockKey === 'stand-nfc-mesa') return 0;
+    return 10;
+  }
+
+  isProductInStock(productId: string, quantityRequested: number = 1): boolean {
+    return this.getProductStock(productId) >= quantityRequested;
+  }
+
+  validateOrderItemsStock(items: Array<{ product_id: string; product_name?: string; quantity: number }>): { valid: boolean; outOfStockItem?: string; message?: string } {
+    for (const item of items) {
+      const reqQty = item.quantity || 1;
+      const stock = this.getProductStock(item.product_id);
+      if (stock < reqQty) {
+        const name = item.product_name || item.product_id;
+        if (stock === 0) {
+          return {
+            valid: false,
+            outOfStockItem: name,
+            message: `El producto "${name}" se encuentra AGOTADO (stock 0) y no se puede vender.`
+          };
+        } else {
+          return {
+            valid: false,
+            outOfStockItem: name,
+            message: `Solo quedan ${stock} unidades disponibles del producto "${name}". No es posible comprar ${reqQty}.`
+          };
+        }
+      }
+    }
+    return { valid: true };
+  }
+
   updateProductPrice(id: string, newPrice: number): boolean {
     const products = this.getProducts();
     const index = products.findIndex(p => p.id === id);

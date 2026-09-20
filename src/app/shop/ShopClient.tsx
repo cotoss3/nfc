@@ -127,10 +127,13 @@ export default function ShopClient() {
               alt: product.name
             };
 
+            const stock = dbLocal.getProductStock(product.id);
+            const isOut = stock === 0;
+
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-premium border border-brand-200 group flex flex-col justify-between hover:shadow-2xl transition-all duration-300"
+                className={`bg-white rounded-2xl overflow-hidden shadow-premium border ${isOut ? 'border-red-200 opacity-90' : 'border-brand-200'} group flex flex-col justify-between hover:shadow-2xl transition-all duration-300`}
               >
                 {/* Imagen del Producto */}
                 <div 
@@ -141,17 +144,29 @@ export default function ShopClient() {
                   <div className="absolute top-4 left-4 bg-brand-950 text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full shadow-lg">
                     {details.badge}
                   </div>
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-brand-950 border border-brand-200 text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full shadow">
-                    NFC + QR
-                  </div>
+                  {isOut ? (
+                    <div className="absolute top-4 right-4 bg-red-600 text-white text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full shadow-lg border border-red-400 animate-pulse">
+                      AGOTADO
+                    </div>
+                  ) : (
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-brand-950 border border-brand-200 text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full shadow">
+                      {stock < 10 ? `¡Últimas ${stock} unidades!` : 'NFC + QR'}
+                    </div>
+                  )}
                 </div>
 
                 {/* Contenido e Información del Producto */}
                 <div className="p-6 space-y-5 flex-grow flex flex-col justify-between">
                   <div className="space-y-3">
-                    <span className="text-[10px] font-bold tracking-widest text-brand-400 uppercase block">
-                      {details.categoryLabel}
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold tracking-widest text-brand-400 uppercase block">
+                        {details.categoryLabel}
+                      </span>
+                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded ${isOut ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-green-100 text-green-800 border border-green-200'}`}>
+                        {isOut ? 'Agotado (0 disp.)' : `En Stock (${stock} disp.)`}
+                      </span>
+                    </div>
+
                     <h3 className="text-lg font-black text-brand-950 uppercase tracking-wide group-hover:text-accent-600 transition-colors">
                       {product.name}
                     </h3>
@@ -173,17 +188,32 @@ export default function ShopClient() {
                         <span className="text-[10px] uppercase tracking-wider text-brand-400 block font-semibold">Pago Único</span>
                         <span className="text-2xl font-black text-brand-950">${product.price.toFixed(2)}</span>
                       </div>
-                      <span className="text-xs font-semibold text-green-700 bg-green-50 px-2.5 py-1 rounded border border-green-200 flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5 text-green-600" /> Envío en Panamá
-                      </span>
+                      {isOut ? (
+                        <span className="text-xs font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded border border-red-200">
+                          Sin existencias
+                        </span>
+                      ) : (
+                        <span className="text-xs font-semibold text-green-700 bg-green-50 px-2.5 py-1 rounded border border-green-200 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5 text-green-600" /> Envío en Panamá
+                        </span>
+                      )}
                     </div>
 
-                    <Link
-                      href={`/shop/${product.id}`}
-                      className="shopify-btn-primary w-full py-4 text-xs font-bold uppercase tracking-wider block text-center rounded-xl shadow-md"
-                    >
-                      Personalizar y Comprar
-                    </Link>
+                    {isOut ? (
+                      <button
+                        disabled
+                        className="w-full py-4 text-xs font-bold uppercase tracking-wider block text-center rounded-xl bg-gray-200 text-gray-500 cursor-not-allowed border border-gray-300"
+                      >
+                        Agotado (Sin Stock)
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/shop/${product.id}`}
+                        className="shopify-btn-primary w-full py-4 text-xs font-bold uppercase tracking-wider block text-center rounded-xl shadow-md"
+                      >
+                        Personalizar y Comprar
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>

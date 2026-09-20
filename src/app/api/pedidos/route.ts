@@ -53,6 +53,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validar disponibilidad de inventario en servidor
+    const { dbLocal } = await import('@/lib/db');
+    const stockCheck = dbLocal.validateOrderItemsStock(items);
+    if (!stockCheck.valid) {
+      return NextResponse.json(
+        { success: false, error: stockCheck.message || 'Producto agotado en inventario.' },
+        { status: 400 }
+      );
+    }
+
     const cliente = customer || {};
 
     let total: number;
