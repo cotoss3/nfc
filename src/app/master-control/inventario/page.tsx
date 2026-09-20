@@ -166,19 +166,41 @@ export default function InventarioPage() {
     const initialStocks: { [id: string]: ProductStockInfo } = { ...savedStocks };
 
     dbProducts.forEach((p, idx) => {
+      const pid = p.id.toLowerCase();
+      let defaultQty = 10;
+      if (pid.includes('placa')) defaultQty = 50;
+      else if (pid.includes('tarjeta')) defaultQty = 20;
+      else if (pid.includes('stand')) defaultQty = 0;
+      else if (pid.includes('pack')) defaultQty = 10;
+
       if (!initialStocks[p.id]) {
         initialStocks[p.id] = {
           product_id: p.id,
           sku: `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
           name: p.name,
           category: p.category || 'plates',
-          current_stock: Math.floor(25 + Math.random() * 40),
+          current_stock: defaultQty,
           min_alert_stock: 10,
           unit_cost: p.price * 0.28, // Estimated unit manufacturing cost
           selling_price: p.price,
         };
       }
     });
+
+    // Enforce real inventory count initialization for standard physical items
+    const placaKey = Object.keys(initialStocks).find(k => k === 'placa-nfc-mostrador') || 'placa-nfc-mostrador';
+    const tarjetaKey = Object.keys(initialStocks).find(k => k === 'tarjeta-nfc-bolsillo') || 'tarjeta-nfc-bolsillo';
+    const standKey = Object.keys(initialStocks).find(k => k === 'stand-nfc-mesa') || 'stand-nfc-mesa';
+    const packKey = Object.keys(initialStocks).find(k => k === 'pack-trio-comercial') || 'pack-trio-comercial';
+
+    if (initialStocks[placaKey] && savedStocks[placaKey] === undefined) initialStocks[placaKey].current_stock = 50;
+    if (initialStocks[tarjetaKey] && savedStocks[tarjetaKey] === undefined) initialStocks[tarjetaKey].current_stock = 20;
+    if (initialStocks[standKey] && savedStocks[standKey] === undefined) initialStocks[standKey].current_stock = 0;
+    if (initialStocks[packKey] && savedStocks[packKey] === undefined) {
+      const pStock = initialStocks[placaKey] ? initialStocks[placaKey].current_stock : 50;
+      const tStock = initialStocks[tarjetaKey] ? initialStocks[tarjetaKey].current_stock : 20;
+      initialStocks[packKey].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+    }
 
     setProductStocks(initialStocks);
     dbLocal.setStorageItem('inventory_product_stocks', initialStocks);

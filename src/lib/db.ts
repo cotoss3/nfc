@@ -616,26 +616,113 @@ class LocalDbService {
     const newCardsToSync: NfcCard[] = [];
 
     newOrder.items.forEach((item) => {
+      const pId = (item.product_id || '').toLowerCase();
+      const pName = (item.product_name || '').toLowerCase();
+      const isPack = pId.includes('pack-trio') || pId.includes('pack') || pName.includes('pack');
+
       for (let i = 0; i < item.quantity; i++) {
-        const sttCode = this.getNextStickerCode(item.product_id || item.product_name);
-        const cardObj: NfcCard = {
-          card_id: sttCode,
-          activation_code: sttCode,
-          owner_id: 'user-session',
-          owner_name: newOrder.customer_name,
-          owner_email: newOrder.customer_email.trim().toLowerCase(),
-          label: `${item.product_name} (${sttCode})`,
-          target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
-          is_active: true,
-          claimed: true,
-          type: (item.product_id || '').includes('google') ? 'google' : (item.product_id || '').includes('tripadvisor') ? 'tripadvisor' : (item.product_id || '').includes('instagram') ? 'instagram' : 'vcard',
-          created_at: new Date().toISOString()
-        };
-        cards.push(cardObj);
-        newCardsToSync.push(cardObj);
+        if (isPack) {
+          // El Pack Trío Comercial contiene 1 Placa de Mostrador (STT) + 2 Tarjetas de Bolsillo (STTT)
+          const sttCodePlaca = this.getNextStickerCode('plate');
+          const placaCard: NfcCard = {
+            card_id: sttCodePlaca,
+            activation_code: sttCodePlaca,
+            owner_id: 'user-session',
+            owner_name: newOrder.customer_name,
+            owner_email: newOrder.customer_email.trim().toLowerCase(),
+            label: `${item.product_name} - Placa (${sttCodePlaca})`,
+            target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
+            is_active: true,
+            claimed: true,
+            type: 'google',
+            created_at: new Date().toISOString()
+          };
+          cards.push(placaCard);
+          newCardsToSync.push(placaCard);
+
+          for (let t = 1; t <= 2; t++) {
+            const sttCodeTarjeta = this.getNextStickerCode('card');
+            const tarjetaCard: NfcCard = {
+              card_id: sttCodeTarjeta,
+              activation_code: sttCodeTarjeta,
+              owner_id: 'user-session',
+              owner_name: newOrder.customer_name,
+              owner_email: newOrder.customer_email.trim().toLowerCase(),
+              label: `${item.product_name} - Tarjeta ${t} (${sttCodeTarjeta})`,
+              target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
+              is_active: true,
+              claimed: true,
+              type: 'google',
+              created_at: new Date().toISOString()
+            };
+            cards.push(tarjetaCard);
+            newCardsToSync.push(tarjetaCard);
+          }
+        } else {
+          const sttCode = this.getNextStickerCode(item.product_id || item.product_name);
+          const cardObj: NfcCard = {
+            card_id: sttCode,
+            activation_code: sttCode,
+            owner_id: 'user-session',
+            owner_name: newOrder.customer_name,
+            owner_email: newOrder.customer_email.trim().toLowerCase(),
+            label: `${item.product_name} (${sttCode})`,
+            target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
+            is_active: true,
+            claimed: true,
+            type: (item.product_id || '').includes('google') ? 'google' : (item.product_id || '').includes('tripadvisor') ? 'tripadvisor' : (item.product_id || '').includes('instagram') ? 'instagram' : 'vcard',
+            created_at: new Date().toISOString()
+          };
+          cards.push(cardObj);
+          newCardsToSync.push(cardObj);
+        }
       }
     });
     this.setStorageItem('nfc_cards', cards);
+
+    // Descontar inventario físico en inventory_product_stocks
+    const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
+    let stocksUpdated = false;
+
+    newOrder.items.forEach((item) => {
+      const pId = (item.product_id || '').toLowerCase();
+      const pName = (item.product_name || '').toLowerCase();
+      const isPack = pId.includes('pack-trio') || pId.includes('pack') || pName.includes('pack');
+      const qty = item.quantity || 1;
+
+      if (isPack) {
+        // Descontar 1 Placa y 2 Tarjetas por cada pack
+        const placaKey = Object.keys(productStocks).find(k => k.includes('placa')) || 'placa-nfc-mostrador';
+        const tarjetaKey = Object.keys(productStocks).find(k => k.includes('tarjeta')) || 'tarjeta-nfc-bolsillo';
+
+        if (productStocks[placaKey]) {
+          productStocks[placaKey].current_stock = Math.max(0, productStocks[placaKey].current_stock - (1 * qty));
+          stocksUpdated = true;
+        }
+        if (productStocks[tarjetaKey]) {
+          productStocks[tarjetaKey].current_stock = Math.max(0, productStocks[tarjetaKey].current_stock - (2 * qty));
+          stocksUpdated = true;
+        }
+      } else if (productStocks[item.product_id]) {
+        productStocks[item.product_id].current_stock = Math.max(0, productStocks[item.product_id].current_stock - qty);
+        stocksUpdated = true;
+      }
+    });
+
+    if (stocksUpdated) {
+      // Recalcular stock combo autocalculado del Pack Trío
+      const placaKey = Object.keys(productStocks).find(k => k.includes('placa')) || 'placa-nfc-mostrador';
+      const tarjetaKey = Object.keys(productStocks).find(k => k.includes('tarjeta')) || 'tarjeta-nfc-bolsillo';
+      const packKey = Object.keys(productStocks).find(k => k.includes('pack')) || 'pack-trio-comercial';
+
+      if (productStocks[packKey] && productStocks[placaKey] && productStocks[tarjetaKey]) {
+        const pStock = productStocks[placaKey].current_stock;
+        const tStock = productStocks[tarjetaKey].current_stock;
+        productStocks[packKey].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+      }
+
+      this.setStorageItem('inventory_product_stocks', productStocks);
+    }
 
     // Sincronización Real-Time con Supabase
     if (supabase) {
