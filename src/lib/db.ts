@@ -347,28 +347,24 @@ class LocalDbService {
   getProducts(): Product[] {
     const products = this.getStorageItem<Product[]>('nfc_products', INITIAL_PRODUCTS);
     const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
-    const activeProducts = deletedIds.length === 0
-      ? products
-      : products.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
 
-    // Sincronización continua de catálogo: asegura que fotos, descripciones y especificaciones
-    // de products.ts estén 100% actualizadas en vivo sin desfasajes de caché en navegador o admin
-    return activeProducts.map(p => {
-      const central = getCentralProductById(p.id.trim().toLowerCase());
-      if (central) {
+    // Filtrar únicamente los productos oficiales vigentes del catálogo central PRODUCTS
+    return PRODUCTS
+      .filter(central => !deletedIds.includes(central.id.trim().toLowerCase()))
+      .map(central => {
+        const stored = products.find(p => p.id.trim().toLowerCase() === central.id.toLowerCase());
         return {
-          ...p,
+          id: central.id,
           name: central.name,
           description: central.description,
+          price: stored?.price ?? central.price,
           image: central.image,
           images: central.images,
           material: central.material,
           category: (central.category === 'cards' ? 'cards' : central.category === 'plates' ? 'plates' : 'accessories') as any,
-          price: p.price ?? central.price,
+          type: 'google'
         };
-      }
-      return p;
-    });
+      });
   }
 
   getProductById(id: string): Product | undefined {

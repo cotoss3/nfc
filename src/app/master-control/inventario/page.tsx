@@ -161,49 +161,50 @@ export default function InventarioPage() {
     setProducts(dbProducts);
     setAbandoned(dbAbandoned);
 
-    // Initial Product Stocks setup & persistence
+    // Initial Product Stocks setup & persistence (únicamente los 4 productos oficiales del catálogo)
     const savedStocks = dbLocal.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
-    const initialStocks: { [id: string]: ProductStockInfo } = { ...savedStocks };
+    const cleanStocks: { [id: string]: ProductStockInfo } = {};
 
     dbProducts.forEach((p, idx) => {
+      const existing = savedStocks[p.id];
       const pid = p.id.toLowerCase();
-      let defaultQty = 10;
-      if (pid.includes('placa')) defaultQty = 50;
-      else if (pid.includes('tarjeta')) defaultQty = 20;
-      else if (pid.includes('stand')) defaultQty = 0;
-      else if (pid.includes('pack')) defaultQty = 10;
 
-      if (!initialStocks[p.id]) {
-        initialStocks[p.id] = {
-          product_id: p.id,
-          sku: `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
-          name: p.name,
-          category: p.category || 'plates',
-          current_stock: defaultQty,
-          min_alert_stock: 10,
-          unit_cost: p.price * 0.28, // Estimated unit manufacturing cost
-          selling_price: p.price,
-        };
-      }
+      let defaultQty = 10;
+      if (pid === 'placa-nfc-mostrador') defaultQty = 50;
+      else if (pid === 'tarjeta-nfc-bolsillo') defaultQty = 20;
+      else if (pid === 'stand-nfc-mesa') defaultQty = 0;
+      else if (pid === 'pack-trio-comercial') defaultQty = 10;
+
+      cleanStocks[p.id] = {
+        product_id: p.id,
+        sku: p.sku || `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
+        name: p.name,
+        category: p.category || 'plates',
+        current_stock: existing ? existing.current_stock : defaultQty,
+        min_alert_stock: 10,
+        unit_cost: existing ? existing.unit_cost : Math.round(p.price * 0.28 * 100) / 100,
+        selling_price: p.price,
+      };
     });
 
-    // Enforce real inventory count initialization for standard physical items
-    const placaKey = Object.keys(initialStocks).find(k => k === 'placa-nfc-mostrador') || 'placa-nfc-mostrador';
-    const tarjetaKey = Object.keys(initialStocks).find(k => k === 'tarjeta-nfc-bolsillo') || 'tarjeta-nfc-bolsillo';
-    const standKey = Object.keys(initialStocks).find(k => k === 'stand-nfc-mesa') || 'stand-nfc-mesa';
-    const packKey = Object.keys(initialStocks).find(k => k === 'pack-trio-comercial') || 'pack-trio-comercial';
-
-    if (initialStocks[placaKey] && savedStocks[placaKey] === undefined) initialStocks[placaKey].current_stock = 50;
-    if (initialStocks[tarjetaKey] && savedStocks[tarjetaKey] === undefined) initialStocks[tarjetaKey].current_stock = 20;
-    if (initialStocks[standKey] && savedStocks[standKey] === undefined) initialStocks[standKey].current_stock = 0;
-    if (initialStocks[packKey] && savedStocks[packKey] === undefined) {
-      const pStock = initialStocks[placaKey] ? initialStocks[placaKey].current_stock : 50;
-      const tStock = initialStocks[tarjetaKey] ? initialStocks[tarjetaKey].current_stock : 20;
-      initialStocks[packKey].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+    // Asegurar conteo físico exacto inicial
+    if (cleanStocks['placa-nfc-mostrador'] && savedStocks['placa-nfc-mostrador'] === undefined) {
+      cleanStocks['placa-nfc-mostrador'].current_stock = 50;
+    }
+    if (cleanStocks['tarjeta-nfc-bolsillo'] && savedStocks['tarjeta-nfc-bolsillo'] === undefined) {
+      cleanStocks['tarjeta-nfc-bolsillo'].current_stock = 20;
+    }
+    if (cleanStocks['stand-nfc-mesa'] && savedStocks['stand-nfc-mesa'] === undefined) {
+      cleanStocks['stand-nfc-mesa'].current_stock = 0;
+    }
+    if (cleanStocks['pack-trio-comercial']) {
+      const pStock = cleanStocks['placa-nfc-mostrador'] ? cleanStocks['placa-nfc-mostrador'].current_stock : 50;
+      const tStock = cleanStocks['tarjeta-nfc-bolsillo'] ? cleanStocks['tarjeta-nfc-bolsillo'].current_stock : 20;
+      cleanStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
     }
 
-    setProductStocks(initialStocks);
-    dbLocal.setStorageItem('inventory_product_stocks', initialStocks);
+    setProductStocks(cleanStocks);
+    dbLocal.setStorageItem('inventory_product_stocks', cleanStocks);
 
     // Initial Batches setup
     const savedBatches = dbLocal.getStorageItem<InventoryBatch[]>('inventory_batches', []);
