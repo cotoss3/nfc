@@ -345,59 +345,60 @@ class LocalDbService {
 
   // Métodos de Productos
   getProducts(): Product[] {
-    const products = this.getStorageItem<Product[]>('nfc_products', INITIAL_PRODUCTS);
-    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    const stored = this.getStorageItem<Product[]>('nfc_products', []);
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []).map(id => id.trim().toLowerCase());
 
-    // Filtrar únicamente los productos oficiales vigentes del catálogo central PRODUCTS
-    return PRODUCTS
-      .filter(central => !deletedIds.includes(central.id.trim().toLowerCase()))
-      .map(central => {
-        const stored = products.find(p => p.id.trim().toLowerCase() === central.id.toLowerCase());
-        return {
-          id: central.id,
-          name: central.name,
-          description: central.description,
-          price: stored?.price ?? central.price,
-          image: central.image,
-          images: central.images,
-          material: central.material,
-          category: (central.category === 'cards' ? 'cards' : central.category === 'plates' ? 'plates' : 'accessories') as any,
-          type: 'google'
-        };
-      });
+    const productMap = new Map<string, Product>();
+
+    // 1. Cargar semillas iniciales de config/products.ts como base
+    for (const seed of INITIAL_PRODUCTS) {
+      const seedIdNorm = seed.id.trim().toLowerCase();
+      if (!deletedIds.includes(seedIdNorm)) {
+        productMap.set(seedIdNorm, { ...seed });
+      }
+    }
+
+    // 2. Aplicar sobre-escrituras y/o productos nuevos guardados en nfc_products
+    if (Array.isArray(stored)) {
+      for (const p of stored) {
+        if (!p || !p.id) continue;
+        const normId = p.id.trim().toLowerCase();
+        if (deletedIds.includes(normId)) continue;
+
+        const existing = productMap.get(normId);
+        if (existing) {
+          productMap.set(normId, {
+            ...existing,
+            ...p,
+            name: p.name || existing.name,
+            description: p.description !== undefined ? p.description : existing.description,
+            price: p.price ?? existing.price,
+            image: p.image || existing.image,
+            images: p.images && p.images.length > 0 ? p.images : existing.images,
+            material: p.material !== undefined ? p.material : existing.material,
+            category: p.category || existing.category,
+            type: p.type || existing.type,
+            in_stock: p.in_stock !== undefined ? p.in_stock : existing.in_stock
+          });
+        } else {
+          productMap.set(normId, {
+            ...p,
+            category: p.category || 'plates',
+            type: p.type || 'google'
+          });
+        }
+      }
+    }
+
+    return Array.from(productMap.values());
   }
 
   getProductById(id: string): Product | undefined {
     const normalizedId = id.trim().toLowerCase();
-    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []).map(d => d.trim().toLowerCase());
     if (deletedIds.includes(normalizedId)) return undefined;
 
-    const fromStorage = this.getProducts().find(p => p.id.trim().toLowerCase() === normalizedId);
-    if (fromStorage) {
-      // Sync images with central config to prevent cache invalidation issues
-      const central = getCentralProductById(normalizedId);
-      if (central) {
-        fromStorage.image = central.image;
-        fromStorage.images = central.images;
-      }
-      return fromStorage;
-    }
-
-    const central = getCentralProductById(normalizedId);
-    if (central && !deletedIds.includes(central.id.trim().toLowerCase())) {
-      return {
-        id: central.id,
-        name: central.name,
-        description: central.description,
-        price: central.price,
-        image: central.image,
-        images: central.images,
-        material: central.material,
-        category: (central.category === 'cards' ? 'cards' : central.category === 'plates' ? 'plates' : 'accessories') as any,
-        type: 'google'
-      };
-    }
-    return undefined;
+    return this.getProducts().find(p => p.id.trim().toLowerCase() === normalizedId);
   }
 
   // Consultar stock físico disponible por ID de producto o alias
@@ -463,36 +464,46 @@ class LocalDbService {
   }
 
   updateProductPrice(id: string, newPrice: number): boolean {
-    const products = this.getProducts();
-    const index = products.findIndex(p => p.id === id);
-    if (index !== -1) {
-      products[index].price = newPrice;
-      this.setStorageItem('nfc_products', products);
-      if (supabase) {
-        supabase.from('products').update({ price: newPrice }).eq('id', id).then();
-      }
-      return true;
-    }
-    return false;
+    return this.updateFullProduct(id, { price: newPrice });
   }
 
   updateFullProduct(id: string, updates: Partial<Product>): boolean {
+    const normId = id.trim().toLowerCase();
     const products = this.getProducts();
-    const index = products.findIndex(p => p.id === id);
+    const index = products.findIndex(p => p.id.trim().toLowerCase() === normId);
+
+    let updatedProduct: Product;
     if (index !== -1) {
-      products[index] = {
+      updatedProduct = {
         ...products[index],
         ...updates
       };
-      this.setStorageItem('nfc_products', products);
-      if (supabase) {
-        supabase.from('products').upsert(products[index]).then(({ error }) => {
-          if (error) console.error('Error actualizando producto en Supabase:', error);
-        });
-      }
-      return true;
+      products[index] = updatedProduct;
+    } else {
+      updatedProduct = {
+        id,
+        name: updates.name || id,
+        description: updates.description || '',
+        price: updates.price || 0,
+        image: updates.image || '',
+        images: updates.images || (updates.image ? [updates.image] : []),
+        material: updates.material || '',
+        category: updates.category || 'plates',
+        type: updates.type || 'google',
+        ...updates
+      };
+      products.push(updatedProduct);
     }
-    return false;
+
+    this.setStorageItem('nfc_products', products);
+
+    if (supabase) {
+      supabase.from('products').upsert(updatedProduct).then(({ error }) => {
+        if (error) console.error('Error actualizando producto en Supabase:', error);
+      });
+    }
+
+    return true;
   }
 
   toggleProductStock(id: string, in_stock: boolean): boolean {
@@ -504,25 +515,12 @@ class LocalDbService {
 
     // Si el producto fue eliminado previamente, reactivarlo removiéndolo de la lista de eliminados
     const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
-    if (deletedIds.includes(normalizedId)) {
-      const updatedDeleted = deletedIds.filter(d => d !== normalizedId);
+    if (deletedIds.map(d => d.trim().toLowerCase()).includes(normalizedId)) {
+      const updatedDeleted = deletedIds.filter(d => d.trim().toLowerCase() !== normalizedId);
       this.setStorageItem('nfc_deleted_product_ids', updatedDeleted);
     }
 
-    const products = this.getProducts();
-    const existingIndex = products.findIndex(p => p.id.trim().toLowerCase() === normalizedId);
-    if (existingIndex !== -1) {
-      products[existingIndex] = product;
-    } else {
-      products.unshift(product);
-    }
-    this.setStorageItem('nfc_products', products);
-    if (supabase) {
-      supabase.from('products').upsert(product).then(({ error }) => {
-        if (error) console.error('Error insertando producto en Supabase:', error);
-      });
-    }
-    return true;
+    return this.updateFullProduct(product.id, product);
   }
 
   deleteProduct(id: string): boolean {
@@ -530,15 +528,14 @@ class LocalDbService {
 
     // 1. Guardar el id en la lista persistente de productos eliminados para evitar resembrado
     const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
-    if (!deletedIds.includes(normalizedId)) {
+    if (!deletedIds.map(d => d.trim().toLowerCase()).includes(normalizedId)) {
       deletedIds.push(normalizedId);
       this.setStorageItem('nfc_deleted_product_ids', deletedIds);
     }
 
     // 2. Filtrar de la lista de productos
-    const products = this.getProducts();
-    const filtered = products.filter(p => p.id.trim().toLowerCase() !== normalizedId);
-    this.setStorageItem('nfc_products', filtered);
+    const products = this.getProducts().filter(p => p.id.trim().toLowerCase() !== normalizedId);
+    this.setStorageItem('nfc_products', products);
 
     // 3. Eliminar de Supabase si está configurado
     if (supabase) {

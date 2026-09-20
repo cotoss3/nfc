@@ -103,6 +103,7 @@ export default function ProductosPage() {
         setPriceSuccess(prev => ({ ...prev, [productId]: false }));
       }, 2000);
 
+      dbLocal.updateProductPrice(productId, newPriceVal);
       setProducts(prev =>
         prev.map(p => (p.id === productId ? { ...p, price: newPriceVal } : p))
       );
