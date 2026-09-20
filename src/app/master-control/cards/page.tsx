@@ -37,7 +37,7 @@ export default function CardsManagementPage() {
 
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'unclaimed'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'claimed' | 'unclaimed' | 'active' | 'inactive'>('all');
   const [channelFilter, setChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
 
@@ -109,6 +109,7 @@ export default function CardsManagementPage() {
       const matchSearch =
         !q ||
         card.card_id.toLowerCase().includes(q) ||
+        (card.activation_code && card.activation_code.toLowerCase().includes(q)) ||
         (card.label && card.label.toLowerCase().includes(q)) ||
         (card.owner_name && card.owner_name.toLowerCase().includes(q)) ||
         (card.owner_email && card.owner_email.toLowerCase().includes(q)) ||
@@ -116,9 +117,10 @@ export default function CardsManagementPage() {
 
       const matchStatus =
         statusFilter === 'all' ||
-        (statusFilter === 'active' && card.is_active && card.claimed) ||
-        (statusFilter === 'inactive' && !card.is_active) ||
-        (statusFilter === 'unclaimed' && !card.claimed);
+        (statusFilter === 'claimed' && card.claimed) ||
+        (statusFilter === 'unclaimed' && !card.claimed) ||
+        (statusFilter === 'active' && card.is_active) ||
+        (statusFilter === 'inactive' && !card.is_active);
 
       const matchChannel =
         channelFilter === 'all' || card.channels === channelFilter;
@@ -133,11 +135,12 @@ export default function CardsManagementPage() {
   // Statistics Summary
   const stats = useMemo(() => {
     const total = cards.length;
-    const active = cards.filter(c => c.is_active && c.claimed).length;
+    const claimed = cards.filter(c => c.claimed).length;
+    const active = cards.filter(c => c.is_active).length;
     const inactive = cards.filter(c => !c.is_active).length;
     const unclaimed = cards.filter(c => !c.claimed).length;
     const totalScans = scans.length;
-    return { total, active, inactive, unclaimed, totalScans };
+    return { total, claimed, active, inactive, unclaimed, totalScans };
   }, [cards, scans]);
 
   // Toggle Card Active State Directly
@@ -506,7 +509,7 @@ export default function CardsManagementPage() {
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Buscar por código STT, local o email..."
+                  placeholder="Buscar por cliente (nombre/email) o código STT-XXXX..."
                   className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900"
                 />
               </div>
@@ -516,10 +519,11 @@ export default function CardsManagementPage() {
                 onChange={e => setStatusFilter(e.target.value as any)}
                 className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
               >
-                <option value="all">Todos los Estados</option>
-                <option value="active">Activos en Uso</option>
-                <option value="inactive">Desactivados / Pausados</option>
-                <option value="unclaimed">Sin Asignar (Stock)</option>
+                <option value="all">Todos los Dispositivos (Stock + Clientes)</option>
+                <option value="claimed">Reclamadas por Cliente (Asignadas)</option>
+                <option value="unclaimed">Sin Reclamar (Disponibles en Stock)</option>
+                <option value="active">Activas en Redirección</option>
+                <option value="inactive">Desactivadas / Pausadas</option>
               </select>
 
               <select
@@ -544,7 +548,7 @@ export default function CardsManagementPage() {
                 <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
                   <th className="p-3">Código TAG</th>
                   <th className="p-3">Etiqueta / Local</th>
-                  <th className="p-3">Propietario</th>
+                  <th className="p-3">Información del Cliente / Dueño</th>
                   <th className="p-3 text-center">Estado</th>
                   <th className="p-3 text-center">Acciones de Edición</th>
                 </tr>
@@ -585,8 +589,26 @@ export default function CardsManagementPage() {
                         </td>
 
                         <td className="p-3">
-                          <p className="font-semibold text-slate-800 max-w-[140px] truncate">{c.owner_name || 'En Stock'}</p>
-                          <p className="text-[10px] text-slate-400 font-mono max-w-[140px] truncate">{c.owner_email}</p>
+                          <div className="space-y-0.5">
+                            <p className="font-bold text-slate-900 max-w-[160px] truncate">
+                              {c.owner_name || (c.claimed ? 'Cliente starTAP' : 'Sin Asignar (Stock)')}
+                            </p>
+                            <p className="text-[10px] text-slate-500 font-mono max-w-[160px] truncate">
+                              {c.owner_email || 'admin@startap.com.pa'}
+                            </p>
+                            <div>
+                              {c.claimed ? (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                  <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" />
+                                  Reclamada por Cliente
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-amber-50 text-amber-800 border border-amber-300">
+                                  En Stock (Sin Reclamar)
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </td>
 
                         <td className="p-3 text-center">

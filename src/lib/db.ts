@@ -155,13 +155,13 @@ export const DEFAULT_SEED_CARDS: NfcCard[] = [
   {
     card_id: 'STT-1001',
     activation_code: 'STT-1001',
-    owner_id: 'user-carlos',
-    owner_name: 'Carlos Mendoza',
-    owner_email: 'carlos.mendoza@gmail.com',
+    owner_id: 'unassigned',
+    owner_name: 'Sin Asignar (Stock)',
+    owner_email: 'admin@startap.com.pa',
     label: 'Placa de Mostrador (STT-1001)',
     target_url: 'https://google.com',
-    is_active: true,
-    claimed: true,
+    is_active: false,
+    claimed: false,
     type: 'google',
     created_at: new Date(Date.now() - 3600000 * 48).toISOString()
   }
@@ -943,8 +943,10 @@ class LocalDbService {
   getCardsByOwner(emailOrId: string): NfcCard[] {
     const cleanEmail = emailOrId.trim().toLowerCase();
     return this.getCards().filter(c => 
-      c.owner_email.trim().toLowerCase() === cleanEmail || 
-      c.owner_id === emailOrId
+      Boolean(c.claimed) && (
+        c.owner_email.trim().toLowerCase() === cleanEmail || 
+        (c.owner_id && c.owner_id === emailOrId && c.owner_id !== 'admin' && c.owner_id !== 'unassigned')
+      )
     );
   }
 
@@ -955,10 +957,12 @@ class LocalDbService {
         const { data, error } = await supabase
           .from('nfc_cards')
           .select('*')
+          .eq('claimed', true)
           .or(`owner_email.ilike.${cleanEmail},owner_id.eq.${emailOrId}`);
-        if (!error && data && data.length > 0) {
+        if (!error && data) {
+          const claimedOnly = (data as NfcCard[]).filter(c => Boolean(c.claimed) && c.owner_email?.trim().toLowerCase() === cleanEmail);
           const currentCards = this.getCards();
-          data.forEach(remoteCard => {
+          claimedOnly.forEach(remoteCard => {
             const idx = currentCards.findIndex(c => c.card_id === remoteCard.card_id);
             if (idx !== -1) {
               currentCards[idx] = remoteCard;
@@ -967,7 +971,7 @@ class LocalDbService {
             }
           });
           this.setStorageItem('nfc_cards', currentCards);
-          return data;
+          return claimedOnly;
         }
       } catch (err) {
         console.error('Error cargando tarjetas por usuario desde Supabase:', err);
