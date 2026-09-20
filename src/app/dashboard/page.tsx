@@ -56,6 +56,12 @@ function DashboardContent() {
   const [newGroupNameInput, setNewGroupNameInput] = useState('');
   const [createGroupSuccess, setCreateGroupSuccess] = useState(false);
 
+  // Bulk selection & Group Assignment state
+  const [selectedCardIds, setSelectedCardIds] = useState<string[]>([]);
+  const [bulkGroupTarget, setBulkGroupTarget] = useState('General');
+  const [claimGroupInput, setClaimGroupInput] = useState('General');
+  const [bulkSuccessMsg, setBulkSuccessMsg] = useState('');
+
   // Claim state
   const [claimInput, setClaimInput] = useState('');
   const [claimMessage, setClaimMessage] = useState<{ success: boolean; text: string } | null>(null);
@@ -66,6 +72,113 @@ function DashboardContent() {
 
   // Analytics states
   const [allScans, setAllScans] = useState<ScanRecord[]>([]);
+
+  const handleClaimTap = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!claimInput || !userEmail) return;
+
+    const rawCodes = claimInput
+      .split(/[\n,\s]+/)
+      .map(c => c.trim())
+      .filter(Boolean);
+
+    if (rawCodes.length === 0) return;
+
+    let successCount = 0;
+    let lastMsg = '';
+
+    for (const code of rawCodes) {
+      const res = dbLocal.claimCard(code, userEmail, userName, claimGroupInput);
+      if (res.success) {
+        successCount++;
+        lastMsg = res.message;
+      }
+    }
+
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error sincronizando lote al reclamar:', err);
+    }
+
+    if (successCount > 0) {
+      setClaimMessage({
+        success: true,
+        text: rawCodes.length > 1
+          ? `¡Se vincularon ${successCount} dispositivos al grupo "${claimGroupInput}" exitosamente!`
+          : lastMsg
+      });
+      loadUserData(userEmail);
+      setTimeout(() => {
+        setIsClaimModalOpen(false);
+        setClaimMessage(null);
+        setClaimInput('');
+      }, 1500);
+    } else {
+      setClaimMessage({ success: false, text: 'No se pudo vincular ninguno de los códigos ingresados.' });
+    }
+  };
+
+  const handleSelectAllCards = () => {
+    if (selectedCardIds.length === filteredCards.length) {
+      setSelectedCardIds([]);
+    } else {
+      setSelectedCardIds(filteredCards.map(c => c.card_id));
+    }
+  };
+
+  const handleToggleSelectCard = (cardId: string) => {
+    setSelectedCardIds(prev =>
+      prev.includes(cardId) ? prev.filter(id => id !== cardId) : [...prev, cardId]
+    );
+  };
+
+  const handleBulkAssignGroup = async () => {
+    if (selectedCardIds.length === 0 || !userEmail) return;
+
+    dbLocal.bulkUpdateCardsGroup(selectedCardIds, bulkGroupTarget, userEmail);
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error en asignación masiva de grupo:', err);
+    }
+
+    setBulkSuccessMsg(`¡Se asignaron ${selectedCardIds.length} tarjeta(s) al grupo "${bulkGroupTarget}"!`);
+    loadUserData(userEmail);
+    setSelectedCardIds([]);
+    setTimeout(() => setBulkSuccessMsg(''), 3000);
+  };
+
+  const handleBulkToggleActive = async (isActive: boolean) => {
+    if (selectedCardIds.length === 0 || !userEmail) return;
+
+    dbLocal.bulkUpdateCardsActiveStatus(selectedCardIds, isActive, userEmail);
+    try {
+      const allCards = dbLocal.getCards();
+      await fetch('/api/cards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+      });
+    } catch (err) {
+      console.error('Error en cambio masivo de estado:', err);
+    }
+
+    setBulkSuccessMsg(`¡Se ${isActive ? 'activaron' : 'desactivaron'} ${selectedCardIds.length} tarjeta(s)!`);
+    loadUserData(userEmail);
+    setSelectedCardIds([]);
+    setTimeout(() => setBulkSuccessMsg(''), 3000);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -388,34 +501,6 @@ function DashboardContent() {
     setNewGroupNameInput('');
     setCreateGroupSuccess(true);
     setTimeout(() => setCreateGroupSuccess(false), 2000);
-  };
-
-  const handleClaimTap = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!claimInput || !userEmail) return;
-
-    const res = dbLocal.claimCard(claimInput, userEmail, userName);
-    try {
-      const allCards = dbLocal.getCards();
-      await fetch('/api/cards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
-      });
-    } catch (err) {
-      console.error('Error sincronizando al reclamar:', err);
-    }
-
-    setClaimMessage({ success: res.success, text: res.message });
-
-    if (res.success) {
-      loadUserData(userEmail);
-      setTimeout(() => {
-        setIsClaimModalOpen(false);
-        setClaimMessage(null);
-        setClaimInput('');
-      }, 1500);
-    }
   };
 
   const copyToClipboard = (text: string, label: string) => {
@@ -834,9 +919,89 @@ function DashboardContent() {
                   
                   {/* Left Column: Device Selector List */}
                   <div className="lg:col-span-5 space-y-3">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
-                      <span>Tarjetas Registradas ({filteredCards.length})</span>
+                    <div className="flex flex-wrap items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1 gap-2">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={filteredCards.length > 0 && selectedCardIds.length === filteredCards.length}
+                          onChange={handleSelectAllCards}
+                          className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 cursor-pointer"
+                        />
+                        <span>Tarjetas ({filteredCards.length})</span>
+                      </div>
+                      <button
+                        onClick={() => setIsClaimModalOpen(true)}
+                        className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 border border-amber-300 rounded-lg text-[11px] font-bold flex items-center gap-1 transition"
+                      >
+                        <Plus className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Vincular Lote</span>
+                      </button>
                     </div>
+
+                    {/* Mensaje de Confirmación de Acción en Grupo */}
+                    {bulkSuccessMsg && (
+                      <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl shadow-sm animate-pulse">
+                        {bulkSuccessMsg}
+                      </div>
+                    )}
+
+                    {/* Barra de Acciones Masivas / Gestión en Grupo */}
+                    {selectedCardIds.length > 0 && (
+                      <div className="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-2.5 shadow-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-amber-900 uppercase tracking-wider">
+                            ⚡ {selectedCardIds.length} tarjeta(s) seleccionada(s)
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCardIds([])}
+                            className="text-[10px] font-bold text-slate-500 hover:text-slate-900 underline"
+                          >
+                            Limpiar selección
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={bulkGroupTarget}
+                              onChange={(e) => setBulkGroupTarget(e.target.value)}
+                              className="flex-1 bg-white border border-slate-300 text-xs rounded-xl px-3 py-1.5 text-slate-800 font-medium focus:outline-none focus:border-slate-900"
+                            >
+                              <option value="General">Grupo: General</option>
+                              {groupsList.filter(g => g !== 'General').map(g => (
+                                <option key={g} value={g}>Grupo: {g}</option>
+                              ))}
+                            </select>
+
+                            <button
+                              type="button"
+                              onClick={handleBulkAssignGroup}
+                              className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition shrink-0"
+                            >
+                              Asignar Grupo
+                            </button>
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleBulkToggleActive(true)}
+                              className="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] uppercase tracking-wider rounded-xl transition shadow-sm"
+                            >
+                              Activar Grupo
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleBulkToggleActive(false)}
+                              className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] uppercase tracking-wider rounded-xl transition shadow-sm"
+                            >
+                              Desactivar Grupo
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {filteredCards.length === 0 ? (
                       <div className="p-8 bg-white border border-slate-200 rounded-2xl text-center space-y-3 shadow-sm">
@@ -846,12 +1011,13 @@ function DashboardContent() {
                           onClick={() => setIsClaimModalOpen(true)}
                           className="px-4 py-2 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl"
                         >
-                          Reclamar Dispositivo
+                          Reclamar Lote de Dispositivos
                         </button>
                       </div>
                     ) : (
                       filteredCards.map((card) => {
                         const isSelected = selectedCard?.card_id === card.card_id;
+                        const isChecked = selectedCardIds.includes(card.card_id);
                         const hasNfc = !!(card.nfc_target_url || card.target_url);
                         const hasQr = !!card.qr_target_url;
 
@@ -866,16 +1032,28 @@ function DashboardContent() {
                             }`}
                           >
                             <div className="flex items-start justify-between">
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-900">{card.label}</span>
-                                  <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-100 border border-slate-200 text-amber-700 font-bold rounded-md">
-                                    {card.card_id}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                                  <Folder className="w-3 h-3 text-slate-400" />
-                                  <span>{card.group_name || 'General'}</span>
+                              <div className="flex items-start gap-3">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    handleToggleSelectCard(card.card_id);
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="w-4 h-4 mt-0.5 rounded text-amber-500 focus:ring-amber-500 cursor-pointer"
+                                />
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs font-bold text-slate-900">{card.label}</span>
+                                    <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-100 border border-slate-200 text-amber-700 font-bold rounded-md">
+                                      {card.card_id}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                                    <Folder className="w-3 h-3 text-slate-400" />
+                                    <span className="font-semibold text-slate-700">{card.group_name || 'General'}</span>
+                                  </div>
                                 </div>
                               </div>
 
@@ -1410,12 +1588,15 @@ function DashboardContent() {
         <span>Vincular Placa</span>
       </button>
 
-      {/* ---------------- CLAIM DEVICE MODAL ---------------- */}
+      {/* ---------------- CLAIM DEVICE MODAL (SINGLE / BATCH GROUP LINKING) ---------------- */}
       {isClaimModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-bold text-slate-900 text-sm">Vincular Nueva Placa STTT-XXXX</h3>
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">Vincular Dispositivo o Lote en Grupo</h3>
+                <p className="text-[11px] text-slate-500">Agrega uno o varios códigos STT-XXXX / STTT-XXXX al grupo deseado.</p>
+              </div>
               <button
                 onClick={() => setIsClaimModalOpen(false)}
                 className="text-slate-400 hover:text-slate-900 text-xs font-bold"
@@ -1432,22 +1613,37 @@ function DashboardContent() {
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Código de Activación del Sticker</label>
-                <input
-                  type="text"
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Grupo / Sucursal Destino</label>
+                <select
+                  value={claimGroupInput}
+                  onChange={(e) => setClaimGroupInput(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-slate-900"
+                >
+                  <option value="General">Grupo: General</option>
+                  {groupsList.filter(g => g !== 'General').map(g => (
+                    <option key={g} value={g}>Grupo: {g}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Código(s) de Activación (Uno o varios por lote)</label>
+                <textarea
+                  rows={3}
                   required
                   value={claimInput}
                   onChange={(e) => setClaimInput(e.target.value)}
-                  placeholder="Ej. STTT-1002"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 font-mono uppercase focus:outline-none focus:border-slate-900"
+                  placeholder="Ej. STT-1001, STT-1002, STTT-1005 (separados por comas o saltos de línea)"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono uppercase focus:outline-none focus:border-slate-900"
                 />
+                <p className="text-[10px] text-slate-400 mt-1">Puedes ingresar múltiples códigos separados por comas o líneas para registrarlos en lote al grupo seleccionado.</p>
               </div>
 
               <button
                 type="submit"
                 className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-sm"
               >
-                Vincular a mi Cuenta
+                Vincular Lote al Grupo
               </button>
             </form>
           </div>

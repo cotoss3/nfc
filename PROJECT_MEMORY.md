@@ -642,3 +642,36 @@ https://www.yappy.com.pa/comercial/desarrolladores/boton-de-pago-yappy-nueva-int
 - `getCards()` y `getNextStickerCode()` en `db.ts` restringen el inventario exclusivamente a las 50 unidades reales (`STT-1001` a `STT-1050`).
 
 `npx tsc --noEmit` limpio, cambios subidos a `origin main`.
+
+## 20 sep 2026 (cont. 3) · Auditoría de inventario y tags
+
+→ `AUDITORIA_INVENTARIO_TAGS.md` (nuevo).
+
+**Lo urgente:** `getCards()`/`getCardsAsync()` (`db.ts:1099,1105,1123,1129`)
+filtran con un techo escrito a mano `STT- <= 1050` / `STTT- <= 1020`, y los
+máximos reales son exactamente 1050 y 1020. La próxima venta genera `STT-1051`,
+queda invisible, y `getNextStickerCode()` vuelve a emitir el mismo código para
+todos los pedidos siguientes. Peor: `getCardsAsync` hace
+`setStorageItem('nfc_cards', validOnly)` — reescribe el storage con la lista
+recortada, así que borra de verdad las tarjetas por encima del techo cada vez
+que se abre el panel. Todas las escrituras son `upsert`: un código repetido
+sobrescribe al cliente anterior en silencio.
+
+**Otros hallazgos:** el stock no se descuenta en el servidor (vive en
+`createOrder` del navegador del comprador); tres sistemas de stock incompatibles
+y el botón "Agotado" no persiste porque `getProducts()` descarta `in_stock`; sin
+control de sobreventa; el Kardex no registra salidas por venta; `nfc_cards` no
+tiene `order_id`; `getCardById` crea tarjetas solo con visitar `/r/STT-9999`; el
+panel lee `nfc_scans` (inexistente) y escribe en `scans`, así que el contador de
+escaneos muestra 45 registros generados con `Math.random()`; `POST /api/cards`
+no tiene autenticación y sobrescribe `nfc_cards` entero.
+
+**Rendimiento: está bien.** Sin N+1, agregados memoizados, `useEffect`
+correctos. No tocar. El DOM empieza a doler a ~2.000 tarjetas (hoy 70). Lo único
+que desborda pronto son los escaneos (topes de 500 local y 1.000 de PostgREST,
+semanas). Basura a borrar: `setInterval` de `onlineUsers` en
+`inventario/page.tsx:281-284`, que re-renderiza 1.291 líneas cada 12 s para un
+valor que no se muestra.
+
+**Dato corregido:** `db_store.json` tiene 70 tarjetas y 4 productos (no 107/11
+como decía la auditoría anterior).

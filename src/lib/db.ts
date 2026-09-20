@@ -1441,11 +1441,12 @@ class LocalDbService {
     return { success: true, message: 'Dispositivo desvinculado exitosamente de tu cuenta.' };
   }
 
-  claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = ''): { success: boolean; message: string; card?: NfcCard } {
+  claimCard(codeOrCardId: string, ownerEmail: string, ownerName: string = '', groupName: string = 'General'): { success: boolean; message: string; card?: NfcCard } {
     const cards = this.getCards();
     const resolvedId = this.resolveCardId(codeOrCardId, cards);
     const cleanEmail = ownerEmail.trim().toLowerCase();
-    
+    const cleanGroup = groupName.trim() || 'General';
+
     let cardIndex = cards.findIndex(c => 
       c.card_id.toLowerCase() === resolvedId.toLowerCase() || 
       (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
@@ -1456,11 +1457,12 @@ class LocalDbService {
       if (card.claimed && card.owner_email && card.owner_email.trim().toLowerCase() !== cleanEmail) {
         return { success: false, message: '⚠️ Este dispositivo ya está registrado y pertenece a otra cuenta de comercio.' };
       }
-      
+
       cards[cardIndex] = {
         ...card,
         owner_email: cleanEmail,
         owner_name: ownerName || cleanEmail.split('@')[0],
+        group_name: cleanGroup,
         claimed: true
       };
       this.setStorageItem('nfc_cards', cards);
@@ -1469,6 +1471,7 @@ class LocalDbService {
         supabase.from('nfc_cards').update({
           owner_email: cleanEmail,
           owner_name: ownerName || cleanEmail.split('@')[0],
+          group_name: cleanGroup,
           claimed: true
         }).eq('card_id', card.card_id).then();
       }
@@ -1486,9 +1489,10 @@ class LocalDbService {
       owner_id: 'user-' + Date.now(),
       owner_name: ownerName || cleanEmail.split('@')[0],
       owner_email: cleanEmail,
+      group_name: cleanGroup,
       label: `Dispositivo TAP (${rawCode})`,
       target_url: 'https://google.com',
-      is_active: false, // REQUIERE HABILITACIÓN DE ADMIN
+      is_active: false,
       claimed: true,
       type: 'google',
       created_at: new Date().toISOString()
@@ -1501,7 +1505,60 @@ class LocalDbService {
       supabase.from('nfc_cards').upsert(newCard).then();
     }
 
-    return { success: true, message: '¡Dispositivo vinculado a tu negocio! (Pendiente de activación por Administrador)', card: newCard };
+    return { success: true, message: '¡Dispositivo vinculado a tu negocio!', card: newCard };
+  }
+
+  bulkUpdateCardsGroup(cardIds: string[], groupName: string, requestingEmail: string): { success: boolean; updatedCount: number } {
+    const cards = this.getCards();
+    const cleanEmail = requestingEmail.trim().toLowerCase();
+    const cleanGroup = groupName.trim() || 'General';
+    let count = 0;
+
+    const updated = cards.map(c => {
+      const isOwner = c.owner_email && c.owner_email.trim().toLowerCase() === cleanEmail;
+      if (cardIds.includes(c.card_id) && (isOwner || !c.claimed)) {
+        count++;
+        return {
+          ...c,
+          group_name: cleanGroup,
+          owner_email: cleanEmail,
+          claimed: true
+        };
+      }
+      return c;
+    });
+
+    this.setStorageItem('nfc_cards', updated);
+    if (supabase && count > 0) {
+      supabase.from('nfc_cards').update({ group_name: cleanGroup }).in('card_id', cardIds).then();
+    }
+
+    return { success: true, updatedCount: count };
+  }
+
+  bulkUpdateCardsActiveStatus(cardIds: string[], isActive: boolean, requestingEmail: string): { success: boolean; updatedCount: number } {
+    const cards = this.getCards();
+    const cleanEmail = requestingEmail.trim().toLowerCase();
+    let count = 0;
+
+    const updated = cards.map(c => {
+      const isOwner = c.owner_email && c.owner_email.trim().toLowerCase() === cleanEmail;
+      if (cardIds.includes(c.card_id) && (isOwner || !c.claimed)) {
+        count++;
+        return {
+          ...c,
+          is_active: isActive
+        };
+      }
+      return c;
+    });
+
+    this.setStorageItem('nfc_cards', updated);
+    if (supabase && count > 0) {
+      supabase.from('nfc_cards').update({ is_active: isActive }).in('card_id', cardIds).then();
+    }
+
+    return { success: true, updatedCount: count };
   }
 
   // Métodos de Usuarios
