@@ -393,40 +393,6 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
                 </div>
               )}
 
-              {/* Author Box */}
-              {autor && (
-                <div className="rounded-2xl border border-brand-200/90 bg-brand-50/50 p-6 shadow-xs">
-                  <div className="flex items-center gap-3 mb-3">
-                    {autor.foto ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={autor.foto}
-                        alt={autor.nombre}
-                        className="w-12 h-12 rounded-full object-cover border border-brand-200 shadow-xs"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-accent-100 text-accent-600 flex items-center justify-center font-bold">
-                        <UserCheck className="w-6 h-6" />
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="font-bold text-brand-950 text-sm">{autor.nombre}</h3>
-                      <p className="text-xs text-brand-500">{autor.cargo}</p>
-                    </div>
-                  </div>
-                  <p className="text-xs text-brand-600 leading-relaxed mb-4">
-                    {autor.bio}
-                  </p>
-                  <Link
-                    href={`/autor/${autor.slug}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-accent-600 hover:text-accent-700 transition"
-                  >
-                    Ver perfil completo
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              )}
-
               {/* Sidebar CTA */}
               <div className="rounded-2xl border border-accent-200/80 bg-gradient-to-br from-accent-50 to-orange-50/40 p-5 shadow-xs">
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -473,6 +439,40 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
                   </Link>
                 </div>
               </div>
+
+              {/* Author Box (Fundador / Autor al final) */}
+              {autor && (
+                <div className="rounded-2xl border border-brand-200/90 bg-brand-50/50 p-6 shadow-xs">
+                  <div className="flex items-center gap-3 mb-3">
+                    {autor.foto ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={autor.foto}
+                        alt={autor.nombre}
+                        className="w-12 h-12 rounded-full object-cover border border-brand-200 shadow-xs"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-accent-100 text-accent-600 flex items-center justify-center font-bold">
+                        <UserCheck className="w-6 h-6" />
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-bold text-brand-950 text-sm">{autor.nombre}</h3>
+                      <p className="text-xs text-brand-500">{autor.cargo}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-brand-600 leading-relaxed mb-4">
+                    {autor.bio}
+                  </p>
+                  <Link
+                    href={`/autor/${autor.slug}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-accent-600 hover:text-accent-700 transition"
+                  >
+                    Ver perfil completo
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              )}
 
             </aside>
           </div>
