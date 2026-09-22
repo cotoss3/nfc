@@ -116,6 +116,8 @@ export default function InventarioPage() {
   const [endDate, setEndDate] = useState<string>('');
 
   // TAG Hardware Inventory State
+  const [tagHardwareType, setTagHardwareType] = useState<'stand' | 'plate' | 'card'>('stand');
+  const [tagHardwareFilter, setTagHardwareFilter] = useState<'all' | 'stand' | 'plate' | 'card'>('all');
   const [tagSearch, setTagSearch] = useState('');
   const [tagChannelFilter, setTagChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
   const [tagClaimFilter, setTagClaimFilter] = useState<'all' | 'claimed' | 'unclaimed'>('all');
@@ -220,8 +222,9 @@ export default function InventarioPage() {
       cleanStocks['tarjeta-nfc-bolsillo'].unit_cost = 1.50;
     }
     if (cleanStocks['stand-nfc-mesa']) {
-      if (savedStocks['stand-nfc-mesa'] === undefined) cleanStocks['stand-nfc-mesa'].current_stock = 0;
+      cleanStocks['stand-nfc-mesa'].current_stock = 100;
       cleanStocks['stand-nfc-mesa'].unit_cost = 2.00;
+      cleanStocks['stand-nfc-mesa'].selling_price = 35.00;
     }
     if (cleanStocks['pack-trio-comercial']) {
       const pStock = cleanStocks['placa-nfc-mostrador'] ? cleanStocks['placa-nfc-mostrador'].current_stock : 50;
@@ -237,6 +240,18 @@ export default function InventarioPage() {
     // Initial Batches setup con costos unitarios oficiales
     const savedBatches = dbLocal.getStorageItem<InventoryBatch[]>('inventory_batches', []);
     const defaultInitialBatches: InventoryBatch[] = [
+      {
+        id: 'LOTE-2026-10S',
+        product_id: 'stand-nfc-mesa',
+        product_name: 'Stand NFC para Reseñas de Google',
+        quantity_initial: 100,
+        quantity_remaining: 100,
+        unit_cost: 2.00,
+        supplier: 'Shenzhen Micro-NFC Tech',
+        received_at: new Date().toISOString(),
+        status: 'active',
+        notes: 'Stand Acrílico triangular 3mm + Impresión UV + Chip NTAG216',
+      },
       {
         id: 'LOTE-2026-09A',
         product_id: 'placa-nfc-mostrador',
@@ -308,7 +323,9 @@ export default function InventarioPage() {
 
     setBatchProductSelect(dbProducts[0]?.id || '');
     setBatchCodeInput(`LOTE-2026-${(batches.length + 10).toString()}`);
-    setTagCode(dbLocal.getNextStickerCode());
+    const initialTagCode = dbLocal.getNextStickerCode('stand');
+    setTagCode(initialTagCode);
+    setTagLabel(`Stand NFC de Mesa (${initialTagCode})`);
     setLoading(false);
   };
 
@@ -324,6 +341,7 @@ export default function InventarioPage() {
     const totalPhysicalUnits = physicalItems.reduce((sum, item) => sum + (item.current_stock || 0), 0);
     const totalValuationCost = physicalItems.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.unit_cost || 0)), 0);
     const totalRetailValuation = physicalItems.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.selling_price || 0)), 0);
+
     const lowStockCount = stockList.filter(item => (item.current_stock || 0) <= (item.min_alert_stock || 10) && (item.current_stock || 0) > 0).length;
     const outOfStockCount = stockList.filter(item => (item.current_stock || 0) === 0).length;
     const activeBatchesCount = (batches || []).filter(b => b && b.status === 'active').length;
@@ -365,6 +383,53 @@ export default function InventarioPage() {
       return matchSearch && matchCategory && matchStatus;
     });
   }, [productStocks, productSearch, categoryFilter, stockStatusFilter]);
+
+  // Switch Hardware Type for new TAG
+  const handleHardwareTypeChange = (type: 'stand' | 'plate' | 'card') => {
+    setTagHardwareType(type);
+    const nextCode = dbLocal.getNextStickerCode(type);
+    setTagCode(nextCode);
+    const labelMap: Record<'stand' | 'plate' | 'card', string> = {
+      stand: 'Stand NFC de Mesa',
+      plate: 'Placa NFC de Mostrador',
+      card: 'Tarjeta NFC de Bolsillo',
+    };
+    setTagLabel(`${labelMap[type]} (${nextCode})`);
+  };
+
+  // Filtered TAG Cards Memo
+  const filteredCards = useMemo(() => {
+    return cards.filter(card => {
+      const q = tagSearch.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        card.card_id.toLowerCase().includes(q) ||
+        (card.label && card.label.toLowerCase().includes(q)) ||
+        (card.owner_name && card.owner_name.toLowerCase().includes(q)) ||
+        (card.owner_email && card.owner_email.toLowerCase().includes(q));
+
+      const matchClaim =
+        tagClaimFilter === 'all' ||
+        (tagClaimFilter === 'claimed' && card.claimed) ||
+        (tagClaimFilter === 'unclaimed' && !card.claimed);
+
+      const matchChannel =
+        tagChannelFilter === 'all' || card.channels === tagChannelFilter;
+
+      const codeUpper = (card.card_id || card.activation_code || '').toUpperCase();
+      const isStand = codeUpper.startsWith('STTS-') || (card.label && card.label.toLowerCase().includes('stand'));
+      const isCard = codeUpper.startsWith('STTT-') || (card.label && card.label.toLowerCase().includes('tarjeta'));
+      const isPlate = !isStand && !isCard;
+
+      const matchHardware =
+        tagHardwareFilter === 'all' ||
+        (tagHardwareFilter === 'stand' && isStand) ||
+        (tagHardwareFilter === 'card' && isCard) ||
+        (tagHardwareFilter === 'plate' && isPlate);
+
+      return matchSearch && matchClaim && matchChannel && matchHardware;
+    });
+  }, [cards, tagSearch, tagClaimFilter, tagChannelFilter, tagHardwareFilter]);
 
   // Handle Manual Stock Adjustment (+ / -)
   const handleAdjustStock = (productId: string, delta: number) => {
@@ -548,11 +613,17 @@ export default function InventarioPage() {
     }
 
     setTagSuccessMsg(`¡TAG "${newCardObj.card_id}" creado exitosamente!`);
-    setTagLabel('');
+    const nextTagCode = dbLocal.getNextStickerCode(tagHardwareType);
+    setTagCode(nextTagCode);
+    const labelMap: Record<'stand' | 'plate' | 'card', string> = {
+      stand: 'Stand NFC de Mesa',
+      plate: 'Placa NFC de Mostrador',
+      card: 'Tarjeta NFC de Bolsillo',
+    };
+    setTagLabel(`${labelMap[tagHardwareType]} (${nextTagCode})`);
     setTagUrl('');
     setTagOwnerEmail('');
     setTagOwnerName('');
-    setTagCode(dbLocal.getNextStickerCode());
     setTimeout(() => setTagSuccessMsg(''), 4000);
   };
 
@@ -1145,7 +1216,7 @@ export default function InventarioPage() {
                 <div>
                   <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                     <QrCode className="w-5 h-5 text-amber-500" />
-                    Programar Dispositivo TAG (STT-XXXX)
+                    Programar Dispositivo TAG
                   </h2>
                   <p className="text-xs text-slate-500">Asigna el código de pegatina a la URL de redirección final.</p>
                 </div>
@@ -1158,6 +1229,77 @@ export default function InventarioPage() {
                 </div>
               )}
 
+              {/* Selector de Hardware / Formato */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">
+                  Formato de Dispositivo / Hardware *
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleHardwareTypeChange('stand')}
+                    className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-between ${
+                      tagHardwareType === 'stand'
+                        ? 'border-amber-500 bg-amber-50/50 ring-2 ring-amber-500/20 shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full mb-1">
+                      <span className="text-sm">🏢</span>
+                      <span className={`text-[9px] font-mono font-black px-1.5 py-0.5 rounded ${
+                        tagHardwareType === 'stand' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        STTS-
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-black text-slate-900 leading-tight">Stand NFC</p>
+                    <p className="text-[9px] text-slate-500">Mesa / Mostrador</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleHardwareTypeChange('plate')}
+                    className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-between ${
+                      tagHardwareType === 'plate'
+                        ? 'border-amber-500 bg-amber-50/50 ring-2 ring-amber-500/20 shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full mb-1">
+                      <span className="text-sm">🏷️</span>
+                      <span className={`text-[9px] font-mono font-black px-1.5 py-0.5 rounded ${
+                        tagHardwareType === 'plate' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        STT-
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-black text-slate-900 leading-tight">Placa NFC</p>
+                    <p className="text-[9px] text-slate-500">Acrílica Pequeña</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleHardwareTypeChange('card')}
+                    className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-between ${
+                      tagHardwareType === 'card'
+                        ? 'border-amber-500 bg-amber-50/50 ring-2 ring-amber-500/20 shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full mb-1">
+                      <span className="text-sm">💳</span>
+                      <span className={`text-[9px] font-mono font-black px-1.5 py-0.5 rounded ${
+                        tagHardwareType === 'card' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        STTT-
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-black text-slate-900 leading-tight">Tarjeta NFC</p>
+                    <p className="text-[9px] text-slate-500">PVC Bolsillo</p>
+                  </button>
+                </div>
+              </div>
+
               <form onSubmit={handleCreateTag} className="space-y-4 text-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
@@ -1167,7 +1309,7 @@ export default function InventarioPage() {
                       required
                       value={tagCode}
                       onChange={e => setTagCode(e.target.value)}
-                      placeholder="Ej. STT-1050"
+                      placeholder="Ej. STTS-1001"
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
                     />
                   </div>
@@ -1179,7 +1321,7 @@ export default function InventarioPage() {
                       required
                       value={tagLabel}
                       onChange={e => setTagLabel(e.target.value)}
-                      placeholder="Ej. Placa Mostrador - Café Panamá"
+                      placeholder="Ej. Stand NFC - Café Panamá"
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
                     />
                   </div>
@@ -1262,16 +1404,90 @@ export default function InventarioPage() {
               </form>
             </div>
 
-            {/* RIGHT: LISTADO DE TAGS REGISTRADOS */}
+            {/* RIGHT: LISTADO DE TAGS REGISTRADOS CON FILTRO POR DISPOSITIVO */}
             <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
               <div className="p-5 bg-slate-50 border-b border-slate-200 space-y-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                       <QrCode className="w-5 h-5 text-slate-700" />
-                      Inventario de TAGs Registrados ({cards.length})
+                      Inventario de TAGs Registrados ({filteredCards.length})
                     </h2>
                     <p className="text-xs text-slate-500">Fichas activas y listas para clientes.</p>
+                  </div>
+                </div>
+
+                {/* Filtros de Hardware y Búsqueda */}
+                <div className="space-y-2 pt-1">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        value={tagSearch}
+                        onChange={e => setTagSearch(e.target.value)}
+                        placeholder="Buscar por serial, local o propietario..."
+                        className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pills de formato de dispositivo */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setTagHardwareFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                        tagHardwareFilter === 'all'
+                          ? 'bg-slate-900 text-white shadow-xs'
+                          : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      <span>Todos los Formatos</span>
+                      <span className="text-[10px] opacity-75 font-mono">({cards.length})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTagHardwareFilter('stand')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                        tagHardwareFilter === 'stand'
+                          ? 'bg-amber-500 text-white shadow-xs'
+                          : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      <span>🏢 Stands NFC (STTS-)</span>
+                      <span className="text-[10px] opacity-75 font-mono">
+                        ({cards.filter(c => (c.card_id || '').toUpperCase().startsWith('STTS-') || (c.label && c.label.toLowerCase().includes('stand'))).length})
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTagHardwareFilter('plate')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                        tagHardwareFilter === 'plate'
+                          ? 'bg-amber-500 text-white shadow-xs'
+                          : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      <span>🏷️ Placas (STT-)</span>
+                      <span className="text-[10px] opacity-75 font-mono">
+                        ({cards.filter(c => !(c.card_id || '').toUpperCase().startsWith('STTS-') && !(c.card_id || '').toUpperCase().startsWith('STTT-') && !(c.label && (c.label.toLowerCase().includes('stand') || c.label.toLowerCase().includes('tarjeta')))).length})
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTagHardwareFilter('card')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                        tagHardwareFilter === 'card'
+                          ? 'bg-amber-500 text-white shadow-xs'
+                          : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      <span>💳 Tarjetas (STTT-)</span>
+                      <span className="text-[10px] opacity-75 font-mono">
+                        ({cards.filter(c => (c.card_id || '').toUpperCase().startsWith('STTT-') || (c.label && c.label.toLowerCase().includes('tarjeta'))).length})
+                      </span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1281,6 +1497,7 @@ export default function InventarioPage() {
                   <thead>
                     <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
                       <th className="p-3">Serial TAG</th>
+                      <th className="p-3">Formato</th>
                       <th className="p-3">Etiqueta</th>
                       <th className="p-3">Red</th>
                       <th className="p-3">Propietario</th>
@@ -1288,19 +1505,37 @@ export default function InventarioPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {cards.length === 0 ? (
+                    {filteredCards.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 italic">No hay dispositivos TAG en el sistema.</td>
+                        <td colSpan={6} className="p-8 text-center text-slate-400 italic">No hay dispositivos TAG que coincidan con el filtro.</td>
                       </tr>
                     ) : (
-                      cards.slice(0, 15).map(c => {
+                      filteredCards.map(c => {
                         const redirectUrl = `https://startap.com.pa/r/${c.card_id}`;
+                        const isStandTag = (c.card_id || '').toUpperCase().startsWith('STTS-') || (c.label && c.label.toLowerCase().includes('stand'));
+                        const isCardTag = (c.card_id || '').toUpperCase().startsWith('STTT-') || (c.label && c.label.toLowerCase().includes('tarjeta'));
+                        
                         return (
                           <tr key={c.card_id} className="hover:bg-slate-50 transition-colors">
                             <td className="p-3 font-mono font-black text-slate-900">
                               <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded">
                                 {c.card_id}
                               </span>
+                            </td>
+                            <td className="p-3">
+                              {isStandTag ? (
+                                <span className="px-2 py-0.5 bg-purple-50 text-purple-700 rounded font-bold text-[10px] border border-purple-200">
+                                  🏢 Stand NFC
+                                </span>
+                              ) : isCardTag ? (
+                                <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-bold text-[10px] border border-blue-200">
+                                  💳 Tarjeta NFC
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 bg-amber-50 text-amber-700 rounded font-bold text-[10px] border border-amber-200">
+                                  🏷️ Placa NFC
+                                </span>
+                              )}
                             </td>
                             <td className="p-3 font-bold text-slate-900 max-w-[150px] truncate">
                               {c.label || 'Sin etiqueta'}

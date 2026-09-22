@@ -75,17 +75,34 @@ Orden:
 2. Apuntar esos 8 puntos a la ruta nueva.
 3. Descomentar y correr la PARTE B.
 
-## 5 · Cupones: sacarlos del localStorage
+## 5 · Cupones — HECHO, solo falta correr el SQL
 
-`config/shipping.ts:123-148` busca los cupones personalizados solo
-`if (typeof window !== 'undefined')`. En el servidor solo existen `EVG`,
-`STARTAP10` y `DESCUENTO5`. Los que Fernando crea en `/master-control/cupones`
-viven en `nfc_coupons` de su localStorage y nunca salen de ahí.
+El módulo estaba en stub ("Este módulo está siendo migrado") y los cupones que
+creaba el admin vivían en su localStorage, así que el servidor no los conocía y
+el pago se caía con 409. **Ya está resuelto en código.**
 
-Resultado: el cliente aplica el cupón, ve el descuento, el servidor no lo
-reconoce, y el pago se rechaza con 409. **Toda campaña con cupón nuevo nace
-muerta.** Mover los cupones a Supabase y leerlos con service_role dentro de
-`calcularTotal`.
+Qué se construyó:
+- `src/lib/cupones.ts` — fuente de verdad del servidor (service_role + caché de
+  30 s), con vencimiento y tope de usos.
+- `src/lib/checkout-total.ts` usa `obtenerCupon()` en vez de la validación local.
+  **Este es el cambio que cierra el 409.**
+- `src/app/api/cupones/route.ts` — CRUD del admin (misma autenticación que
+  `/api/admin/precio`: bearer + `ADMIN_EMAILS`).
+- `src/app/api/cupones/validar/route.ts` — validación pública para el checkout,
+  contra la misma fuente que cobra.
+- `src/app/master-control/cupones/page.tsx` — panel completo.
+- El contador de usos se incrementa con la función `incrementar_uso_cupon`, no
+  con un leer-y-escribir desde la app.
+
+**Lo único que falta: correr la PARTE A del SQL** (punto 1). Crea la tabla
+`coupons`, siembra `EVG`, `STARTAP10` y `DESCUENTO5`, y crea la función
+`incrementar_uso_cupon`. Hasta entonces el módulo cae al respaldo de los tres
+cupones por defecto y los que cree Fernando no se guardarán.
+
+Limitación conocida, no urgente: el tope de usos se revisa al validar pero no
+hay bloqueo transaccional al cobrar, así que un cupón con un uso restante puede
+aceptar dos pedidos casi simultáneos. A la escala de starTAP no compensa
+arreglarlo.
 
 ## 6 · La tienda todavía no consume `/api/catalogo`
 
@@ -126,10 +143,56 @@ el panel de Tilopay.
 
 **El modo prueba de Tilopay hay que apagarlo** cuando terminen las pruebas.
 
+## 7b · Blog: hay un segundo artículo listo pero SIN PUBLICAR
+
+**Estado:** en línea hay **un** artículo (`como-pedir-resenas-google-sin-penalizacion`).
+El segundo está escrito y compilando, pero deliberadamente fuera del aire.
+
+- Borrador en markdown: `contenido/articulo-no-aparezco-en-google-maps.md`
+- Ya convertido a: `src/content/blog/por-que-mi-negocio-no-aparece-en-google-maps.ts`
+- **NO está en el array `POSTS` de `src/lib/blog.ts`**, por eso el sitio no lo sirve.
+
+**Por qué no está publicado.** `REGLAS_CONTENIDO.md` exige al menos dos datos de
+experiencia propia por artículo ("un número propio", "un cliente concreto con
+permiso") y dice que sin eso no se publica. Esos datos los tiene Fernando; no se
+pueden inventar sin romper la regla de no inventar cifras.
+
+**Qué falta, en concreto.** Dentro del `cuerpo` del `.ts` hay dos bloques
+marcados:
+
+1. `TODO_EXPERIENCIA_1` — cuántos negocios visitó Fernando y cuántos tenían la
+   ficha sin reclamar, o cuántos creían que no aparecían en Maps y sí aparecían.
+2. `TODO_EXPERIENCIA_2` — un cliente concreto con permiso: qué tenía antes, qué
+   hizo, qué pasó. Si no hay caso cerrado, sirve un dato sostenible, como
+   cuántas reseñas llevaba un negocio el día de la instalación.
+
+**Para publicarlo:**
+
+1. Pedirle a Fernando los dos datos y reemplazar los bloques.
+2. Verificar que no quede ninguno:
+   `grep -c TODO_EXPERIENCIA src/content/blog/por-que-mi-negocio-no-aparece-en-google-maps.ts`
+   debe dar **0** (hay que quitar también los dos del comentario de cabecera).
+3. En `src/lib/blog.ts`:
+   ```ts
+   import { post as articulo2 } from '@/content/blog/por-que-mi-negocio-no-aparece-en-google-maps';
+   export const POSTS: BlogPost[] = [articulo1, articulo2];
+   ```
+4. **Falta la imagen de portada:** `/public/blog/negocio-no-aparece-google-maps-panama.webp`
+   (1200×675). Sin ella el OpenGraph queda roto. Tiene que ser foto propia, no
+   de banco de imágenes: lo pide `REGLAS_CONTENIDO.md`.
+5. Pasar la checklist de la PARTE 3 de `REGLAS_CONTENIDO.md` antes de subir.
+
+El resto del artículo ya cumple: cero rayas largas, cero adverbios en -mente,
+sin vocabulario delator, con la sección de lo que el producto NO hace, la nota
+de transparencia por conflicto de interés y dos fuentes oficiales de Google
+enlazadas. Verificado con script, no a ojo.
+
 ## 8 · Deuda menor, para cuando haya tiempo
 
 - `/api/email/*` es un relay abierto: sin auth, sin rate limit, sin verificar que
-  el pedido exista. Se puede quemar la cuota de Resend y mandar "confirmaciones"
+  el pedido exista. **Sube de prioridad:** el diagnóstico interactivo del
+  artículo de Maps le manda tráfico público a `/api/email/subscribe`. Ponerle
+  rate limit por IP antes de publicar ese artículo. Se puede quemar la cuota de Resend y mandar "confirmaciones"
   con la marca starTAP desde un dominio legítimo. Los correos deberían salir solo
   desde el callback tras confirmar el pago.
 - El correo de confirmación de Tilopay **inventa el contenido del pedido**

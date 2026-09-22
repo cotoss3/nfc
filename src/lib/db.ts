@@ -656,16 +656,24 @@ class LocalDbService {
     return this.getOrders().find(o => o.id === id);
   }
 
-  // Generador de Códigos Secuenciales (STT-XXXX para Placas / STTT-XXXX para Tarjetas)
+  // Generador de Códigos Secuenciales (STT-XXXX para Placas / STTS-XXXX para Stands / STTT-XXXX para Tarjetas)
   getNextStickerCode(deviceType: string = 'plate'): string {
     const cards = this.getCards();
-    const isCard = (deviceType || '').toLowerCase().includes('card') || (deviceType || '').toLowerCase().includes('tarjeta');
-    const prefix = isCard ? 'STTT' : 'STT';
+    const typeStr = (deviceType || '').toLowerCase();
+    const isStand = typeStr.includes('stand') || typeStr.includes('stts') || typeStr.includes('mesa');
+    const isCard = !isStand && (typeStr.includes('card') || typeStr.includes('tarjeta') || typeStr.includes('sttt') || typeStr.includes('bolsillo'));
+    const prefix = isStand ? 'STTS' : isCard ? 'STTT' : 'STT';
     let maxNumber = 1000;
 
     cards.forEach(c => {
-      const codeId = c.activation_code || c.card_id || '';
-      if (isCard) {
+      const codeId = (c.activation_code || c.card_id || '').toUpperCase();
+      if (isStand) {
+        const match = codeId.match(/^STTS-(\d+)/i);
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxNumber) maxNumber = num;
+        }
+      } else if (isCard) {
         const match = codeId.match(/^STTT-(\d+)/i);
         if (match && match[1]) {
           const num = parseInt(match[1], 10);
@@ -673,7 +681,7 @@ class LocalDbService {
         }
       } else {
         const match = codeId.match(/^STT-(\d+)/i);
-        if (match && match[1] && !codeId.toUpperCase().startsWith('STTT-')) {
+        if (match && match[1] && !codeId.startsWith('STTT-') && !codeId.startsWith('STTS-')) {
           const num = parseInt(match[1], 10);
           if (!isNaN(num) && num > maxNumber) maxNumber = num;
         }

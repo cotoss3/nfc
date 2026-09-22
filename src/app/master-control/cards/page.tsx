@@ -42,8 +42,10 @@ export default function CardsManagementPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'claimed' | 'unclaimed' | 'active' | 'inactive'>('all');
   const [channelFilter, setChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [hardwareFilter, setHardwareFilter] = useState<'all' | 'stand' | 'plate' | 'card'>('all');
 
   // Create Tag Form States
+  const [newHardwareType, setNewHardwareType] = useState<'stand' | 'plate' | 'card'>('stand');
   const [newCardId, setNewCardId] = useState('');
   const [newLabel, setNewLabel] = useState('');
   const [newUrl, setNewUrl] = useState('');
@@ -69,6 +71,19 @@ export default function CardsManagementPage() {
 
   // Clipboard Copied State
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleSelectHardwareType = (hw: 'stand' | 'plate' | 'card') => {
+    setNewHardwareType(hw);
+    const code = dbLocal.getNextStickerCode(hw);
+    setNewCardId(code);
+    if (!newLabel || newLabel.startsWith('Stand') || newLabel.startsWith('Placa') || newLabel.startsWith('Tarjeta')) {
+      const defaultName =
+        hw === 'stand' ? `Stand NFC de Mesa (${code})` :
+        hw === 'card' ? `Tarjeta NFC de Bolsillo (${code})` :
+        `Placa NFC de Mostrador (${code})`;
+      setNewLabel(defaultName);
+    }
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -100,7 +115,9 @@ export default function CardsManagementPage() {
     setCards(dbCards);
     setScans(dbScans);
     setScansCount(totalScansRemoto);
-    setNewCardId(dbLocal.getNextStickerCode());
+    const initialCode = dbLocal.getNextStickerCode('stand');
+    setNewCardId(initialCode);
+    setNewLabel(`Stand NFC de Mesa (${initialCode})`);
     setLoading(false);
   };
 
@@ -134,9 +151,20 @@ export default function CardsManagementPage() {
       const matchType =
         typeFilter === 'all' || (card.type || 'google') === typeFilter;
 
-      return matchSearch && matchStatus && matchChannel && matchType;
+      const codeUpper = (card.card_id || card.activation_code || '').toUpperCase();
+      const isStand = codeUpper.startsWith('STTS-') || (card.label && card.label.toLowerCase().includes('stand'));
+      const isCard = codeUpper.startsWith('STTT-') || (card.label && card.label.toLowerCase().includes('tarjeta'));
+      const isPlate = !isStand && !isCard;
+
+      const matchHardware =
+        hardwareFilter === 'all' ||
+        (hardwareFilter === 'stand' && isStand) ||
+        (hardwareFilter === 'card' && isCard) ||
+        (hardwareFilter === 'plate' && isPlate);
+
+      return matchSearch && matchStatus && matchChannel && matchType && matchHardware;
     });
-  }, [cards, searchQuery, statusFilter, channelFilter, typeFilter]);
+  }, [cards, searchQuery, statusFilter, channelFilter, typeFilter, hardwareFilter]);
 
   // Statistics Summary
   const stats = useMemo(() => {
@@ -377,6 +405,51 @@ export default function CardsManagementPage() {
           </div>
 
           <form onSubmit={handleCreateCard} className="space-y-4 text-xs">
+            {/* SELECTOR DE FORMATO DE HARDWARE */}
+            <div className="space-y-1.5 pb-1">
+              <label className="font-bold text-slate-700 block">Formato de Dispositivo / Prefijo Serial *</label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleSelectHardwareType('stand')}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition flex flex-col items-center gap-1 ${
+                    newHardwareType === 'stand'
+                      ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span className="font-black">Stand NFC</span>
+                  <span className="text-[10px] font-mono opacity-80 font-bold">(STTS-XXXX)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSelectHardwareType('plate')}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition flex flex-col items-center gap-1 ${
+                    newHardwareType === 'plate'
+                      ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span className="font-black">Placa Mostrador</span>
+                  <span className="text-[10px] font-mono opacity-80 font-bold">(STT-XXXX)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSelectHardwareType('card')}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition flex flex-col items-center gap-1 ${
+                    newHardwareType === 'card'
+                      ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span className="font-black">Tarjeta Bolsillo</span>
+                  <span className="text-[10px] font-mono opacity-80 font-bold">(STTT-XXXX)</span>
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <label className="font-bold text-slate-700">Código TAG Serial *</label>
@@ -385,7 +458,7 @@ export default function CardsManagementPage() {
                   required
                   value={newCardId}
                   onChange={e => setNewCardId(e.target.value)}
-                  placeholder="Ej. STTT-1050"
+                  placeholder="Ej. STTS-1001"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
                 />
               </div>
@@ -397,7 +470,7 @@ export default function CardsManagementPage() {
                   required
                   value={newLabel}
                   onChange={e => setNewLabel(e.target.value)}
-                  placeholder="Ej. Placa Mostrador - Café Panamá"
+                  placeholder="Ej. Stand NFC de Mesa - Restaurante"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
                 />
               </div>
@@ -503,33 +576,44 @@ export default function CardsManagementPage() {
                   <CreditCard className="w-5 h-5 text-slate-700" />
                   Listado de Dispositivos TAG Registrados ({filteredCards.length})
                 </h2>
-                <p className="text-xs text-slate-500">Busca por código STT-XXXX, cliente o edita el estado de activación.</p>
+                <p className="text-xs text-slate-500">Busca por código STTS/STT/STTT, filtra por tipo de dispositivo o cliente.</p>
               </div>
             </div>
 
             {/* SEARCH & FILTER CONTROLS */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-1 text-xs">
               <div className="relative">
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Buscar por cliente (nombre/email) o código STT-XXXX..."
+                  placeholder="Buscar por cliente o serial..."
                   className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900"
                 />
               </div>
+
+              <select
+                value={hardwareFilter}
+                onChange={e => setHardwareFilter(e.target.value as any)}
+                className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 outline-none cursor-pointer"
+              >
+                <option value="all">Todos los Formatos</option>
+                <option value="stand">🪧 Stands NFC (STTS-)</option>
+                <option value="plate">🏷️ Placas Mostrador (STT-)</option>
+                <option value="card">💳 Tarjetas Bolsillo (STTT-)</option>
+              </select>
 
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value as any)}
                 className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
               >
-                <option value="all">Todos los Dispositivos (Stock + Clientes)</option>
-                <option value="claimed">Reclamadas por Cliente (Asignadas)</option>
-                <option value="unclaimed">Sin Reclamar (Disponibles en Stock)</option>
-                <option value="active">Activas en Redirección</option>
-                <option value="inactive">Desactivadas / Pausadas</option>
+                <option value="all">Todos los Estados</option>
+                <option value="claimed">Reclamadas (Asignadas)</option>
+                <option value="unclaimed">Sin Reclamar (Stock)</option>
+                <option value="active">Activas</option>
+                <option value="inactive">Desactivadas</option>
               </select>
 
               <select

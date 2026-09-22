@@ -717,3 +717,102 @@ en `db.ts` deduce el estado de los 70 tags viejos sin necesidad de migrar datos.
 
 `npx tsc --noEmit` limpio. Sin commit ni push. **El SQL hay que correrlo antes
 de desplegar** o los update con `estado`/`order_id`/`tags_pendientes` fallan.
+
+## 22 sep 2026 · Artículo de blog nuevo (borrador)
+
+`contenido/articulo-no-aparezco-en-google-maps.md` — "Por qué tu negocio no
+aparece en Google Maps". ~1.270 palabras. Escrito contra `REGLAS_CONTENIDO.md`:
+cero rayas largas, cero adverbios en -mente, cero vocabulario delator, sin
+aperturas de carraspeo, con la nota de transparencia y la sección de lo que el
+producto NO hace.
+
+Ataca el grupo B del `ANALISIS_KEYWORDS.md` (el dueño que no sabe que existe el
+NFC): "por qué mi negocio no aparece en google maps", "posicionar mi negocio en
+google maps panamá", "cómo salir primero en google maps".
+
+**Queda pendiente Fernando:** hay dos huecos marcados con comentarios
+`<!-- EXPERIENCIA PROPIA -->` en el markdown. Las reglas exigen dos datos de
+experiencia propia y no se pueden inventar. Hasta que los rellene, el artículo
+no cumple su propia checklist y no se publica. Después hay que convertirlo a
+`src/content/blog/<slug>.ts` y añadirlo al array `POSTS` de `src/lib/blog.ts`.
+
+## 22 sep 2026 (cont.) · Segundo artículo convertido y traspasado
+
+`contenido/articulo-no-aparezco-en-google-maps.md` convertido a
+`src/content/blog/por-que-mi-negocio-no-aparece-en-google-maps.ts` con sus 5
+FAQs, keywords, relacionados y metadatos. Compila limpio.
+
+**Sigue fuera del aire a propósito:** no está en el array `POSTS` de
+`src/lib/blog.ts`. En línea hay 1 artículo, no 2.
+
+Faltan los dos datos de experiencia propia que exige `REGLAS_CONTENIDO.md`,
+marcados en el archivo como `TODO_EXPERIENCIA_1` y `TODO_EXPERIENCIA_2`. Falta
+también la portada `/public/blog/negocio-no-aparece-google-maps-panama.webp`
+(1200×675, foto propia).
+
+Instrucciones completas para Antigravity en el punto **7b** de
+`INSTRUCCIONES_ANTIGRAVITY.md`, incluido el `grep` de verificación y la línea
+exacta que hay que tocar en `blog.ts`.
+
+## 22 sep 2026 (cont. 2) · Módulo de cupones completo
+
+Era un stub de 16 líneas. Ahora está construido de punta a punta, y de paso
+cierra el hallazgo ALTO #7 de la auditoría: los cupones del admin vivían en su
+localStorage, el servidor no los conocía y el pago moría con 409.
+
+- `src/lib/cupones.ts` (nuevo): fuente de verdad del servidor, calcada de
+  `precios.ts` (service_role + caché 30 s + `invalidarCupones()`). Soporta
+  vencimiento (`expira_el`) y tope de usos (`usos_maximos`). `revisarCupon()`
+  devuelve además el motivo por el que un cupón no sirve.
+- `checkout-total.ts`: `validateCoupon()` → `await obtenerCupon()`. **Este es el
+  arreglo del 409.**
+- `/api/cupones` (CRUD admin, misma auth que `/api/admin/precio`) y
+  `/api/cupones/validar` (público, para que el checkout valide contra la misma
+  fuente que cobra).
+- `checkout/page.tsx`: valida contra el servidor, con estado "Validando...".
+- `master-control/cupones/page.tsx`: 605 líneas, CRUD completo, tipos legibles,
+  estados Activo/Desactivado/Vencido/Sin usos, los 3 del sistema marcados y no
+  borrables. Nunca dice "guardado" si la API no respondió `success`.
+- SQL en la PARTE A: tabla `coupons` con RLS sin políticas (solo service_role),
+  siembra de los 3 por defecto, y **función `incrementar_uso_cupon`** para que
+  el contador sea atómico en vez de leer-y-escribir desde la app.
+
+`validateCoupon` queda en `shipping.ts` marcada `@deprecated`; ya no la usa nadie.
+Código muerto que quedó: `getCoupons/saveCoupon/toggleCoupon/deleteCoupon` de
+`db.ts:583-630`, que siguen escribiendo `nfc_coupons` en localStorage.
+
+`npx tsc --noEmit` limpio. Sin commit ni push.
+
+## 22 sep 2026 (cont. 3) · Blog: diagnóstico interactivo, CTA y fecha visible
+
+Sobre las recomendaciones que trajo Fernando (checklist descargable, CTA,
+AI Overviews, frescura):
+
+- `src/components/blog/DiagnosticoFicha.tsx` (nuevo): autodiagnóstico de las 6
+  preguntas del artículo, una a una, Sí/No/No sé. El resultado nombra el
+  problema concreto, no da un puntaje. Si falla la verificación, corta ahí y lo
+  dice. Los dispositivos NFC se mencionan en un solo caso (frecuencia de
+  reseñas) y aclarando que no tocan los otros cinco puntos. Captura de correo
+  opcional al final contra `/api/email/subscribe`, **sin muro**: el resultado se
+  ve completo aunque no deje el correo.
+- `src/components/blog/CtaAuditoria.tsx` (nuevo): revisión gratuita de la ficha,
+  con columnas de "qué incluye" y "qué NO incluye". WhatsApp prellenado y
+  mailto. Sin formularios nuevos, sin plazos ni promesas.
+- `BlogPost` tiene ahora `herramienta?: 'diagnostico-ficha'` y
+  `ctaAuditoria?: boolean`. Activados solo en el artículo de Maps.
+- **Fecha de actualización visible** en `blog/[slug]/page.tsx`. Estaba solo en
+  el JSON-LD y el OG; `REGLAS_CONTENIDO.md` la exige visible (Confianza). Se
+  muestra únicamente si difiere de la de publicación.
+
+**No se puso el año en el titular.** Para una consulta evergreen como "por qué
+mi negocio no aparece en Google Maps" el año no aporta y obliga a mantenimiento
+anual. La señal de frescura va por `dateModified` y la fecha visible.
+
+**Pendiente de medir:** si las búsquedas locales en Panamá disparan AI Overviews
+para estas consultas. No se puede verificar desde la sesión (WebSearch responde
+desde EE.UU.); hay que comprobarlo desde Chrome en Panamá.
+
+**Aviso de seguridad:** `/api/email/subscribe` sigue siendo un relay abierto
+(sin auth, sin rate limit, hallazgo #11 de AUDITORIA_ESTRUCTURAL.md). El
+diagnóstico ahora le manda tráfico público. Conviene ponerle rate limit por IP
+antes de publicar el artículo.
