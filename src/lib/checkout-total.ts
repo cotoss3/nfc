@@ -1,5 +1,6 @@
 import { getProductById } from '@/config/products';
-import { calculateShippingCost, validateCoupon, applyShippingCoupon, getDiscountAmount } from '@/config/shipping';
+import { calculateShippingCost, applyShippingCoupon, getDiscountAmount } from '@/config/shipping';
+import { obtenerCupon } from '@/lib/cupones';
 import { getPrecio } from '@/lib/precios';
 
 /** Extras que el cliente puede anadir en la landing de producto */
@@ -70,7 +71,10 @@ export async function calcularTotal(
   }
 
   const baseEnvio = calculateShippingCost(subtotal, shippingMethod, hasPack);
-  const coupon = couponCode ? validateCoupon(couponCode) : null;
+  // Los cupones salen de Supabase (lib/cupones), no de validateCoupon: esa
+  // funcion solo ve los 3 por defecto cuando corre en el servidor, y por eso
+  // un cupon creado por el admin hacia que el cobro devolviera 409.
+  const coupon = couponCode ? await obtenerCupon(couponCode) : null;
   const envio = applyShippingCoupon(baseEnvio, coupon);
   const descuento = getDiscountAmount(subtotal, coupon);
   const total = Math.max(0, Number((subtotal + envio - descuento).toFixed(2)));

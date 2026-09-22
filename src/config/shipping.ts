@@ -83,6 +83,12 @@ export interface Coupon {
   description: string;
   is_active?: boolean;
   created_at?: string;
+  /** Fecha de vencimiento en ISO. `null` o ausente = no vence. */
+  expira_el?: string | null;
+  /** Tope de usos. `null` o ausente = sin tope. */
+  usos_maximos?: number | null;
+  /** Veces que ya se usó en un pedido. */
+  usos?: number;
 }
 
 export const DEFAULT_COUPONS_LIST: Coupon[] = [
@@ -116,9 +122,11 @@ export const COUPONS: Record<string, Coupon> = DEFAULT_COUPONS_LIST.reduce((acc,
 }, {} as Record<string, Coupon>);
 
 /**
- * Valida un código de cupón.
- * Busca primero en los cupones creados en Master Control y luego en los por defecto.
- * Retorna el cupón si existe y está activo, o null.
+ * @deprecated Ya no la usa nadie. Solo ve los cupones del localStorage y los
+ * 3 por defecto, asi que en el servidor daba un resultado distinto al del
+ * cobro (ese era el origen del 409 al pagar con un cupon nuevo).
+ * La fuente de verdad es `lib/cupones.ts` / `GET /api/cupones/validar`.
+ * Se deja para no romper nada que la importe desde afuera.
  */
 export function validateCoupon(code: string): Coupon | null {
   const cleanCode = (code || '').trim().toUpperCase();

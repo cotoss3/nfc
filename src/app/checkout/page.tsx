@@ -35,7 +35,6 @@ import {
   amountMissingForFreeShipping,
   FREE_SHIPPING_THRESHOLD,
   YAPPY,
-  validateCoupon,
   applyShippingCoupon,
   getDiscountAmount,
   type Coupon,
@@ -69,6 +68,7 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [couponError, setCouponError] = useState('');
   const [couponSuccess, setCouponSuccess] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -185,12 +185,37 @@ export default function CheckoutPage() {
     return Math.max(0, getCartTotal() + getShippingCost() - getDiscount());
   };
 
-  const handleApplyCoupon = () => {
+  // Se valida contra el servidor, que es la misma fuente con la que se cobra.
+  // Antes se validaba solo en el navegador: el cliente veia el descuento y
+  // despues el cobro lo rechazaba con un 409.
+  const handleApplyCoupon = async () => {
+    if (couponLoading) return;
     setCouponError('');
     setCouponSuccess('');
-    const coupon = validateCoupon(couponInput);
+    setCouponLoading(true);
+
+    let coupon: Coupon | null = null;
+    try {
+      const res = await fetch(`/api/cupones/validar?code=${encodeURIComponent(couponInput.trim())}`);
+      const data = await res.json().catch(() => null);
+      if (!data?.valido || !data?.cupon) {
+        setCouponError(data?.error || 'Ese cupón no existe');
+        setAppliedCoupon(null);
+        setCouponLoading(false);
+        return;
+      }
+      coupon = data.cupon as Coupon;
+    } catch (e) {
+      console.error('[CUPON_UI]', e);
+      setCouponError('No pudimos validar el cupón. Revisa tu conexión e inténtalo de nuevo.');
+      setAppliedCoupon(null);
+      setCouponLoading(false);
+      return;
+    }
+
+    setCouponLoading(false);
     if (!coupon) {
-      setCouponError('Cupon no valido. Verifica el codigo e intentalo de nuevo.');
+      setCouponError('Ese cupón no existe');
       setAppliedCoupon(null);
       return;
     }
@@ -1261,17 +1286,19 @@ export default function CheckoutPage() {
                           type="text"
                           value={couponInput}
                           onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyCoupon())}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleApplyCoupon(); } }}
                           placeholder="Código de cupón"
                           className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs uppercase tracking-wider font-semibold focus:bg-white focus:ring-1 focus:ring-slate-900 outline-none transition"
                           maxLength={20}
+                          disabled={couponLoading}
                         />
                         <button
                           type="button"
                           onClick={handleApplyCoupon}
-                          className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl transition-colors flex-shrink-0"
+                          disabled={couponLoading}
+                          className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 disabled:opacity-60 disabled:cursor-not-allowed text-slate-800 text-xs font-bold rounded-xl transition-colors flex-shrink-0"
                         >
-                          Aplicar
+                          {couponLoading ? 'Validando...' : 'Aplicar'}
                         </button>
                       </div>
                     ) : (

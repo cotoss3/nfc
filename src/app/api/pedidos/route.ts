@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { calcularTotal, type ItemEntrada } from '@/lib/checkout-total';
 import { getProductById } from '@/config/products';
+import { invalidarCupones, normalizarCodigo } from '@/lib/cupones';
 
 /**
  * Registra el pedido en el servidor ANTES de iniciar el pago.
@@ -224,6 +225,25 @@ export async function POST(req: NextRequest) {
         { success: false, error: 'No se pudo registrar el pedido en el servidor.' },
         { status: 500 }
       );
+    }
+
+    // --- Contador de usos del cupon ---
+    // Va despues de insertar el pedido y en su propio try/catch: si esto
+    // falla, el pedido ya quedo registrado y no se debe tumbar por un
+    // contador. Si el cupon no esta en la tabla (es de los por defecto y
+    // todavia no se sembro), simplemente no hay fila que actualizar.
+    if (couponCode) {
+      try {
+        const codigo = normalizarCodigo(String(couponCode));
+        // Incremento atomico dentro de la base: leer y despues escribir desde
+        // aqui pierde cuentas cuando dos pedidos entran a la vez.
+        // La funcion esta en migracion_20260920_seguridad.sql.
+        const { error: errUsos } = await admin.rpc('incrementar_uso_cupon', { codigo });
+        if (errUsos) throw errUsos;
+        invalidarCupones();
+      } catch (e) {
+        console.error('[PEDIDOS_CUPON_USOS] No se pudo incrementar el uso del cupón', e);
+      }
     }
 
     // --- Asignacion de tags en stock (nunca se inventan codigos) ---
