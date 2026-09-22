@@ -425,9 +425,14 @@ class LocalDbService {
     const normId = (productId || '').trim().toLowerCase();
     const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
 
-    // Normalizar ID de producto a las llaves principales del inventario
+    // 1. Coincidencia directa por ID exacto de producto (ej. placa-google, tarjeta-nfc)
+    if (productStocks[normId] && typeof productStocks[normId].current_stock === 'number') {
+      return Math.max(0, productStocks[normId].current_stock);
+    }
+
+    // 2. Normalizar ID a llaves canónicas
     let stockKey = normId;
-    if (normId.includes('placa') || normId === 'nfc_10001') {
+    if (normId.includes('placa') || normId === 'nfc_10001' || normId === 'placa-google') {
       stockKey = 'placa-nfc-mostrador';
     } else if (normId.includes('tarjeta') || normId === 'tarjeta-nfc') {
       stockKey = 'tarjeta-nfc-bolsillo';
@@ -438,13 +443,22 @@ class LocalDbService {
     }
 
     if (stockKey === 'pack-trio-comercial') {
-      const placaStock = productStocks['placa-nfc-mostrador']?.current_stock ?? 50;
-      const tarjetaStock = productStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 20;
+      const placaStock = this.getProductStock('placa-nfc-mostrador');
+      const tarjetaStock = this.getProductStock('tarjeta-nfc-bolsillo');
       return Math.min(placaStock, Math.floor(tarjetaStock / 2));
     }
 
-    if (productStocks[stockKey]) {
+    if (productStocks[stockKey] && typeof productStocks[stockKey].current_stock === 'number') {
       return Math.max(0, productStocks[stockKey].current_stock);
+    }
+
+    // 3. Búsqueda por subcadena en las llaves del inventario
+    for (const [key, item] of Object.entries(productStocks)) {
+      if (!item || typeof item.current_stock !== 'number') continue;
+      const keyNorm = key.trim().toLowerCase();
+      if (keyNorm.includes(normId) || normId.includes(keyNorm)) {
+        return Math.max(0, item.current_stock);
+      }
     }
 
     // Default fallbacks para productos no inicializados
