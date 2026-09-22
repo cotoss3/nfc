@@ -40,6 +40,18 @@ export default function YappyButton({ onInitiatePayment, onSuccess, onError, the
   onErrorRef.current = onError;
 
   useEffect(() => {
+    // Cargar SDK de Yappy únicamente cuando el botón se renderiza (checkout / cart)
+    const scriptId = 'yappy-sdk-script';
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'module';
+      script.src = 'https://bt-cdn.yappy.cloud/v1/cdn/web-component-btn-yappy.js';
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  useEffect(() => {
     const btnyappy = btnRef.current;
     if (!btnyappy) return;
 

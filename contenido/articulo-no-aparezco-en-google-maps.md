@@ -1,60 +1,22 @@
-import type { BlogPost } from '@/lib/blog';
+---
+titulo: "Por qué tu negocio no aparece en Google Maps"
+slug: "por-que-mi-negocio-no-aparece-en-google-maps"
+descripcion: "Las razones reales por las que un local panameño no sale en el mapa, en el orden en que hay que revisarlas. Con lo que Google dice en su documentación y lo que vemos instalando dispositivos en negocios."
+autor: "Fernando Contreras"
+autor_cargo: "Fundador de starTAP y DataKorex"
+fecha: 2026-09-22
+actualizado: 2026-09-22
+categoria: "SEO local"
+keywords:
+  - por qué mi negocio no aparece en google maps
+  - posicionar mi negocio en google maps panamá
+  - cómo salir primero en google maps
+  - ficha de google mi negocio panamá
+---
 
-export const post: BlogPost = {
-  slug: 'por-que-mi-negocio-no-aparece-en-google-maps',
-  titulo: 'Por qué tu negocio no aparece en Google Maps',
-  tituloSeo: 'Por qué tu Negocio no Aparece en Google Maps | Panamá',
-  descripcion:
-    'Descubre las razones reales por las que tu local en Panamá no sale en Google Maps y el paso a paso exacto para solucionarlo según las políticas de Google.',
-  resumen:
-    'Hay dos versiones de este problema y se arreglan distinto. Casi todos los que me escriben creen que tienen la primera y tienen la segunda.',
-  fecha: '2026-09-22',
-  actualizado: '2026-09-22',
-  categoria: 'SEO local',
-  autor: 'fernando-contreras',
-  minutosLectura: 7,
-  keywords: [
-    'por qué mi negocio no aparece en Google Maps',
-    'posicionar mi negocio en Google Maps Panamá',
-    'cómo salir primero en Google Maps',
-    'ficha de Google mi negocio Panamá',
-    'verificación Google Business Profile',
-    'SEO local Panamá',
-  ],
-  imagen: {
-    src: '/blog/negocio-no-aparece-google-maps-panama.webp',
-    alt: '¿Invisible en Google Maps? Causas y solución paso a paso para posicionar tu negocio local en Panamá',
-    ancho: 1200,
-    alto: 630,
-  },
-  relacionados: [
-    { titulo: 'Cómo pedir reseñas sin que te penalicen', href: '/blog/como-pedir-resenas-google-sin-penalizacion' },
-    { titulo: 'Más reseñas para restaurantes', href: '/resenas-google/restaurantes' },
-    { titulo: 'Ver los dispositivos NFC', href: '/catalogo' },
-  ],
-  faqs: [
-    {
-      q: '¿Cuánto tarda en aparecer mi negocio después de crear la ficha?',
-      a: `La ficha se ve casi enseguida, pero no compite hasta que pasas la verificación. Ese paso es el que manda: hoy suele ser por video y puede tomar unos días, o más si Google pide repetirlo. Mientras estés sin verificar, puedes estar en el mapa y aun así no salir en las búsquedas de categoría.`,
-    },
-    {
-      q: 'No tengo local de atención al público. ¿Puedo estar en Google Maps?',
-      a: `Sí. Se configura como negocio de zona de servicio: sin dirección visible, con las áreas donde entregas o prestas el servicio. Nosotros mismos operamos así. La verificación por video es más quisquillosa en este caso, así que ten listo con qué mostrar que el negocio trabaja de verdad: inventario, herramientas, facturas, el vehículo rotulado.`,
-    },
-    {
-      q: 'Tengo dos fichas del mismo negocio. ¿Qué hago?',
-      a: `Pide la fusión desde el perfil. Mientras existan las dos, Google reparte las señales entre ellas y ninguna levanta. Pasa mucho cuando cambiaste de local o cuando alguien del equipo creó otra sin saber que ya había una.`,
-    },
-    {
-      q: '¿Cambiar la categoría principal me puede hacer daño?',
-      a: `Cambia las búsquedas en las que compites, así que sí tiene efecto, y toma unas semanas estabilizarse. Antes de tocarla, mira qué categoría principal usan los tres negocios que ya salen arriba en tu zona para lo que tú quieres rankear. Si la tuya no es esa, ese es el problema.`,
-    },
-    {
-      q: '¿Un dispositivo NFC me pone primero en el mapa?',
-      a: `No por sí solo. Ataca un punto de la lista, la frecuencia con la que te llegan reseñas nuevas, que es un factor de prominencia y pesa. Pero si tu ficha no está verificada o tiene la categoría equivocada, no te sirve de nada comprarlo. Arregla eso primero.`,
-    },
-  ],
-  cuerpo: `Hay dos versiones de este problema y se arreglan de forma distinta. Una es que tu
+# Por qué tu negocio no aparece en Google Maps
+
+Hay dos versiones de este problema y se arreglan de forma distinta. Una es que tu
 negocio no sale por ningún lado, ni buscándolo por su nombre. La otra es que sale
 cuando lo buscas tú, pero no cuando alguien busca "barbería en La Chorrera".
 
@@ -71,7 +33,10 @@ Costa del Este", lo que sea tuyo. Si tu negocio no sale en el bloque de tres
 locales que Google pone arriba, ese es el problema real. No es que no existas.
 Es que Google no te está eligiendo.
 
-En nuestra prospección diaria en zonas como San Francisco, Bella Vista o Panamá Oeste, cerca del 40% de los negocios que visitamos creen que no tienen ficha en Google Maps cuando en realidad ya existe una generada automáticamente sin reclamar.
+<!-- EXPERIENCIA PROPIA 1 · Fernando: aquí va tu dato real.
+     Por ejemplo: de los X negocios que visité este año, Y tenían ficha sin
+     reclamar, o Z creían que no existían en Maps y sí existían.
+     Sin un número tuyo, esta sección se queda coja. -->
 
 ## Si no apareces ni buscándote por el nombre
 
@@ -89,8 +54,6 @@ tu ficha esperando. Reclamarla es gratis.
 Esta es la que para a más gente. Google pide comprobar que el negocio es tuyo y
 que está donde dices. Manda una postal, o pide un video, según el caso. Hasta
 que no la pasas, tu ficha puede existir pero no compite.
-
-![Panel de Google Business Profile con solicitud de verificación pendiente para aparecer en Google Maps y el buscador](/blog/verificacion-google-business-profile-panama.webp)
 
 Si eres como nosotros y no tienes local de atención al público, la ficha se
 configura como negocio de zona de servicio: sin dirección visible, con las
@@ -129,15 +92,6 @@ tres que sí están saliendo arriba en tu zona.
 Escribe los servicios uno por uno con el nombre que la gente usa, no con el
 nombre técnico. "Cambio de aceite", no "mantenimiento preventivo de lubricación".
 
-### Prominencia: que te nombren fuera de Google
-
-Menciones de tu negocio en otros sitios, con el mismo nombre, la misma dirección
-y el mismo teléfono. Gremios, directorios locales, la prensa, el Instagram de un
-proveedor. Si tu nombre aparece escrito de cuatro formas distintas, cada una
-suma por separado y ninguna suma fuerte.
-
-![Infografía comparativa de optimización de datos NAP y categoría en Google Maps: correcto vs incorrecto](/blog/optimizacion-datos-nap-categoria-google-maps.webp)
-
 ### Prominencia: las reseñas
 
 Aquí es donde se decide casi todo entre negocios parecidos que están a la misma
@@ -149,13 +103,20 @@ recibe una desde hace un año pierde terreno frente a uno con 60 que recibe tres
 por semana. Una ficha que deja de recibir reseñas parece un negocio que dejó de
 trabajar.
 
-![Cliente dejando una reseña de 5 estrellas en Google mediante dispositivo físico NFC en mostrador comercial](/blog/conseguir-resenas-google-maps-placa-nfc.webp)
+<!-- EXPERIENCIA PROPIA 2 · Fernando: aquí va el caso concreto.
+     Un cliente (con permiso), qué tenía antes, qué hizo, qué pasó después y en
+     cuánto tiempo. Si todavía no tienes un caso con números, escribe el que sí
+     puedes sostener: un negocio que instalaste y cuántas reseñas llevaba en el
+     momento de instalar. Sin inventar el resultado. -->
 
-Lo vemos constantemente en starTAP: locales que llevaban meses estancados con 15 o 20 reseñas comienzan a recibir 4 o 5 reseñas semanales tras colocar placas NFC en caja o mesas. Ese flujo constante le demuestra a Google que el negocio está activo y atendiendo público todos los días.
+### Prominencia: que te nombren fuera de Google
+
+Menciones de tu negocio en otros sitios, con el mismo nombre, la misma dirección
+y el mismo teléfono. Gremios, directorios locales, la prensa, el Instagram de un
+proveedor. Si tu nombre aparece escrito de cuatro formas distintas, cada una
+suma por separado y ninguna suma fuerte.
 
 ## El orden en que yo lo revisaría
-
-![Checklist de optimización de Google Business Profile y posicionamiento local en Google Maps Panamá](/blog/checklist-posicionamiento-google-maps-panama.webp)
 
 1. ¿La ficha está reclamada y verificada?
 2. ¿Hay duplicados?
@@ -188,10 +149,11 @@ Depende de qué tan atrás vengas y de cuánta competencia tengas en tu zona. Un
 negocio en un pueblo con tres competidores se mueve rápido. Una clínica dental
 en Costa del Este compite contra decenas y tarda meses.
 
-No te puedo dar un número, y quien te lo dé se lo está inventando.`,
-  herramienta: 'diagnostico-ficha',
-  ctaAuditoria: true,
-  cierre: `**Fernando Contreras** es fundador de starTAP Panamá y de DataKorex. Instala
+No te puedo dar un número, y quien te lo dé se lo está inventando.
+
+---
+
+**Fernando Contreras** es fundador de starTAP Panamá y de DataKorex. Instala
 dispositivos NFC en negocios panameños y trabaja el SEO local de sus clientes.
 
 *Transparencia: vendemos dispositivos NFC para reseñas de Google. Eso influye en
@@ -200,5 +162,4 @@ cosas de la lista no te las vendemos y valen igual.*
 
 **Fuentes:**
 - [Cómo mejorar la posición local en Google](https://support.google.com/business/answer/7091) · Ayuda de Perfil de Empresa
-- [Políticas de contenido de reseñas](https://support.google.com/contributionpolicy/answer/7400114) · Google`,
-};
+- [Políticas de contenido de reseñas](https://support.google.com/contributionpolicy/answer/7400114) · Google

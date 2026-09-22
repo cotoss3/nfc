@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Calendar, Clock, ArrowRight, MessageCircle, BookOpen, UserCheck, Sparkles } from 'lucide-react';
+import { Calendar, Clock, ArrowRight, MessageCircle, BookOpen, UserCheck, Sparkles, RefreshCw } from 'lucide-react';
 import Markdown, { extraerEncabezados } from '@/components/Markdown';
+import dynamic from 'next/dynamic';
 import ReadingProgressBar from '@/components/ReadingProgressBar';
 import {
   BASE_URL,
@@ -12,6 +13,10 @@ import {
   formatearFecha,
 } from '@/lib/blog';
 import { WHATSAPP_URL } from '@/lib/landings';
+
+import CtaAuditoria from '@/components/blog/CtaAuditoria';
+
+const DiagnosticoFicha = dynamic(() => import('@/components/blog/DiagnosticoFicha'));
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));
@@ -197,6 +202,18 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
                     <Clock className="w-3.5 h-3.5 text-accent-500" aria-hidden="true" />
                     {post.minutosLectura} min de lectura
                   </span>
+                  {/* La fecha de actualizacion visible la exige REGLAS_CONTENIDO.md
+                      (Confianza). Hasta ahora solo estaba en el JSON-LD, donde el
+                      lector no la ve. */}
+                  {post.actualizado && post.actualizado !== post.fecha && (
+                    <time
+                      dateTime={post.actualizado}
+                      className="flex items-center gap-1.5 bg-accent-50 px-3 py-1.5 rounded-full border border-accent-200 text-accent-800 font-semibold"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5 text-accent-600" aria-hidden="true" />
+                      Actualizado el {formatearFecha(post.actualizado)}
+                    </time>
+                  )}
                 </div>
               </div>
             )}
@@ -248,6 +265,8 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
                 <Markdown>{post.cuerpo}</Markdown>
               </div>
 
+              {post.herramienta === 'diagnostico-ficha' && <DiagnosticoFicha />}
+
               {/* FAQs */}
               {post.faqs.length > 0 && (
                 <section className="mt-16 pt-10 border-t border-brand-200" aria-labelledby="faq">
@@ -266,6 +285,8 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
                   </dl>
                 </section>
               )}
+
+              {post.ctaAuditoria && <CtaAuditoria />}
 
               {/* Article Footer & Transparency Note */}
               <footer className="mt-12 pt-8 border-t border-brand-200">

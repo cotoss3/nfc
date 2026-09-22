@@ -122,6 +122,8 @@ export default function Footer() {
               <img
                 src="/logos/negativo.jpeg"
                 alt="starTAP Logo"
+                width="240"
+                height="80"
                 className="w-[calc(100%-5px)] h-auto object-contain invert mix-blend-screen opacity-95 block"
               />
             </Link>

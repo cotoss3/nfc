@@ -31,6 +31,10 @@ export interface BlogPost {
   cuerpo: string;
   /** Firma, nota de transparencia y fuentes */
   cierre: string;
+  /** Herramienta interactiva que se inserta después del cuerpo. Hoy solo 'diagnostico-ficha' */
+  herramienta?: 'diagnostico-ficha';
+  /** Si es true, se muestra el bloque de revisión gratuita al final */
+  ctaAuditoria?: boolean;
 }
 
 export interface Autor {

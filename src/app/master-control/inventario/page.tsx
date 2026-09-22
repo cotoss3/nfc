@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { dbLocal, Order, NfcCard, Product, AbandonedCheckout, supabase } from '@/lib/db';
+import { dbLocal, Order, NfcCard, Product, AbandonedCheckout, supabase, StockAuditItem } from '@/lib/db';
+import BulkAddBatchModal from '@/components/admin/BulkAddBatchModal';
 import {
   ArrowLeft,
   Calendar,
@@ -131,6 +132,12 @@ export default function InventarioPage() {
   const [tagSuccessMsg, setTagSuccessMsg] = useState('');
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Bulk Add Modal & Stock Audit State
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [bulkHardwareType, setBulkHardwareType] = useState<'stand' | 'plate' | 'card'>('stand');
+  const [auditItems, setAuditItems] = useState<StockAuditItem[]>([]);
+  const [reconcileSuccessMsg, setReconcileSuccessMsg] = useState('');
 
   const loadData = async () => {
     setLoading(true);
@@ -326,7 +333,24 @@ export default function InventarioPage() {
     const initialTagCode = dbLocal.getNextStickerCode('stand');
     setTagCode(initialTagCode);
     setTagLabel(`Stand NFC de Mesa (${initialTagCode})`);
+    
+    // Actualizar Auditoría de Cuadre
+    setAuditItems(dbLocal.getStockAudit());
     setLoading(false);
+  };
+
+  const handleOpenBulkModal = (type: 'stand' | 'plate' | 'card' = 'stand') => {
+    setBulkHardwareType(type);
+    setIsBulkModalOpen(true);
+  };
+
+  const handleReconcileStock = () => {
+    if (window.confirm('¿Deseas cuadrar automáticamente el inventario disponible para que coincida exactamente con los tags físicos no reclamados (claimed: false) en stock?')) {
+      const res = dbLocal.reconcileStockWithUnclaimedTags();
+      setReconcileSuccessMsg(res.message);
+      loadData();
+      setTimeout(() => setReconcileSuccessMsg(''), 5000);
+    }
   };
 
   useEffect(() => {
@@ -701,48 +725,75 @@ export default function InventarioPage() {
           </div>
         </div>
 
-        {/* MAIN NAVIGATION TABS */}
-        <div className="flex items-center gap-1.5 bg-slate-200/70 p-1.5 rounded-2xl border border-slate-300/80 shadow-2xs">
+        {/* MAIN NAVIGATION TABS & BULK ACTION */}
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setActiveTab('inventario_lotes')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-              activeTab === 'inventario_lotes'
-                ? 'bg-slate-950 text-white shadow-md'
-                : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
-            }`}
+            onClick={() => handleOpenBulkModal('stand')}
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition shadow-md ring-2 ring-amber-400/20"
           >
-            <Boxes className="w-4 h-4 text-amber-400" />
-            <span>Inventario & Lotes</span>
+            <Boxes className="w-4 h-4" />
+            <span>📦 Agregar en Lote (+Stock & Tags)</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('tags_hardware')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-              activeTab === 'tags_hardware'
-                ? 'bg-slate-950 text-white shadow-md'
-                : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
-            }`}
-          >
-            <QrCode className="w-4 h-4 text-amber-400" />
-            <span>Fichas TAGs ({cards.length})</span>
-          </button>
+          <div className="flex items-center gap-1.5 bg-slate-200/70 p-1.5 rounded-2xl border border-slate-300/80 shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab('inventario_lotes')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'inventario_lotes'
+                  ? 'bg-slate-950 text-white shadow-md'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+              }`}
+            >
+              <Boxes className="w-4 h-4 text-amber-400" />
+              <span>Inventario & Lotes</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('resumen_analiticas')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
-              activeTab === 'resumen_analiticas'
-                ? 'bg-slate-950 text-white shadow-md'
-                : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
-            }`}
-          >
-            <PieChart className="w-4 h-4 text-amber-400" />
-            <span>Rendimiento Financiero</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('tags_hardware')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'tags_hardware'
+                  ? 'bg-slate-950 text-white shadow-md'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+              }`}
+            >
+              <QrCode className="w-4 h-4 text-amber-400" />
+              <span>Fichas TAGs ({cards.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('resumen_analiticas')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                activeTab === 'resumen_analiticas'
+                  ? 'bg-slate-950 text-white shadow-md'
+                  : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+              }`}
+            >
+              <PieChart className="w-4 h-4 text-amber-400" />
+              <span>Rendimiento Financiero</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* RECONCILIATION SUCCESS BANNER */}
+      {reconcileSuccessMsg && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl text-xs font-bold flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <span>{reconcileSuccessMsg}</span>
+          </div>
+          <button
+            onClick={() => setReconcileSuccessMsg('')}
+            className="text-emerald-700 hover:text-emerald-900 text-xs font-bold"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* TAB 1: INVENTARIO DETALLADO DE PRODUCTOS Y REGISTRO POR LOTES             */}
@@ -804,24 +855,137 @@ export default function InventarioPage() {
           {/* TWO-COLUMN LAYOUT: REGISTRAR LOTE & TABLA DE CONTROL DE STOCK */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* LEFT: FORMULARIO DE REGISTRO DE NUEVO LOTE DE PRODUCCIÓN/ENTRADA */}
-            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
-              <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
-                <div>
-                  <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Truck className="w-5 h-5 text-amber-500" />
-                    Registrar Entrada por Lote
-                  </h2>
-                  <p className="text-xs text-slate-500">Agrega una nueva remesa o lote de producción de placas o tarjetas.</p>
+            {/* LEFT: ENTRADA EN LOTE ASISTIDA & AUDITORÍA DE CUADRE */}
+            <div className="lg:col-span-4 space-y-6">
+              
+              {/* CARD 1: CTA ASISTIDO PARA AGREGAR EN LOTE */}
+              <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-md border border-slate-800 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                    <Boxes className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-black uppercase tracking-tight text-white">
+                      Módulo de Agregar en Lote
+                    </h2>
+                    <span className="text-[10px] text-amber-400 font-bold block">
+                      Generador Correlativo + Cuadre Automático
+                    </span>
+                  </div>
                 </div>
+
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Genera códigos correlativos continuos (<code className="text-amber-400 font-mono font-bold">STTS-</code>, <code className="text-amber-400 font-mono font-bold">STT-</code>, <code className="text-amber-400 font-mono font-bold">STTT-</code>) y cuadra automáticamente el inventario disponible.
+                </p>
+
+                <div className="grid grid-cols-3 gap-1.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenBulkModal('stand')}
+                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 font-bold text-[11px] transition text-center"
+                  >
+                    + Stand NFC
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenBulkModal('plate')}
+                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 font-bold text-[11px] transition text-center"
+                  >
+                    + Placa NFC
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenBulkModal('card')}
+                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 font-bold text-[11px] transition text-center"
+                  >
+                    + Tarjeta NFC
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenBulkModal('stand')}
+                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-md"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Abrir Asistente de Lotes</span>
+                </button>
               </div>
 
-              {batchSuccessMsg && (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-bold flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span>{batchSuccessMsg}</span>
+              {/* CARD 2: AUDITORÍA Y CUADRE DE STOCK CON TAGS DISPONIBLES */}
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                    <div>
+                      <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight">
+                        Auditoría de Cuadre
+                      </h3>
+                      <p className="text-[10px] text-slate-500">Tags No Reclamados vs Stock Almacén</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={loadData}
+                    className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 transition"
+                    title="Recalcular auditoría"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-              )}
+
+                <div className="space-y-2.5">
+                  {auditItems.map(item => (
+                    <div
+                      key={item.productId}
+                      className="p-2.5 rounded-xl border bg-slate-50 border-slate-200 text-xs flex items-center justify-between"
+                    >
+                      <div>
+                        <span className="font-bold text-slate-800 block text-[11px]">{item.productName}</span>
+                        <span className="text-[10px] text-slate-500">
+                          Tags Físicos: <strong className="text-slate-900 font-mono">{item.unclaimedTagsCount}</strong> · Almacén: <strong className="text-slate-900 font-mono">{item.recordedStock}</strong>
+                        </span>
+                      </div>
+                      <div>
+                        {item.isBalanced ? (
+                          <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">
+                            <Check className="w-3 h-3 text-emerald-600" /> Cuadrado
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
+                            Dif: {item.difference > 0 ? `+${item.difference}` : item.difference}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleReconcileStock}
+                  className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Sincronizar & Cuadrar con Tags</span>
+                </button>
+              </div>
+
+              {/* CARD 3: FORMULARIO DIRECTO MANUAL */}
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
+                <div className="border-b border-slate-100 pb-3">
+                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-slate-600" />
+                    Entrada Manual Rápida
+                  </h3>
+                </div>
+
+                {batchSuccessMsg && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-600" />
+                    <span>{batchSuccessMsg}</span>
+                  </div>
+                )}
 
               <form onSubmit={handleCreateBatch} className="space-y-4 text-xs">
                 <div className="space-y-1">
@@ -907,6 +1071,7 @@ export default function InventarioPage() {
                   <span>Ingresar Lote a Inventario</span>
                 </button>
               </form>
+              </div>
             </div>
 
             {/* RIGHT: TABLA DE CONTROL DE EXISTENCIAS Y AJUSTE RÁPIDO */}
@@ -1620,6 +1785,14 @@ export default function InventarioPage() {
 
         </div>
       )}
+
+      {/* BULK ADD BATCH MODAL */}
+      <BulkAddBatchModal
+        isOpen={isBulkModalOpen}
+        onClose={() => setIsBulkModalOpen(false)}
+        onSuccess={loadData}
+        initialHardwareType={bulkHardwareType}
+      />
 
     </div>
   );

@@ -39,7 +39,7 @@ export default function Navbar() {
           {/* Logo & Navigation */}
           <div className="flex items-center space-x-6 xl:space-x-10">
             <Link href="/" className="flex items-center flex-shrink-0">
-              <img src="/logos/Logo.webp" alt="starTAP Logo" className="h-8 sm:h-9 lg:h-10 w-auto object-contain" />
+              <img src="/logos/Logo.webp" alt="starTAP Logo" width="160" height="40" className="h-8 sm:h-9 lg:h-10 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation */}

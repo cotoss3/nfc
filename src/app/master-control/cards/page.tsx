@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { dbLocal, NfcCard, ScanRecord, supabase } from '@/lib/db';
+import BulkAddBatchModal from '@/components/admin/BulkAddBatchModal';
 import {
   CreditCard,
   QrCode,
@@ -27,6 +28,7 @@ import {
   Radio,
   User,
   Activity,
+  Boxes,
   X
 } from 'lucide-react';
 
@@ -71,6 +73,9 @@ export default function CardsManagementPage() {
 
   // Clipboard Copied State
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Bulk Add Modal State
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
   const handleSelectHardwareType = (hw: 'stand' | 'plate' | 'card') => {
     setNewHardwareType(hw);
@@ -346,13 +351,24 @@ export default function CardsManagementPage() {
           </div>
         </div>
 
-        <button
-          onClick={loadData}
-          className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition flex items-center gap-2 shadow-2xs self-start lg:self-auto"
-        >
-          <RefreshCw className="w-4 h-4 text-amber-500" />
-          <span>Sincronizar Datos</span>
-        </button>
+        <div className="flex items-center gap-2 self-start lg:self-auto">
+          <button
+            type="button"
+            onClick={() => setIsBulkModalOpen(true)}
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs transition flex items-center gap-2 shadow-xs"
+          >
+            <Boxes className="w-4 h-4" />
+            <span>➕ Agregar en Lote (+Stock & Tags)</span>
+          </button>
+
+          <button
+            onClick={loadData}
+            className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition flex items-center gap-2 shadow-2xs"
+          >
+            <RefreshCw className="w-4 h-4 text-amber-500" />
+            <span>Sincronizar</span>
+          </button>
+        </div>
       </div>
 
       {createSuccessMsg && (
@@ -1003,6 +1019,14 @@ export default function CardsManagementPage() {
           </div>
         </div>
       )}
+
+      {/* BULK ADD BATCH MODAL */}
+      <BulkAddBatchModal
+        isOpen={isBulkModalOpen}
+        onClose={() => setIsBulkModalOpen(false)}
+        onSuccess={loadData}
+        initialHardwareType={newHardwareType}
+      />
 
     </div>
   );

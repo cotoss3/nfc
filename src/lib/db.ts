@@ -108,6 +108,51 @@ export interface UserAccount {
   created_at: string;
 }
 
+export interface InventoryBatch {
+  id: string; // e.g. LOTE-2026-09A
+  product_id: string;
+  product_name: string;
+  quantity_initial: number;
+  quantity_remaining: number;
+  unit_cost: number;
+  supplier: string;
+  received_at: string;
+  notes?: string;
+  status: 'active' | 'depleted' | 'in_transit';
+}
+
+export interface StockMovement {
+  id: string;
+  created_at: string;
+  type: 'entrada_lote' | 'salida_venta' | 'ajuste_manual' | 'merma';
+  product_name: string;
+  quantity_change: number;
+  resulting_stock: number;
+  reference: string;
+}
+
+export interface ProductStockInfo {
+  product_id: string;
+  sku: string;
+  name: string;
+  category: string;
+  current_stock: number;
+  min_alert_stock: number;
+  unit_cost: number;
+  selling_price: number;
+  is_bundle?: boolean;
+}
+
+export interface StockAuditItem {
+  productId: string;
+  productName: string;
+  hardwareType: 'stand' | 'plate' | 'card' | 'bundle';
+  unclaimedTagsCount: number;
+  recordedStock: number;
+  difference: number;
+  isBalanced: boolean;
+}
+
 export interface AbandonedCheckout {
   id: string;
   customer_email: string;
@@ -1652,6 +1697,348 @@ class LocalDbService {
       this.setStorageItem(`nfc_groups_${cleanEmail}`, existing);
     }
     return true;
+  }
+
+  // ==========================================
+  // MÓDULO DE AGREGAR EN LOTE & CUADRE DE STOCK
+  // ==========================================
+
+  getNextSequentialRange(
+    deviceType: 'stand' | 'plate' | 'card' | string = 'plate',
+    quantity: number = 1,
+    customStart?: string
+  ): {
+    prefix: string;
+    startNum: number;
+    endNum: number;
+    startCode: string;
+    endCode: string;
+    codes: string[];
+  } {
+    const typeStr = (deviceType || '').toLowerCase();
+    const isStand = typeStr.includes('stand') || typeStr.includes('stts') || typeStr.includes('mesa');
+    const isCard = !isStand && (typeStr.includes('card') || typeStr.includes('tarjeta') || typeStr.includes('sttt') || typeStr.includes('bolsillo'));
+    const prefix = isStand ? 'STTS' : isCard ? 'STTT' : 'STT';
+
+    let startNum = 1001;
+    if (customStart && customStart.trim()) {
+      const match = customStart.trim().match(/\d+/);
+      if (match && match[0]) {
+        startNum = parseInt(match[0], 10);
+      }
+    } else {
+      const nextSingle = this.getNextStickerCode(deviceType);
+      const match = nextSingle.match(/\d+/);
+      if (match && match[0]) {
+        startNum = parseInt(match[0], 10);
+      }
+    }
+
+    const qty = Math.max(1, quantity);
+    const endNum = startNum + qty - 1;
+    const codes: string[] = [];
+    for (let i = startNum; i <= endNum; i++) {
+      codes.push(`${prefix}-${i}`);
+    }
+
+    return {
+      prefix,
+      startNum,
+      endNum,
+      startCode: `${prefix}-${startNum}`,
+      endCode: `${prefix}-${endNum}`,
+      codes
+    };
+  }
+
+  createBatchTagIngestion(params: {
+    hardwareType: 'stand' | 'plate' | 'card';
+    quantity: number;
+    customStartCode?: string;
+    batchId?: string;
+    supplier?: string;
+    unitCost?: number;
+    notes?: string;
+    defaultTargetUrl?: string;
+  }): {
+    success: boolean;
+    message: string;
+    createdCards: NfcCard[];
+    startCode: string;
+    endCode: string;
+    newStock: number;
+    batch: InventoryBatch;
+  } {
+    const { hardwareType, quantity, customStartCode, batchId, supplier, unitCost, notes, defaultTargetUrl } = params;
+
+    if (quantity <= 0) {
+      throw new Error('La cantidad del lote debe ser mayor a 0');
+    }
+
+    const range = this.getNextSequentialRange(hardwareType, quantity, customStartCode);
+    const { prefix, startNum, endNum, startCode, endCode, codes } = range;
+
+    // Configuración por tipo de hardware
+    const productId =
+      hardwareType === 'stand' ? 'stand-nfc-mesa' :
+      hardwareType === 'card' ? 'tarjeta-nfc-bolsillo' :
+      'placa-nfc-mostrador';
+
+    const productName =
+      hardwareType === 'stand' ? 'Stand NFC para Reseñas de Google' :
+      hardwareType === 'card' ? 'Tarjeta NFC de Bolsillo' :
+      'Placa NFC para Reseñas de Google';
+
+    const defaultUnitCost =
+      hardwareType === 'stand' ? 2.00 :
+      hardwareType === 'card' ? 1.50 :
+      2.25;
+
+    const cost = typeof unitCost === 'number' && unitCost > 0 ? unitCost : defaultUnitCost;
+
+    const labelBase =
+      hardwareType === 'stand' ? 'Stand NFC de Mesa' :
+      hardwareType === 'card' ? 'Tarjeta NFC de Bolsillo' :
+      'Placa NFC de Mostrador';
+
+    // 1. Generar los Tags físicos correlativos
+    const createdCards: NfcCard[] = [];
+    for (let i = startNum; i <= endNum; i++) {
+      const code = `${prefix}-${i}`;
+      const cardObj: NfcCard = {
+        card_id: code,
+        activation_code: code,
+        owner_id: 'unassigned',
+        owner_name: 'Sin Asignar (Stock)',
+        owner_email: 'admin@startap.com.pa',
+        label: `${labelBase} (${code})`,
+        target_url: defaultTargetUrl || 'https://google.com',
+        nfc_target_url: defaultTargetUrl || 'https://google.com',
+        is_active: false,
+        claimed: false,
+        estado: 'en_stock',
+        type: 'google',
+        channels: 'both',
+        created_at: new Date().toISOString()
+      };
+      createdCards.push(cardObj);
+    }
+
+    // 2. Guardar Tags en almacenamiento local y Supabase
+    const allCards = this.getCards();
+    const updatedCards = [...allCards];
+    createdCards.forEach(nc => {
+      const idx = updatedCards.findIndex(c => c.card_id.toUpperCase() === nc.card_id.toUpperCase());
+      if (idx !== -1) {
+        updatedCards[idx] = nc;
+      } else {
+        updatedCards.push(nc);
+      }
+    });
+
+    this.setStorageItem('nfc_cards', updatedCards);
+
+    if (supabase) {
+      supabase.from('nfc_cards').upsert(createdCards).then(({ error }) => {
+        if (error) console.error('Error sincronizando lote de tags en Supabase:', error);
+      });
+    }
+
+    // 3. Cuadrar / Sumar existencias en inventory_product_stocks
+    const productStocks = this.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
+    if (!productStocks[productId]) {
+      productStocks[productId] = {
+        product_id: productId,
+        sku: `STP-${hardwareType === 'stand' ? '0103' : hardwareType === 'card' ? '0102' : '0101'}`,
+        name: productName,
+        category: hardwareType === 'card' ? 'cards' : 'plates',
+        current_stock: 0,
+        min_alert_stock: 10,
+        unit_cost: cost,
+        selling_price: hardwareType === 'stand' ? 35 : hardwareType === 'card' ? 25 : 29
+      };
+    }
+
+    productStocks[productId].current_stock = (productStocks[productId].current_stock || 0) + quantity;
+    productStocks[productId].unit_cost = cost;
+
+    // Recalcular stock de Pack Trío si aplica
+    if (productStocks['pack-trio-comercial']) {
+      const pStock = productStocks['placa-nfc-mostrador']?.current_stock || 0;
+      const tStock = productStocks['tarjeta-nfc-bolsillo']?.current_stock || 0;
+      productStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+    }
+
+    this.setStorageItem('inventory_product_stocks', productStocks);
+
+    // 4. Registrar en Lotes de Inventario (inventory_batches)
+    const batches = this.getStorageItem<InventoryBatch[]>('inventory_batches', []);
+    const cleanBatchId = (batchId && batchId.trim())
+      ? batchId.trim().toUpperCase()
+      : `LOTE-${new Date().getFullYear()}-${prefix}-${(batches.length + 10).toString()}`;
+
+    const newBatch: InventoryBatch = {
+      id: cleanBatchId,
+      product_id: productId,
+      product_name: productName,
+      quantity_initial: quantity,
+      quantity_remaining: quantity,
+      unit_cost: cost,
+      supplier: (supplier || 'Shenzhen Micro-NFC Tech').trim(),
+      received_at: new Date().toISOString(),
+      status: 'active',
+      notes: notes || `Recepción de lote físico correlativo (${startCode} a ${endCode})`
+    };
+
+    batches.unshift(newBatch);
+    this.setStorageItem('inventory_batches', batches);
+
+    // 5. Asentar Movimiento en Kardex (inventory_kardex)
+    const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
+    const newMovement: StockMovement = {
+      id: `MOV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      created_at: new Date().toISOString(),
+      type: 'entrada_lote',
+      product_name: productName,
+      quantity_change: quantity,
+      resulting_stock: productStocks[productId].current_stock,
+      reference: `${cleanBatchId} (${startCode} a ${endCode})`
+    };
+
+    movements.unshift(newMovement);
+    this.setStorageItem('inventory_kardex', movements);
+
+    return {
+      success: true,
+      message: `¡Lote ${cleanBatchId} de ${quantity} unidades (${startCode} a ${endCode}) registrado y cuadrado con inventario!`,
+      createdCards,
+      startCode,
+      endCode,
+      newStock: productStocks[productId].current_stock,
+      batch: newBatch
+    };
+  }
+
+  getStockAudit(): StockAuditItem[] {
+    const cards = this.getCards();
+    const productStocks = this.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
+
+    // Contar tags físicos en stock (claimed: false) por prefijo
+    let unclaimedStands = 0;
+    let unclaimedPlates = 0;
+    let unclaimedCards = 0;
+
+    cards.forEach(c => {
+      if (!c.claimed) {
+        const id = (c.activation_code || c.card_id || '').toUpperCase();
+        if (id.startsWith('STTS-')) unclaimedStands++;
+        else if (id.startsWith('STTT-')) unclaimedCards++;
+        else if (id.startsWith('STT-')) unclaimedPlates++;
+      }
+    });
+
+    const standStock = productStocks['stand-nfc-mesa']?.current_stock ?? 0;
+    const plateStock = productStocks['placa-nfc-mostrador']?.current_stock ?? 0;
+    const cardStock = productStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 0;
+    const trioStock = productStocks['pack-trio-comercial']?.current_stock ?? Math.min(plateStock, Math.floor(cardStock / 2));
+
+    return [
+      {
+        productId: 'stand-nfc-mesa',
+        productName: 'Stand NFC de Mesa (STTS-)',
+        hardwareType: 'stand',
+        unclaimedTagsCount: unclaimedStands,
+        recordedStock: standStock,
+        difference: unclaimedStands - standStock,
+        isBalanced: unclaimedStands === standStock
+      },
+      {
+        productId: 'placa-nfc-mostrador',
+        productName: 'Placa NFC de Mostrador (STT-)',
+        hardwareType: 'plate',
+        unclaimedTagsCount: unclaimedPlates,
+        recordedStock: plateStock,
+        difference: unclaimedPlates - plateStock,
+        isBalanced: unclaimedPlates === plateStock
+      },
+      {
+        productId: 'tarjeta-nfc-bolsillo',
+        productName: 'Tarjeta NFC de Bolsillo (STTT-)',
+        hardwareType: 'card',
+        unclaimedTagsCount: unclaimedCards,
+        recordedStock: cardStock,
+        difference: unclaimedCards - cardStock,
+        isBalanced: unclaimedCards === cardStock
+      },
+      {
+        productId: 'pack-trio-comercial',
+        productName: 'Pack Trío Comercial (1 Placa + 2 Tarjetas)',
+        hardwareType: 'bundle',
+        unclaimedTagsCount: Math.min(unclaimedPlates, Math.floor(unclaimedCards / 2)),
+        recordedStock: trioStock,
+        difference: Math.min(unclaimedPlates, Math.floor(unclaimedCards / 2)) - trioStock,
+        isBalanced: Math.min(unclaimedPlates, Math.floor(unclaimedCards / 2)) === trioStock
+      }
+    ];
+  }
+
+  reconcileStockWithUnclaimedTags(): {
+    success: boolean;
+    message: string;
+    adjustments: { productId: string; previousStock: number; newStock: number }[];
+  } {
+    const audit = this.getStockAudit();
+    const productStocks = this.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
+    const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
+    const adjustments: { productId: string; previousStock: number; newStock: number }[] = [];
+
+    audit.forEach(item => {
+      const prev = productStocks[item.productId]?.current_stock ?? 0;
+      if (prev !== item.unclaimedTagsCount) {
+        if (!productStocks[item.productId]) {
+          productStocks[item.productId] = {
+            product_id: item.productId,
+            sku: `STP-${item.hardwareType === 'stand' ? '0103' : item.hardwareType === 'card' ? '0102' : '0101'}`,
+            name: item.productName,
+            category: item.hardwareType === 'card' ? 'cards' : 'plates',
+            current_stock: item.unclaimedTagsCount,
+            min_alert_stock: 10,
+            unit_cost: item.hardwareType === 'stand' ? 2.0 : item.hardwareType === 'card' ? 1.5 : 2.25,
+            selling_price: item.hardwareType === 'stand' ? 35 : item.hardwareType === 'card' ? 25 : 29
+          };
+        } else {
+          productStocks[item.productId].current_stock = item.unclaimedTagsCount;
+        }
+
+        adjustments.push({
+          productId: item.productId,
+          previousStock: prev,
+          newStock: item.unclaimedTagsCount
+        });
+
+        // Registrar movimiento de ajuste en Kardex
+        const diff = item.unclaimedTagsCount - prev;
+        movements.unshift({
+          id: `MOV-AUDIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          created_at: new Date().toISOString(),
+          type: 'ajuste_manual',
+          product_name: item.productName,
+          quantity_change: diff,
+          resulting_stock: item.unclaimedTagsCount,
+          reference: 'Auditoría: Cuadre con Tags Físicos en Stock'
+        });
+      }
+    });
+
+    // Guardar cambios
+    this.setStorageItem('inventory_product_stocks', productStocks);
+    this.setStorageItem('inventory_kardex', movements);
+
+    return {
+      success: true,
+      message: `Auditoría completada: Se cuadraron ${adjustments.length} productos con los tags disponibles en stock.`,
+      adjustments
+    };
   }
 }
 

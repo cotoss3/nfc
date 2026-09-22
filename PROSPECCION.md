@@ -214,6 +214,20 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-09-16 | RiQras Hechas con Amor | Comida rápida | La Chorrera | 8 | 4.4 | 6922-8108 | pendiente | top2 comida rápida 207/397 |
 | 2026-09-16 | Delirios Zulianos | Restaurante | La Chorrera | 1 | 5.0 | 6010-0077 | pendiente | top2 restaurantes 114/273 |
 | 2026-09-16 | Fonda Anyie | Fonda | La Chorrera | 6 | 4.8 | 254-4159 (fijo, sin WhatsApp) | pendiente | llamar; ficha sin reclamar |
+| 2026-09-22 | Con Toque Zuliano | Venezolana | La Chorrera | 42 | 4.8 | 6265-3743 | pendiente | top2 restaurantes 114/2013 |
+| 2026-09-22 | Arepitas Q Chimba | Venezolana | La Chorrera | 41 | 4.6 | 6449-0183 | respondio | contesto 8:17am; visita acordada 6pm 22-09 |
+| 2026-09-22 | Las Arepas De Giova | Venezolana | La Chorrera | 3 | 5.0 | 6092-8022 | pendiente | top2 venezolana 42/1341 |
+| 2026-09-22 | Arepas La Dona | Comida rapida | La Chorrera | 7 | 4.9 | 6440-2994 | respondio | va a consultar con la duena; entrega startap 6pm 22-09, ofrecio demo en persona |
+| 2026-09-22 | Fonda Delicias Kathyta | Fonda | La Chorrera | 16 | 4.4 | 6330-3003 | pendiente | resenas de hace 4 anos; top2 fondas 13/51 |
+| 2026-09-22 | Fonda Alta Casa | Fonda | La Chorrera | 18 | 4.9 | 6807-2807 | pendiente | vende por PedidosYa; top2 fondas 13/51 |
+| 2026-09-22 | Chop Chop Rest | China | La Chorrera | 24 | 4.9 | 6368-3828 | pendiente | contesta resenas; top2 china 705/135 |
+| 2026-09-22 | WILDBURGER | Hamburguesas | La Chorrera | 23 | 4.8 | 6978-8992 | pendiente | resenas viejas; top2 hamburguesas 3336/858 |
+| 2026-09-22 | FISH DEL OESTE | Marisqueria | La Chorrera | 16 | 4.4 | 6715-1318 | pendiente | top2 marisquerias 147/161 |
+| 2026-09-22 | Cafe Studio | Cafeteria | La Chorrera | 31 | 4.8 | 6114-5774 | pendiente | top1 cafeterias; detras 139/178 |
+| 2026-09-22 | Kathia la reina del pescado | Marisqueria | La Chorrera | 26 | 4.5 | 6707-5109 | pendiente | contesta resenas; top2 147/161 |
+| 2026-09-22 | Artesana Pizzeria Costa Verde | Pizzeria | La Chorrera | 29 | 4.5 | 351-5381 (fijo, sin WhatsApp) | pendiente | llamar; top2 pizzerias 82/1906 |
+| 2026-09-22 | Melissa Beauty Studio | Centro de estetica | Costa Verde (Plaza Central) | 12 | 4.8 | 6775-4806 | pendiente | top2 centros estetica 57/51 |
+| 2026-09-22 | BEAUTY STOP SALON & SPA | Centro de estetica | Costa Verde | 1 | 5.0 | 246-2852 (fijo, sin WhatsApp) | pendiente | llamar; top2 centros estetica 57/51 |
 
 ---
 

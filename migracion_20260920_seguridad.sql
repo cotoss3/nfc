@@ -118,6 +118,60 @@ CREATE INDEX IF NOT EXISTS idx_nfc_cards_order_id ON public.nfc_cards (order_id)
 CREATE INDEX IF NOT EXISTS idx_scans_card_id ON public.scans (card_id);
 
 
+-- ----------------------------------------------------------------------------
+-- CUPONES
+--
+-- Antes los cupones que creaba el admin vivian solo en el localStorage del
+-- navegador. El cliente veia el descuento, el servidor no conocia el cupon,
+-- calculaba otro total y el cobro se caia con un 409: toda campana con cupon
+-- nuevo nacia muerta. Con esta tabla, lo que ve el cliente y lo que se cobra
+-- salen del mismo lugar.
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.coupons (
+  code TEXT PRIMARY KEY,
+  type TEXT NOT NULL CHECK (type IN ('percent','fixed','free_shipping')),
+  value NUMERIC(10,2) NOT NULL DEFAULT 0,
+  description TEXT,
+  is_active BOOLEAN DEFAULT true,
+  expira_el TIMESTAMPTZ,
+  usos_maximos INTEGER,
+  usos INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Sin politicas a proposito: solo el service_role escribe y lee, igual que
+-- orders. El navegador nunca toca esta tabla directo, porque con la anon key
+-- cualquiera podria crearse un cupon del 100%.
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+
+-- Los 3 cupones que ya existian en el codigo, para que la tabla sea la unica
+-- fuente. ON CONFLICT DO NOTHING: correr esto dos veces no pisa cambios del
+-- admin (por ejemplo, si ya desactivo alguno).
+INSERT INTO public.coupons (code, type, value, description, is_active) VALUES
+  ('EVG',        'free_shipping', 0,  'Envío gratis en todo Panamá',      true),
+  ('STARTAP10',  'percent',       10, '10% de descuento en tu pedido',    true),
+  ('DESCUENTO5', 'fixed',         5,  '$5.00 de descuento en tu pedido',  true)
+ON CONFLICT (code) DO NOTHING;
+
+
+-- ---------------------------------------------------------------------------
+-- Contador de usos de cupon, atomico
+-- ---------------------------------------------------------------------------
+-- Leer `usos` y despues escribir `usos + 1` desde la app pierde cuentas cuando
+-- dos pedidos entran a la vez. Esta funcion hace el incremento dentro de la
+-- base, en una sola sentencia, y devuelve el valor resultante.
+CREATE OR REPLACE FUNCTION public.incrementar_uso_cupon(codigo TEXT)
+RETURNS INTEGER
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  UPDATE public.coupons
+     SET usos = COALESCE(usos, 0) + 1
+   WHERE code = upper(trim(codigo))
+  RETURNING usos;
+$$;
+
 -- ============================================================================
 -- PARTE B — NO CORRER TODAVIA
 --

@@ -816,3 +816,18 @@ desde EE.UU.); hay que comprobarlo desde Chrome en Panamá.
 (sin auth, sin rate limit, hallazgo #11 de AUDITORIA_ESTRUCTURAL.md). El
 diagnóstico ahora le manda tráfico público. Conviene ponerle rate limit por IP
 antes de publicar el artículo.
+
+## 22 sep 2026 (cont. 4) · Módulo de Agregar en Lote & Fotos WebP del 2do Artículo de Blog
+
+1. **Módulo de Agregar en Lote (Hardware, Tags & Stock Cuadrado):**
+   - Implementado en `src/lib/db.ts` (`createBatchTagIngestion`, `getNextSequentialRange`, `getStockAudit`, `reconcileStockWithUnclaimedTags`).
+   - Generación de seriales correlativos continuos por hardware (`STTS-` para stands, `STT-` para placas, `STTT-` para tarjetas).
+   - Alta de tags en estado `en_stock` (`claimed: false`, `is_active: false`) y suma automática al stock en `inventory_product_stocks`.
+   - Asiento automático en `inventory_batches` y Kardex (`inventory_kardex` / `entrada_lote`).
+   - Modal `src/components/admin/BulkAddBatchModal.tsx` con exportación a CSV e impresión de planillas QR.
+   - Panel de Auditoría de Cuadre en tiempo real en `/master-control/inventario` y botón de alta en lote en `/master-control/cards`.
+
+2. **Integración de Imágenes del 2do Artículo de Blog:**
+   - 5 imágenes convertidas a WebP de alta compresión (<120 KB y <80 KB) con `sharp`.
+   - Ubicadas en `public/blog/` con nombres semánticos e integradas en `por-que-mi-negocio-no-aparece-en-google-maps.ts` con etiquetas `alt` SEO y OpenGraph/Schema.org actualizados.
+   - Compilación limpia con `npx tsc --noEmit` (0 errores).
