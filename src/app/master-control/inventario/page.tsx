@@ -881,7 +881,8 @@ export default function InventarioPage() {
                       <th className="p-3 text-center">Stock Actual</th>
                       <th className="p-3 text-right">Costo Unit.</th>
                       <th className="p-3 text-right">Precio Venta</th>
-                      <th className="p-3 text-right">Valor Stock USD</th>
+                      <th className="p-3 text-right">Valor Costo</th>
+                      <th className="p-3 text-right">Valor Comercial</th>
                       <th className="p-3 text-center">Estado</th>
                       <th className="p-3 text-center">Ajuste Directo</th>
                     </tr>
@@ -889,7 +890,7 @@ export default function InventarioPage() {
                   <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                     {filteredProductStocks.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="p-8 text-center text-slate-400 italic">
+                        <td colSpan={8} className="p-8 text-center text-slate-400 italic">
                           No se encontraron productos en el filtro seleccionado.
                         </td>
                       </tr>
@@ -902,7 +903,8 @@ export default function InventarioPage() {
 
                         const isLow = currentStock <= minAlert && currentStock > 0;
                         const isOut = currentStock === 0;
-                        const stockVal = currentStock * unitCost;
+                        const costVal = currentStock * unitCost;
+                        const retailVal = currentStock * sellingPrice;
 
                         return (
                           <tr key={prod.product_id} className="hover:bg-slate-50 transition-colors">
@@ -928,7 +930,11 @@ export default function InventarioPage() {
                             </td>
 
                             <td className="p-3 text-right font-mono font-black text-amber-700">
-                              ${stockVal.toFixed(2)}
+                              ${costVal.toFixed(2)}
+                            </td>
+
+                            <td className="p-3 text-right font-mono font-black text-emerald-700">
+                              ${retailVal.toFixed(2)}
                             </td>
 
                             <td className="p-3 text-center">
