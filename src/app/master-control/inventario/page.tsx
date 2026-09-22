@@ -234,40 +234,48 @@ export default function InventarioPage() {
     setProductStocks(cleanStocks);
     dbLocal.setStorageItem('inventory_product_stocks', cleanStocks);
 
-    // Initial Batches setup con costos unitarios actualizados
+    // Initial Batches setup con costos unitarios oficiales
     const savedBatches = dbLocal.getStorageItem<InventoryBatch[]>('inventory_batches', []);
-    if (savedBatches.length === 0) {
-      const defaultBatches: InventoryBatch[] = [
-        {
-          id: 'LOTE-2026-09A',
-          product_id: dbProducts[0]?.id || 'placa-nfc-mostrador',
-          product_name: dbProducts[0]?.name || 'Placa NFC para Reseñas de Google',
-          quantity_initial: 50,
-          quantity_remaining: 50,
-          unit_cost: 2.25,
-          supplier: 'Shenzhen Micro-NFC Tech',
-          received_at: new Date(Date.now() - 86400000 * 12).toISOString(),
-          status: 'active',
-          notes: 'Acrílico 3mm + Impresión UV + Chip NTAG216',
-        },
-        {
-          id: 'LOTE-2026-08B',
-          product_id: dbProducts[1]?.id || 'tarjeta-nfc-bolsillo',
-          product_name: dbProducts[1]?.name || 'Tarjeta NFC de Bolsillo',
-          quantity_initial: 20,
-          quantity_remaining: 20,
-          unit_cost: 1.50,
-          supplier: 'SmartCard Global Panama',
-          received_at: new Date(Date.now() - 86400000 * 25).toISOString(),
-          status: 'active',
-          notes: 'PVC Mate 0.76mm contactless',
-        }
-      ];
-      setBatches(defaultBatches);
-      dbLocal.setStorageItem('inventory_batches', defaultBatches);
-    } else {
-      setBatches(savedBatches);
-    }
+    const defaultInitialBatches: InventoryBatch[] = [
+      {
+        id: 'LOTE-2026-09A',
+        product_id: 'placa-nfc-mostrador',
+        product_name: 'Placa NFC para Reseñas de Google',
+        quantity_initial: 50,
+        quantity_remaining: 50,
+        unit_cost: 2.25,
+        supplier: 'Shenzhen Micro-NFC Tech',
+        received_at: new Date(Date.now() - 86400000 * 12).toISOString(),
+        status: 'active',
+        notes: 'Acrílico 3mm + Impresión UV + Chip NTAG216',
+      },
+      {
+        id: 'LOTE-2026-08B',
+        product_id: 'tarjeta-nfc-bolsillo',
+        product_name: 'Tarjeta NFC de Bolsillo',
+        quantity_initial: 20,
+        quantity_remaining: 20,
+        unit_cost: 1.50,
+        supplier: 'SmartCard Global Panama',
+        received_at: new Date(Date.now() - 86400000 * 25).toISOString(),
+        status: 'active',
+        notes: 'PVC Mate 0.76mm contactless',
+      }
+    ];
+
+    const cleanBatches: InventoryBatch[] = (savedBatches.length > 0 ? savedBatches : defaultInitialBatches).map(b => {
+      const pName = (b.product_name || '').toLowerCase();
+      const pId = (b.product_id || '').toLowerCase();
+      let cost = b.unit_cost;
+      if (pName.includes('tarjeta') || pId.includes('tarjeta')) cost = 1.50;
+      else if (pName.includes('placa') || pId.includes('placa')) cost = 2.25;
+      else if (pName.includes('stand') || pId.includes('stand')) cost = 2.00;
+      else if (pName.includes('pack') || pId.includes('pack')) cost = 5.25;
+      return { ...b, unit_cost: cost };
+    });
+
+    setBatches(cleanBatches);
+    dbLocal.setStorageItem('inventory_batches', cleanBatches);
 
     // Initial Movements Kardex setup
     const savedMovements = dbLocal.getStorageItem<StockMovement[]>('inventory_kardex', []);
@@ -1047,8 +1055,8 @@ export default function InventarioPage() {
                     ) : (
                       batches.map(b => (
                         <tr key={b.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="p-3 font-mono font-black text-slate-900">
-                            <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded">
+                          <td className="p-3 font-mono font-black text-slate-900 whitespace-nowrap">
+                            <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded whitespace-nowrap inline-block font-bold">
                               {b.id}
                             </span>
                           </td>
