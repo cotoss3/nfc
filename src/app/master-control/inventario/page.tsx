@@ -526,6 +526,12 @@ export default function InventarioPage() {
     setTimeout(() => setTagSuccessMsg(''), 4000);
   };
 
+  // Pedidos que quedaron con tags pendientes (se reutilizan los 'orders' ya cargados)
+  const pedidosConTagsPendientes = useMemo(
+    () => (orders || []).filter((o) => o && Number((o as any).tags_pendientes || 0) > 0),
+    [orders]
+  );
+
   const copyToClipboard = (text: string, id: string) => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -542,12 +548,6 @@ export default function InventarioPage() {
       </div>
     );
   }
-
-  // Pedidos que quedaron con tags pendientes (se reutilizan los 'orders' ya cargados)
-  const pedidosConTagsPendientes = useMemo(
-    () => orders.filter((o) => Number(o.tags_pendientes || 0) > 0),
-    [orders]
-  );
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
