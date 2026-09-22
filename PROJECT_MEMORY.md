@@ -675,3 +675,45 @@ valor que no se muestra.
 
 **Dato corregido:** `db_store.json` tiene 70 tarjetas y 4 productos (no 107/11
 como decía la auditoría anterior).
+
+## 20 sep 2026 (cont. 4) · Tags: asignar desde inventario, no generar al vender
+
+Fernando corrigió el modelo: **los tags existen físicamente antes de venderse**.
+Hay 70 en stock (STT-1001..1050 placas, STTT-1001..1020 tarjetas), ninguno
+vendido. Una venta ASIGNA uno del stock; nunca inventa un código.
+
+**Decisiones suyas:**
+- Si no alcanzan los tags, el pedido **se acepta igual**: se marca
+  `tags_pendientes = N` y salta una alerta en el panel de Inventario.
+- El tag se enciende (`is_active`) **cuando el cliente configura su enlace**, no
+  al pagar ni al entregar.
+
+**Estados:** `en_stock` (claimed=false, is_active=false) → `asignado`
+(claimed=true, is_active=false) → `configurado` (ambos true). `derivarEstado()`
+en `db.ts` deduce el estado de los 70 tags viejos sin necesidad de migrar datos.
+
+**Implementado:**
+- Borrados los techos `STT- <= 1050` / `STTT- <= 1020` de `getCards()`,
+  `getCardsAsync()` (incluido el `setStorageItem` que borraba de verdad) y
+  `resolveCardId()`. Ya se pueden cargar lotes nuevos.
+- `/api/pedidos` asigna tags con service_role: `contarTagsNecesarios()` (pack =
+  1 placa + 2 tarjetas; bolsillo = 1 tarjeta; placa/stand = 1 placa) y
+  `asignarTags()` con `.eq('claimed', false)` en el UPDATE para que dos pedidos
+  simultáneos no se lleven el mismo. El mapa producto→tipo de tag es explícito
+  por id, no por substring.
+- Borrado de `createOrder` el bloque que creaba tarjetas con
+  `getNextStickerCode`. Esa función sigue viva solo para el alta de lotes del
+  admin (`inventario/page.tsx:273,508`, `cards/page.tsx:103,214`).
+- Activación enganchada al panel del cliente (`dashboard/page.tsx:382` →
+  `updateCardRedirect`): al guardar un enlace real, `asignado` → `configurado`.
+  `esUrlReal()` descarta vacío y el `google.com` genérico que tienen los 70.
+- Banner de pedidos con tags pendientes en Inventario.
+- `cards/page.tsx`: `nfc_scans` → `scans`, y el contador usa
+  `count:'exact', head:true` en vez de traer todo el histórico.
+- Borrado el `setInterval` de `onlineUsers`.
+- SQL en `migracion_20260920_seguridad.sql` (PARTE A): columnas
+  `nfc_cards.estado`, `nfc_cards.order_id`, `orders.tags_pendientes` e índices
+  `idx_nfc_cards_claimed`, `idx_nfc_cards_order_id`, `idx_scans_card_id`.
+
+`npx tsc --noEmit` limpio. Sin commit ni push. **El SQL hay que correrlo antes
+de desplegar** o los update con `estado`/`order_id`/`tags_pendientes` fallan.

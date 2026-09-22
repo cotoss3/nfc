@@ -13,6 +13,11 @@ Supabase, variables de entorno de Vercel, o credenciales.
 
 ## 1 · Correr la PARTE A de `migracion_20260920_seguridad.sql` — BLOQUEANTE
 
+> **Actualizado 20/09:** la PARTE A creció. Ahora incluye también las columnas
+> del nuevo modelo de tags (`nfc_cards.estado`, `nfc_cards.order_id`,
+> `orders.tags_pendientes`) y tres índices. Sin eso, la asignación de tags de
+> `/api/pedidos` falla por columna inexistente.
+
 SQL Editor de Supabase, proyecto `xnepnlaoiflngtikozqd`. Es idempotente.
 
 **Sin esto el sitio queda peor que antes**, porque `/api/pedidos` (nuevo) inserta

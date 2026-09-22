@@ -127,8 +127,6 @@ export default function InventarioPage() {
   const [tagOwnerName, setTagOwnerName] = useState('');
   const [tagSuccessMsg, setTagSuccessMsg] = useState('');
 
-  // Online users counter
-  const [onlineUsers, setOnlineUsers] = useState(4);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const loadData = async () => {
@@ -278,11 +276,6 @@ export default function InventarioPage() {
 
   useEffect(() => {
     loadData();
-
-    const interval = setInterval(() => {
-      setOnlineUsers(Math.floor(3 + Math.random() * 6));
-    }, 12000);
-    return () => clearInterval(interval);
   }, []);
 
   // Compute Total Inventory Financial Valuation
@@ -533,9 +526,37 @@ export default function InventarioPage() {
     );
   }
 
+  // Pedidos que quedaron con tags pendientes (se reutilizan los 'orders' ya cargados)
+  const pedidosConTagsPendientes = useMemo(
+    () => orders.filter((o) => Number(o.tags_pendientes || 0) > 0),
+    [orders]
+  );
+
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
-      
+
+      {/* AVISO: pedidos que esperan tags porque no alcanzo el stock fisico */}
+      {pedidosConTagsPendientes.length > 0 && (
+        <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 shadow-2xs">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-amber-600" />
+            <h2 className="text-sm font-black text-amber-900">
+              {pedidosConTagsPendientes.length} {pedidosConTagsPendientes.length === 1 ? 'pedido espera tags' : 'pedidos esperan tags'}
+            </h2>
+          </div>
+          <p className="text-xs text-amber-800 mt-1">
+            Estos pedidos se cobraron pero no habia tags libres en stock. Asignalos cuando entre el lote nuevo.
+          </p>
+          <ul className="mt-2 space-y-1">
+            {pedidosConTagsPendientes.map((p) => (
+              <li key={p.id} className="text-xs font-bold text-amber-900">
+                Pedido {p.id} — faltan {p.tags_pendientes} tag{(p.tags_pendientes || 0) === 1 ? '' : 's'}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* TOP BAR & SUB-MODULE TABS */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div className="flex items-center gap-3">

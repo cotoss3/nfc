@@ -52,6 +52,8 @@ export interface Order {
   tracking_number?: string;
   tracking_courier?: string;
   admin_notes?: string;
+  // Cuantos tags no se pudieron asignar por falta de stock fisico.
+  tags_pendientes?: number;
 }
 
 export interface NfcCard {
@@ -69,7 +71,24 @@ export interface NfcCard {
   type: string;
   claimed?: boolean;
   activation_code?: string;
+  // Estado del ciclo de vida del tag fisico:
+  //  en_stock    -> grabado, en la caja, sin vender      (claimed:false, is_active:false)
+  //  asignado    -> vendido, con dueno, sin configurar   (claimed:true,  is_active:false)
+  //  configurado -> el cliente puso su enlace real        (claimed:true,  is_active:true)
+  estado?: 'en_stock' | 'asignado' | 'configurado';
+  // Numero de pedido (orders.id) que se llevo este tag
+  order_id?: string;
   created_at: string;
+}
+
+/**
+ * Deriva el estado de un tag. Los 70 tags antiguos no tienen el campo `estado`,
+ * asi que se deduce de los dos booleanos que ya existian.
+ */
+export function derivarEstado(card: Pick<NfcCard, 'estado' | 'claimed' | 'is_active'>): 'en_stock' | 'asignado' | 'configurado' {
+  if (card.estado) return card.estado;
+  if (!card.claimed) return 'en_stock';
+  return card.is_active ? 'configurado' : 'asignado';
 }
 
 export interface ScanRecord {
@@ -666,74 +685,8 @@ class LocalDbService {
     }
     this.setStorageItem('nfc_orders', orders);
 
-    // Crear tarjetas NFC asociadas a este pedido con etiquetas STT-XXXX o STTT-XXXX
-    const cards = this.getCards();
-    const newCardsToSync: NfcCard[] = [];
-
-    newOrder.items.forEach((item) => {
-      const pId = (item.product_id || '').toLowerCase();
-      const pName = (item.product_name || '').toLowerCase();
-      const isPack = pId.includes('pack-trio') || pId.includes('pack') || pName.includes('pack');
-
-      for (let i = 0; i < item.quantity; i++) {
-        if (isPack) {
-          // El Pack Trío Comercial contiene 1 Placa de Mostrador (STT) + 2 Tarjetas de Bolsillo (STTT)
-          const sttCodePlaca = this.getNextStickerCode('plate');
-          const placaCard: NfcCard = {
-            card_id: sttCodePlaca,
-            activation_code: sttCodePlaca,
-            owner_id: 'user-session',
-            owner_name: newOrder.customer_name,
-            owner_email: newOrder.customer_email.trim().toLowerCase(),
-            label: `${item.product_name} - Placa (${sttCodePlaca})`,
-            target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
-            is_active: true,
-            claimed: true,
-            type: 'google',
-            created_at: new Date().toISOString()
-          };
-          cards.push(placaCard);
-          newCardsToSync.push(placaCard);
-
-          for (let t = 1; t <= 2; t++) {
-            const sttCodeTarjeta = this.getNextStickerCode('card');
-            const tarjetaCard: NfcCard = {
-              card_id: sttCodeTarjeta,
-              activation_code: sttCodeTarjeta,
-              owner_id: 'user-session',
-              owner_name: newOrder.customer_name,
-              owner_email: newOrder.customer_email.trim().toLowerCase(),
-              label: `${item.product_name} - Tarjeta ${t} (${sttCodeTarjeta})`,
-              target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
-              is_active: true,
-              claimed: true,
-              type: 'google',
-              created_at: new Date().toISOString()
-            };
-            cards.push(tarjetaCard);
-            newCardsToSync.push(tarjetaCard);
-          }
-        } else {
-          const sttCode = this.getNextStickerCode(item.product_id || item.product_name);
-          const cardObj: NfcCard = {
-            card_id: sttCode,
-            activation_code: sttCode,
-            owner_id: 'user-session',
-            owner_name: newOrder.customer_name,
-            owner_email: newOrder.customer_email.trim().toLowerCase(),
-            label: `${item.product_name} (${sttCode})`,
-            target_url: item.initial_redirect_url || 'https://search.google.com/local/writereview?placeid=...',
-            is_active: true,
-            claimed: true,
-            type: (item.product_id || '').includes('google') ? 'google' : (item.product_id || '').includes('tripadvisor') ? 'tripadvisor' : (item.product_id || '').includes('instagram') ? 'instagram' : 'vcard',
-            created_at: new Date().toISOString()
-          };
-          cards.push(cardObj);
-          newCardsToSync.push(cardObj);
-        }
-      }
-    });
-    this.setStorageItem('nfc_cards', cards);
+    // Los tags YA NO se crean al vender: existen fisicamente antes del pedido.
+    // La asignacion de tags en stock la hace el servidor en /api/pedidos.
 
     // Descontar inventario físico en inventory_product_stocks
     const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
@@ -781,11 +734,6 @@ class LocalDbService {
 
     // Sincronización Real-Time con Supabase
     if (supabase) {
-      if (newCardsToSync.length > 0) {
-        supabase.from('nfc_cards').upsert(newCardsToSync).then(({ error }) => {
-          if (error) console.error('Error sincronizando tarjetas de orden en Supabase:', error);
-        });
-      }
       supabase.from('orders').upsert([{
         id: newOrder.id,
         customer_name: newOrder.customer_name,
@@ -1086,24 +1034,8 @@ class LocalDbService {
 
   // Métodos de Tarjetas NFC
   getCards(): NfcCard[] {
-    const raw = this.getStorageItem('nfc_cards', DEFAULT_SEED_CARDS);
-    return raw.filter(c => {
-      const codeId = c.activation_code || c.card_id || '';
-      if (codeId.toUpperCase().startsWith('STTT-')) {
-        const match = codeId.match(/^STTT-(\d+)/i);
-        if (match && match[1]) {
-          const num = parseInt(match[1], 10);
-          return num <= 1020;
-        }
-      } else if (codeId.toUpperCase().startsWith('STT-')) {
-        const match = codeId.match(/^STT-(\d+)/i);
-        if (match && match[1]) {
-          const num = parseInt(match[1], 10);
-          return num <= 1050;
-        }
-      }
-      return true;
-    });
+    // Sin techos de numeracion: los lotes nuevos (STT-1051 en adelante) tambien valen.
+    return this.getStorageItem('nfc_cards', DEFAULT_SEED_CARDS);
   }
 
   async getCardsAsync(): Promise<NfcCard[]> {
@@ -1111,25 +1043,11 @@ class LocalDbService {
       try {
         const { data, error } = await supabase.from('nfc_cards').select('*').order('created_at', { ascending: false });
         if (!error && data && data.length > 0) {
-          const validOnly = (data as NfcCard[]).filter(c => {
-            const codeId = c.activation_code || c.card_id || '';
-            if (codeId.toUpperCase().startsWith('STTT-')) {
-              const match = codeId.match(/^STTT-(\d+)/i);
-              if (match && match[1]) {
-                const num = parseInt(match[1], 10);
-                return num <= 1020;
-              }
-            } else if (codeId.toUpperCase().startsWith('STT-')) {
-              const match = codeId.match(/^STT-(\d+)/i);
-              if (match && match[1]) {
-                const num = parseInt(match[1], 10);
-                return num <= 1050;
-              }
-            }
-            return true;
-          });
-          this.setStorageItem('nfc_cards', validOnly);
-          return validOnly;
+          // Se guarda la lista COMPLETA: antes se recortaba por un techo de
+          // numeracion y eso borraba del storage los tags de lotes nuevos.
+          const todas = data as NfcCard[];
+          this.setStorageItem('nfc_cards', todas);
+          return todas;
         }
       } catch (err) {
         console.error('Error cargando tarjetas desde Supabase:', err);
@@ -1191,17 +1109,16 @@ class LocalDbService {
     // Pattern STTT-X or STT-X -> STTT-100X (ej. STTT-1 -> STTT-1001)
     const sttMatch = clean.match(/^(?:sttt|stt)-(\d+)$/i);
     if (sttMatch && sttMatch[1]) {
+      // Sin techo de numeracion: cualquier lote se puede resolver.
       const num = parseInt(sttMatch[1], 10);
-      if (num <= 1050) {
-        const fullCode = num < 1000 ? `sttt-${1000 + num}` : `sttt-${num}`;
-        const altCode = num < 1000 ? `stt-${1000 + num}` : `stt-${num}`;
-        const found = cards.find(c => 
-          c.card_id.toLowerCase() === fullCode || 
-          c.card_id.toLowerCase() === altCode ||
-          (c.activation_code && (c.activation_code.toLowerCase() === fullCode || c.activation_code.toLowerCase() === altCode))
-        );
-        if (found) return found.card_id;
-      }
+      const fullCode = num < 1000 ? `sttt-${1000 + num}` : `sttt-${num}`;
+      const altCode = num < 1000 ? `stt-${1000 + num}` : `stt-${num}`;
+      const found = cards.find(c => 
+        c.card_id.toLowerCase() === fullCode || 
+        c.card_id.toLowerCase() === altCode ||
+        (c.activation_code && (c.activation_code.toLowerCase() === fullCode || c.activation_code.toLowerCase() === altCode))
+      );
+      if (found) return found.card_id;
     }
 
     // Number only "1" -> "STTT-1001"
@@ -1329,6 +1246,47 @@ class LocalDbService {
     return newCard;
   }
 
+  /** Un enlace se considera real si no esta vacio ni es el generico de Google. */
+  private esUrlReal(url: string): boolean {
+    const u = (url || '').trim().toLowerCase();
+    if (!u) return false;
+    if (u === 'https://google.com' || u === 'http://google.com' || u === 'https://google.com/' || u === 'https://www.google.com') return false;
+    if (u.includes('placeid=...')) return false;
+    return u.startsWith('http://') || u.startsWith('https://');
+  }
+
+  /**
+   * Marca un tag como 'configurado' (se enciende y empieza a redirigir) cuando el
+   * cliente guarda su enlace real por primera vez sobre un tag en estado 'asignado'.
+   */
+  marcarTagConfigurado(cardId: string, targetUrl: string): { success: boolean; message: string } {
+    const cards = this.getCards();
+    const resolvedId = this.resolveCardId(cardId, cards);
+    const index = cards.findIndex(c =>
+      c.card_id.toLowerCase() === resolvedId.toLowerCase() ||
+      (c.activation_code && c.activation_code.toLowerCase() === resolvedId.toLowerCase())
+    );
+    if (index === -1) return { success: false, message: 'No encontramos ese tag.' };
+    if (!this.esUrlReal(targetUrl)) return { success: false, message: 'El enlace no es valido todavia.' };
+    if (derivarEstado(cards[index]) === 'en_stock') return { success: false, message: 'Ese tag aun no se ha vendido.' };
+
+    cards[index].estado = 'configurado';
+    cards[index].claimed = true;
+    cards[index].is_active = true;
+    cards[index].target_url = targetUrl.trim();
+    this.setStorageItem('nfc_cards', cards);
+
+    if (supabase) {
+      supabase.from('nfc_cards')
+        .update({ estado: 'configurado', claimed: true, is_active: true, target_url: targetUrl.trim() })
+        .eq('card_id', cards[index].card_id)
+        .then(({ error }) => {
+          if (error) console.error('Error marcando tag como configurado en Supabase:', error);
+        });
+    }
+    return { success: true, message: 'Tag configurado y activo.' };
+  }
+
   updateCardRedirect(cardId: string, nfcUrl: string, qrUrl: string, label: string, groupName: string = 'General', requestingEmail?: string): { success: boolean; message: string } {
     const cards = this.getCards();
     const resolvedId = this.resolveCardId(cardId, cards);
@@ -1354,6 +1312,15 @@ class LocalDbService {
       cards[index].group_name = groupName || 'General';
       if (label) cards[index].label = label;
       if (requestingEmail) cards[index].owner_email = requestingEmail.trim().toLowerCase();
+
+      // Activacion al configurar: si el tag estaba 'asignado' (vendido pero apagado)
+      // y el cliente acaba de poner un enlace real, pasa a 'configurado' y empieza
+      // a redirigir. Un enlace vacio o el generico google.com no cuenta como real.
+      if (derivarEstado(cards[index]) === 'asignado' && this.esUrlReal(primaryUrl)) {
+        cards[index].estado = 'configurado';
+        cards[index].claimed = true;
+        cards[index].is_active = true;
+      }
     } else {
       const cleanCode = resolvedId.toUpperCase();
       cards.push({
@@ -1393,6 +1360,7 @@ class LocalDbService {
           group_name: groupName || 'General',
           is_active: cardObj.is_active,
           claimed: cardObj.claimed,
+          estado: derivarEstado(cardObj),
           type: cardObj.type || 'google'
         }).then(({ error }) => {
           if (error) console.error('Error guardando tarjeta en Supabase:', error);

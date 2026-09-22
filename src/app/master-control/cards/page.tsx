@@ -33,6 +33,8 @@ import {
 export default function CardsManagementPage() {
   const [cards, setCards] = useState<NfcCard[]>([]);
   const [scans, setScans] = useState<ScanRecord[]>([]);
+  // Total de escaneos traido como conteo del servidor (sin bajar el historico)
+  const [scansCount, setScansCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Search & Filter States
@@ -72,20 +74,23 @@ export default function CardsManagementPage() {
     setLoading(true);
     let dbCards = dbLocal.getCards();
     let dbScans = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
+    let totalScansRemoto: number | null = null;
 
     if (supabase) {
       try {
         const [resCards, resScans] = await Promise.all([
           supabase.from('nfc_cards').select('*').order('created_at', { ascending: false }),
-          supabase.from('nfc_scans').select('*').order('created_at', { ascending: false }),
+          // La tabla se llama 'scans' (antes se leia 'nfc_scans', que no existe).
+          // Solo hace falta el total, asi que se pide el conteo sin traer las filas.
+          supabase.from('scans').select('*', { count: 'exact', head: true }),
         ]);
 
         if (!resCards.error && resCards.data && resCards.data.length > 0) {
           dbCards = resCards.data as NfcCard[];
           dbLocal.setStorageItem('nfc_cards', dbCards);
         }
-        if (!resScans.error && resScans.data && resScans.data.length > 0) {
-          dbScans = resScans.data as ScanRecord[];
+        if (!resScans.error && typeof resScans.count === 'number') {
+          totalScansRemoto = resScans.count;
         }
       } catch (err) {
         console.error('Error cargando tarjetas desde Supabase:', err);
@@ -94,6 +99,7 @@ export default function CardsManagementPage() {
 
     setCards(dbCards);
     setScans(dbScans);
+    setScansCount(totalScansRemoto);
     setNewCardId(dbLocal.getNextStickerCode());
     setLoading(false);
   };
@@ -139,9 +145,9 @@ export default function CardsManagementPage() {
     const active = cards.filter(c => c.is_active).length;
     const inactive = cards.filter(c => !c.is_active).length;
     const unclaimed = cards.filter(c => !c.claimed).length;
-    const totalScans = scans.length;
+    const totalScans = scansCount !== null ? scansCount : scans.length;
     return { total, claimed, active, inactive, unclaimed, totalScans };
-  }, [cards, scans]);
+  }, [cards, scans, scansCount]);
 
   // Toggle Card Active State Directly
   const handleToggleActive = (cardId: string, currentStatus: boolean) => {

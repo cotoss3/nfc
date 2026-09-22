@@ -92,6 +92,32 @@ ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS channels JSONB DEFAULT '[]
 --   scans      → solo INSERT público
 
 
+-- ----------------------------------------------------------------------------
+-- Modelo de tags: asignar en vez de generar (20/09/2026)
+-- ----------------------------------------------------------------------------
+
+-- Estado del ciclo de vida del tag: 'en_stock' (grabado, sin vender),
+-- 'asignado' (vendido, todavia apagado) o 'configurado' (el cliente puso su
+-- enlace real y ya redirige). Los 70 tags actuales arrancan en 'en_stock'.
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS estado TEXT DEFAULT 'en_stock';
+
+-- Numero de pedido que se llevo este tag, para poder rastrear quien lo tiene.
+ALTER TABLE public.nfc_cards ADD COLUMN IF NOT EXISTS order_id TEXT;
+
+-- Cuantos tags quedaron sin asignar en ese pedido por falta de stock fisico.
+-- El pedido se acepta igual; el panel de Inventario avisa de los pendientes.
+ALTER TABLE public.orders   ADD COLUMN IF NOT EXISTS tags_pendientes INTEGER DEFAULT 0;
+
+-- La asignacion busca tags libres filtrando por claimed = false en cada venta.
+CREATE INDEX IF NOT EXISTS idx_nfc_cards_claimed ON public.nfc_cards (claimed);
+
+-- Para listar rapido todos los tags de un pedido.
+CREATE INDEX IF NOT EXISTS idx_nfc_cards_order_id ON public.nfc_cards (order_id);
+
+-- Los escaneos se consultan y cuentan siempre por tarjeta.
+CREATE INDEX IF NOT EXISTS idx_scans_card_id ON public.scans (card_id);
+
+
 -- ============================================================================
 -- PARTE B — NO CORRER TODAVIA
 --
