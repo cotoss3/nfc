@@ -370,7 +370,7 @@ export default function MasterControlDashboard() {
 
         <div class="footer">
           <p><strong>starTAP Panamá</strong> — ¡Gracias por su compra!</p>
-          <p>Contacto: pedidos@startap.com.pa | WhatsApp +507 6713-4341</p>
+          <p>Contacto: pedidos@startap.com.pa | WhatsApp +507 6483-9004</p>
         </div>
       </body>
       </html>

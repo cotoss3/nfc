@@ -164,8 +164,8 @@ export function buildCustomerOrderEmailHtml(data: OrderEmailParams): string {
 
                 <!-- Botón CTA WhatsApp Directo -->
                 <div style="text-align:center; margin-bottom: 24px;">
-                  <a href="https://wa.me/50767134341?text=Hola%20starTAP,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20%23${data.orderId}" target="_blank" style="display:inline-block; background-color:#25d366; color:#ffffff; font-size:14px; font-weight:800; padding:14px 28px; border-radius:12px; text-decoration:none; box-shadow: 0 4px 12px rgba(37,211,102,0.3);">
-                    💬 Contactar Soporte WhatsApp (+507 6713-4341)
+                  <a href="https://wa.me/50764839004?text=Hola%20starTAP,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20%23${data.orderId}" target="_blank" style="display:inline-block; background-color:#25d366; color:#ffffff; font-size:14px; font-weight:800; padding:14px 28px; border-radius:12px; text-decoration:none; box-shadow: 0 4px 12px rgba(37,211,102,0.3);">
+                    💬 Contactar Soporte WhatsApp (+507 6483-9004)
                   </a>
                 </div>
 
@@ -192,7 +192,7 @@ export function buildCustomerOrderEmailHtml(data: OrderEmailParams): string {
                   Desarrollado y Operado por DataKorex (datakorex.com)
                 </p>
                 <p style="font-size:10px; margin:0; color:#64748b;">
-                  Ciudad de Panamá | Arraiján | Tel: +507 6713-4341 | info@startap.com.pa
+                  Ciudad de Panamá | Arraiján | Tel: +507 6483-9004 | info@startap.com.pa
                 </p>
               </td>
             </tr>

@@ -65,7 +65,7 @@ export function calculateShippingCost(
 
 /** Datos de Yappy que se le muestran al cliente */
 export const YAPPY = {
-  numero: '6713-4341',
+  numero: '6483-9004',
   titular: 'Fernando Contreras',
 };
 

@@ -155,7 +155,7 @@ export default function AppProClient() {
                     <span>Alerta de Reseña de 1★ a 3★</span>
                     <span className="text-red-400 text-xs ml-1.5">★☆☆☆☆</span>
                   </div>
-                  <div className="text-[10px] text-gray-500">Notificar a WhatsApp (+507 6713-4341)</div>
+                  <div className="text-[10px] text-gray-500">Notificar a WhatsApp (+507 6483-9004)</div>
                 </div>
                 <div className="w-10 h-5 bg-emerald-500 rounded-full p-0.5 flex justify-end cursor-pointer">
                   <div className="w-4 h-4 bg-white rounded-full shadow" />

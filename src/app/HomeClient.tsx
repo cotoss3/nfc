@@ -49,7 +49,7 @@ export default function HomeClient() {
   const whatsappMessage = encodeURIComponent(
     "Hola StarTAP, quiero pedir una placa NFC personalizada con el logo de mi negocio en Panamá."
   );
-  const whatsappUrl = `https://wa.me/50767134341?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/50764839004?text=${whatsappMessage}`;
 
   const handleQuickAdd = (product: Product, redirect: boolean = false) => {
     addToCart({

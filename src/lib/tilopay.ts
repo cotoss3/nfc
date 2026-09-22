@@ -128,7 +128,7 @@ export async function createTilopayPayment(
     billToState: params.billToState || 'PA-8',
     billToZipPostCode: '00000',
     billToCountry: params.billToCountry || 'PA',
-    billToTelephone: params.billToTelephone || '67134341',
+    billToTelephone: params.billToTelephone || '64839004',
     billToEmail: params.billToEmail,
     subscription: '0',
     platform: 'api',

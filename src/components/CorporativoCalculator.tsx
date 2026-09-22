@@ -69,7 +69,7 @@ export default function CorporativoCalculator() {
   const originalTotalPrice = product.basePrice * quantity;
   const savings = originalTotalPrice - totalPrice;
 
-  const whatsappPhone = '50767134341';
+  const whatsappPhone = '50764839004';
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(
     `Hola starTAP Corporativo, calculé este presupuesto en su web para mi empresa:\n\n` +
     `🏢 *COTIZACIÓN B2B POR VOLUMEN:*\n` +

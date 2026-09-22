@@ -33,7 +33,7 @@ export default function CorporativoClient() {
   const [notes, setNotes] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const whatsappPhone = '50767134341';
+  const whatsappPhone = '50764839004';
 
   const handleQuoteSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +120,7 @@ export default function CorporativoClient() {
                 className="w-full sm:w-auto bg-amber-500 hover:bg-amber-400 text-brand-950 font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2"
               >
                 <PhoneCall className="w-4 h-4" />
-                Cotizar por WhatsApp (+507 6713-4341)
+                Cotizar por WhatsApp (+507 6483-9004)
               </a>
 
               <a
@@ -317,7 +317,7 @@ export default function CorporativoClient() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">WhatsApp Corporativo</span>
-                    <span>+507 6713-4341</span>
+                    <span>+507 6483-9004</span>
                   </div>
                 </div>
 
@@ -352,7 +352,7 @@ export default function CorporativoClient() {
                   </div>
                   <h4 className="text-xl font-bold text-white">¡Solicitud Enviada!</h4>
                   <p className="text-xs text-brand-300 max-w-sm mx-auto">
-                    Te estamos redirigiendo a nuestro canal oficial de WhatsApp corporativo (+507 6713-4341) para atenderte de inmediato.
+                    Te estamos redirigiendo a nuestro canal oficial de WhatsApp corporativo (+507 6483-9004) para atenderte de inmediato.
                   </p>
                 </div>
               ) : (
@@ -390,7 +390,7 @@ export default function CorporativoClient() {
                         required
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="6713-4341"
+                        placeholder="6483-9004"
                         className="w-full px-3 py-2.5 rounded bg-brand-900 border border-brand-700 text-white placeholder-brand-500 focus:outline-none focus:border-amber-400"
                       />
                     </div>
@@ -438,7 +438,7 @@ export default function CorporativoClient() {
                     type="submit"
                     className="w-full bg-amber-500 hover:bg-amber-400 text-brand-950 font-black text-xs uppercase tracking-widest py-3.5 rounded transition-colors shadow-lg mt-2"
                   >
-                    Enviar Cotización por WhatsApp (+507 6713-4341)
+                    Enviar Cotización por WhatsApp (+507 6483-9004)
                   </button>
                 </form>
               )}

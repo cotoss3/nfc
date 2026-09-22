@@ -106,7 +106,7 @@ async function handleCallback(req: NextRequest) {
         orderId: order,
         customerName: customerEmail.split('@')[0] || 'Cliente',
         customerEmail: customerEmail,
-        customerPhone: '67134341',
+        customerPhone: '64839004',
         address: 'Envío registrado',
         district: 'Panamá',
         province: 'Panamá',

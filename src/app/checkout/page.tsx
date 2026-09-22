@@ -267,7 +267,7 @@ export default function CheckoutPage() {
       'Por favor indicarme los datos para transferir por Yappy. ¡Muchas gracias!',
     ].filter(Boolean);
 
-    return `https://wa.me/50767134341?text=${encodeURIComponent(lines.join('\n'))}`;
+    return `https://wa.me/50764839004?text=${encodeURIComponent(lines.join('\n'))}`;
   };
 
   const handlePayment = async (e: React.FormEvent) => {
@@ -585,7 +585,7 @@ export default function CheckoutPage() {
               </div>
 
               <a
-                href={`https://wa.me/50767134341?text=${encodeURIComponent(`Hola, acabo de realizar el pedido ${displayOrderId} a nombre de ${completedOrder?.name || name || 'Comercio'}. Tengo una consulta.`)}`}
+                href={`https://wa.me/50764839004?text=${encodeURIComponent(`Hola, acabo de realizar el pedido ${displayOrderId} a nombre de ${completedOrder?.name || name || 'Comercio'}. Tengo una consulta.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors uppercase tracking-wider"

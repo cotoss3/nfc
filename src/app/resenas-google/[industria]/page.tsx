@@ -23,7 +23,7 @@ import { INDUSTRIAS, getIndustria } from '@/lib/industrias';
 import { getProductById } from '@/config/products';
 
 const BASE_URL = 'https://startap.com.pa';
-const WHATSAPP = 'https://wa.me/50767134341';
+const WHATSAPP = 'https://wa.me/50764839004';
 
 export function generateStaticParams() {
   return INDUSTRIAS.map((i) => ({ industria: i.slug }));

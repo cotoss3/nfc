@@ -164,8 +164,8 @@ export function buildWelcomeSubscriptionEmailHtml(email: string): string {
                 </div>
 
                 <div style="margin-top: 16px;">
-                  <a href="https://wa.me/50767134341?text=Hola%2C%20acabo%20de%20suscribirme%20al%20bolet%C3%ADn%20y%20tengo%20una%20consulta%20sobre%20los%20dispositivos%20NFC." style="display:inline-block; background-color:#10b981; color:#ffffff; font-size:12px; font-weight:800; padding:10px 20px; border-radius:50px; text-decoration:none;">
-                    💬 Asistencia por WhatsApp (+507 6713-4341)
+                  <a href="https://wa.me/50764839004?text=Hola%2C%20acabo%20de%20suscribirme%20al%20bolet%C3%ADn%20y%20tengo%20una%20consulta%20sobre%20los%20dispositivos%20NFC." style="display:inline-block; background-color:#10b981; color:#ffffff; font-size:12px; font-weight:800; padding:10px 20px; border-radius:50px; text-decoration:none;">
+                    💬 Asistencia por WhatsApp (+507 6483-9004)
                   </a>
                 </div>
               </td>

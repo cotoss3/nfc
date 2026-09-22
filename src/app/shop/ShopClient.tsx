@@ -271,7 +271,7 @@ export default function ShopClient() {
               Planes Corporativos
             </Link>
             <a
-              href="https://wa.me/50767134341?text=Hola,%20quisiera%20cotizar%20placas%20NFC%20al%20por%20mayor%20para%20mi%20empresa"
+              href="https://wa.me/50764839004?text=Hola,%20quisiera%20cotizar%20placas%20NFC%20al%20por%20mayor%20para%20mi%20empresa"
               target="_blank"
               rel="noopener noreferrer"
               className="shopify-btn-secondary py-3.5 px-6 text-xs uppercase tracking-wider font-bold border-brand-950 hover:bg-brand-950 hover:text-white text-center rounded-xl"

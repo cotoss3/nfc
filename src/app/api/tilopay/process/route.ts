@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
       billToFirstName: firstName,
       billToLastName: lastName,
       billToEmail: email,
-      billToTelephone: phone || '67134341',
+      billToTelephone: phone || '64839004',
       billToAddress: address || 'Panamá',
       billToAddress2: district || '',
       billToCity: province || 'Panamá',

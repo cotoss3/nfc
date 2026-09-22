@@ -49,8 +49,8 @@ export const CONDICIONES = {
   },
 };
 
-export const WHATSAPP_URL = 'https://wa.me/50767134341';
-export const WHATSAPP_NUMERO = '+507 6713-4341';
+export const WHATSAPP_URL = 'https://wa.me/50764839004';
+export const WHATSAPP_NUMERO = '+507 6483-9004';
 
 export const TESTIMONIOS: {
   texto: string;

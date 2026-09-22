@@ -4,7 +4,7 @@ import { MessageCircle, Mail, Check, X } from 'lucide-react';
 const MENSAJE_WHATSAPP =
   'Hola Fernando, leí el artículo del blog sobre por qué mi negocio no aparece en Google Maps. ¿Me puedes hacer la revisión gratuita de mi ficha de Google?';
 
-const WHATSAPP_REVISION = `https://wa.me/50767134341?text=${encodeURIComponent(MENSAJE_WHATSAPP)}`;
+const WHATSAPP_REVISION = `https://wa.me/50764839004?text=${encodeURIComponent(MENSAJE_WHATSAPP)}`;
 
 const ASUNTO_CORREO = encodeURIComponent('Revisión de mi ficha de Google');
 const CORREO_REVISION = `mailto:info@startap.com.pa?subject=${ASUNTO_CORREO}`;
@@ -89,7 +89,7 @@ export default function CtaAuditoria() {
       </div>
 
       <p className="mt-4 text-xs text-brand-500 leading-relaxed">
-        Escribe al +507 6713-4341. Vendemos dispositivos NFC para reseñas, así que esa parte la
+        Escribe al +507 6483-9004. Vendemos dispositivos NFC para reseñas, así que esa parte la
         tengo a favor y la digo de frente. Los otros cinco puntos no te los vendemos.
       </p>
     </section>

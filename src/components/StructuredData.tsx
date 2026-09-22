@@ -15,7 +15,7 @@ const organizationSchema = {
   logo: `${BASE_URL}/logos/Logo.webp`,
   description:
     'Dispositivos NFC y códigos QR para que los negocios en Panamá multipliquen sus reseñas de Google Maps, sin mensualidades.',
-  telephone: '+507 6713-4341',
+  telephone: '+507 6483-9004',
   email: 'info@startap.com.pa',
   areaServed: {
     '@type': 'Country',
@@ -45,7 +45,7 @@ const serviceSchema = {
   name: 'starTAP Panamá',
   image: `${BASE_URL}/logos/Logo.webp`,
   url: BASE_URL,
-  telephone: '+507 6713-4341',
+  telephone: '+507 6483-9004',
   priceRange: '$$',
   currenciesAccepted: 'USD',
   paymentAccepted: 'Yappy, Visa, Mastercard',
@@ -89,7 +89,7 @@ const storeSchema = {
   image: `${BASE_URL}/images/posicionamiento-seo-google-maps-panama-startap.webp`,
   description:
     'Venta de placas y tarjetas NFC contactless en Panamá para captar reseñas de Google Maps sin pagos mensuales ni suscripciones.',
-  telephone: '+507 6713-4341',
+  telephone: '+507 6483-9004',
   email: 'info@startap.com.pa',
   priceRange: '$20.00 - $50.00',
   currenciesAccepted: 'USD',

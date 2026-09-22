@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { track } from '@/lib/fbpixel';
 import { trackTikTok } from '@/lib/tiktokpixel';
 
-const WHATSAPP_NUMBER = '50767134341';
+const WHATSAPP_NUMBER = '50764839004';
 const HELP_MESSAGE = 'Hola starTAP Panamá, estoy en la web y necesito ayuda con sus productos.';
 
 export default function WhatsAppButton() {
@@ -51,7 +51,7 @@ export default function WhatsAppButton() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleClick}
-        aria-label="Solicitar ayuda por WhatsApp al 6713-4341"
+        aria-label="Solicitar ayuda por WhatsApp al 6483-9004"
         className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-xl shadow-emerald-600/30 transition-transform duration-200 hover:scale-110 active:scale-95 focus:outline-none focus:ring-4 focus:ring-emerald-400/50"
       >
         {/* Anillo de pulso sutil */}

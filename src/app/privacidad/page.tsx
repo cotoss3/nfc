@@ -69,7 +69,7 @@ export default function PrivacidadPage() {
               <p><strong className="text-slate-900">Razón Comercial:</strong> KoreNet Cloud & Web (StarTAP Panamá)</p>
               <p><strong className="text-slate-900">Titular Registrado:</strong> Fernando Contreras</p>
               <p><strong className="text-slate-900">Correo Electrónico de Privacidad:</strong> info@startap.com.pa</p>
-              <p><strong className="text-slate-900">Teléfono / WhatsApp de Atención:</strong> +507 6713-4341</p>
+              <p><strong className="text-slate-900">Teléfono / WhatsApp de Atención:</strong> +507 6483-9004</p>
               <p><strong className="text-slate-900">Jurisdicción:</strong> República de Panamá</p>
             </div>
           </section>

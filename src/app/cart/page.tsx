@@ -49,7 +49,7 @@ export default function CartPage() {
   const [orderNotes, setOrderNotes] = useState('');
   const [showNotes, setShowNotes] = useState(false);
 
-  const whatsappNumber = '50767134341';
+  const whatsappNumber = '50764839004';
 
   const generateWhatsAppMessage = () => {
     const itemsList = cart.map(item => {

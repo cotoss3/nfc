@@ -148,10 +148,10 @@ export default function EnviosPage() {
               4. Confirmación y Guía de Rastreo
             </h2>
             <p>
-              Una vez que tu paquete ingresa al proveedor logístico seleccionado, nuestro equipo te enviará la foto de la guía oficial de envío por <strong className="text-slate-900">WhatsApp (+507 6713-4341)</strong> o al correo electrónico registrado (<strong className="text-slate-900">info@startap.com.pa</strong>).
+              Una vez que tu paquete ingresa al proveedor logístico seleccionado, nuestro equipo te enviará la foto de la guía oficial de envío por <strong className="text-slate-900">WhatsApp (+507 6483-9004)</strong> o al correo electrónico registrado (<strong className="text-slate-900">info@startap.com.pa</strong>).
             </p>
             <p className="text-xs bg-amber-50 p-4 rounded-xl border border-amber-200 text-amber-950 font-medium">
-              Si requieres alguna indicación especial para tu envío o necesitas coordinar el retiro en una sucursal específica de Uno Express, comunícate directamente con nuestro equipo al WhatsApp +507 6713-4341 antes del despacho.
+              Si requieres alguna indicación especial para tu envío o necesitas coordinar el retiro en una sucursal específica de Uno Express, comunícate directamente con nuestro equipo al WhatsApp +507 6483-9004 antes del despacho.
             </p>
           </section>
 
