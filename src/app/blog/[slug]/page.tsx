@@ -428,10 +428,27 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
               )}
 
               {/* Sidebar CTA */}
-              <div className="rounded-2xl border border-accent-200/80 bg-gradient-to-br from-accent-50 to-orange-50/40 p-6 shadow-xs">
-                <span className="inline-block px-2.5 py-0.5 rounded-md bg-accent-600 text-white text-[10px] font-bold uppercase tracking-wider mb-2">
-                  Solución starTAP
-                </span>
+              <div className="rounded-2xl border border-accent-200/80 bg-gradient-to-br from-accent-50 to-orange-50/40 p-5 shadow-xs">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className="inline-block px-2.5 py-0.5 rounded-md bg-accent-600 text-white text-[10px] font-bold uppercase tracking-wider">
+                    Solución starTAP
+                  </span>
+                  <span className="text-[11px] font-bold text-brand-700 bg-white/80 border border-brand-200/60 px-2 py-0.5 rounded-md">
+                    Desde $20.00
+                  </span>
+                </div>
+
+                <div className="relative mx-auto my-3 overflow-hidden rounded-xl bg-white/80 p-2 shadow-xs border border-brand-100 max-w-[220px]">
+                  <img
+                    src="/blog/placa-nfc-google-startap-sidebar.webp"
+                    alt="Placa y Tarjeta NFC starTAP para reseñas en Google Maps"
+                    width={500}
+                    height={500}
+                    className="w-full h-auto object-contain mx-auto transition-transform hover:scale-105 duration-300"
+                    loading="lazy"
+                  />
+                </div>
+
                 <h3 className="font-bold text-brand-950 text-sm mb-2">
                   ¿Quieres recibir más reseñas en Google?
                 </h3>

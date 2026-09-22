@@ -1,12 +1,12 @@
+import { Config } from '@/config/site';
+
 /**
  * TikTok Pixel de starTAP Panamá.
- *
- * El ID vive en NEXT_PUBLIC_TIKTOK_PIXEL_ID con fallback al ID configurado por el usuario.
+ * El ID proviene del objeto central Config.pixels.tiktok.
  * Si no está disponible o el usuario tiene adblockers, las llamadas son a prueba de fallos.
  */
 
-export const TIKTOK_PIXEL_ID =
-  process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || 'DAKQIS3C77U8PGIBH830';
+export const TIKTOK_PIXEL_ID = Config.pixels.tiktok;
 
 type Ttq = {
   page: () => void;

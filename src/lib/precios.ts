@@ -13,8 +13,8 @@ import { PRODUCTS, getProductById } from '@/config/products';
  * que la tienda mostraba en $0.50 se cobro en $23.75.
  */
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const admin = url && serviceKey ? createClient(url, serviceKey) : null;
 

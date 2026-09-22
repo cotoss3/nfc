@@ -831,3 +831,9 @@ antes de publicar el artículo.
    - 5 imágenes convertidas a WebP de alta compresión (<120 KB y <80 KB) con `sharp`.
    - Ubicadas en `public/blog/` con nombres semánticos e integradas en `por-que-mi-negocio-no-aparece-en-google-maps.ts` con etiquetas `alt` SEO y OpenGraph/Schema.org actualizados.
    - Compilación limpia con `npx tsc --noEmit` (0 errores).
+
+3. **Centralización de Variables de Configuración y Foto en Sidebar CTA:**
+   - Creación de `src/config/site.ts` con el objeto `Config` para centralizar variables privadas de entorno en el servidor eliminando prefijos públicos innecesarios (`NEXT_PUBLIC_`) en rutas y utilidades de backend (`fbpixel`, `tiktokpixel`, `precios`, `cupones`, `pedidos`).
+   - Conversión de foto de placa starTAP a formato WebP optimizado (500x500 px, ~29.9 KB) en `public/blog/placa-nfc-google-startap-sidebar.webp`.
+   - Inserción de imagen, distintivo de precio ("Desde $20.00") y atributos SEO (`alt`, `width`, `height`, `loading="lazy"`) en el cuadro "Solución starTAP" del sidebar de artículos (`src/app/blog/[slug]/page.tsx`).
+

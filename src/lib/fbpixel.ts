@@ -1,12 +1,10 @@
+import { Config } from '@/config/site';
+
 /**
  * Meta Pixel (Facebook) de starTAP.
- *
- * El ID vive en NEXT_PUBLIC_FB_PIXEL_ID para poder apagarlo en desarrollo
- * sin tocar el código. Si la variable no existe, el píxel no se carga y
- * todas las llamadas a track() no hacen nada.
+ * El ID proviene del objeto central Config.pixels.facebook.
  */
-
-export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID ?? '';
+export const FB_PIXEL_ID = Config.pixels.facebook;
 
 type Fbq = (...args: unknown[]) => void;
 
