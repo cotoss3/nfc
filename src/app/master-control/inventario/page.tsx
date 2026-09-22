@@ -169,15 +169,26 @@ export default function InventarioPage() {
       const pid = (p.id || '').toLowerCase();
 
       let defaultQty = 10;
-      if (pid === 'placa-nfc-mostrador') defaultQty = 50;
-      else if (pid === 'tarjeta-nfc-bolsillo') defaultQty = 20;
-      else if (pid === 'stand-nfc-mesa') defaultQty = 0;
-      else if (pid === 'pack-trio-comercial') defaultQty = 10;
+      let officialUnitCost = 2.25;
+
+      if (pid.includes('tarjeta') || pid === 'tarjeta-nfc' || pid === 'tarjeta-nfc-bolsillo') {
+        defaultQty = 20;
+        officialUnitCost = 1.50;
+      } else if (pid.includes('placa') || pid === 'placa-nfc-mostrador' || pid === 'placa-google' || pid === 'nfc_10001') {
+        defaultQty = 50;
+        officialUnitCost = 2.25;
+      } else if (pid.includes('stand') || pid === 'stand-nfc-mesa' || pid === 'stand-nfc' || pid === 'nfc10002') {
+        defaultQty = 0;
+        officialUnitCost = 2.00;
+      } else if (pid.includes('pack') || pid === 'pack-trio-comercial') {
+        defaultQty = 10;
+        officialUnitCost = 5.25; // 1 Placa ($2.25) + 2 Tarjetas ($3.00)
+      }
 
       const pPrice = typeof p.price === 'number' && !isNaN(p.price) ? p.price : 0;
-      const unitCostVal = existing && typeof existing.unit_cost === 'number' && !isNaN(existing.unit_cost)
+      const unitCostVal = existing && typeof existing.unit_cost === 'number' && !isNaN(existing.unit_cost) && existing.unit_cost > 0
         ? existing.unit_cost
-        : Math.round(pPrice * 0.28 * 100) / 100;
+        : officialUnitCost;
 
       const sellingPriceVal = existing && typeof existing.selling_price === 'number' && !isNaN(existing.selling_price)
         ? existing.selling_price
@@ -190,31 +201,35 @@ export default function InventarioPage() {
         category: p.category || existing?.category || 'plates',
         current_stock: existing && typeof existing.current_stock === 'number' ? existing.current_stock : defaultQty,
         min_alert_stock: existing && typeof existing.min_alert_stock === 'number' ? existing.min_alert_stock : 10,
-        unit_cost: unitCostVal,
+        unit_cost: officialUnitCost, // Forzar costo unitario oficial de compra
         selling_price: sellingPriceVal,
       };
     });
 
-    // Asegurar conteo físico exacto inicial
-    if (cleanStocks['placa-nfc-mostrador'] && savedStocks['placa-nfc-mostrador'] === undefined) {
-      cleanStocks['placa-nfc-mostrador'].current_stock = 50;
+    // Asegurar conteo físico exacto inicial y costos oficiales
+    if (cleanStocks['placa-nfc-mostrador']) {
+      if (savedStocks['placa-nfc-mostrador'] === undefined) cleanStocks['placa-nfc-mostrador'].current_stock = 50;
+      cleanStocks['placa-nfc-mostrador'].unit_cost = 2.25;
     }
-    if (cleanStocks['tarjeta-nfc-bolsillo'] && savedStocks['tarjeta-nfc-bolsillo'] === undefined) {
-      cleanStocks['tarjeta-nfc-bolsillo'].current_stock = 20;
+    if (cleanStocks['tarjeta-nfc-bolsillo']) {
+      if (savedStocks['tarjeta-nfc-bolsillo'] === undefined) cleanStocks['tarjeta-nfc-bolsillo'].current_stock = 20;
+      cleanStocks['tarjeta-nfc-bolsillo'].unit_cost = 1.50;
     }
-    if (cleanStocks['stand-nfc-mesa'] && savedStocks['stand-nfc-mesa'] === undefined) {
-      cleanStocks['stand-nfc-mesa'].current_stock = 0;
+    if (cleanStocks['stand-nfc-mesa']) {
+      if (savedStocks['stand-nfc-mesa'] === undefined) cleanStocks['stand-nfc-mesa'].current_stock = 0;
+      cleanStocks['stand-nfc-mesa'].unit_cost = 2.00;
     }
     if (cleanStocks['pack-trio-comercial']) {
       const pStock = cleanStocks['placa-nfc-mostrador'] ? cleanStocks['placa-nfc-mostrador'].current_stock : 50;
       const tStock = cleanStocks['tarjeta-nfc-bolsillo'] ? cleanStocks['tarjeta-nfc-bolsillo'].current_stock : 20;
       cleanStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+      cleanStocks['pack-trio-comercial'].unit_cost = 5.25; // 1 Placa ($2.25) + 2 Tarjetas ($3.00)
     }
 
     setProductStocks(cleanStocks);
     dbLocal.setStorageItem('inventory_product_stocks', cleanStocks);
 
-    // Initial Batches setup
+    // Initial Batches setup con costos unitarios actualizados
     const savedBatches = dbLocal.getStorageItem<InventoryBatch[]>('inventory_batches', []);
     if (savedBatches.length === 0) {
       const defaultBatches: InventoryBatch[] = [
@@ -224,7 +239,7 @@ export default function InventarioPage() {
           product_name: dbProducts[0]?.name || 'Placa NFC para Reseñas de Google',
           quantity_initial: 50,
           quantity_remaining: 50,
-          unit_cost: 6.50,
+          unit_cost: 2.25,
           supplier: 'Shenzhen Micro-NFC Tech',
           received_at: new Date(Date.now() - 86400000 * 12).toISOString(),
           status: 'active',
@@ -236,7 +251,7 @@ export default function InventarioPage() {
           product_name: dbProducts[1]?.name || 'Tarjeta NFC de Bolsillo',
           quantity_initial: 20,
           quantity_remaining: 20,
-          unit_cost: 4.20,
+          unit_cost: 1.50,
           supplier: 'SmartCard Global Panama',
           received_at: new Date(Date.now() - 86400000 * 25).toISOString(),
           status: 'active',
