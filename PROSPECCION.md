@@ -157,7 +157,7 @@ https://wa.me/507XXXXXXXX?text=MENSAJE
 ```
 
 - El número va con el **507** adelante, sin `+`, sin espacios ni guiones.
-  El 6713-4341 se escribe `50767134341`.
+  El 6483-9004 se escribe `50764839004`.
 - El mensaje va **codificado para URL**: los espacios como `%20`, los saltos de
   línea como `%0A`, y las tildes y la ñ también codificadas. Si no se codifica,
   el enlace se corta en el primer espacio.

@@ -65,7 +65,7 @@ servicio: la dirección se usa para verificación pero no debe mostrarse.
 
 - **Sitio web:** confirmar que apunte a `https://startap.com.pa` (no a startap.pro,
   que es un homónimo con el mismo producto).
-- **Teléfono:** 6713-4341. Ya está.
+- **Teléfono:** 6483-9004. Ya está.
 - **WhatsApp:** Editar perfil → Contacto → agregar. Google manda un código al
   celular. Vale mucho: el botón de WhatsApp aparece directo en el resultado.
 - **Perfiles sociales:** Editar perfil → Contacto → Perfiles sociales. Agregar

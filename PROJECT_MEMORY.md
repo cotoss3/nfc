@@ -191,7 +191,7 @@ completo en algún momento; quedan usos sueltos de "StarTAP" en textos de FAQ.
 ### 2026-09-15 · Perfil de Google aprobado + hallazgo de marca
 
 El perfil de Google Business quedó **verificado**: starTAP, 5.0 con 4 opiniones,
-categoría "Servicio de comercio electrónico", teléfono 6713-4341, área de servicio
+categoría "Servicio de comercio electrónico", teléfono 6483-9004, área de servicio
 marcada (Coclé, Panamá, Veraguas y 9 zonas más). Código de tienda
 `02098562584205432947`.
 
@@ -387,7 +387,7 @@ Todo se armó desde la documentación oficial de Tilopay.
 - Página de Facebook creada: **Startap Panamá** — `facebook.com/profile.php?id=61594455868652`
   - Meta rechazó el nombre "StarTAP" (formato inválido); quedó "Startap Panamá".
   - Categoría: Servicio de marketing en internet (igual que el perfil de Google).
-  - Web startap.com.pa · Tel +507 6713-4341 · Correo info@datakorex.com
+  - Web startap.com.pa · Tel +507 6483-9004 · Correo info@datakorex.com
   - Ubicación Arraiján (corregimiento), sin dirección física: negocio de área de servicio.
 - Cuenta publicitaria **starTAP Panamá** — ID `120250675056060696`, dentro del portfolio
   comercial DataKorex (`1032660859932197`).
@@ -468,7 +468,7 @@ Todo se armó desde la documentación oficial de Tilopay.
   Antes se cobraba el `total` que mandaba el navegador.
 * **Callback verificado contra la API de Tilopay** (`consultTilopayPayment`). Antes daba el
   pago por bueno leyendo `code=1` de la URL de retorno, que el cliente puede escribir a mano.
-* **Yappy**: número real 6713-4341 (Fernando Contreras). El pedido queda `pending` hasta
+* **Yappy**: número real 6483-9004 (Fernando Contreras). El pedido queda `pending` hasta
   verificación manual; antes entraba como pagado con cualquier referencia.
 * **Retiro en oficina eliminado.** Quedan Panamá Centro, Uno Express y Servientrega.
 * **Envío gratis desde $50** + barra de progreso en el carrito.
@@ -536,7 +536,7 @@ Los cuatro a $5/día, Panamá, 28-55, ambos sexos, sin creativo.
 
 **Bloqueos que dependen de Fernando:**
 - El destino es Messenger porque WhatsApp pide "Conectar perfil" (verificación del
-  6713-4341 por código). Sin eso la campaña no cumple su propósito.
+  6483-9004 por código). Sin eso la campaña no cumple su propósito.
 - Meta pide confirmar datos de la cuenta en "Resumen de la cuenta" antes de publicar.
 
 ## 20 sep 2026 · Auditoría estructural + generador de video Veo 3

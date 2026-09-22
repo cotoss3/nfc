@@ -43,7 +43,7 @@ abre el navegador del cliente y se puede escribir a mano.
 
 ## 🟠 Yappy apuntaba a otra cuenta
 
-Decía `@panacards`. **Corregido:** ahora muestra **6713-4341 · Fernando Contreras**, y el pedido
+Decía `@panacards`. **Corregido:** ahora muestra **6483-9004 · Fernando Contreras**, y el pedido
 queda en `payment_status: 'pending'` hasta que verifiques el pago a mano. Antes entraba como pagado
 solo con escribir una referencia cualquiera.
 
