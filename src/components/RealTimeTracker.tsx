@@ -91,7 +91,7 @@ export default function RealTimeTracker() {
     };
 
     sendPing();
-    const interval = setInterval(sendPing, 8000);
+    const interval = setInterval(sendPing, 45000);
 
     return () => clearInterval(interval);
   }, [pathname, cart, getCartTotal, getItemCount]);

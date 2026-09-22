@@ -232,7 +232,7 @@ export default function HomeClient() {
       <section className="py-10 bg-white border-b border-slate-200">
         <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 space-y-2">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
               Impacto Inmediato en Ventas
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-950 uppercase tracking-tight">
@@ -566,7 +566,7 @@ export default function HomeClient() {
       <section className="py-12 sm:py-16 bg-white border-y border-slate-200">
         <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center space-y-2.5 mb-10 sm:mb-14">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
               Sistema Completo Hardware + Panel Software
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
