@@ -73,6 +73,7 @@ export interface ProductStockInfo {
   min_alert_stock: number;
   unit_cost: number;
   selling_price: number;
+  is_bundle?: boolean;
 }
 
 type MainTab = 'inventario_lotes' | 'tags_hardware' | 'resumen_analiticas';
@@ -194,6 +195,8 @@ export default function InventarioPage() {
         ? existing.selling_price
         : pPrice;
 
+      const isBundleProd = pid.includes('pack') || pid === 'pack-trio-comercial';
+
       cleanStocks[p.id] = {
         product_id: p.id,
         sku: (p as any).sku || existing?.sku || `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
@@ -203,6 +206,7 @@ export default function InventarioPage() {
         min_alert_stock: existing && typeof existing.min_alert_stock === 'number' ? existing.min_alert_stock : 10,
         unit_cost: officialUnitCost, // Forzar costo unitario oficial de compra
         selling_price: sellingPriceVal,
+        is_bundle: isBundleProd,
       };
     });
 
@@ -224,6 +228,7 @@ export default function InventarioPage() {
       const tStock = cleanStocks['tarjeta-nfc-bolsillo'] ? cleanStocks['tarjeta-nfc-bolsillo'].current_stock : 20;
       cleanStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
       cleanStocks['pack-trio-comercial'].unit_cost = 5.25; // 1 Placa ($2.25) + 2 Tarjetas ($3.00)
+      cleanStocks['pack-trio-comercial'].is_bundle = true;
     }
 
     setProductStocks(cleanStocks);
@@ -303,12 +308,14 @@ export default function InventarioPage() {
     loadData();
   }, []);
 
-  // Compute Total Inventory Financial Valuation
+  // Compute Total Inventory Financial Valuation (Solo contando ítems físicos reales para no duplicar combos)
   const inventoryMetrics = useMemo(() => {
     const stockList = Object.values(productStocks).filter(Boolean);
-    const totalPhysicalUnits = stockList.reduce((sum, item) => sum + (item.current_stock || 0), 0);
-    const totalValuationCost = stockList.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.unit_cost || 0)), 0);
-    const totalRetailValuation = stockList.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.selling_price || 0)), 0);
+    const physicalItems = stockList.filter(item => !item.is_bundle && !item.product_id.includes('pack'));
+
+    const totalPhysicalUnits = physicalItems.reduce((sum, item) => sum + (item.current_stock || 0), 0);
+    const totalValuationCost = physicalItems.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.unit_cost || 0)), 0);
+    const totalRetailValuation = physicalItems.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.selling_price || 0)), 0);
     const lowStockCount = stockList.filter(item => (item.current_stock || 0) <= (item.min_alert_stock || 10) && (item.current_stock || 0) > 0).length;
     const outOfStockCount = stockList.filter(item => (item.current_stock || 0) === 0).length;
     const activeBatchesCount = (batches || []).filter(b => b && b.status === 'active').length;
@@ -903,22 +910,31 @@ export default function InventarioPage() {
 
                         const isLow = currentStock <= minAlert && currentStock > 0;
                         const isOut = currentStock === 0;
+                        const isBundle = prod.is_bundle || prod.product_id.includes('pack');
                         const costVal = currentStock * unitCost;
                         const retailVal = currentStock * sellingPrice;
 
                         return (
                           <tr key={prod.product_id} className="hover:bg-slate-50 transition-colors">
                             <td className="p-3">
-                              <span className="font-mono font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 block w-fit mb-0.5">
-                                {prod.sku || 'STP-0000'}
-                              </span>
-                              <span className="font-bold text-slate-900 block max-w-[200px] truncate">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-mono font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 block w-fit">
+                                  {prod.sku || 'STP-0000'}
+                                </span>
+                                {isBundle && (
+                                  <span className="text-[9px] font-black uppercase px-1.5 py-0.5 bg-purple-100 text-purple-800 border border-purple-300 rounded">
+                                    Combo Virtual
+                                  </span>
+                                )}
+                              </div>
+                              <span className="font-bold text-slate-900 block max-w-[220px] truncate mt-0.5">
                                 {prod.name || prod.product_id}
                               </span>
                             </td>
 
                             <td className="p-3 text-center font-mono font-black text-base text-slate-900">
                               {currentStock} ud.
+                              {isBundle && <span className="text-[10px] font-bold text-purple-700 block -mt-1">(armables)</span>}
                             </td>
 
                             <td className="p-3 text-right font-mono font-semibold text-slate-600">
@@ -929,12 +945,24 @@ export default function InventarioPage() {
                               ${sellingPrice.toFixed(2)}
                             </td>
 
-                            <td className="p-3 text-right font-mono font-black text-amber-700">
-                              ${costVal.toFixed(2)}
+                            <td className="p-3 text-right font-mono font-black">
+                              {isBundle ? (
+                                <span className="text-[11px] font-bold text-slate-400 italic" title="No suma al total para evitar duplicar existencias de insumos">
+                                  $0.00 (Combo)
+                                </span>
+                              ) : (
+                                <span className="text-amber-700">${costVal.toFixed(2)}</span>
+                              )}
                             </td>
 
-                            <td className="p-3 text-right font-mono font-black text-emerald-700">
-                              ${retailVal.toFixed(2)}
+                            <td className="p-3 text-right font-mono font-black">
+                              {isBundle ? (
+                                <span className="text-[11px] font-bold text-slate-400 italic" title="Derivado de 1 Placa + 2 Tarjetas físicas">
+                                  $0.00 (Combo)
+                                </span>
+                              ) : (
+                                <span className="text-emerald-700">${retailVal.toFixed(2)}</span>
+                              )}
                             </td>
 
                             <td className="p-3 text-center">
