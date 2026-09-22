@@ -106,7 +106,7 @@ export default function MasterControlLayout({ children }: { children: React.Reac
               {/* Navigation Items */}
               <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
                 {navItems.map((tab) => {
-                  const isActive = pathname === tab.href || (tab.href !== '/master-control' && pathname.startsWith(tab.href));
+                  const isActive = Boolean(pathname && (pathname === tab.href || (tab.href !== '/master-control' && pathname.startsWith(tab.href))));
                   const Icon = tab.icon;
                   return (
                     <Link

@@ -164,8 +164,9 @@ export default function InventarioPage() {
     const cleanStocks: { [id: string]: ProductStockInfo } = {};
 
     dbProducts.forEach((p, idx) => {
+      if (!p || !p.id) return;
       const existing = savedStocks[p.id];
-      const pid = p.id.toLowerCase();
+      const pid = (p.id || '').toLowerCase();
 
       let defaultQty = 10;
       if (pid === 'placa-nfc-mostrador') defaultQty = 50;
@@ -173,15 +174,24 @@ export default function InventarioPage() {
       else if (pid === 'stand-nfc-mesa') defaultQty = 0;
       else if (pid === 'pack-trio-comercial') defaultQty = 10;
 
+      const pPrice = typeof p.price === 'number' && !isNaN(p.price) ? p.price : 0;
+      const unitCostVal = existing && typeof existing.unit_cost === 'number' && !isNaN(existing.unit_cost)
+        ? existing.unit_cost
+        : Math.round(pPrice * 0.28 * 100) / 100;
+
+      const sellingPriceVal = existing && typeof existing.selling_price === 'number' && !isNaN(existing.selling_price)
+        ? existing.selling_price
+        : pPrice;
+
       cleanStocks[p.id] = {
         product_id: p.id,
-        sku: (p as any).sku || `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
-        name: p.name,
-        category: p.category || 'plates',
-        current_stock: existing ? existing.current_stock : defaultQty,
-        min_alert_stock: 10,
-        unit_cost: existing ? existing.unit_cost : Math.round(p.price * 0.28 * 100) / 100,
-        selling_price: p.price,
+        sku: (p as any).sku || existing?.sku || `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
+        name: p.name || existing?.name || p.id,
+        category: p.category || existing?.category || 'plates',
+        current_stock: existing && typeof existing.current_stock === 'number' ? existing.current_stock : defaultQty,
+        min_alert_stock: existing && typeof existing.min_alert_stock === 'number' ? existing.min_alert_stock : 10,
+        unit_cost: unitCostVal,
+        selling_price: sellingPriceVal,
       };
     });
 
@@ -280,13 +290,13 @@ export default function InventarioPage() {
 
   // Compute Total Inventory Financial Valuation
   const inventoryMetrics = useMemo(() => {
-    const stockList = Object.values(productStocks);
-    const totalPhysicalUnits = stockList.reduce((sum, item) => sum + item.current_stock, 0);
-    const totalValuationCost = stockList.reduce((sum, item) => sum + (item.current_stock * item.unit_cost), 0);
-    const totalRetailValuation = stockList.reduce((sum, item) => sum + (item.current_stock * item.selling_price), 0);
-    const lowStockCount = stockList.filter(item => item.current_stock <= item.min_alert_stock && item.current_stock > 0).length;
-    const outOfStockCount = stockList.filter(item => item.current_stock === 0).length;
-    const activeBatchesCount = batches.filter(b => b.status === 'active').length;
+    const stockList = Object.values(productStocks).filter(Boolean);
+    const totalPhysicalUnits = stockList.reduce((sum, item) => sum + (item.current_stock || 0), 0);
+    const totalValuationCost = stockList.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.unit_cost || 0)), 0);
+    const totalRetailValuation = stockList.reduce((sum, item) => sum + ((item.current_stock || 0) * (item.selling_price || 0)), 0);
+    const lowStockCount = stockList.filter(item => (item.current_stock || 0) <= (item.min_alert_stock || 10) && (item.current_stock || 0) > 0).length;
+    const outOfStockCount = stockList.filter(item => (item.current_stock || 0) === 0).length;
+    const activeBatchesCount = (batches || []).filter(b => b && b.status === 'active').length;
 
     return {
       totalPhysicalUnits,
@@ -301,19 +311,26 @@ export default function InventarioPage() {
   // Filtered Product Stock List
   const filteredProductStocks = useMemo(() => {
     return Object.values(productStocks).filter(p => {
+      if (!p) return false;
+      const pName = p.name || '';
+      const pSku = p.sku || '';
+
       const matchSearch =
         !productSearch ||
-        p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-        p.sku.toLowerCase().includes(productSearch.toLowerCase());
+        pName.toLowerCase().includes(productSearch.toLowerCase()) ||
+        pSku.toLowerCase().includes(productSearch.toLowerCase());
 
       const matchCategory =
         categoryFilter === 'all' || p.category === categoryFilter;
 
+      const currentStock = p.current_stock || 0;
+      const minStock = p.min_alert_stock || 10;
+
       const matchStatus =
         stockStatusFilter === 'all' ||
-        (stockStatusFilter === 'normal' && p.current_stock > p.min_alert_stock) ||
-        (stockStatusFilter === 'low' && p.current_stock <= p.min_alert_stock && p.current_stock > 0) ||
-        (stockStatusFilter === 'out' && p.current_stock === 0);
+        (stockStatusFilter === 'normal' && currentStock > minStock) ||
+        (stockStatusFilter === 'low' && currentStock <= minStock && currentStock > 0) ||
+        (stockStatusFilter === 'out' && currentStock === 0);
 
       return matchSearch && matchCategory && matchStatus;
     });
@@ -863,31 +880,36 @@ export default function InventarioPage() {
                       </tr>
                     ) : (
                       filteredProductStocks.map(prod => {
-                        const isLow = prod.current_stock <= prod.min_alert_stock && prod.current_stock > 0;
-                        const isOut = prod.current_stock === 0;
-                        const stockVal = prod.current_stock * prod.unit_cost;
+                        const currentStock = prod.current_stock || 0;
+                        const minAlert = prod.min_alert_stock || 10;
+                        const unitCost = typeof prod.unit_cost === 'number' && !isNaN(prod.unit_cost) ? prod.unit_cost : 0;
+                        const sellingPrice = typeof prod.selling_price === 'number' && !isNaN(prod.selling_price) ? prod.selling_price : 0;
+
+                        const isLow = currentStock <= minAlert && currentStock > 0;
+                        const isOut = currentStock === 0;
+                        const stockVal = currentStock * unitCost;
 
                         return (
                           <tr key={prod.product_id} className="hover:bg-slate-50 transition-colors">
                             <td className="p-3">
                               <span className="font-mono font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 block w-fit mb-0.5">
-                                {prod.sku}
+                                {prod.sku || 'STP-0000'}
                               </span>
                               <span className="font-bold text-slate-900 block max-w-[200px] truncate">
-                                {prod.name}
+                                {prod.name || prod.product_id}
                               </span>
                             </td>
 
                             <td className="p-3 text-center font-mono font-black text-base text-slate-900">
-                              {prod.current_stock} ud.
+                              {currentStock} ud.
                             </td>
 
                             <td className="p-3 text-right font-mono font-semibold text-slate-600">
-                              ${prod.unit_cost.toFixed(2)}
+                              ${unitCost.toFixed(2)}
                             </td>
 
                             <td className="p-3 text-right font-mono font-bold text-slate-900">
-                              ${prod.selling_price.toFixed(2)}
+                              ${sellingPrice.toFixed(2)}
                             </td>
 
                             <td className="p-3 text-right font-mono font-black text-amber-700">
