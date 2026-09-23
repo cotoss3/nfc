@@ -101,7 +101,7 @@ export default function CorporativoClient() {
               <span>Soluciones B2B & Proyectos Corporativos en Panamá</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] text-white">
               Equipa a tu Empresa con <br className="hidden sm:block" />
               <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-amber-200 bg-clip-text text-transparent">
                 Tecnología NFC Inteligente
