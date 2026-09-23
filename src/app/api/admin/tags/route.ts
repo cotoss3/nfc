@@ -6,15 +6,74 @@ export const revalidate = 0;
 
 /**
  * GET /api/admin/tags?code=STT-1001
- * Consulta rápida de un TAG por su código de activación o ID de tarjeta.
- * Soporta prefijos STT-, STTT-, STTS- y números cortos (100 -> STT-1100).
+ * O GET /api/admin/tags?action=next_available&prefix=STT-
+ *
+ * Busca un TAG por código o devuelve el SIGUIENTE TAG DISPONIBLE en orden incremental (inactivo o nuevo).
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
+  const action = searchParams.get('action');
+  const prefixParam = searchParams.get('prefix');
   const code = searchParams.get('code');
 
+  // ACCIÓN: Obtener el siguiente TAG disponible en orden incremental (1000, 1001, 1002...)
+  if (action === 'next_available' && prefixParam) {
+    const rawPrefix = prefixParam.trim().toUpperCase();
+    const cleanPrefix = rawPrefix.endsWith('-') ? rawPrefix : `${rawPrefix}-`;
+
+    let allCards: any[] = [];
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('nfc_cards')
+          .select('*')
+          .ilike('card_id', `${cleanPrefix}%`);
+        if (!error && data) allCards = data;
+      } catch (e) {
+        console.error('Error obteniendo tags de Supabase:', e);
+      }
+    }
+
+    if (allCards.length === 0) {
+      allCards = dbLocal.getCards().filter(c => c.card_id.toUpperCase().startsWith(cleanPrefix));
+    }
+
+    // Ordenar numéricamente por el sufijo
+    const parsedCards = allCards.map(c => {
+      const match = c.card_id.match(/(\d+)$/);
+      const num = match ? parseInt(match[1], 10) : 0;
+      return { card: c, num };
+    }).sort((a, b) => a.num - b.num);
+
+    // 1. Buscar si hay algún TAG existente INACTIVO o no configurado en orden ascendente
+    const inactiveCard = parsedCards.find(item => item.card.is_active === false || !item.card.target_url || item.card.target_url.includes('google.com'));
+    
+    if (inactiveCard) {
+      return NextResponse.json({
+        success: true,
+        action: 'found_inactive',
+        next_code: inactiveCard.card.card_id,
+        card: inactiveCard.card,
+        message: `Siguiente TAG inactivo localizado: ${inactiveCard.card.card_id}`,
+      });
+    }
+
+    // 2. Si todos están activos, calcular el siguiente número incremental secuencial N + 1
+    const highestNum = parsedCards.length > 0 ? parsedCards[parsedCards.length - 1].num : 999;
+    const nextNum = highestNum < 1000 ? 1000 : highestNum + 1;
+    const nextCode = `${cleanPrefix}${nextNum}`;
+
+    return NextResponse.json({
+      success: true,
+      action: 'next_sequence',
+      next_code: nextCode,
+      message: `Siguiente código secuencial disponible: ${nextCode}`,
+    });
+  }
+
+  // CONSULTA NORMAL POR CÓDIGO
   if (!code) {
-    return NextResponse.json({ error: 'Parámetro "code" es requerido' }, { status: 400 });
+    return NextResponse.json({ error: 'Parámetro "code" o "prefix" es requerido' }, { status: 400 });
   }
 
   let clean = code.trim().toLowerCase();

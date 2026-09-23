@@ -79,11 +79,31 @@ export default function TagScannerAPKPage() {
   };
 
   /**
-   * Poner prefijo en la barra de búsqueda (STT-, STTT-, STTS-)
+   * Poner prefijo y traer automáticamente el SIGUIENTE TAG disponible / inactivo (STT-1000, STT-1001, etc.)
    */
-  const handleSelectPrefix = (prefix: string) => {
-    setSearchCode(prefix);
-    setMessage({ type: 'info', text: `Prefijo "${prefix}" cargado. Completa el número y presiona Buscar.` });
+  const handleSelectPrefix = async (prefix: string) => {
+    setLoading(true);
+    setMessage({ type: 'info', text: `Buscando el siguiente TAG disponible para la serie "${prefix}"...` });
+
+    try {
+      const res = await fetch(`/api/admin/tags?action=next_available&prefix=${encodeURIComponent(prefix)}`);
+      const data = await res.json();
+
+      if (data.success && data.next_code) {
+        setSearchCode(data.next_code);
+        setMessage({ 
+          type: 'success', 
+          text: data.message || `Cargado siguiente disponible: ${data.next_code}` 
+        });
+        handleSearch(data.next_code);
+      } else {
+        setSearchCode(prefix);
+      }
+    } catch (e) {
+      setSearchCode(prefix);
+    } finally {
+      setLoading(false);
+    }
   };
 
   /**
