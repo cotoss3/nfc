@@ -7,6 +7,7 @@ export const revalidate = 0;
 /**
  * GET /api/admin/tags?code=STT-1001
  * Consulta rápida de un TAG por su código de activación o ID de tarjeta.
+ * Soporta prefijos STT-, STTT-, STTS- y números cortos (100 -> STT-1100).
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -19,13 +20,14 @@ export async function GET(request: NextRequest) {
   let clean = code.trim().toLowerCase();
   let searchCode = clean;
 
-  const sttMatch = clean.match(/^stt-(\d+)$/i);
+  const sttMatch = clean.match(/^(sttt|stts|stt)-?(\d+)$/i);
   if (sttMatch) {
-    const num = parseInt(sttMatch[1], 10);
-    if (num < 1000) searchCode = `stt-${1000 + num}`;
+    const prefix = sttMatch[1].toUpperCase();
+    const num = parseInt(sttMatch[2], 10);
+    searchCode = `${prefix}-${num < 1000 ? 1000 + num : num}`;
   } else {
     const numOnly = parseInt(clean, 10);
-    if (!isNaN(numOnly)) searchCode = numOnly < 1000 ? `stt-${1000 + numOnly}` : `stt-${numOnly}`;
+    if (!isNaN(numOnly)) searchCode = `STT-${numOnly < 1000 ? 1000 + numOnly : numOnly}`;
   }
 
   // 1. Buscar en Supabase si está disponible
@@ -84,7 +86,12 @@ export async function POST(request: NextRequest) {
     }
 
     let cleanId = card_id.trim().toUpperCase();
-    if (!cleanId.startsWith('STT-')) {
+    const sttMatch = cleanId.match(/^(STTT|STTS|STT)-?(\d+)$/i);
+    if (sttMatch) {
+      const prefix = sttMatch[1].toUpperCase();
+      const num = parseInt(sttMatch[2], 10);
+      cleanId = `${prefix}-${num < 1000 ? 1000 + num : num}`;
+    } else if (!cleanId.includes('-')) {
       const numOnly = parseInt(cleanId, 10);
       if (!isNaN(numOnly)) cleanId = `STT-${numOnly < 1000 ? 1000 + numOnly : numOnly}`;
     }
