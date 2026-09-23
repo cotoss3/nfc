@@ -20,7 +20,11 @@ import {
   Wifi,
   Zap,
   CheckCircle2,
-  Tag as TagIcon
+  Tag as TagIcon,
+  DollarSign,
+  FlaskConical,
+  X,
+  ShoppingBag
 } from 'lucide-react';
 
 export default function TagScannerAPKPage() {
@@ -31,6 +35,12 @@ export default function TagScannerAPKPage() {
   const [targetUrl, setTargetUrl] = useState('');
   const [label, setLabel] = useState('');
   const [isActive, setIsActive] = useState(true);
+  
+  // Nuevos estados para Venta vs Prueba
+  const [tipoActivacion, setTipoActivacion] = useState<'venta' | 'prueba'>('venta');
+  const [precioVenta, setPrecioVenta] = useState<string>('35.00');
+  const [showActivationModal, setShowActivationModal] = useState(false);
+
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
@@ -62,6 +72,12 @@ export default function TagScannerAPKPage() {
         setTargetUrl(data.card.target_url || data.card.nfc_target_url || '');
         setLabel(data.card.label || '');
         setIsActive(data.card.is_active !== false);
+        setTipoActivacion(data.card.tipo_activacion || 'venta');
+        setPrecioVenta(
+          typeof data.card.precio_venta === 'number' && data.card.precio_venta > 0 
+            ? data.card.precio_venta.toString() 
+            : '35.00'
+        );
         setMessage({ type: 'success', text: `TAG ${data.card.card_id} localizado exitosamente` });
       } else {
         setCurrentTag(null);
@@ -220,8 +236,31 @@ export default function TagScannerAPKPage() {
     }
   };
 
-  const handleSave = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  /**
+   * Manejar clic en Toggle de Activación: Si va a pasar a activo, consultar tipo de activación
+   */
+  const handleToggleActiveClick = () => {
+    if (!isActive) {
+      // Intentando activar: Preguntar si es Venta o Prueba
+      setShowActivationModal(true);
+    } else {
+      // Desactivando
+      saveTagState(false, tipoActivacion, parseFloat(precioVenta) || 0);
+    }
+  };
+
+  const handleConfirmModalActivation = (tipo: 'venta' | 'prueba', precio: number) => {
+    setShowActivationModal(false);
+    setTipoActivacion(tipo);
+    setPrecioVenta(precio.toString());
+    saveTagState(true, tipo, precio);
+  };
+
+  const saveTagState = async (
+    activeState: boolean, 
+    tipo: 'venta' | 'prueba' = tipoActivacion, 
+    precio: number = parseFloat(precioVenta) || 0
+  ) => {
     if (!currentTag && !searchCode) return;
 
     const tagId = currentTag ? currentTag.card_id : searchCode;
@@ -229,6 +268,7 @@ export default function TagScannerAPKPage() {
     setMessage(null);
 
     try {
+      const finalPrice = tipo === 'venta' ? precio : 0;
       const res = await fetch('/api/admin/tags', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -236,7 +276,9 @@ export default function TagScannerAPKPage() {
           card_id: tagId,
           target_url: targetUrl,
           label: label || `TAG ${tagId}`,
-          is_active: isActive,
+          is_active: activeState,
+          tipo_activacion: tipo,
+          precio_venta: finalPrice,
           auto_create: true
         })
       });
@@ -244,10 +286,22 @@ export default function TagScannerAPKPage() {
       const data = await res.json();
 
       if (data.success) {
-        setMessage({ type: 'success', text: `¡Destino guardado en base de datos para ${data.card_id}!` });
+        setIsActive(activeState);
+        setTipoActivacion(tipo);
+        setPrecioVenta(finalPrice.toString());
+        
+        const modoTexto = activeState 
+          ? (tipo === 'venta' ? `🏷️ VENTA ($${finalPrice.toFixed(2)} USD)` : '🧪 PRUEBA / DEMO')
+          : 'INACTIVO';
+
+        setMessage({ 
+          type: 'success', 
+          text: `¡TAG ${data.card_id} actualizado a ${modoTexto}!` 
+        });
+        
         handleSearch(data.card_id);
       } else {
-        setMessage({ type: 'error', text: data.error || 'Error guardando destino' });
+        setMessage({ type: 'error', text: data.error || 'Error guardando estado' });
       }
     } catch (err) {
       console.error('Error guardando TAG:', err);
@@ -257,6 +311,11 @@ export default function TagScannerAPKPage() {
     }
   };
 
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    await saveTagState(isActive, tipoActivacion, parseFloat(precioVenta) || 0);
+  };
+
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
@@ -264,7 +323,7 @@ export default function TagScannerAPKPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 sm:p-6 font-sans relative">
       <div className="max-w-md mx-auto space-y-5">
         
         {/* Header Móvil APK */}
@@ -422,29 +481,71 @@ export default function TagScannerAPKPage() {
         {currentTag && (
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-5">
             
-            {/* Header del TAG */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                  {currentTag.group_name || 'General'}
-                </span>
-                <h2 className="text-xl font-black text-amber-400 font-mono tracking-tight">
-                  {currentTag.card_id}
-                </h2>
+            {/* Header del TAG con Estado y Badges de Activación */}
+            <div className="space-y-3 pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    {currentTag.group_name || 'General'}
+                  </span>
+                  <h2 className="text-xl font-black text-amber-400 font-mono tracking-tight">
+                    {currentTag.card_id}
+                  </h2>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleToggleActiveClick}
+                  className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 ${
+                    isActive 
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                      : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                  }`}
+                >
+                  <Power className="w-3.5 h-3.5" />
+                  <span>{isActive ? 'Activo' : 'Inactivo'}</span>
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setIsActive(!isActive)}
-                className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 ${
-                  isActive 
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
-                    : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
-                }`}
-              >
-                <Power className="w-3.5 h-3.5" />
-                <span>{isActive ? 'Activo' : 'Inactivo'}</span>
-              </button>
+              {/* Badges de Tipo de Activación (Venta vs Prueba) */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-slate-400">Tipo:</span>
+                  {isActive ? (
+                    tipoActivacion === 'venta' ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowActivationModal(true)}
+                        className="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-black transition flex items-center gap-1"
+                        title="Hacer clic para cambiar tipo de activación o precio"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>🏷️ Venta (${parseFloat(precioVenta || '0').toFixed(2)} USD)</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setShowActivationModal(true)}
+                        className="px-2.5 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 rounded-lg text-xs font-black transition flex items-center gap-1"
+                        title="Hacer clic para cambiar tipo de activación"
+                      >
+                        <FlaskConical className="w-3.5 h-3.5 text-purple-400" />
+                        <span>🧪 Prueba / Demo ($0)</span>
+                      </button>
+                    )
+                  ) : (
+                    <span className="text-xs text-slate-500 italic">Pendiente de activación</span>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowActivationModal(true)}
+                  className="text-[11px] text-amber-400 hover:underline font-bold"
+                >
+                  Cambiar
+                </button>
+              </div>
             </div>
 
             {/* 2. ESCRITURA NATIVA NFC & COPIADO DE ENLACE */}
@@ -613,6 +714,123 @@ export default function TagScannerAPKPage() {
         )}
 
       </div>
+
+      {/* MODAL DE ACTIVACIÓN: VENTA VS PRUEBA */}
+      {showActivationModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-5 shadow-2xl animate-in fade-in zoom-in duration-150">
+            
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <TagIcon className="w-5 h-5 text-amber-400" />
+                <h3 className="text-lg font-black text-white font-mono">
+                  ¿Tipo de Activación?
+                </h3>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setShowActivationModal(false)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300">
+              Indica si la activación del TAG <strong className="text-amber-400 font-mono">{currentTag?.card_id || searchCode}</strong> corresponde a una <strong>Venta Comercial</strong> o a una <strong>Prueba (Demo)</strong>:
+            </p>
+
+            {/* Selección de Tipo */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setTipoActivacion('venta')}
+                className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 font-bold transition text-xs ${
+                  tipoActivacion === 'venta'
+                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/50'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`}
+              >
+                <ShoppingBag className="w-6 h-6 text-emerald-400" />
+                <span>🏷️ VENTA</span>
+                <span className="text-[10px] text-emerald-400 font-semibold">Registra Ingreso</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTipoActivacion('prueba')}
+                className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 font-bold transition text-xs ${
+                  tipoActivacion === 'prueba'
+                    ? 'bg-purple-500/20 border-purple-500 text-purple-300 ring-2 ring-purple-500/50'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`}
+              >
+                <FlaskConical className="w-6 h-6 text-purple-400" />
+                <span>🧪 PRUEBA</span>
+                <span className="text-[10px] text-purple-400 font-semibold">Demo (Costo $0)</span>
+              </button>
+            </div>
+
+            {/* Campo Precio de Venta (Sólo si es Venta) */}
+            {tipoActivacion === 'venta' && (
+              <div className="space-y-2 bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                <label className="block text-xs font-bold text-emerald-400">
+                  Precio de Venta ($ USD):
+                </label>
+                <div className="relative">
+                  <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={precioVenta}
+                    onChange={(e) => setPrecioVenta(e.target.value)}
+                    placeholder="35.00"
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono font-bold text-sm focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                {/* Precios Rápidos Preset */}
+                <div className="flex items-center gap-1.5 pt-1">
+                  <span className="text-[10px] text-slate-400">Precios frecuentes:</span>
+                  {['25.00', '35.00', '50.00', '75.00'].map((price) => (
+                    <button
+                      key={price}
+                      type="button"
+                      onClick={() => setPrecioVenta(price)}
+                      className="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-lg text-[10px] font-mono font-bold transition"
+                    >
+                      ${price}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Acciones del Modal */}
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowActivationModal(false)}
+                className="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleConfirmModalActivation(tipoActivacion, tipoActivacion === 'venta' ? parseFloat(precioVenta) || 0 : 0)}
+                className="w-1/2 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg flex items-center justify-center gap-1"
+              >
+                <Check className="w-4 h-4" />
+                <span>Confirmar</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

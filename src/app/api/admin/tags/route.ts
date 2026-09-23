@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { card_id, target_url, label, group_name, is_active, auto_create } = body;
+    const { card_id, target_url, label, group_name, is_active, auto_create, tipo_activacion, precio_venta } = body;
 
     if (!card_id) {
       return NextResponse.json({ error: 'El campo "card_id" es obligatorio' }, { status: 400 });
@@ -179,6 +179,20 @@ export async function POST(request: NextRequest) {
       if (typeof is_active === 'boolean') {
         dbLocal.toggleCardActive(cleanId, is_active);
       }
+      if (tipo_activacion) {
+        existingCard.tipo_activacion = tipo_activacion as 'venta' | 'prueba';
+      }
+      if (typeof precio_venta === 'number') {
+        existingCard.precio_venta = precio_venta;
+      }
+      // Re-guardar estado actualizado en storage local
+      const cards = dbLocal.getCards();
+      const idx = cards.findIndex(c => c.card_id.toLowerCase() === cleanId.toLowerCase());
+      if (idx !== -1) {
+        if (tipo_activacion) cards[idx].tipo_activacion = tipo_activacion as 'venta' | 'prueba';
+        if (typeof precio_venta === 'number') cards[idx].precio_venta = precio_venta;
+        dbLocal.setStorageItem('nfc_cards', cards);
+      }
     }
 
     // 2. Persistir en Supabase si está disponible
@@ -192,6 +206,8 @@ export async function POST(request: NextRequest) {
         if (label) payload.label = label;
         if (group_name) payload.group_name = group_name;
         if (typeof is_active === 'boolean') payload.is_active = is_active;
+        if (tipo_activacion) payload.tipo_activacion = tipo_activacion;
+        if (typeof precio_venta === 'number') payload.precio_venta = precio_venta;
 
         const { data, error } = await supabase
           .from('nfc_cards')
@@ -214,6 +230,8 @@ export async function POST(request: NextRequest) {
               qr_target_url: finalUrl,
               group_name: group_name || 'General',
               is_active: is_active ?? true,
+              tipo_activacion: tipo_activacion || 'prueba',
+              precio_venta: typeof precio_venta === 'number' ? precio_venta : 0,
               channels: 'both',
               type: 'google',
               claimed: true,
@@ -229,6 +247,8 @@ export async function POST(request: NextRequest) {
       success: true,
       card_id: cleanId,
       target_url: finalUrl,
+      tipo_activacion: tipo_activacion || existingCard?.tipo_activacion || 'prueba',
+      precio_venta: typeof precio_venta === 'number' ? precio_venta : existingCard?.precio_venta || 0,
       nfc_link: `https://startap.com.pa/r/${cleanId}?m=nfc`,
       qr_link: `https://startap.com.pa/r/${cleanId}?m=qr`,
       message: `TAG ${cleanId} actualizado exitosamente`,

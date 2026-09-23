@@ -76,6 +76,9 @@ export interface NfcCard {
   //  asignado    -> vendido, con dueno, sin configurar   (claimed:true,  is_active:false)
   //  configurado -> el cliente puso su enlace real        (claimed:true,  is_active:true)
   estado?: 'en_stock' | 'asignado' | 'configurado';
+  // Tipo de activación comercial: 'venta' (con costo comercial) o 'prueba' (demo $0)
+  tipo_activacion?: 'venta' | 'prueba';
+  precio_venta?: number;
   // Numero de pedido (orders.id) que se llevo este tag
   order_id?: string;
   created_at: string;
