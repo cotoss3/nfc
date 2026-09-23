@@ -28,7 +28,6 @@ export const metadata: Metadata = {
     'stand nfc reseñas panama',
     'nfc google reviews panama',
   ],
-  alternates: { canonical: '/' },
   verification: {
     google: '1igPIkAizA33F2BubkJ8H7lEqWOh9QHVFAOkvAXdgBc',
     // Verificacion del dominio en el portfolio comercial de Meta.

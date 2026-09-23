@@ -77,6 +77,21 @@ export default function CatalogoPage() {
             '@type': 'DefinedRegion',
             addressCountry: 'PA',
           },
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 0,
+              maxValue: 1,
+              unitCode: 'DAY',
+            },
+            transitTime: {
+              '@type': 'QuantitativeValue',
+              minValue: 1,
+              maxValue: 3,
+              unitCode: 'DAY',
+            },
+          },
         },
       })),
     },
@@ -134,6 +149,21 @@ export default function CatalogoPage() {
             shippingDestination: {
               '@type': 'DefinedRegion',
               addressCountry: 'PA',
+            },
+            deliveryTime: {
+              '@type': 'ShippingDeliveryTime',
+              handlingTime: {
+                '@type': 'QuantitativeValue',
+                minValue: 0,
+                maxValue: 1,
+                unitCode: 'DAY',
+              },
+              transitTime: {
+                '@type': 'QuantitativeValue',
+                minValue: 1,
+                maxValue: 3,
+                unitCode: 'DAY',
+              },
             },
           },
         },
