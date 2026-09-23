@@ -553,18 +553,39 @@ export default function TagScannerAPKPage() {
               </button>
             </form>
 
-            {/* Probar Redirección */}
+            {/* Probar Redirección & Copiar URL */}
             {targetUrl && (
-              <div className="pt-2 text-center">
-                <a
-                  href={`https://startap.com.pa/r/${currentTag.card_id}?m=nfc`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:underline font-semibold"
-                >
-                  <span>Probar enlace de redirección `/r/${currentTag.card_id}?m=nfc`</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+              <div className="pt-3 border-t border-slate-800/80 space-y-2 text-center">
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <a
+                    href={`https://startap.com.pa/r/${currentTag.card_id}?m=nfc`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 hover:underline font-semibold bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl transition"
+                  >
+                    <span>Probar Redirección (`/r/${currentTag.card_id}?m=nfc`)</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(`https://startap.com.pa/r/${currentTag.card_id}?m=nfc`, 'test_nfc_link')}
+                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                    title="Copiar URL completa de redirección"
+                  >
+                    {copiedId === 'test_nfc_link' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-300">¡URL Copiada!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Copiar URL</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             )}
 
