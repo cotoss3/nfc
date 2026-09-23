@@ -13,6 +13,7 @@ import { authService } from '@/lib/auth';
 const navItems = [
   { id: 'dashboard', label: 'Resumen Ejecutivo', shortLabel: 'Resumen', icon: BarChart2, href: '/master-control' },
   { id: 'inventario', label: 'Inventario & Lotes', shortLabel: 'Inventario', icon: Layers, href: '/master-control/inventario' },
+  { id: 'tag-scanner', label: 'Scanner & APK NFC', shortLabel: 'NFC APK', icon: QrCode, href: '/master-control/tag-scanner' },
   { id: 'pedidos', label: 'Pedidos (OMS)', shortLabel: 'Pedidos', icon: ShoppingCart, href: '/master-control/pedidos' },
   { id: 'productos', label: 'Productos', shortLabel: 'Productos', icon: Package, href: '/master-control/productos' },
   { id: 'clientes', label: 'Clientes & CRM', shortLabel: 'Clientes', icon: Users, href: '/master-control/clientes' },

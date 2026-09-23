@@ -228,6 +228,16 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-09-22 | Artesana Pizzeria Costa Verde | Pizzeria | La Chorrera | 29 | 4.5 | 351-5381 (fijo, sin WhatsApp) | pendiente | llamar; top2 pizzerias 82/1906 |
 | 2026-09-22 | Melissa Beauty Studio | Centro de estetica | Costa Verde (Plaza Central) | 12 | 4.8 | 6775-4806 | pendiente | top2 centros estetica 57/51 |
 | 2026-09-22 | BEAUTY STOP SALON & SPA | Centro de estetica | Costa Verde | 1 | 5.0 | 246-2852 (fijo, sin WhatsApp) | pendiente | llamar; top2 centros estetica 57/51 |
+| 2026-09-22 | Dulce Amor | Pasteleria | La Chorrera | 7 | 5.0 | 6471-4472 | pendiente | numero nuevo, tanda reducida; top2 pastelerias 204/1478 |
+| 2026-09-22 | K'''mi Sushi | Sushi | La Chorrera | 1 | 5.0 | 6967-6655 | pendiente | numero nuevo, tanda reducida; top2 sushi 4983/1810 |
+| 2026-09-22 | Shihan Sushi | Sushi | La Chorrera | 1 | 5.0 | 6189-2886 | pendiente | numero nuevo, tanda reducida; resena de hace 4 anos; top2 sushi 4983/1810 |
+| 2026-09-22 | SABOR COLOMBIANO | Comida rapida | La Chorrera | 11 | 4.9 | 6710-5382 | pendiente | numero nuevo, tanda reducida; top2 comida rapida 207/397 |
+| 2026-09-22 | Asadero Brasas Colombianas | Restaurante colombiano | La Chorrera | 5 | 5.0 | 6662-7970 | pendiente | numero nuevo, tanda reducida; top2 restaurantes 114/273 |
+| 2026-09-22 | El Buen Sabor Fast Food | Comida rapida | La Chorrera | 1 | 5.0 | 6257-3824 | pendiente | numero nuevo, tanda reducida; top2 comida rapida 207/397 |
+| 2026-09-22 | Pollo El Buen Sabor | Comida dominicana | La Chorrera | 3 | 5.0 | 6605-0182 | pendiente | numero nuevo, tanda reducida; top2 pollo 160/158 |
+| 2026-09-22 | Ricky pollo | Pollo | La Chorrera | 1 | 5.0 | 6936-6867 | pendiente | numero nuevo, tanda reducida; top2 pollo 160/158 |
+| 2026-09-22 | Empanadas 507 | Empanadas | La Chorrera | 7 | 4.9 | 6963-8449 | pendiente | numero nuevo, tanda reducida; top2 zona 2013/42 |
+| 2026-09-22 | Ceviches El Capi | Ceviche | La Chorrera | 10 | 5.0 | 6732-3029 | pendiente | numero nuevo, tanda reducida; abierto 24h; top2 ceviche 206/147 |
 
 ---
 
