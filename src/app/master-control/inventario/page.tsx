@@ -339,7 +339,7 @@ export default function InventarioPage() {
     setTagLabel(`Stand NFC de Mesa (${initialTagCode})`);
     
     // Actualizar Auditoría de Cuadre
-    setAuditItems(dbLocal.getStockAudit());
+    setAuditItems(dbLocal.getStockAudit(dbCards, cleanStocks));
     setLoading(false);
   };
 

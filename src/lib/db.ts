@@ -1975,9 +1975,9 @@ class LocalDbService {
     };
   }
 
-  getStockAudit(): StockAuditItem[] {
-    const cards = this.getCards();
-    const productStocks = this.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
+  getStockAudit(cardsParam?: NfcCard[], stocksParam?: Record<string, ProductStockInfo>): StockAuditItem[] {
+    const cards = cardsParam || this.getCards();
+    const productStocks = stocksParam || this.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
 
     // Contar tags físicos en stock (claimed: false) por prefijo
     let unclaimedStands = 0;
