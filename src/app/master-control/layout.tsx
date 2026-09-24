@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   CreditCard, Package, Users, Tag, BarChart2, QrCode, 
-  LogOut, AlertCircle, ShoppingCart, Layers, Menu, X, ChevronRight 
+  LogOut, ShoppingCart, Layers, Menu, X, ChevronRight 
 } from 'lucide-react';
 import AdminAuthGuard from '@/components/AdminAuthGuard';
 import { authService } from '@/lib/auth';
@@ -44,8 +44,8 @@ export default function MasterControlLayout({ children }: { children: React.Reac
     <AdminAuthGuard>
       <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row pb-20 md:pb-0">
         
-        {/* MOBILE TOP HEADER BAR WITH HAMBURGER MENU */}
-        <header className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        {/* MOBILE TOP HEADER BAR WITH HAMBURGER MENU (LIGHT THEME) */}
+        <header className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
@@ -55,7 +55,7 @@ export default function MasterControlLayout({ children }: { children: React.Reac
               <Menu className="w-5 h-5 text-slate-800" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-slate-900 text-amber-500 font-black rounded-xl flex items-center justify-center text-xs shadow-sm">
+              <div className="w-8 h-8 bg-amber-500 text-slate-950 font-black rounded-xl flex items-center justify-center text-xs shadow-2xs">
                 MC
               </div>
               <span className="font-bold text-sm tracking-tight text-slate-900">Master Control</span>
@@ -64,41 +64,41 @@ export default function MasterControlLayout({ children }: { children: React.Reac
 
           <button 
             onClick={handleLogout}
-            className="text-slate-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50"
+            className="text-slate-500 hover:text-red-600 transition-colors p-1.5 rounded-lg hover:bg-red-50"
             title="Cerrar Sesión"
           >
             <LogOut className="w-5 h-5" />
           </button>
         </header>
 
-        {/* MOBILE SLIDE-OVER DRAWER MENU */}
+        {/* MOBILE SLIDE-OVER DRAWER MENU (100% LIGHT EXECUTIVE THEME) */}
         {isMobileMenuOpen && (
           <div className="md:hidden fixed inset-0 z-50 flex">
             {/* Backdrop */}
             <div 
-              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+              className="fixed inset-0 bg-slate-500/30 backdrop-blur-xs transition-opacity"
               onClick={() => setIsMobileMenuOpen(false)}
             />
 
             {/* Drawer Container */}
-            <aside className="relative w-80 max-w-[85vw] bg-slate-900 text-white flex flex-col h-full shadow-2xl z-50">
+            <aside className="relative w-80 max-w-[85vw] bg-white text-slate-900 border-r border-slate-200 flex flex-col h-full shadow-2xl z-50">
               {/* Drawer Header */}
-              <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+              <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2.5">
                     <img
                       src="/logos/Logo.webp"
                       alt="starTAP Logo"
-                      className="h-7 w-auto object-contain brightness-0 invert"
+                      className="h-7 w-auto object-contain"
                     />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 block mt-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 block mt-1">
                     Master Control Panel
                   </span>
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -114,30 +114,30 @@ export default function MasterControlLayout({ children }: { children: React.Reac
                       key={tab.id}
                       href={tab.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
                         isActive
-                          ? 'bg-amber-500 text-slate-900 shadow-md shadow-amber-500/20'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                          ? 'bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-slate-900' : 'text-slate-400'}`} />
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-amber-600' : 'text-slate-400'}`} />
                         <span>{tab.label}</span>
                       </div>
-                      <ChevronRight className={`w-4 h-4 opacity-50 ${isActive ? 'text-slate-900' : 'text-slate-500'}`} />
+                      <ChevronRight className={`w-4 h-4 opacity-60 ${isActive ? 'text-amber-700' : 'text-slate-400'}`} />
                     </Link>
                   );
                 })}
               </nav>
 
               {/* Drawer Footer */}
-              <div className="p-4 border-t border-slate-800/80 bg-slate-950/50">
+              <div className="p-4 border-t border-slate-100 bg-slate-50">
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     handleLogout();
                   }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition-colors border border-rose-500/20"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors border border-rose-200"
                 >
                   <LogOut className="w-4 h-4" />
                   Cerrar Sesión de Administrador
@@ -147,18 +147,18 @@ export default function MasterControlLayout({ children }: { children: React.Reac
           </div>
         )}
 
-        {/* DESKTOP SIDEBAR */}
-        <aside className="hidden md:flex w-64 bg-slate-900 text-white flex-col sticky top-0 h-screen overflow-y-auto">
-          <div className="p-6 border-b border-slate-800/80">
+        {/* DESKTOP SIDEBAR (100% LIGHT EXECUTIVE THEME) */}
+        <aside className="hidden md:flex w-64 bg-white text-slate-800 border-r border-slate-200 flex-col sticky top-0 h-screen overflow-y-auto">
+          <div className="p-6 border-b border-slate-100">
             <Link href="/master-control" className="block group">
               <div className="flex items-center gap-3">
                 <img
                   src="/logos/Logo.webp"
                   alt="starTAP Logo"
-                  className="h-9 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform"
+                  className="h-9 w-auto object-contain group-hover:scale-105 transition-transform"
                 />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 block mt-1.5">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 block mt-1.5">
                 Master Control Panel
               </span>
             </Link>
@@ -172,23 +172,23 @@ export default function MasterControlLayout({ children }: { children: React.Reac
                 <Link
                   key={tab.id}
                   href={tab.href}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group ${
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group ${
                     isActive
-                      ? 'bg-amber-500 text-slate-900 shadow-md shadow-amber-500/20'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      ? 'bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                  <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-amber-600' : 'text-slate-400 group-hover:text-slate-700'}`} />
                   {tab.label}
                 </Link>
               );
             })}
           </nav>
 
-          <div className="p-4 mt-auto border-t border-slate-800/50">
+          <div className="p-4 mt-auto border-t border-slate-100 bg-slate-50/50">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors"
             >
               <LogOut className="w-4 h-4" />
               Cerrar Sesión
@@ -196,8 +196,8 @@ export default function MasterControlLayout({ children }: { children: React.Reac
           </div>
         </aside>
 
-        {/* MOBILE BOTTOM NAVIGATION BAR (HORIZONTALLY SCROLLABLE WITH ALL OPTIONS) */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        {/* MOBILE BOTTOM NAVIGATION BAR */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
           <div className="flex items-center overflow-x-auto no-scrollbar py-1.5 px-2 gap-1.5 scroll-smooth">
             {navItems.map((tab) => {
               const isActive = pathname === tab.href || (tab.href !== '/master-control' && pathname.startsWith(tab.href));
@@ -220,7 +220,6 @@ export default function MasterControlLayout({ children }: { children: React.Reac
               );
             })}
 
-            {/* Extra Menu Button to open drawer */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="flex flex-col items-center justify-center min-w-[56px] px-2 py-1 rounded-xl text-slate-500 flex-shrink-0"

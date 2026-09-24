@@ -495,16 +495,16 @@ export default function MasterControlDashboard() {
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* 1. VENTAS TOTALES */}
-        <div className="bg-slate-950 text-white p-5 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between min-h-[110px]">
+        <div className="bg-amber-50/70 text-slate-900 p-5 rounded-2xl shadow-2xs border border-amber-200 flex flex-col justify-between min-h-[110px]">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Ventas Totales</span>
-            <span className="p-2 bg-slate-800 rounded-xl">
-              <DollarSign className="w-4 h-4 text-amber-400" />
+            <span className="text-amber-900 text-xs font-bold uppercase tracking-wider">Ventas Totales</span>
+            <span className="p-2 bg-amber-100 rounded-xl">
+              <DollarSign className="w-4 h-4 text-amber-700" />
             </span>
           </div>
           <div className="mt-2">
-            <span className="text-3xl font-black text-amber-400 font-mono">${totalRevenue.toFixed(2)}</span>
-            <span className="text-xs text-slate-400 block mt-0.5">USD facturado en el período</span>
+            <span className="text-3xl font-black text-amber-700 font-mono">${totalRevenue.toFixed(2)}</span>
+            <span className="text-xs text-amber-800/80 block mt-0.5">USD facturado en el período</span>
           </div>
         </div>
 

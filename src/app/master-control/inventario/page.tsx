@@ -915,11 +915,11 @@ export default function InventarioPage() {
           
           {/* INVENTORY FINANCIAL & HEALTH SCORECARDS */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-slate-950 text-white p-4 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between">
-              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Valoración de Stock (Costo)</span>
+            <div className="bg-amber-50/70 text-slate-900 p-4 rounded-2xl shadow-2xs border border-amber-200 flex flex-col justify-between">
+              <span className="text-amber-900 text-[10px] font-bold uppercase tracking-wider block">Valoración de Stock (Costo)</span>
               <div className="mt-2">
-                <span className="text-2xl font-black text-amber-400 font-mono">${inventoryMetrics.totalValuationCost.toFixed(2)}</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">costo total en almacén</span>
+                <span className="text-2xl font-black text-amber-700 font-mono">${inventoryMetrics.totalValuationCost.toFixed(2)}</span>
+                <span className="text-[10px] text-amber-800/80 block mt-0.5">costo total en almacén</span>
               </div>
             </div>
 
@@ -971,44 +971,44 @@ export default function InventarioPage() {
             <div className="lg:col-span-4 space-y-6">
               
               {/* CARD 1: CTA ASISTIDO PARA AGREGAR EN LOTE */}
-              <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-md border border-slate-800 space-y-4">
+              <div className="bg-gradient-to-br from-amber-50 via-white to-orange-50/50 text-slate-900 rounded-3xl p-6 shadow-xs border-2 border-amber-200 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700">
                     <Boxes className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-sm font-black uppercase tracking-tight text-white">
+                    <h2 className="text-sm font-black uppercase tracking-tight text-slate-900">
                       Módulo de Agregar en Lote
                     </h2>
-                    <span className="text-[10px] text-amber-400 font-bold block">
+                    <span className="text-[10px] text-amber-700 font-bold block">
                       Generador Correlativo + Cuadre Automático
                     </span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Genera códigos correlativos continuos (<code className="text-amber-400 font-mono font-bold">STTS-</code>, <code className="text-amber-400 font-mono font-bold">STT-</code>, <code className="text-amber-400 font-mono font-bold">STTT-</code>) y cuadra automáticamente el inventario disponible.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Genera códigos correlativos continuos (<code className="text-amber-800 bg-amber-100 px-1 rounded font-mono font-bold">STTS-</code>, <code className="text-amber-800 bg-amber-100 px-1 rounded font-mono font-bold">STT-</code>, <code className="text-amber-800 bg-amber-100 px-1 rounded font-mono font-bold">STTT-</code>) y cuadra automáticamente el inventario disponible.
                 </p>
 
                 <div className="grid grid-cols-3 gap-1.5 pt-1">
                   <button
                     type="button"
                     onClick={() => handleOpenBulkModal('stand')}
-                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 font-bold text-[11px] transition text-center"
+                    className="p-2 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-[11px] transition text-center shadow-2xs"
                   >
                     + Stand NFC
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOpenBulkModal('plate')}
-                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 font-bold text-[11px] transition text-center"
+                    className="p-2 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-[11px] transition text-center shadow-2xs"
                   >
                     + Placa NFC
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOpenBulkModal('card')}
-                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 border border-slate-700 font-bold text-[11px] transition text-center"
+                    className="p-2 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-[11px] transition text-center shadow-2xs"
                   >
                     + Tarjeta NFC
                   </button>
@@ -1017,7 +1017,7 @@ export default function InventarioPage() {
                 <button
                   type="button"
                   onClick={() => handleOpenBulkModal('stand')}
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-md"
+                  className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-xs"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Abrir Asistente de Lotes</span>
