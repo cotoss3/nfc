@@ -112,6 +112,14 @@ export async function GET(req: Request) {
 
     const idReal = String(encontrados[0].id);
 
+    if (destino.status === 'cancelled') {
+      try {
+        dbLocal.liberarTagsYRevertirStock(orderId);
+      } catch (errLiberar) {
+        console.error('[YAPPY_IPN_ERROR_LIBERAR_STOCK]', errLiberar);
+      }
+    }
+
     const { data: actualizados, error: errorUpdate } = await admin
       .from('orders')
       .update({ payment_status: destino.payment_status, status: destino.status })
@@ -124,6 +132,18 @@ export async function GET(req: Request) {
       console.error(`[YAPPY_IPN_SIN_COINCIDENCIA] orderId=${orderId} id=${idReal}`);
     } else {
       console.log(`[YAPPY_IPN] Orden ${idReal} -> ${destino.payment_status}/${destino.status}`);
+    }
+
+    if (destino.status === 'cancelled') {
+      await admin.from('nfc_cards').update({
+        claimed: false,
+        estado: 'en_stock',
+        order_id: null,
+        is_active: false,
+        owner_id: 'unassigned',
+        owner_name: 'Sin Asignar (Stock)',
+        owner_email: 'admin@startap.com.pa'
+      }).eq('order_id', idReal);
     }
 
     return NextResponse.json({ success: true });

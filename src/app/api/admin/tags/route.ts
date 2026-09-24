@@ -16,6 +16,16 @@ export async function GET(request: NextRequest) {
   const prefixParam = searchParams.get('prefix');
   const code = searchParams.get('code');
 
+  // ACCIÓN: Sincronizar ventas y pruebas retroactivas en el reporte de órdenes (OMS)
+  if (action === 'sync_sales') {
+    const res = await dbLocal.sincronizarVentasRetroactivas();
+    return NextResponse.json({
+      success: true,
+      message: `Sincronizadas ${res.sincronizadas} ventas/activaciones en el reporte de órdenes`,
+      sincronizadas: res.sincronizadas
+    });
+  }
+
   // ACCIÓN: Obtener el siguiente TAG disponible en orden incremental (1000, 1001, 1002...)
   if (action === 'next_available' && prefixParam) {
     const rawPrefix = prefixParam.trim().toUpperCase();
@@ -243,15 +253,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 3. Sincronización Automática con Inventario y Reporte de Ventas (OMS)
+    let orderInfo: any = null;
+    if (is_active) {
+      orderInfo = dbLocal.registrarVentaVisita({
+        cardId: cleanId,
+        precioVenta: typeof precio_venta === 'number' ? precio_venta : (tipo_activacion === 'venta' ? 35 : 0),
+        label: label || existingCard?.label || `TAG ${cleanId}`,
+        targetUrl: finalUrl,
+        tipoActivacion: (tipo_activacion as 'venta' | 'prueba') || (precio_venta && precio_venta > 0 ? 'venta' : 'prueba')
+      });
+    }
+
     return NextResponse.json({
       success: true,
       card_id: cleanId,
       target_url: finalUrl,
       tipo_activacion: tipo_activacion || existingCard?.tipo_activacion || 'prueba',
       precio_venta: typeof precio_venta === 'number' ? precio_venta : existingCard?.precio_venta || 0,
+      order_id: orderInfo?.order?.id,
       nfc_link: `https://startap.com.pa/r/${cleanId}?m=nfc`,
       qr_link: `https://startap.com.pa/r/${cleanId}?m=qr`,
-      message: `TAG ${cleanId} actualizado exitosamente`,
+      message: `TAG ${cleanId} actualizado exitosamente` + (orderInfo?.order ? ` y asentado en ventas (#${orderInfo.order.id})` : ''),
     });
   } catch (err: any) {
     console.error('Error en POST /api/admin/tags:', err);

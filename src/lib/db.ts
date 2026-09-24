@@ -43,11 +43,12 @@ export interface Order {
   shipping_province: string;
   shipping_district: string;
   shipping_address: string;
-  payment_method: 'tarjeta' | 'yappy' | 'transfer';
+  payment_method: 'tarjeta' | 'yappy' | 'transfer' | 'presencial' | 'efectivo';
   payment_status: 'pending' | 'completed';
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   total: number;
   items: OrderItem[];
+  canal?: 'web' | 'visita' | 'b2b';
   created_at: string;
   tracking_number?: string;
   tracking_courier?: string;
@@ -127,7 +128,7 @@ export interface InventoryBatch {
 export interface StockMovement {
   id: string;
   created_at: string;
-  type: 'entrada_lote' | 'salida_venta' | 'ajuste_manual' | 'merma';
+  type: 'entrada_lote' | 'salida_venta' | 'salida_visita' | 'ajuste_manual' | 'merma' | 'devolucion_cancelacion';
   product_name: string;
   quantity_change: number;
   resulting_stock: number;
@@ -2042,6 +2043,295 @@ class LocalDbService {
       message: `Auditoría completada: Se cuadraron ${adjustments.length} productos con los tags disponibles en stock.`,
       adjustments
     };
+  }
+
+  registrarVentaVisita(params: {
+    cardId: string;
+    precioVenta: number;
+    customerName?: string;
+    customerEmail?: string;
+    customerPhone?: string;
+    label?: string;
+    targetUrl?: string;
+    tipoActivacion?: 'venta' | 'prueba';
+  }): { success: boolean; order?: Order; message: string } {
+    const cleanId = (params.cardId || '').trim().toUpperCase();
+    const tipo = params.tipoActivacion || (params.precioVenta > 0 ? 'venta' : 'prueba');
+    const precio = tipo === 'venta' ? Number(params.precioVenta || 0) : 0;
+
+    let productId = 'placa-nfc-mostrador';
+    let productName = 'Placa NFC para Reseñas de Google';
+    if (cleanId.startsWith('STTS-')) {
+      productId = 'stand-nfc-mesa';
+      productName = 'Stand NFC de Mesa';
+    } else if (cleanId.startsWith('STTT-')) {
+      productId = 'tarjeta-nfc-bolsillo';
+      productName = 'Tarjeta NFC de Bolsillo';
+    }
+
+    const orderId = `PED-VISITA-${cleanId.replace(/[^A-Za-z0-9]/g, '')}`;
+    const orders = this.getOrders();
+    const existingIdx = orders.findIndex(o => o.id === orderId);
+
+    const orderObj: Order = {
+      id: orderId,
+      customer_name: params.customerName || params.label || `Cliente Visita (${cleanId})`,
+      customer_email: params.customerEmail || 'venta.visita@startap.com.pa',
+      customer_phone: params.customerPhone || '6483-9004',
+      shipping_province: 'Panamá',
+      shipping_district: 'Venta Presencial',
+      shipping_address: params.label || 'Venta presencial en visita comercial',
+      payment_method: 'presencial',
+      payment_status: 'completed',
+      status: 'delivered',
+      canal: 'visita',
+      total: precio,
+      items: [
+        {
+          id: `item-${cleanId}`,
+          product_id: productId,
+          product_name: productName,
+          quantity: 1,
+          price: precio,
+          initial_redirect_url: params.targetUrl || '',
+          business_name: params.label || ''
+        }
+      ],
+      admin_notes: tipo === 'venta' 
+        ? `Venta comercial en visita presencial con TAG ${cleanId} por $${precio.toFixed(2)} USD`
+        : `Activación de Muestra/Prueba (Demo) con TAG ${cleanId} ($0.00 USD)`,
+      created_at: existingIdx !== -1 ? orders[existingIdx].created_at : new Date().toISOString()
+    };
+
+    if (existingIdx !== -1) {
+      orders[existingIdx] = { ...orders[existingIdx], ...orderObj };
+    } else {
+      orders.unshift(orderObj);
+
+      // Descontar inventario físico solo si es un pedido nuevo
+      const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
+      if (productStocks[productId] && typeof productStocks[productId].current_stock === 'number') {
+        productStocks[productId].current_stock = Math.max(0, productStocks[productId].current_stock - 1);
+        
+        if (productStocks['pack-trio-comercial']) {
+          const pStock = productStocks['placa-nfc-mostrador']?.current_stock || 0;
+          const tStock = productStocks['tarjeta-nfc-bolsillo']?.current_stock || 0;
+          productStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+        }
+        this.setStorageItem('inventory_product_stocks', productStocks);
+      }
+
+      // Asentar en Kardex
+      const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
+      movements.unshift({
+        id: `MOV-VISITA-${Date.now()}-${cleanId}`,
+        created_at: new Date().toISOString(),
+        type: 'salida_visita',
+        product_name: productName,
+        quantity_change: -1,
+        resulting_stock: productStocks[productId]?.current_stock ?? 0,
+        reference: `Venta Presencial / Visita - ${cleanId} ($${precio.toFixed(2)})`
+      });
+      this.setStorageItem('inventory_kardex', movements);
+    }
+
+    this.setStorageItem('nfc_orders', orders);
+
+    // Sincronizar Orden en Supabase
+    if (supabase) {
+      supabase.from('orders').upsert([{
+        id: orderObj.id,
+        customer_name: orderObj.customer_name,
+        customer_email: orderObj.customer_email,
+        customer_phone: orderObj.customer_phone,
+        shipping_province: orderObj.shipping_province,
+        shipping_district: orderObj.shipping_district,
+        shipping_address: orderObj.shipping_address,
+        payment_method: orderObj.payment_method,
+        payment_status: orderObj.payment_status,
+        status: orderObj.status,
+        total: orderObj.total,
+        items: orderObj.items,
+        created_at: orderObj.created_at
+      }]).then(({ error }) => {
+        if (error) console.error('Error sincronizando orden de visita en Supabase:', error);
+      });
+    }
+
+    // Actualizar el Tag en nfc_cards: claimed=true, estado='configurado', order_id=orderId
+    const cards = this.getCards();
+    const cIdx = cards.findIndex(c => c.card_id.toUpperCase() === cleanId);
+    if (cIdx !== -1) {
+      cards[cIdx].claimed = true;
+      cards[cIdx].estado = 'configurado';
+      cards[cIdx].is_active = true;
+      cards[cIdx].order_id = orderId;
+      cards[cIdx].tipo_activacion = tipo;
+      cards[cIdx].precio_venta = precio;
+      if (params.label) cards[cIdx].label = params.label;
+      if (params.targetUrl) {
+        cards[cIdx].target_url = params.targetUrl;
+        cards[cIdx].nfc_target_url = params.targetUrl;
+        cards[cIdx].qr_target_url = params.targetUrl;
+      }
+      this.setStorageItem('nfc_cards', cards);
+
+      if (supabase) {
+        supabase.from('nfc_cards').update({
+          claimed: true,
+          estado: 'configurado',
+          is_active: true,
+          order_id: orderId,
+          tipo_activacion: tipo,
+          precio_venta: precio,
+          label: params.label || cards[cIdx].label,
+          target_url: params.targetUrl || cards[cIdx].target_url,
+          nfc_target_url: params.targetUrl || cards[cIdx].nfc_target_url,
+          qr_target_url: params.targetUrl || cards[cIdx].qr_target_url,
+        }).eq('card_id', cleanId).then();
+      }
+    }
+
+    return {
+      success: true,
+      order: orderObj,
+      message: `Venta de visita registrada como pedido #${orderId} por $${precio.toFixed(2)} USD`
+    };
+  }
+
+  liberarTagsYRevertirStock(orderId: string): { success: boolean; liberatedTags: string[] } {
+    const cleanOrderId = (orderId || '').trim();
+    if (!cleanOrderId) return { success: false, liberatedTags: [] };
+
+    // 1. Revertir existencias de inventario
+    const orders = this.getOrders();
+    const order = orders.find(o => o.id === cleanOrderId || (o as any).yappy_order_id === cleanOrderId);
+    const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
+    let stocksUpdated = false;
+
+    if (order && Array.isArray(order.items)) {
+      order.items.forEach(item => {
+        const pId = (item.product_id || '').toLowerCase();
+        const isPack = pId.includes('pack');
+        const qty = item.quantity || 1;
+
+        if (isPack) {
+          const placaKey = Object.keys(productStocks).find(k => k.includes('placa')) || 'placa-nfc-mostrador';
+          const tarjetaKey = Object.keys(productStocks).find(k => k.includes('tarjeta')) || 'tarjeta-nfc-bolsillo';
+          if (productStocks[placaKey]) {
+            productStocks[placaKey].current_stock = (productStocks[placaKey].current_stock || 0) + (1 * qty);
+            stocksUpdated = true;
+          }
+          if (productStocks[tarjetaKey]) {
+            productStocks[tarjetaKey].current_stock = (productStocks[tarjetaKey].current_stock || 0) + (2 * qty);
+            stocksUpdated = true;
+          }
+        } else if (productStocks[item.product_id]) {
+          productStocks[item.product_id].current_stock = (productStocks[item.product_id].current_stock || 0) + qty;
+          stocksUpdated = true;
+        }
+      });
+    }
+
+    if (stocksUpdated) {
+      if (productStocks['pack-trio-comercial']) {
+        const pStock = productStocks['placa-nfc-mostrador']?.current_stock || 0;
+        const tStock = productStocks['tarjeta-nfc-bolsillo']?.current_stock || 0;
+        productStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+      }
+      this.setStorageItem('inventory_product_stocks', productStocks);
+
+      // Asentar en Kardex
+      const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
+      movements.unshift({
+        id: `MOV-REV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        created_at: new Date().toISOString(),
+        type: 'devolucion_cancelacion',
+        product_name: order?.items[0]?.product_name || 'Productos Orden Cancelada',
+        quantity_change: 1,
+        resulting_stock: 0,
+        reference: `Reversión y Cancelación de Pedido ${cleanOrderId}`
+      });
+      this.setStorageItem('inventory_kardex', movements);
+    }
+
+    // 2. Liberar tags físicos asignados
+    const cards = this.getCards();
+    const liberatedTags: string[] = [];
+
+    cards.forEach((c, idx) => {
+      if (c.order_id === cleanOrderId || (order && c.order_id === order.id)) {
+        cards[idx].claimed = false;
+        cards[idx].estado = 'en_stock';
+        cards[idx].order_id = undefined;
+        cards[idx].is_active = false;
+        cards[idx].owner_id = 'unassigned';
+        cards[idx].owner_name = 'Sin Asignar (Stock)';
+        cards[idx].owner_email = 'admin@startap.com.pa';
+        liberatedTags.push(cards[idx].card_id);
+      }
+    });
+
+    if (liberatedTags.length > 0) {
+      this.setStorageItem('nfc_cards', cards);
+      if (supabase) {
+        supabase.from('nfc_cards').update({
+          claimed: false,
+          estado: 'en_stock',
+          order_id: null,
+          is_active: false,
+          owner_id: 'unassigned',
+          owner_name: 'Sin Asignar (Stock)',
+          owner_email: 'admin@startap.com.pa'
+        }).in('card_id', liberatedTags).then(({ error }) => {
+          if (error) console.error('Error liberando tags en Supabase:', error);
+        });
+      }
+    }
+
+    return { success: true, liberatedTags };
+  }
+
+  async sincronizarVentasRetroactivas(): Promise<{ sincronizadas: number }> {
+    let count = 0;
+    let cards = this.getCards();
+
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('nfc_cards')
+          .select('*')
+          .or('tipo_activacion.eq.venta,tipo_activacion.eq.prueba,precio_venta.gt.0');
+        if (!error && data && data.length > 0) {
+          cards = data as NfcCard[];
+        }
+      } catch (e) {
+        console.error('Error cargando tarjetas para sincronización retroactiva:', e);
+      }
+    }
+
+    for (const card of cards) {
+      const isVenta = card.tipo_activacion === 'venta' || (typeof card.precio_venta === 'number' && card.precio_venta > 0);
+      const isPrueba = card.tipo_activacion === 'prueba';
+
+      if (isVenta || (isPrueba && card.is_active)) {
+        const orderId = `PED-VISITA-${card.card_id.replace(/[^A-Za-z0-9]/g, '')}`;
+        const existingOrder = this.getOrderById(orderId);
+
+        if (!existingOrder) {
+          this.registrarVentaVisita({
+            cardId: card.card_id,
+            precioVenta: card.precio_venta || (isVenta ? 35 : 0),
+            label: card.label,
+            targetUrl: card.target_url,
+            tipoActivacion: isVenta ? 'venta' : 'prueba'
+          });
+          count++;
+        }
+      }
+    }
+
+    return { sincronizadas: count };
   }
 }
 

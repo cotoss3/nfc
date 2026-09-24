@@ -104,6 +104,10 @@ export default function MasterControlDashboard() {
 
   const loadData = async () => {
     setLoading(true);
+    try {
+      await fetch('/api/admin/tags?action=sync_sales').catch(() => {});
+    } catch {}
+
     let dbOrders = dbLocal.getOrders();
     let dbProducts = dbLocal.getProducts();
     let dbAbandoned = dbLocal.getAbandonedCheckouts();

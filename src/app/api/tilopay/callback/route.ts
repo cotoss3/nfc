@@ -133,6 +133,42 @@ async function handleCallback(req: NextRequest) {
     } catch (emailErr) {
       console.error('[CALLBACK_EMAIL_SEND_ERROR]', emailErr);
     }
+  } else if (!isSuccess && order) {
+    // Si el pago falló o fue cancelado por el cliente, marcamos orden como cancelada y liberamos stock/tags
+    try {
+      const { dbLocal, supabase } = await import('@/lib/db');
+      dbLocal.updateOrderDetails(order, {
+        payment_status: 'pending',
+        status: 'cancelled',
+      });
+      dbLocal.liberarTagsYRevertirStock(order);
+
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (url && serviceKey) {
+        const { createClient } = await import('@supabase/supabase-js');
+        const admin = createClient(url, serviceKey);
+        await admin
+          .from('orders')
+          .update({ payment_status: 'pending', status: 'cancelled' })
+          .or(`id.eq.${order},id.eq.STP-${order}`);
+
+        await admin
+          .from('nfc_cards')
+          .update({
+            claimed: false,
+            estado: 'en_stock',
+            order_id: null,
+            is_active: false,
+            owner_id: 'unassigned',
+            owner_name: 'Sin Asignar (Stock)',
+            owner_email: 'admin@startap.com.pa'
+          })
+          .or(`order_id.eq.${order},order_id.eq.STP-${order}`);
+      }
+    } catch (cancelErr) {
+      console.error('[TILOPAY_CALLBACK_CANCEL_ROLLBACK_ERROR]', cancelErr);
+    }
   }
 
   const url = new URL('/checkout', baseUrl);

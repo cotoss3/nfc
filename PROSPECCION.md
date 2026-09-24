@@ -238,6 +238,18 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-09-22 | Ricky pollo | Pollo | La Chorrera | 1 | 5.0 | 6936-6867 | pendiente | numero nuevo, tanda reducida; top2 pollo 160/158 |
 | 2026-09-22 | Empanadas 507 | Empanadas | La Chorrera | 7 | 4.9 | 6963-8449 | pendiente | numero nuevo, tanda reducida; top2 zona 2013/42 |
 | 2026-09-22 | Ceviches El Capi | Ceviche | La Chorrera | 10 | 5.0 | 6732-3029 | pendiente | numero nuevo, tanda reducida; abierto 24h; top2 ceviche 206/147 |
+| 2026-09-23 | El Fogon de La Abuela | Desayunos | La Chorrera | 20 | 4.9 | 6779-8322 | pendiente | top2 desayunos 139/515 |
+| 2026-09-23 | El Mastranto Breakfast | Desayunos | La Chorrera | 3 | 4.7 | 6298-7852 | pendiente | top2 desayunos 139/515 |
+| 2026-09-23 | Natos Tacos & Grill | Mexicana | La Chorrera | 1 | 5.0 | 6160-3552 | pendiente | top2 mexicana 177/109 |
+| 2026-09-23 | EL TORITO GRILL | Parrilla | Costa Verde | 3 | 5.0 | 6161-8450 | pendiente | top2 parrilla 549/337 |
+| 2026-09-23 | Brasa Latina El Chorro | Parrilla | La Chorrera (El Chorro) | 23 | 4.4 | 6780-6368 | no | dueno de 10+ locales; cerro por precio, compara con etiquetas de Temu a $5 |
+| 2026-09-23 | Panaderia MR. Baker | Panaderia | La Chorrera | 24 | 4.6 | 6075-0736 | pendiente | autorespuesta; pasaron contacto de Elkin Andres 6831-4965 |
+| 2026-09-23 | Cooltura Panama | Heladeria | Costa Verde | 36 | 4.6 | 6863-3627 | respondio | contesto solo con un signo de interrogacion |
+| 2026-09-23 | Humo Panama La Chorrera | Comida tipica | La Chorrera | 55 | 4.6 | 6766-4774 | pendiente | top2 tipica 55/327 |
+| 2026-09-23 | Fonda El Achiote | Fonda | La Chorrera | 47 | 4.6 | 6635-7694 | pendiente | nueva ubicacion; top2 fondas 13/51 |
+| 2026-09-23 | Fonda David | Fonda | La Chorrera | 23 | 4.5 | 6390-4515 | pendiente | top2 fondas 13/51 |
+| 2026-09-23 | Fonda Tuty | Fonda | La Chorrera | 51 | 4.6 | 6622-9071 | pendiente | top2 fondas 13/51 |
+| 2026-09-23 | Happy Yico | Heladeria | La Chorrera | 9 | 5.0 | 258-7165 (fijo, sin WhatsApp) | pendiente | llamar; lideres heladeria 880/837 |
 
 ---
 

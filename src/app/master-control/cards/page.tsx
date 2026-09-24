@@ -714,6 +714,27 @@ export default function CardsManagementPage() {
                                 </span>
                               )}
                             </div>
+                            {c.tipo_activacion && (
+                              <div className="mt-1">
+                                {c.tipo_activacion === 'venta' ? (
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                                    🤝 Venta en Visita (${Number(c.precio_venta || 0).toFixed(2)})
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-indigo-900 border border-indigo-300">
+                                    🧪 Demo / Muestra ($0.00)
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            {c.order_id && (
+                              <div className="text-[9px] text-slate-500 font-mono mt-0.5">
+                                Pedido:{' '}
+                                <Link href={`/master-control/pedidos/${c.order_id}`} className="text-amber-700 underline font-bold hover:text-amber-900">
+                                  #{c.order_id}
+                                </Link>
+                              </div>
+                            )}
                           </div>
                         </td>
 

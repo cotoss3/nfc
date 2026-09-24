@@ -13,7 +13,13 @@ export default function PedidosPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
+  const [canalFilter, setCanalFilter] = useState('all');
+
   const fetchOrders = async () => {
+    try {
+      await fetch('/api/admin/tags?action=sync_sales').catch(() => {});
+    } catch {}
+
     let data: Order[] = [];
     if (supabase) {
       try {
@@ -61,13 +67,18 @@ export default function PedidosPage() {
       o.customer_name?.toLowerCase().includes(q) || 
       o.customer_email?.toLowerCase().includes(q);
     const matchStatus = statusFilter === 'all' || o.status === statusFilter;
-    return matchSearch && matchStatus;
+    const isVisita = o.canal === 'visita' || o.payment_method === 'presencial' || o.id.startsWith('PED-VISITA');
+    const matchCanal = canalFilter === 'all' || (canalFilter === 'visita' && isVisita) || (canalFilter === 'web' && !isVisita);
+    return matchSearch && matchStatus && matchCanal;
   });
 
   const pendingCount = orders.filter(o => o.status === 'pending').length;
   const processingCount = orders.filter(o => o.status === 'processing').length;
   const shippedCount = orders.filter(o => o.status === 'shipped').length;
-  const totalRevenue = orders.filter(o => o.payment_status === 'completed').reduce((acc, o) => acc + o.total, 0);
+  const totalRevenue = orders.filter(o => o.payment_status === 'completed').reduce((acc, o) => acc + (o.total || 0), 0);
+  const visitSales = orders.filter(o => o.canal === 'visita' || o.payment_method === 'presencial' || o.id.startsWith('PED-VISITA'));
+  const visitRevenue = visitSales.reduce((acc, o) => acc + (o.total || 0), 0);
+  const demoCount = visitSales.filter(o => o.total === 0).length;
 
   if (loading) return <div className="p-8 text-center text-slate-500">Cargando pedidos...</div>;
 
@@ -93,7 +104,7 @@ export default function PedidosPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1">
           <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">Pendientes</span>
           <div className="flex items-center gap-2">
@@ -115,7 +126,16 @@ export default function PedidosPage() {
             <span className="text-2xl font-black text-slate-900">{shippedCount}</span>
           </div>
         </div>
-        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col gap-1">
+        <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200 shadow-sm flex flex-col gap-1">
+          <span className="text-amber-800 text-xs font-bold uppercase tracking-wider">Ventas en Visita</span>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-black text-amber-950">${visitRevenue.toFixed(2)}</span>
+            <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+              {visitSales.length - demoCount} ventas · {demoCount} demos
+            </span>
+          </div>
+        </div>
+        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm flex flex-col gap-1 col-span-2 md:col-span-1">
           <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Ingresos Netos</span>
           <div className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-amber-400" />
@@ -139,6 +159,15 @@ export default function PedidosPage() {
         <div className="flex items-center gap-2 min-w-max">
           <Filter className="w-4 h-4 text-slate-400" />
           <select 
+            value={canalFilter}
+            onChange={(e) => setCanalFilter(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-slate-900"
+          >
+            <option value="all">Todos los Canales</option>
+            <option value="visita">🤝 Visitas en Campo</option>
+            <option value="web">🛒 Tienda Online (Web)</option>
+          </select>
+          <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-slate-900"
@@ -161,7 +190,7 @@ export default function PedidosPage() {
               <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider font-bold text-slate-500">
                 <th className="p-4">Pedido</th>
                 <th className="p-4">Fecha</th>
-                <th className="p-4">Cliente</th>
+                <th className="p-4">Cliente / Canal</th>
                 <th className="p-4">Estado</th>
                 <th className="p-4">Pago</th>
                 <th className="p-4 text-right">Total</th>
@@ -174,49 +203,75 @@ export default function PedidosPage() {
                   <td colSpan={7} className="p-8 text-center text-slate-500">No se encontraron pedidos.</td>
                 </tr>
               ) : (
-                filteredOrders.map(order => (
-                  <tr key={order.id} className="hover:bg-slate-50 transition-colors group">
-                    <td className="p-4 font-bold text-slate-900">
-                      <Link href={`/master-control/pedidos/${order.id}`} className="hover:text-amber-600 hover:underline">
-                        #{order.id}
-                      </Link>
-                    </td>
-                    <td className="p-4 text-slate-500">
-                      {new Date(order.created_at).toLocaleDateString('es-PA')}
-                    </td>
-                    <td className="p-4">
-                      <div className="font-semibold text-slate-900">{order.customer_name || 'Sin nombre'}</div>
-                      <div className="text-xs text-slate-500">{order.shipping_province || 'Local'}</div>
-                    </td>
-                    <td className="p-4">
-                      {order.status === 'pending' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200"><Clock className="w-3.5 h-3.5" /> Pendiente</span>}
-                      {order.status === 'processing' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200"><Package className="w-3.5 h-3.5" /> Procesando</span>}
-                      {order.status === 'shipped' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200"><Truck className="w-3.5 h-3.5" /> Enviado</span>}
-                      {order.status === 'delivered' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200"><CheckCircle className="w-3.5 h-3.5" /> Completado</span>}
-                      {order.status === 'cancelled' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-50 text-red-700 text-xs font-bold border border-red-200"><AlertCircle className="w-3.5 h-3.5" /> Cancelado</span>}
-                    </td>
-                    <td className="p-4">
-                      {order.payment_status === 'completed' 
-                        ? <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Pagado</span>
-                        : <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600">Pendiente</span>
-                      }
-                      <div className="text-[10px] text-slate-400 mt-0.5 uppercase font-bold">{order.payment_method}</div>
-                    </td>
-                    <td className="p-4 text-right font-black text-slate-900">
-                      ${order.total.toFixed(2)}
-                    </td>
-                    <td className="p-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteOrder(order.id)}
-                        title="Eliminar pedido de prueba"
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                filteredOrders.map(order => {
+                  const isVisita = order.canal === 'visita' || order.payment_method === 'presencial' || order.id.startsWith('PED-VISITA');
+                  return (
+                    <tr key={order.id} className="hover:bg-slate-50 transition-colors group">
+                      <td className="p-4 font-bold text-slate-900">
+                        <Link href={`/master-control/pedidos/${order.id}`} className="hover:text-amber-600 hover:underline block">
+                          #{order.id}
+                        </Link>
+                        {isVisita && (
+                          <span className="text-[10px] font-mono text-amber-700 font-bold">
+                            VENTA EN CAMPO
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4 text-slate-500 text-xs">
+                        {new Date(order.created_at).toLocaleDateString('es-PA')}
+                        <div className="text-[10px] text-slate-400">
+                          {new Date(order.created_at).toLocaleTimeString('es-PA', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-semibold text-slate-900">{order.customer_name || 'Sin nombre'}</div>
+                        <div className="text-xs text-slate-500">{order.shipping_province || 'Local'}</div>
+                        {isVisita && (
+                          <div className="mt-1">
+                            {order.total > 0 ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                                🤝 Venta en Visita (${order.total.toFixed(2)})
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-900 border border-indigo-300">
+                                🧪 Demo / Muestra ($0.00)
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        {order.status === 'pending' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200"><Clock className="w-3.5 h-3.5" /> Pendiente</span>}
+                        {order.status === 'processing' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200"><Package className="w-3.5 h-3.5" /> Procesando</span>}
+                        {order.status === 'shipped' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200"><Truck className="w-3.5 h-3.5" /> Enviado</span>}
+                        {order.status === 'delivered' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200"><CheckCircle className="w-3.5 h-3.5" /> Completado</span>}
+                        {order.status === 'cancelled' && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-50 text-red-700 text-xs font-bold border border-red-200"><AlertCircle className="w-3.5 h-3.5" /> Cancelado</span>}
+                      </td>
+                      <td className="p-4">
+                        {order.payment_status === 'completed' 
+                          ? <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">Pagado</span>
+                          : <span className="inline-flex px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600">Pendiente</span>
+                        }
+                        <div className="text-[10px] text-slate-400 mt-0.5 uppercase font-bold">
+                          {order.payment_method === 'presencial' ? '🤝 Presencial' : order.payment_method}
+                        </div>
+                      </td>
+                      <td className="p-4 text-right font-black text-slate-900">
+                        ${order.total.toFixed(2)}
+                      </td>
+                      <td className="p-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteOrder(order.id)}
+                          title="Eliminar pedido de prueba"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
