@@ -63,7 +63,7 @@ export default function MasterControlDashboard() {
   const [loading, setLoading] = useState(true);
 
   // Period Filter State
-  const [period, setPeriod] = useState<'hoy' | 'ayer' | 'semana' | 'mes' | 'custom'>('mes');
+  const [period, setPeriod] = useState<'todos' | 'hoy' | 'ayer' | 'semana' | 'mes' | 'custom'>('todos');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
@@ -165,6 +165,7 @@ export default function MasterControlDashboard() {
     return orders.filter(o => {
       const date = new Date(o.created_at);
 
+      if (period === 'todos') return true;
       if (period === 'hoy') return date.toDateString() === now.toDateString();
       if (period === 'ayer') {
         const yesterday = new Date(now);
@@ -226,26 +227,24 @@ export default function MasterControlDashboard() {
     });
   }, [activeAbandoned, abandonedSearch]);
 
-  const totalVisits = useMemo(() => {
-    if (period === 'hoy') {
-      return Math.max(visitorStats.today, realActiveSessions.length);
-    }
-    if (period === 'ayer') {
-      return visitorStats.yesterday;
-    }
-    if (period === 'semana') {
-      return visitorStats.week;
-    }
-    if (period === 'mes') {
-      return visitorStats.month;
-    }
-    return visitorStats.all;
-  }, [period, visitorStats, realActiveSessions.length]);
+  // Visitas Totales Acumuladas de la Tienda (Data 100% Real de Supabase)
+  const totalVisitasGlobales = useMemo(() => {
+    return Math.max(visitorStats.all_pageviews, visitorStats.all, 1);
+  }, [visitorStats]);
 
+  const totalVisits = totalVisitasGlobales;
+
+  // Total de órdenes completadas / válidas
+  const totalCompletedOrdersCount = useMemo(() => {
+    return orders.filter(o => o.payment_status === 'completed' || o.status === 'delivered').length;
+  }, [orders]);
+
+  // Tasa de Conversión Calculada Directamente CONTRA LAS VISITAS TOTALES
   const conversionRate = useMemo(() => {
-    if (totalVisits === 0) return 0;
-    return (totalOrdersCount / totalVisits) * 100;
-  }, [totalOrdersCount, totalVisits]);
+    if (totalVisitasGlobales === 0) return 0;
+    const ordersNumerator = period === 'todos' ? totalCompletedOrdersCount : filteredOrders.length;
+    return (ordersNumerator / totalVisitasGlobales) * 100;
+  }, [period, totalCompletedOrdersCount, filteredOrders.length, totalVisitasGlobales]);
 
   const pendingOrders = useMemo(() => {
     return orders.filter(o => o.status === 'pending' || o.status === 'processing' || o.payment_status === 'pending');
@@ -570,7 +569,7 @@ export default function MasterControlDashboard() {
           </div>
         </div>
 
-        {/* 5. % CONVERSIÓN FRENTE A VISITAS (CLICKABLE TO LIVE VISITORS) */}
+        {/* 5. % CONVERSIÓN FRENTE A VISITAS TOTALES (CLICKABLE TO LIVE VISITORS) */}
         <div 
           onClick={() => setActiveTab('live_visitors')}
           className="bg-white border border-slate-200 p-5 rounded-2xl shadow-2xs flex flex-col justify-between min-h-[110px] cursor-pointer hover:border-blue-400 hover:shadow-md transition group"
@@ -587,17 +586,17 @@ export default function MasterControlDashboard() {
           <div className="mt-2.5 flex items-center justify-between gap-3 border-t border-slate-100 pt-2">
             <div>
               <span className="text-xl font-extrabold text-blue-600 font-mono block leading-none">
-                {totalVisits > 0 ? `${conversionRate.toFixed(1)}%` : '0.0%'}
+                {totalVisitasGlobales > 0 ? `${conversionRate.toFixed(1)}%` : '0.0%'}
               </span>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight block mt-1">Tasa Conversión</span>
             </div>
             <div className="text-right border-l border-slate-100 pl-3">
               <div className="text-xs font-bold text-slate-800 font-mono flex items-center justify-end gap-1">
-                <span>{totalVisits}</span>
-                <span className="text-[10px] text-slate-500 font-normal">visitas reales</span>
+                <span>{totalVisitasGlobales}</span>
+                <span className="text-[10px] text-slate-500 font-normal">visitas totales</span>
               </div>
               <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">
-                {totalOrdersCount} {totalOrdersCount === 1 ? 'venta' : 'ventas'} ({realActiveSessions.length} online)
+                {period === 'todos' ? totalCompletedOrdersCount : totalOrdersCount} {(period === 'todos' ? totalCompletedOrdersCount : totalOrdersCount) === 1 ? 'venta' : 'ventas'} ({realActiveSessions.length} online)
               </div>
             </div>
           </div>
@@ -632,6 +631,15 @@ export default function MasterControlDashboard() {
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setPeriod('todos')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
+                  period === 'todos' ? 'bg-slate-950 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                Histórico (Todos)
+              </button>
               <button
                 type="button"
                 onClick={() => setPeriod('hoy')}

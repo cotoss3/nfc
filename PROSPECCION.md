@@ -250,6 +250,24 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-09-23 | Fonda David | Fonda | La Chorrera | 23 | 4.5 | 6390-4515 | pendiente | top2 fondas 13/51 |
 | 2026-09-23 | Fonda Tuty | Fonda | La Chorrera | 51 | 4.6 | 6622-9071 | pendiente | top2 fondas 13/51 |
 | 2026-09-23 | Happy Yico | Heladeria | La Chorrera | 9 | 5.0 | 258-7165 (fijo, sin WhatsApp) | pendiente | llamar; lideres heladeria 880/837 |
+| 2026-09-24 | TALLER DE MECANICA ADAMES | Taller mecanico | Arraijan | 7 | 5.0 | 6619-0479 | pendiente | top2 talleres Arraijan 24/73 |
+| 2026-09-24 | Taller de Electromecanica Figueroa | Electromecanica | Arraijan | 7 | 4.7 | 6525-2519 | pendiente | abierto 24h; top2 24/73 |
+| 2026-09-24 | Taller Daniel | Taller mecanico | Arraijan | 1 | 5.0 | 6504-6067 | pendiente | top2 talleres Arraijan 24/73 |
+| 2026-09-24 | JAPP Custom Power | Taller mecanico | Arraijan | 1 | 5.0 | 6495-2054 | pendiente | tiene sitio web; top2 24/73 |
+| 2026-09-24 | Clarence Car Services | Taller mecanico | Arraijan | 11 | 4.9 | 6267-2667 | pendiente | top2 talleres Arraijan 24/73 |
+| 2026-09-24 | Taller Santamaria Burunga | Taller mecanico | Burunga (Arraijan) | 4 | 5.0 | 6587-5933 | pendiente | top2 talleres Arraijan 24/73 |
+| 2026-09-24 | AUTO SERVICIOS MILLAS | Taller mecanico | La Chorrera | 15 | 4.9 | 6883-4873 | pendiente | top1 de su busqueda; segundo 143 |
+| 2026-09-24 | Julio Chirinos Mecanico | Taller mecanico | La Chorrera | 7 | 5.0 | 6165-5317 | pendiente | top2 talleres Chorrera 15/143 |
+| 2026-09-24 | West Car PTY | Chapisteria | La Chorrera | 5 | 5.0 | 6914-5912 | pendiente | top2 chapisteria 23/150 |
+| 2026-09-24 | Hosanna Quality Shop | Chapisteria | Panama Oeste | 8 | 4.8 | 6317-5024 | pendiente | top2 chapisteria 23/150 |
+| 2026-09-24 | Taller de Chapisteria West Car Flow | Chapisteria | El Coco (La Chorrera) | 3 | 5.0 | 6318-0300 | pendiente | top2 chapisteria 23/150 |
+| 2026-09-24 | Taller Bonilla | Chapisteria | Panama Oeste | 14 | 4.6 | 6592-9881 | pendiente | cierra 7pm; top2 23/150 |
+| 2026-09-24 | Taller Fragua Plus | Chapisteria | Panama Oeste | 12 | 4.8 | 6699-2581 | pendiente | top2 chapisteria 23/150 |
+| 2026-09-24 | AUTO TALLER ASHDECK | Chapisteria | Panama Oeste | 3 | 5.0 | 6383-2097 | pendiente | top2 chapisteria 23/150 |
+| 2026-09-24 | Taller de Chapisteria y Mecanica 0 Kilometro | Chapisteria y mecanica | Panama Oeste | 15 | 4.9 | 6234-9609 | pendiente | top2 chapisteria 23/150 |
+| 2026-09-24 | Top Luxor Autos | Taller mecanico | Arraijan | 7 | 4.7 | 343-0550 (fijo, sin WhatsApp) | pendiente | llamar; top2 24/73 |
+| 2026-09-24 | Auto Servicio Delgado S.A. | Taller mecanico | La Chorrera | 10 | 4.7 | 253-2522 (fijo, sin WhatsApp) | pendiente | llamar; top2 15/143 |
+| 2026-09-24 | Taller de Diagnostico Automotriz S.A. | Taller mecanico | Arraijan | 17 | 4.6 | 344-9756 (fijo, sin WhatsApp) | pendiente | llamar; top2 24/73 |
 
 ---
 
