@@ -2295,15 +2295,19 @@ class LocalDbService {
   async sincronizarVentasRetroactivas(): Promise<{ sincronizadas: number }> {
     let count = 0;
     let cards = this.getCards();
+    const existingOrderIds = new Set(this.getOrders().map(o => o.id));
 
     if (supabase) {
       try {
-        const { data, error } = await supabase
-          .from('nfc_cards')
-          .select('*')
-          .or('tipo_activacion.eq.venta,tipo_activacion.eq.prueba,precio_venta.gt.0');
-        if (!error && data && data.length > 0) {
-          cards = data as NfcCard[];
+        const [resCards, resOrders] = await Promise.all([
+          supabase.from('nfc_cards').select('*').or('tipo_activacion.eq.venta,tipo_activacion.eq.prueba,precio_venta.gt.0'),
+          supabase.from('orders').select('id')
+        ]);
+        if (!resCards.error && resCards.data && resCards.data.length > 0) {
+          cards = resCards.data as NfcCard[];
+        }
+        if (!resOrders.error && resOrders.data) {
+          resOrders.data.forEach(o => existingOrderIds.add(o.id));
         }
       } catch (e) {
         console.error('Error cargando tarjetas para sincronización retroactiva:', e);
@@ -2316,9 +2320,7 @@ class LocalDbService {
 
       if (isVenta || (isPrueba && card.is_active)) {
         const orderId = `PED-VISITA-${card.card_id.replace(/[^A-Za-z0-9]/g, '')}`;
-        const existingOrder = this.getOrderById(orderId);
-
-        if (!existingOrder) {
+        if (!existingOrderIds.has(orderId)) {
           this.registrarVentaVisita({
             cardId: card.card_id,
             precioVenta: card.precio_venta || (isVenta ? 35 : 0),
@@ -2326,6 +2328,7 @@ class LocalDbService {
             targetUrl: card.target_url,
             tipoActivacion: isVenta ? 'venta' : 'prueba'
           });
+          existingOrderIds.add(orderId);
           count++;
         }
       }
