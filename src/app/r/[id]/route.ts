@@ -372,89 +372,121 @@ export async function GET(
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 28px;
-      padding: 22px 18px 20px;
+      padding: 24px 18px 18px;
       box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.03);
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
-    /* 1. Cabecera de Destino Verificado */
-    .status-header {
+    /* 1. Bloque Protagonista: Destino / Reseña del Comercio */
+    .hero-review-box {
+      background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+      border: 1.5px solid #fde68a;
+      border-radius: 22px;
+      padding: 20px 16px 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 10px 25px -10px rgba(245, 158, 11, 0.18);
     }
     .status-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 12px;
+      padding: 4px 11px;
       border-radius: 999px;
       background: #ecfdf5;
       border: 1px solid #a7f3d0;
       color: #047857;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #10b981;
       display: inline-block;
     }
+    .stars-row {
+      color: #f59e0b;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      margin-top: 2px;
+    }
     .status-subtitle {
       font-size: 13px;
-      color: #64748b;
+      color: #475569;
       font-weight: 600;
-      margin-top: 2px;
     }
     .commerce-name {
       color: #0f172a;
       font-weight: 900;
-      font-size: 22px;
+      font-size: 24px;
       line-height: 1.2;
       letter-spacing: -0.02em;
     }
-    /* 2. Espacio Publicitario Visual (Ad Slot) */
+    /* Botón Protagonista Principal (Arriba, Máxima Jerarquía) */
+    .skip-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      color: #0f172a;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 12px 24px -6px rgba(245, 158, 11, 0.45);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .skip-btn:active {
+      transform: scale(0.98);
+    }
+    .skip-arrow {
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 17px;
+    }
+    /* 2. Espacio Publicitario Secundario (Debajo del Protagonista) */
     .ad-slot {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 20px;
+      border-radius: 18px;
       overflow: hidden;
       text-align: left;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .ad-slot:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 8px 20px -8px rgba(15, 23, 42, 0.08);
     }
     .ad-slot-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 12px;
-      background: #ffffff;
-      border-bottom: 1px solid #f1f5f9;
+      padding: 6px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
     }
     .ad-slot-tag {
-      font-size: 10px;
-      font-weight: 800;
+      font-size: 9px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.07em;
-      color: #475569;
+      color: #94a3b8;
     }
     .ad-slot-pill {
-      font-size: 10px;
-      font-weight: 800;
-      color: #b45309;
-      background: #fef3c7;
-      padding: 2px 8px;
-      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #64748b;
     }
     .ad-image-link {
       display: block;
@@ -463,8 +495,7 @@ export async function GET(
     }
     .ad-image-wrap {
       width: 100%;
-      aspect-ratio: 1 / 1;
-      max-height: 295px;
+      max-height: 215px;
       background: #f1f5f9;
       overflow: hidden;
       display: flex;
@@ -473,7 +504,7 @@ export async function GET(
     }
     .ad-image {
       width: 100%;
-      height: 100%;
+      height: 215px;
       object-fit: cover;
       display: block;
     }
@@ -482,19 +513,19 @@ export async function GET(
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      padding: 11px 14px;
+      padding: 10px 12px;
       background: #ffffff;
       border-top: 1px solid #e2e8f0;
     }
     .ad-cta-text {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      color: #1e293b;
+      color: #334155;
       line-height: 1.3;
     }
     .ad-cta-text span {
       display: block;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       color: #64748b;
     }
@@ -505,49 +536,18 @@ export async function GET(
       color: #0f172a;
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
-      padding: 6px 10px;
-      border-radius: 10px;
+      padding: 5px 10px;
+      border-radius: 8px;
       white-space: nowrap;
     }
-    /* 3. Botón Principal de Continuar al Comercio */
-    .skip-btn {
-      width: 100%;
-      padding: 15px 18px;
-      border-radius: 16px;
-      border: none;
-      background: #0f172a;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 10px 22px -6px rgba(15, 23, 42, 0.28);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .skip-btn:hover {
-      background: #1e293b;
-    }
-    .skip-btn:active {
-      transform: scale(0.98);
-    }
-    .skip-arrow {
-      color: #fbbf24;
-      font-weight: 900;
-      font-size: 16px;
-    }
-    /* 4. Pie Corporativo */
+    /* 3. Pie Corporativo */
     .brand-footer {
-      margin-top: 12px;
+      margin-top: 10px;
       text-align: center;
     }
     .brand-footer a {
       color: #64748b;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       text-decoration: none;
       transition: color 0.2s ease;
@@ -565,21 +565,27 @@ export async function GET(
   <div></div>
 
   <main class="bridge-card">
-    <!-- 1. Cabecera Clara de Destino Verificado -->
-    <div class="status-header">
+    <!-- 1. PROTAGONISTA PRINCIPAL: Ir a la Reseña / Destino del Comercio -->
+    <div class="hero-review-box">
       <span class="status-badge">
         <span class="status-dot"></span>
-        Conexión Verificada • ${escaparHtml(resolvedCardId)}
+        Conexión Oficial • ${escaparHtml(resolvedCardId)}
       </span>
-      <p class="status-subtitle">Estás entrando al perfil oficial de</p>
+      <div class="stars-row" aria-hidden="true">★★★★★</div>
+      <p class="status-subtitle">¡Gracias por tu visita! Entrando a</p>
       <h1 class="commerce-name">${escaparHtml(displayCommerceName)}</h1>
+
+      <button type="button" id="skip-btn" class="skip-btn">
+        <span>Ir a dejar reseña ahora</span>
+        <span class="skip-arrow">→</span>
+      </button>
     </div>
 
-    <!-- 2. Espacio Publicitario Visual (Ad Slot con Imagen Oficial starTAP) -->
+    <!-- 2. ESPACIO PATROCINADO SECUNDARIO (Al Catálogo starTAP) -->
     <section id="startap-ad-slot" class="ad-slot" aria-label="Espacio patrocinado starTAP Panamá">
       <div class="ad-slot-header">
-        <span class="ad-slot-tag">Destacado • starTAP Panamá</span>
-        <span class="ad-slot-pill">★ Google Reviews NFC</span>
+        <span class="ad-slot-tag">Patrocinado por starTAP Panamá</span>
+        <span class="ad-slot-pill">Tecnología Contactless</span>
       </div>
       <a
         id="ad-slot-link"
@@ -599,19 +605,13 @@ export async function GET(
         </div>
         <div class="ad-cta-bar">
           <div class="ad-cta-text">
-            ¿Tienes un negocio? Impulsa tus reseñas en Google
-            <span>Consigue tu Stand NFC personalizado en Panamá</span>
+            ¿Tienes un negocio? Conoce los Stands NFC starTAP
+            <span>Impulsa tus reseñas de Google sin complicaciones</span>
           </div>
-          <span class="ad-cta-chip">Ver planes ↗</span>
+          <span class="ad-cta-chip">Ver catálogo ↗</span>
         </div>
       </a>
     </section>
-
-    <!-- 3. Botón Principal de Paso Inmediato -->
-    <button type="button" id="skip-btn" class="skip-btn">
-      <span>Continuar a ${escaparHtml(displayCommerceName)}</span>
-      <span class="skip-arrow">→</span>
-    </button>
   </main>
 
   <!-- 4. Pie de marca -->
