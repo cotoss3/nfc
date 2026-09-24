@@ -589,8 +589,11 @@ export default function CardsManagementPage() {
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none cursor-pointer"
                 >
                   <option value="google">Google Reviews ⭐</option>
-                  <option value="tripadvisor">TripAdvisor 🦉</option>
                   <option value="instagram">Instagram 📸</option>
+                  <option value="tiktok">TikTok 🎵</option>
+                  <option value="whatsapp">WhatsApp 💬</option>
+                  <option value="facebook">Facebook 👍</option>
+                  <option value="tripadvisor">TripAdvisor 🦉</option>
                   <option value="vcard">vCard / Contacto 👤</option>
                   <option value="airbnb">Airbnb 🏠</option>
                   <option value="custom">Personalizado 🔗</option>
@@ -1040,8 +1043,11 @@ export default function CardsManagementPage() {
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none"
                   >
                     <option value="google">Google Reviews ⭐</option>
-                    <option value="tripadvisor">TripAdvisor 🦉</option>
                     <option value="instagram">Instagram 📸</option>
+                    <option value="tiktok">TikTok 🎵</option>
+                    <option value="whatsapp">WhatsApp 💬</option>
+                    <option value="facebook">Facebook 👍</option>
+                    <option value="tripadvisor">TripAdvisor 🦉</option>
                     <option value="vcard">vCard / Contacto 👤</option>
                     <option value="airbnb">Airbnb 🏠</option>
                     <option value="custom">Personalizado 🔗</option>

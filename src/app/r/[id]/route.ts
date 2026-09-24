@@ -35,6 +35,7 @@ export async function GET(
 
   let isActive = false;
   let allowedChannels: 'both' | 'nfc' | 'qr' = 'both';
+  let cardType = 'google';
   let cardFoundInSupabase = false;
 
   // 1. Intentar consulta en tiempo real desde Supabase si está configurado
@@ -58,7 +59,7 @@ export async function GET(
 
       const { data, error } = await supabase
         .from('nfc_cards')
-        .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label, is_active, channels')
+        .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label, is_active, channels, type')
         .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode},card_id.ilike.${clean}`)
         .maybeSingle();
 
@@ -72,6 +73,7 @@ export async function GET(
         resolvedCardId = data.card_id;
         isActive = data.is_active === true;
         if (data.channels) allowedChannels = data.channels;
+        if (data.type) cardType = String(data.type).toLowerCase();
       }
     } catch (e) {
       console.error('Error consultando Supabase en redirección:', e);
@@ -90,6 +92,7 @@ export async function GET(
       resolvedCardId = card.card_id || cardId;
       isActive = card.is_active === true;
       if (card.channels) allowedChannels = card.channels;
+      if (card.type) cardType = String(card.type).toLowerCase();
     } else {
       isActive = false;
     }
@@ -319,13 +322,89 @@ export async function GET(
       ? groupName
       : cardLabel || resolvedCardId;
 
+  // Determinar plataforma efectiva combinando la propiedad configurada (card.type) y la URL de destino
+  const lowerUrl = safeTargetUrl.toLowerCase();
+  let effectivePlatform = cardType || 'google';
+  if (lowerUrl.includes('tiktok.com')) {
+    effectivePlatform = 'tiktok';
+  } else if (lowerUrl.includes('instagram.com') || lowerUrl.includes('instagr.am')) {
+    effectivePlatform = 'instagram';
+  } else if (lowerUrl.includes('wa.me') || lowerUrl.includes('whatsapp.com')) {
+    effectivePlatform = 'whatsapp';
+  } else if (lowerUrl.includes('facebook.com') || lowerUrl.includes('fb.me')) {
+    effectivePlatform = 'facebook';
+  } else if (lowerUrl.includes('tripadvisor.')) {
+    effectivePlatform = 'tripadvisor';
+  } else if (lowerUrl.includes('g.page') || lowerUrl.includes('google.com/maps') || lowerUrl.includes('writereview')) {
+    effectivePlatform = 'google';
+  }
+
+  let heroTopIcon = '★★★★★';
+  let heroGreeting = '¡Gracias por tu visita!';
+  let heroSubtitle = 'Vamos por una reseña para';
+  let heroButtonLabel = 'Dejar mi reseña ahora';
+
+  switch (effectivePlatform) {
+    case 'instagram':
+      heroTopIcon = '📸 ✨';
+      heroGreeting = '¡Gracias por tu visita!';
+      heroSubtitle = 'Síguenos en Instagram como';
+      heroButtonLabel = 'Seguir en Instagram ahora';
+      break;
+    case 'tiktok':
+      heroTopIcon = '🎵 🔥';
+      heroGreeting = '¡Gracias por tu visita!';
+      heroSubtitle = 'Síguenos en TikTok como';
+      heroButtonLabel = 'Seguir en TikTok ahora';
+      break;
+    case 'whatsapp':
+      heroTopIcon = '💬 ⚡';
+      heroGreeting = '¡Gracias por contactarnos!';
+      heroSubtitle = 'Abriendo chat directo de WhatsApp con';
+      heroButtonLabel = 'Escribir por WhatsApp ahora';
+      break;
+    case 'facebook':
+      heroTopIcon = '👍 ✨';
+      heroGreeting = '¡Gracias por tu visita!';
+      heroSubtitle = 'Síguenos en Facebook como';
+      heroButtonLabel = 'Seguir en Facebook ahora';
+      break;
+    case 'tripadvisor':
+      heroTopIcon = '🦉 ★★★★★';
+      heroGreeting = '¡Gracias por tu visita!';
+      heroSubtitle = 'Vamos por una reseña en TripAdvisor para';
+      heroButtonLabel = 'Dejar mi reseña ahora';
+      break;
+    case 'vcard':
+      heroTopIcon = '🪪 ✨';
+      heroGreeting = '¡Un gusto conectar contigo!';
+      heroSubtitle = 'Abriendo el contacto oficial de';
+      heroButtonLabel = 'Guardar contacto ahora';
+      break;
+    case 'airbnb':
+    case 'custom':
+    case 'menu':
+      heroTopIcon = '🌐 ✨';
+      heroGreeting = '¡Gracias por tu visita!';
+      heroSubtitle = 'Abriendo el enlace oficial de';
+      heroButtonLabel = 'Continuar ahora';
+      break;
+    case 'google':
+    default:
+      heroTopIcon = '★★★★★';
+      heroGreeting = '¡Gracias por tu visita!';
+      heroSubtitle = 'Vamos por una reseña para';
+      heroButtonLabel = 'Dejar mi reseña ahora';
+      break;
+  }
+
   const safeCardIdJson = JSON.stringify(resolvedCardId);
   const safeGroupNameJson = JSON.stringify(groupName);
   const safeScanTypeJson = JSON.stringify(scanType);
   const safeDeviceJson = JSON.stringify(device);
   const safeTargetUrlJson = JSON.stringify(safeTargetUrl);
 
-  // 6. Pantalla Puente Clara Ejecutiva (6 Segundos + Anuncio Visual starTAP + Anti-Rebote GA4 + SEO Noindex)
+  // 6. Pantalla Puente Clara Ejecutiva (8 Segundos + Texto Dinámico por Red + Anuncio Visual starTAP + Anti-Rebote GA4 + SEO Noindex)
   return new NextResponse(`<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -579,19 +658,19 @@ export async function GET(
   <div></div>
 
   <main class="bridge-card">
-    <!-- 1. PROTAGONISTA PRINCIPAL: Ir a la Reseña / Destino del Comercio -->
+    <!-- 1. PROTAGONISTA PRINCIPAL: Dinámico según Plataforma / Red del TAG -->
     <div class="hero-review-box">
       <span class="status-badge">
         <span class="status-dot"></span>
         Conexión Oficial • ${escaparHtml(resolvedCardId)}
       </span>
-      <div class="stars-row" aria-hidden="true">★★★★★</div>
-      <p class="thanks-title">¡Gracias por tu visita!</p>
-      <p class="status-subtitle">Vamos por una reseña para</p>
+      <div class="stars-row" aria-hidden="true">${escaparHtml(heroTopIcon)}</div>
+      <p class="thanks-title">${escaparHtml(heroGreeting)}</p>
+      <p class="status-subtitle">${escaparHtml(heroSubtitle)}</p>
       <h1 class="commerce-name">${escaparHtml(displayCommerceName)}</h1>
 
       <button type="button" id="skip-btn" class="skip-btn">
-        <span>Dejar mi reseña ahora</span>
+        <span>${escaparHtml(heroButtonLabel)}</span>
         <span class="skip-arrow">→</span>
       </button>
     </div>

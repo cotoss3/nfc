@@ -54,7 +54,7 @@ interface TagRecord {
   customer_phone?: string;
   group_name?: string;
   channels?: 'both' | 'nfc' | 'qr';
-  type?: 'google' | 'instagram' | 'whatsapp' | 'tripadvisor' | 'vcard' | 'custom';
+  type?: 'google' | 'instagram' | 'tiktok' | 'whatsapp' | 'facebook' | 'tripadvisor' | 'vcard' | 'custom';
   is_active?: boolean;
   claimed?: boolean;
   tipo_activacion?: 'venta' | 'prueba' | 'regalia';
@@ -95,7 +95,7 @@ export default function TagScannerWorkstationPage() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [channels, setChannels] = useState<'both' | 'nfc' | 'qr'>('both');
-  const [tagType, setTagType] = useState<'google' | 'instagram' | 'whatsapp' | 'tripadvisor' | 'vcard' | 'custom'>('google');
+  const [tagType, setTagType] = useState<'google' | 'instagram' | 'tiktok' | 'whatsapp' | 'facebook' | 'tripadvisor' | 'vcard' | 'custom'>('google');
 
   // Clasificación financiera
   const [tipoActivacion, setTipoActivacion] = useState<'venta' | 'prueba' | 'regalia'>('venta');
@@ -172,10 +172,14 @@ export default function TagScannerWorkstationPage() {
     const lower = val.toLowerCase();
     if (lower.includes('g.page') || lower.includes('google.com/maps') || lower.includes('search.google.com/local/writereview')) {
       setTagType('google');
-    } else if (lower.includes('instagram.com')) {
+    } else if (lower.includes('instagram.com') || lower.includes('instagr.am')) {
       setTagType('instagram');
+    } else if (lower.includes('tiktok.com')) {
+      setTagType('tiktok');
     } else if (lower.includes('wa.me') || lower.includes('whatsapp.com')) {
       setTagType('whatsapp');
+    } else if (lower.includes('facebook.com') || lower.includes('fb.me')) {
+      setTagType('facebook');
     } else if (lower.includes('tripadvisor.')) {
       setTagType('tripadvisor');
     }
@@ -1246,7 +1250,9 @@ export default function TagScannerWorkstationPage() {
                     >
                       <option value="google">⭐ Google Reviews / Maps</option>
                       <option value="instagram">📸 Instagram Perfil</option>
+                      <option value="tiktok">🎵 TikTok Perfil</option>
                       <option value="whatsapp">💬 WhatsApp Business</option>
+                      <option value="facebook">👍 Facebook Página</option>
                       <option value="tripadvisor">🦉 TripAdvisor</option>
                       <option value="vcard">🪪 Tarjeta de Contacto / vCard</option>
                       <option value="custom">🌐 Menú Digital / Sitio Web</option>
