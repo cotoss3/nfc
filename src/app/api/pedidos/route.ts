@@ -20,10 +20,12 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE
 /**
  * Cuantos tags de cada tipo consume el pedido.
  * - Pack Trio: 1 placa (STT-) + 2 tarjetas (STTT-) por unidad.
+ * - Stand NFC de Mesa: 1 stand (STTS-) por unidad.
  * - Tarjeta de bolsillo: 1 tarjeta (STTT-) por unidad.
- * - Resto (placa de mostrador, stand): 1 placa (STT-) por unidad.
+ * - Resto (placa de mostrador): 1 placa (STT-) por unidad.
  */
-function contarTagsNecesarios(items: any[]): { placas: number; tarjetas: number } {
+function contarTagsNecesarios(items: any[]): { stands: number; placas: number; tarjetas: number } {
+  let stands = 0;
   let placas = 0;
   let tarjetas = 0;
 
@@ -35,10 +37,12 @@ function contarTagsNecesarios(items: any[]): { placas: number; tarjetas: number 
     const producto = getProductById(pId);
     const canonico = (producto?.id || pId).toLowerCase();
 
-    // Mapa explicito producto -> tipo de tag fisico. Es explicito a proposito:
-    // de esto depende QUE placa o QUE tarjeta se le manda al cliente, y una
-    // heuristica por substring se rompe en silencio al anadir un producto.
+    // Mapa explicito producto -> tipo de tag fisico.
     const esPack = Boolean(producto?.isPack) || canonico.includes('pack');
+    const esStand =
+      canonico === 'stand-nfc-mesa' ||
+      canonico.includes('stand') ||
+      pName.includes('stand');
     const esTarjetaBolsillo =
       canonico === 'tarjeta-nfc-bolsillo' ||
       canonico.includes('tarjeta') ||
@@ -48,6 +52,8 @@ function contarTagsNecesarios(items: any[]): { placas: number; tarjetas: number 
     if (esPack) {
       placas += 1 * qty;
       tarjetas += 2 * qty;
+    } else if (esStand) {
+      stands += 1 * qty;
     } else if (esTarjetaBolsillo) {
       tarjetas += 1 * qty;
     } else {
@@ -55,7 +61,7 @@ function contarTagsNecesarios(items: any[]): { placas: number; tarjetas: number 
     }
   }
 
-  return { placas, tarjetas };
+  return { stands, placas, tarjetas };
 }
 
 /**
@@ -66,7 +72,7 @@ function contarTagsNecesarios(items: any[]): { placas: number; tarjetas: number 
  */
 async function asignarTags(
   admin: any,
-  prefijo: 'STT-' | 'STTT-',
+  prefijo: 'STTS-' | 'STT-' | 'STTT-',
   cantidad: number,
   orderId: string,
   ownerName: string,
@@ -82,7 +88,7 @@ async function asignarTags(
     .like('card_id', `${prefijo}%`)
     .eq('claimed', false)
     .order('card_id', { ascending: true })
-    .limit(cantidad * 3);
+    .limit(cantidad * 4);
 
   if (error) {
     console.error('[PEDIDOS_TAGS] No se pudieron leer los tags libres', error);
@@ -93,8 +99,8 @@ async function asignarTags(
     if (asignados.length >= cantidad) break;
     const codigo = String(candidato.card_id);
 
-    // El prefijo STT- tambien casa con STTT-: hay que descartarlos a mano.
-    if (prefijo === 'STT-' && codigo.toUpperCase().startsWith('STTT-')) continue;
+    // El prefijo STT- tambien casa con STTT- y STTS-: hay que descartarlos a mano.
+    if (prefijo === 'STT-' && (codigo.toUpperCase().startsWith('STTT-') || codigo.toUpperCase().startsWith('STTS-'))) continue;
 
     const { data: actualizado, error: errUpd } = await admin
       .from('nfc_cards')
@@ -251,12 +257,15 @@ export async function POST(req: NextRequest) {
     const ownerName = String(cliente.name || '');
     const ownerEmail = String(cliente.email || '').trim().toLowerCase();
 
+    const standsAsignados = await asignarTags(admin, 'STTS-', necesarios.stands, String(orderNumber), ownerName, ownerEmail);
     const placasAsignadas = await asignarTags(admin, 'STT-', necesarios.placas, String(orderNumber), ownerName, ownerEmail);
     const tarjetasAsignadas = await asignarTags(admin, 'STTT-', necesarios.tarjetas, String(orderNumber), ownerName, ownerEmail);
 
-    const tagsAsignados = [...placasAsignadas, ...tarjetasAsignadas];
+    const tagsAsignados = [...standsAsignados, ...placasAsignadas, ...tarjetasAsignadas];
     const tagsPendientes =
-      (necesarios.placas - placasAsignadas.length) + (necesarios.tarjetas - tarjetasAsignadas.length);
+      (necesarios.stands - standsAsignados.length) +
+      (necesarios.placas - placasAsignadas.length) +
+      (necesarios.tarjetas - tarjetasAsignadas.length);
 
     // Si no alcanzan los tags el pedido NO falla: queda con tags pendientes.
     if (tagsPendientes > 0) {
@@ -273,65 +282,82 @@ export async function POST(req: NextRequest) {
     }
 
     // --- Sincronizar descuento de inventario y Kardex en Supabase ---
-    if (admin && (placasAsignadas.length > 0 || tarjetasAsignadas.length > 0)) {
-      (async () => {
-        try {
-          if (placasAsignadas.length > 0) {
-            const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'placa-nfc-mostrador').maybeSingle();
-            const nextSt = row ? Math.max(0, row.current_stock - placasAsignadas.length) : 0;
-            if (row) {
-              await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'placa-nfc-mostrador');
-            }
-            await admin.from('inventory_kardex').insert({
-              id: `MOV-WEB-${Date.now()}-PLACA-${orderNumber}`,
-              created_at: new Date().toISOString(),
-              type: 'salida_venta',
-              product_id: 'placa-nfc-mostrador',
-              product_name: 'Placa NFC para Reseñas de Google',
-              quantity_change: -placasAsignadas.length,
-              resulting_stock: nextSt,
-              reference: `Pedido Online #${orderNumber}`,
-              channel: 'web'
-            });
+    if (admin && (standsAsignados.length > 0 || placasAsignadas.length > 0 || tarjetasAsignadas.length > 0)) {
+      try {
+        if (standsAsignados.length > 0) {
+          const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'stand-nfc-mesa').maybeSingle();
+          const nextSt = row ? Math.max(0, row.current_stock - standsAsignados.length) : 0;
+          if (row) {
+            await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'stand-nfc-mesa');
           }
-
-          if (tarjetasAsignadas.length > 0) {
-            const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'tarjeta-nfc-bolsillo').maybeSingle();
-            const nextSt = row ? Math.max(0, row.current_stock - tarjetasAsignadas.length) : 0;
-            if (row) {
-              await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'tarjeta-nfc-bolsillo');
-            }
-            await admin.from('inventory_kardex').insert({
-              id: `MOV-WEB-${Date.now()}-TARJETA-${orderNumber}`,
-              created_at: new Date().toISOString(),
-              type: 'salida_venta',
-              product_id: 'tarjeta-nfc-bolsillo',
-              product_name: 'Tarjeta NFC de Bolsillo',
-              quantity_change: -tarjetasAsignadas.length,
-              resulting_stock: nextSt,
-              reference: `Pedido Online #${orderNumber}`,
-              channel: 'web'
-            });
-          }
-
-          // Recalcular combo pack trío en Supabase
-          const { data: trioRows } = await admin
-            .from('inventory_stocks')
-            .select('product_id, current_stock')
-            .in('product_id', ['placa-nfc-mostrador', 'tarjeta-nfc-bolsillo']);
-
-          if (trioRows && trioRows.length === 2) {
-            const plStock = trioRows.find((r: any) => r.product_id === 'placa-nfc-mostrador')?.current_stock || 0;
-            const tjStock = trioRows.find((r: any) => r.product_id === 'tarjeta-nfc-bolsillo')?.current_stock || 0;
-            await admin
-              .from('inventory_stocks')
-              .update({ current_stock: Math.min(plStock, Math.floor(tjStock / 2)), updated_at: new Date().toISOString() })
-              .eq('product_id', 'pack-trio-comercial');
-          }
-        } catch (e) {
-          console.error('[PEDIDOS_INVENTORY_SYNC_ERROR]', e);
+          await admin.from('inventory_kardex').insert({
+            id: `MOV-WEB-${Date.now()}-STAND-${orderNumber}`,
+            created_at: new Date().toISOString(),
+            type: 'salida_venta',
+            product_id: 'stand-nfc-mesa',
+            product_name: 'Stand NFC de Mesa',
+            quantity_change: -standsAsignados.length,
+            resulting_stock: nextSt,
+            reference: `Pedido Online #${orderNumber}`,
+            channel: 'web'
+          });
         }
-      })();
+
+        if (placasAsignadas.length > 0) {
+          const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'placa-nfc-mostrador').maybeSingle();
+          const nextSt = row ? Math.max(0, row.current_stock - placasAsignadas.length) : 0;
+          if (row) {
+            await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'placa-nfc-mostrador');
+          }
+          await admin.from('inventory_kardex').insert({
+            id: `MOV-WEB-${Date.now()}-PLACA-${orderNumber}`,
+            created_at: new Date().toISOString(),
+            type: 'salida_venta',
+            product_id: 'placa-nfc-mostrador',
+            product_name: 'Placa NFC para Reseñas de Google',
+            quantity_change: -placasAsignadas.length,
+            resulting_stock: nextSt,
+            reference: `Pedido Online #${orderNumber}`,
+            channel: 'web'
+          });
+        }
+
+        if (tarjetasAsignadas.length > 0) {
+          const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'tarjeta-nfc-bolsillo').maybeSingle();
+          const nextSt = row ? Math.max(0, row.current_stock - tarjetasAsignadas.length) : 0;
+          if (row) {
+            await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'tarjeta-nfc-bolsillo');
+          }
+          await admin.from('inventory_kardex').insert({
+            id: `MOV-WEB-${Date.now()}-TARJETA-${orderNumber}`,
+            created_at: new Date().toISOString(),
+            type: 'salida_venta',
+            product_id: 'tarjeta-nfc-bolsillo',
+            product_name: 'Tarjeta NFC de Bolsillo',
+            quantity_change: -tarjetasAsignadas.length,
+            resulting_stock: nextSt,
+            reference: `Pedido Online #${orderNumber}`,
+            channel: 'web'
+          });
+        }
+
+        // Recalcular combo pack trío en Supabase
+        const { data: trioRows } = await admin
+          .from('inventory_stocks')
+          .select('product_id, current_stock')
+          .in('product_id', ['placa-nfc-mostrador', 'tarjeta-nfc-bolsillo']);
+
+        if (trioRows && trioRows.length === 2) {
+          const plStock = trioRows.find((r: any) => r.product_id === 'placa-nfc-mostrador')?.current_stock || 0;
+          const tjStock = trioRows.find((r: any) => r.product_id === 'tarjeta-nfc-bolsillo')?.current_stock || 0;
+          await admin
+            .from('inventory_stocks')
+            .update({ current_stock: Math.min(plStock, Math.floor(tjStock / 2)), updated_at: new Date().toISOString() })
+            .eq('product_id', 'pack-trio-comercial');
+        }
+      } catch (e) {
+        console.error('[PEDIDOS_INVENTORY_SYNC_ERROR]', e);
+      }
     }
 
     return NextResponse.json({ success: true, orderNumber, tagsAsignados, tagsPendientes });

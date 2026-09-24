@@ -202,20 +202,22 @@ export default function CardsManagementPage() {
     if (!newCardId.trim()) return alert('Por favor ingresa un código serial para el TAG (ej. STTT-1050)');
 
     const cleanCode = newCardId.trim().toUpperCase();
-    const cleanEmail = newOwnerEmail.trim().toLowerCase() || 'admin@startap.com.pa';
-    const cleanName = newOwnerName.trim() || 'Cliente starTAP';
+    const cleanEmail = newOwnerEmail.trim().toLowerCase();
+    const isClientEmail = Boolean(cleanEmail && cleanEmail !== 'admin@startap.com.pa' && cleanEmail !== 'info@startap.com.pa');
+    const cleanName = newOwnerName.trim() || (isClientEmail ? cleanEmail.split('@')[0] : 'Cliente starTAP');
 
     const newCardObj: NfcCard = {
       card_id: cleanCode,
       activation_code: cleanCode,
-      owner_id: 'user-session',
+      owner_id: isClientEmail ? 'user-assigned' : 'unassigned',
       owner_name: cleanName,
-      owner_email: cleanEmail,
+      owner_email: cleanEmail || 'admin@startap.com.pa',
       label: newLabel.trim() || `Dispositivo TAP (${cleanCode})`,
       target_url: newUrl.trim() || 'https://search.google.com/local/writereview?placeid=...',
       nfc_target_url: newUrl.trim() || 'https://search.google.com/local/writereview?placeid=...',
       is_active: newIsActive,
-      claimed: true,
+      claimed: isClientEmail ? true : false,
+      estado: isClientEmail ? (newUrl.trim() ? 'configurado' : 'asignado') : 'en_stock',
       type: newType,
       channels: newChannels,
       created_at: new Date().toISOString(),
@@ -265,6 +267,9 @@ export default function CardsManagementPage() {
     e.preventDefault();
     if (!editingCard) return;
 
+    const cleanEmail = editOwnerEmail.trim().toLowerCase();
+    const isClientEmail = Boolean(cleanEmail && cleanEmail !== 'admin@startap.com.pa' && cleanEmail !== 'info@startap.com.pa');
+
     const updatedCard: NfcCard = {
       ...editingCard,
       label: editLabel.trim(),
@@ -272,9 +277,11 @@ export default function CardsManagementPage() {
       nfc_target_url: editUrl.trim(),
       type: editType,
       channels: editChannels,
-      owner_name: editOwnerName.trim() || 'Cliente starTAP',
-      owner_email: editOwnerEmail.trim().toLowerCase() || 'admin@startap.com.pa',
+      owner_name: editOwnerName.trim() || (isClientEmail ? cleanEmail.split('@')[0] : 'Cliente starTAP'),
+      owner_email: cleanEmail || 'admin@startap.com.pa',
       is_active: editIsActive,
+      claimed: isClientEmail ? true : editingCard.claimed,
+      estado: isClientEmail ? (editUrl.trim() ? 'configurado' : 'asignado') : editingCard.estado,
     };
 
     const updatedList = cards.map(c => (c.card_id === editingCard.card_id ? updatedCard : c));

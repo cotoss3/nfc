@@ -883,7 +883,7 @@ class LocalDbService {
 
     orders.forEach((o) => {
       const email = (o.customer_email || '').trim().toLowerCase();
-      if (!email) return;
+      if (!email || email === 'admin@startap.com.pa' || email === 'info@startap.com.pa') return;
 
       if (!map[email]) {
         map[email] = {
@@ -918,7 +918,7 @@ class LocalDbService {
 
     cards.forEach((c) => {
       const email = (c.owner_email || '').trim().toLowerCase();
-      if (!email) return;
+      if (!email || email === 'admin@startap.com.pa' || email === 'info@startap.com.pa' || email === 'unassigned') return;
 
       if (!map[email]) {
         map[email] = {
@@ -940,7 +940,7 @@ class LocalDbService {
 
     users.forEach((u) => {
       const email = (u.email || '').trim().toLowerCase();
-      if (!email) return;
+      if (!email || email === 'admin@startap.com.pa' || email === 'info@startap.com.pa') return;
 
       if (!map[email]) {
         map[email] = {
@@ -1129,27 +1129,59 @@ class LocalDbService {
 
   getCardsByOwner(emailOrId: string): NfcCard[] {
     const cleanEmail = emailOrId.trim().toLowerCase();
-    return this.getCards().filter(c => 
-      Boolean(c.claimed) && (
-        c.owner_email.trim().toLowerCase() === cleanEmail || 
-        (c.owner_id && c.owner_id === emailOrId && c.owner_id !== 'admin' && c.owner_id !== 'unassigned')
-      )
-    );
+    const isAdminAccount = cleanEmail === 'admin@startap.com.pa' || cleanEmail === 'info@startap.com.pa';
+    return this.getCards().filter(c => {
+      const cardEmail = (c.owner_email || '').trim().toLowerCase();
+      if (!cardEmail) return false;
+      if (cardEmail === cleanEmail) {
+        return isAdminAccount ? true : (cardEmail !== 'admin@startap.com.pa' && cardEmail !== 'info@startap.com.pa');
+      }
+      return Boolean(c.claimed) && c.owner_id && c.owner_id === emailOrId && c.owner_id !== 'admin' && c.owner_id !== 'unassigned';
+    });
   }
 
   async getCardsByOwnerAsync(emailOrId: string): Promise<NfcCard[]> {
     const cleanEmail = emailOrId.trim().toLowerCase();
+    const isAdminAccount = cleanEmail === 'admin@startap.com.pa' || cleanEmail === 'info@startap.com.pa';
+
     if (supabase) {
       try {
         const { data, error } = await supabase
           .from('nfc_cards')
           .select('*')
-          .eq('claimed', true)
           .or(`owner_email.ilike.${cleanEmail},owner_id.eq.${emailOrId}`);
+
         if (!error && data) {
-          const claimedOnly = (data as NfcCard[]).filter(c => Boolean(c.claimed) && c.owner_email?.trim().toLowerCase() === cleanEmail);
+          const userCards = (data as NfcCard[]).filter(c => {
+            const cardEmail = (c.owner_email || '').trim().toLowerCase();
+            if (cardEmail === cleanEmail) {
+              return isAdminAccount ? true : (cardEmail !== 'admin@startap.com.pa' && cardEmail !== 'info@startap.com.pa');
+            }
+            return Boolean(c.claimed) && c.owner_id === emailOrId && c.owner_id !== 'admin' && c.owner_id !== 'unassigned';
+          });
+
+          // Auto-vinculación: Si el cliente inicia sesión y tiene tarjetas pre-asignadas a su correo
+          // que aún no estaban marcadas como claimed o con su owner_id, vincularlas de inmediato
+          if (!isAdminAccount && userCards.length > 0) {
+            const toUpdate = userCards.filter(c => !c.claimed || c.owner_id !== emailOrId);
+            if (toUpdate.length > 0) {
+              const idsToUpdate = toUpdate.map(c => c.card_id);
+              supabase
+                .from('nfc_cards')
+                .update({ claimed: true, owner_id: emailOrId })
+                .in('card_id', idsToUpdate)
+                .then(({ error: errUpd }) => {
+                  if (errUpd) console.error('Error auto-vinculando tarjetas a usuario:', errUpd);
+                });
+              toUpdate.forEach(c => {
+                c.claimed = true;
+                c.owner_id = emailOrId;
+              });
+            }
+          }
+
           const currentCards = this.getCards();
-          claimedOnly.forEach(remoteCard => {
+          userCards.forEach(remoteCard => {
             const idx = currentCards.findIndex(c => c.card_id === remoteCard.card_id);
             if (idx !== -1) {
               currentCards[idx] = remoteCard;
@@ -1158,7 +1190,7 @@ class LocalDbService {
             }
           });
           this.setStorageItem('nfc_cards', currentCards);
-          return claimedOnly;
+          return userCards;
         }
       } catch (err) {
         console.error('Error cargando tarjetas por usuario desde Supabase:', err);
@@ -2199,12 +2231,24 @@ class LocalDbService {
       created_at: existingIdx !== -1 ? orders[existingIdx].created_at : new Date().toISOString()
     };
 
+    const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
+    const alreadyDeducted = movements.some(m => 
+      (m.id && m.id.includes(cleanId)) || 
+      (m.reference && m.reference.includes(cleanId))
+    );
+
     if (existingIdx !== -1) {
-      orders[existingIdx] = { ...orders[existingIdx], ...orderObj };
+      orders[existingIdx] = { 
+        ...orders[existingIdx], 
+        ...orderObj,
+        created_at: orders[existingIdx].created_at 
+      };
     } else {
       orders.unshift(orderObj);
+    }
 
-      // Descontar inventario físico solo si es un pedido nuevo
+    // Descontar inventario físico si aún no se había asentado la salida para este TAG
+    if (!alreadyDeducted && (tipo === 'venta' || tipo === 'regalia')) {
       const productStocks = this.getStorageItem<Record<string, any>>('inventory_product_stocks', {});
       if (productStocks[productId] && typeof productStocks[productId].current_stock === 'number') {
         productStocks[productId].current_stock = Math.max(0, productStocks[productId].current_stock - 1);
@@ -2228,7 +2272,6 @@ class LocalDbService {
         resulting_stock: productStocks[productId]?.current_stock ?? 0,
         reference: `${tipo === 'regalia' ? 'Regalía' : 'Venta Presencial'} - ${cleanId} ($${precio.toFixed(2)})`
       };
-      const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
       movements.unshift(movObj);
       this.setStorageItem('inventory_kardex', movements);
 

@@ -148,11 +148,15 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { card_id, target_url, label, group_name, is_active, auto_create, tipo_activacion, precio_venta } = body;
+    const { card_id, target_url, label, group_name, is_active, auto_create, tipo_activacion, precio_venta, owner_email, owner_name } = body;
 
     if (!card_id) {
       return NextResponse.json({ error: 'El campo "card_id" es obligatorio' }, { status: 400 });
     }
+
+    const cleanOwnerEmail = owner_email ? String(owner_email).trim().toLowerCase() : undefined;
+    const cleanOwnerName = owner_name ? String(owner_name).trim() : undefined;
+    const isClientEmail = Boolean(cleanOwnerEmail && cleanOwnerEmail !== 'admin@startap.com.pa' && cleanOwnerEmail !== 'info@startap.com.pa');
 
     let cleanId = card_id.trim().toUpperCase();
     const sttMatch = cleanId.match(/^(STTT|STTS|STT)-?(\d+)$/i);
@@ -195,12 +199,27 @@ export async function POST(request: NextRequest) {
       if (typeof precio_venta === 'number') {
         existingCard.precio_venta = precio_venta;
       }
+      if (cleanOwnerEmail) {
+        existingCard.owner_email = cleanOwnerEmail;
+        if (isClientEmail) existingCard.claimed = true;
+      }
+      if (cleanOwnerName) {
+        existingCard.owner_name = cleanOwnerName;
+      }
       // Re-guardar estado actualizado en storage local
       const cards = dbLocal.getCards();
       const idx = cards.findIndex(c => c.card_id.toLowerCase() === cleanId.toLowerCase());
       if (idx !== -1) {
         if (tipo_activacion) cards[idx].tipo_activacion = tipo_activacion as 'venta' | 'prueba';
         if (typeof precio_venta === 'number') cards[idx].precio_venta = precio_venta;
+        if (cleanOwnerEmail) {
+          cards[idx].owner_email = cleanOwnerEmail;
+          if (isClientEmail) {
+            cards[idx].claimed = true;
+            cards[idx].estado = finalUrl ? 'configurado' : 'asignado';
+          }
+        }
+        if (cleanOwnerName) cards[idx].owner_name = cleanOwnerName;
         dbLocal.setStorageItem('nfc_cards', cards);
       }
     }
@@ -218,6 +237,14 @@ export async function POST(request: NextRequest) {
         if (typeof is_active === 'boolean') payload.is_active = is_active;
         if (tipo_activacion) payload.tipo_activacion = tipo_activacion;
         if (typeof precio_venta === 'number') payload.precio_venta = precio_venta;
+        if (cleanOwnerEmail) {
+          payload.owner_email = cleanOwnerEmail;
+          if (isClientEmail) {
+            payload.claimed = true;
+            payload.estado = finalUrl ? 'configurado' : 'asignado';
+          }
+        }
+        if (cleanOwnerName) payload.owner_name = cleanOwnerName;
 
         const { data, error } = await supabase
           .from('nfc_cards')
@@ -231,9 +258,9 @@ export async function POST(request: NextRequest) {
             await supabase.from('nfc_cards').insert([{
               card_id: cleanId,
               activation_code: cleanId,
-              owner_id: 'admin',
-              owner_name: 'Administrador starTAP',
-              owner_email: 'info@startap.com.pa',
+              owner_id: isClientEmail ? 'user-assigned' : 'admin',
+              owner_name: cleanOwnerName || (cleanOwnerEmail ? cleanOwnerEmail.split('@')[0] : 'Administrador starTAP'),
+              owner_email: cleanOwnerEmail || 'info@startap.com.pa',
               label: label || `TAG ${cleanId}`,
               target_url: finalUrl,
               nfc_target_url: finalUrl,
@@ -244,7 +271,8 @@ export async function POST(request: NextRequest) {
               precio_venta: typeof precio_venta === 'number' ? precio_venta : 0,
               channels: 'both',
               type: 'google',
-              claimed: true,
+              claimed: isClientEmail ? true : false,
+              estado: isClientEmail ? (finalUrl ? 'configurado' : 'asignado') : 'en_stock',
             }]);
           }
         }
@@ -263,6 +291,8 @@ export async function POST(request: NextRequest) {
       orderInfo = dbLocal.registrarVentaVisita({
         cardId: cleanId,
         precioVenta: precio_venta,
+        customerName: cleanOwnerName,
+        customerEmail: cleanOwnerEmail,
         label: label || existingCard?.label || `TAG ${cleanId}`,
         targetUrl: finalUrl,
         tipoActivacion: 'venta'
@@ -271,6 +301,8 @@ export async function POST(request: NextRequest) {
       orderInfo = dbLocal.registrarVentaVisita({
         cardId: cleanId,
         precioVenta: 0,
+        customerName: cleanOwnerName,
+        customerEmail: cleanOwnerEmail,
         label: label || existingCard?.label || `TAG ${cleanId}`,
         targetUrl: finalUrl,
         tipoActivacion: 'regalia'

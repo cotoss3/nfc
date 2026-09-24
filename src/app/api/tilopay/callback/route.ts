@@ -95,6 +95,17 @@ async function handleCallback(req: NextRequest) {
     try {
       const { dbLocal } = await import('@/lib/db');
       dbLocal.updateOrderPaymentStatus(order, 'completed');
+
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (url && serviceKey) {
+        const { createClient } = await import('@supabase/supabase-js');
+        const admin = createClient(url, serviceKey);
+        await admin
+          .from('orders')
+          .update({ payment_status: 'completed', status: 'processing' })
+          .or(`id.eq.${order},id.eq.STP-${order}`);
+      }
     } catch (dbErr) {
       console.error('[CALLBACK_DB_UPDATE_ERROR]', dbErr);
     }

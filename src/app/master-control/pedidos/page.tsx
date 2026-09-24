@@ -46,17 +46,31 @@ export default function PedidosPage() {
     fetchOrders();
   }, []);
 
-  const handleDeleteOrder = (orderId: string) => {
+  const handleDeleteOrder = async (orderId: string) => {
     if (window.confirm(`¿Estás seguro de eliminar el pedido #${orderId}?`)) {
       dbLocal.deleteOrder(orderId);
+      if (supabase) {
+        try {
+          await supabase.from('orders').delete().eq('id', orderId);
+        } catch (e) {
+          console.error('Error eliminando pedido en Supabase:', e);
+        }
+      }
       setOrders(prev => prev.filter(o => o.id !== orderId));
     }
   };
 
-  const handleClearAllOrders = () => {
+  const handleClearAllOrders = async () => {
     if (window.confirm('¿Estás seguro de eliminar TODOS los pedidos de prueba? Esta acción eliminará permanentemente todos los registros.')) {
       dbLocal.clearAllOrders();
-      setOrders([]);
+      if (supabase) {
+        try {
+          await supabase.from('orders').delete().ilike('id', 'PED-VISITA%');
+        } catch (e) {
+          console.error('Error eliminando pedidos de prueba en Supabase:', e);
+        }
+      }
+      setOrders(prev => prev.filter(o => !o.id.startsWith('PED-VISITA')));
     }
   };
 

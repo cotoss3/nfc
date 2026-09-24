@@ -42,19 +42,24 @@ export async function GET(
     try {
       let clean = cardId.trim().toLowerCase();
       let searchCode = clean;
-      const sttMatch = clean.match(/^stt-(\d+)$/i);
-      if (sttMatch) {
-        const num = parseInt(sttMatch[1], 10);
-        if (num < 1000) searchCode = `stt-${1000 + num}`;
+      const prefixMatch = clean.match(/^(sttt|stts|stt)-?(\d+)$/i);
+      if (prefixMatch) {
+        const prefix = prefixMatch[1].toLowerCase();
+        const num = parseInt(prefixMatch[2], 10);
+        const paddedNum = num < 1000 ? 1000 + num : num;
+        searchCode = `${prefix}-${paddedNum}`;
       } else {
         const numOnly = parseInt(clean, 10);
-        if (!isNaN(numOnly)) searchCode = numOnly < 1000 ? `stt-${1000 + numOnly}` : `stt-${numOnly}`;
+        if (!isNaN(numOnly)) {
+          const paddedNum = numOnly < 1000 ? 1000 + numOnly : numOnly;
+          searchCode = `stt-${paddedNum}`;
+        }
       }
 
       const { data, error } = await supabase
         .from('nfc_cards')
         .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label, is_active, channels')
-        .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode}`)
+        .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode},card_id.ilike.${clean}`)
         .maybeSingle();
 
       if (!error && data) {
@@ -209,15 +214,30 @@ export async function GET(
   const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
   const referrer = isQr ? 'QR Code' : 'NFC Scan';
 
-  // Registrar analítica de escaneo de forma asíncrona / no bloqueante (<20ms TTFB)
+  // Registrar analítica de escaneo asegurando escritura en Supabase y dbLocal
   try {
-    Promise.resolve().then(() => {
+    const scanPromise = (async () => {
       try {
         dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
+        if (supabase) {
+          await supabase.from('scans').insert({
+            id: `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+            card_id: resolvedCardId,
+            device,
+            referrer,
+            scan_type: scanType,
+            group_name: groupName
+          });
+        }
       } catch (e) {
-        console.error('Error registrando analítica diferida:', e);
+        console.error('Error registrando analítica:', e);
       }
-    });
+    })();
+
+    await Promise.race([
+      scanPromise,
+      new Promise(resolve => setTimeout(resolve, 250))
+    ]);
   } catch (err) {
     console.error('Error registrando analítica:', err);
   }

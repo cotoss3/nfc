@@ -35,6 +35,8 @@ export default function TagScannerAPKPage() {
   const [currentTag, setCurrentTag] = useState<any>(null);
   const [targetUrl, setTargetUrl] = useState('');
   const [label, setLabel] = useState('');
+  const [ownerName, setOwnerName] = useState('');
+  const [ownerEmail, setOwnerEmail] = useState('');
   const [isActive, setIsActive] = useState(true);
   
   // Nuevos estados para Venta vs Regalía vs Prueba
@@ -72,6 +74,14 @@ export default function TagScannerAPKPage() {
         setCurrentTag(data.card);
         setTargetUrl(data.card.target_url || data.card.nfc_target_url || '');
         setLabel(data.card.label || '');
+        setOwnerName(data.card.owner_name || '');
+        setOwnerEmail(
+          data.card.owner_email && 
+          data.card.owner_email !== 'admin@startap.com.pa' && 
+          data.card.owner_email !== 'info@startap.com.pa' 
+            ? data.card.owner_email 
+            : ''
+        );
         setIsActive(Boolean(data.card.is_active));
         setTipoActivacion(data.card.tipo_activacion || 'prueba');
         setPrecioVenta(
@@ -82,6 +92,8 @@ export default function TagScannerAPKPage() {
         setMessage({ type: 'success', text: `TAG ${data.card.card_id} localizado exitosamente` });
       } else {
         setCurrentTag(null);
+        setOwnerName('');
+        setOwnerEmail('');
         setMessage({ 
           type: 'error', 
           text: data.message || `No se encontró el TAG con código "${code}"` 
@@ -277,6 +289,8 @@ export default function TagScannerAPKPage() {
           card_id: tagId,
           target_url: targetUrl,
           label: label || `TAG ${tagId}`,
+          owner_name: ownerName.trim() || undefined,
+          owner_email: ownerEmail.trim().toLowerCase() || undefined,
           is_active: activeState,
           tipo_activacion: tipo,
           precio_venta: finalPrice,
@@ -655,6 +669,44 @@ export default function TagScannerAPKPage() {
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
+
+              {/* ASIGNACIÓN DE CLIENTE (VINCULACIÓN PREVIA POR CORREO) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    Cliente / Propietario
+                  </label>
+                  <input
+                    type="text"
+                    value={ownerName}
+                    onChange={(e) => setOwnerName(e.target.value)}
+                    placeholder="Ej: Arepitas Q Chimba"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    Correo del Cliente <span className="text-amber-400 font-normal">(Auto-vinculación)</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={ownerEmail}
+                    onChange={(e) => setOwnerEmail(e.target.value)}
+                    placeholder="cliente@correo.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              {ownerEmail.trim() && (
+                <div className="p-2.5 bg-slate-950/80 border border-amber-500/30 rounded-xl text-[10px] text-amber-300 flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                  <span>
+                    Este TAP se auto-vinculará a <strong>{ownerEmail.trim().toLowerCase()}</strong> tan pronto cree su cuenta o entre a /dashboard.
+                  </span>
+                </div>
+              )}
 
               <button
                 type="submit"
