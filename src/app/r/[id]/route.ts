@@ -382,14 +382,14 @@ export async function GET(
     /* 1. Bloque Protagonista: Destino / Reseña del Comercio */
     .hero-review-box {
       background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
-      border: 1.5px solid #fde68a;
-      border-radius: 22px;
-      padding: 20px 16px 18px;
+      border: 2px solid #fbbf24;
+      border-radius: 24px;
+      padding: 22px 18px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      box-shadow: 0 10px 25px -10px rgba(245, 158, 11, 0.18);
+      gap: 8px;
+      box-shadow: 0 14px 30px -10px rgba(245, 158, 11, 0.22);
     }
     .status-badge {
       display: inline-flex;
@@ -414,38 +414,52 @@ export async function GET(
     }
     .stars-row {
       color: #f59e0b;
-      font-size: 22px;
-      letter-spacing: 3px;
+      font-size: 26px;
+      letter-spacing: 4px;
       line-height: 1;
-      margin-top: 2px;
+      margin: 4px 0 2px;
+      text-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+    }
+    .thanks-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #b45309;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
     }
     .status-subtitle {
-      font-size: 13px;
-      color: #475569;
-      font-weight: 600;
+      font-size: 15px;
+      color: #334155;
+      font-weight: 700;
+      line-height: 1.35;
     }
     .commerce-name {
       color: #0f172a;
       font-weight: 900;
-      font-size: 24px;
-      line-height: 1.2;
+      font-size: 26px;
+      line-height: 1.18;
       letter-spacing: -0.02em;
+      margin-top: 2px;
+      padding: 4px 14px;
+      background: #fef3c7;
+      border-radius: 12px;
+      display: inline-block;
     }
     /* Botón Protagonista Principal (Arriba, Máxima Jerarquía) */
     .skip-btn {
       width: 100%;
-      margin-top: 6px;
+      margin-top: 10px;
       padding: 16px 18px;
       border-radius: 16px;
       border: none;
       background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
       color: #0f172a;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 900;
       letter-spacing: 0.01em;
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 12px 24px -6px rgba(245, 158, 11, 0.45);
+      box-shadow: 0 12px 24px -6px rgba(245, 158, 11, 0.5);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -458,7 +472,7 @@ export async function GET(
     .skip-arrow {
       color: #0f172a;
       font-weight: 900;
-      font-size: 17px;
+      font-size: 18px;
     }
     /* 2. Espacio Publicitario Secundario (Debajo del Protagonista) */
     .ad-slot {
@@ -572,11 +586,12 @@ export async function GET(
         Conexión Oficial • ${escaparHtml(resolvedCardId)}
       </span>
       <div class="stars-row" aria-hidden="true">★★★★★</div>
-      <p class="status-subtitle">¡Gracias por tu visita! Entrando a</p>
+      <p class="thanks-title">¡Gracias por tu visita!</p>
+      <p class="status-subtitle">Vamos por una reseña para</p>
       <h1 class="commerce-name">${escaparHtml(displayCommerceName)}</h1>
 
       <button type="button" id="skip-btn" class="skip-btn">
-        <span>Ir a dejar reseña ahora</span>
+        <span>Dejar mi reseña ahora</span>
         <span class="skip-arrow">→</span>
       </button>
     </div>
@@ -639,7 +654,7 @@ export async function GET(
               card_id: ${safeCardIdJson},
               group_name: ${safeGroupNameJson},
               method: method,
-              engagement_time_msec: 6000,
+              engagement_time_msec: 8000,
               transport_type: 'beacon'
             });
           }
@@ -669,10 +684,10 @@ export async function GET(
         });
       }
 
-      // Redirección silenciosa a los 6 segundos sin barras ni contadores que distraigan la lectura
+      // Redirección silenciosa a los 8 segundos sin barras ni contadores que distraigan la lectura
       setTimeout(function() {
-        executeRedirect('auto_6s');
-      }, 6000);
+        executeRedirect('auto_8s');
+      }, 8000);
     })();
   </script>
 </body>
