@@ -383,20 +383,18 @@ export async function GET(
       align-items: center;
       gap: 12px;
     }
-    .spinner-ring {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 3px solid rgba(245, 158, 11, 0.2);
-      border-top-color: #f59e0b;
-      animation: spin 0.85s linear infinite;
+    .verified-seal {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+      font-size: 22px;
+      font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
     .status-badge {
       display: inline-flex;
@@ -413,7 +411,7 @@ export async function GET(
       text-transform: uppercase;
     }
     .status-title {
-      font-size: 17px;
+      font-size: 16px;
       line-height: 1.45;
       color: #cbd5e1;
       font-weight: 500;
@@ -422,32 +420,32 @@ export async function GET(
       color: #ffffff;
       font-weight: 800;
       display: block;
-      font-size: 21px;
+      font-size: 22px;
       margin-top: 4px;
       letter-spacing: -0.01em;
     }
     /* Espacio Publicitario Preparado (Ad Slot) */
     .ad-slot {
       position: relative;
-      background: linear-gradient(145deg, rgba(30, 41, 59, 0.75), rgba(2, 6, 23, 0.9));
-      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(2, 6, 23, 0.95));
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 20px;
-      padding: 18px 16px;
+      padding: 20px 18px;
       text-align: left;
       overflow: hidden;
     }
     .ad-slot-tag {
       display: inline-block;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #94a3b8;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      padding: 2px 8px;
+      letter-spacing: 0.08em;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      padding: 3px 9px;
       border-radius: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .ad-slot-body {
       display: flex;
@@ -455,13 +453,13 @@ export async function GET(
       gap: 14px;
     }
     .ad-slot-icon {
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: 14px;
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #020617;
       font-weight: 900;
-      font-size: 18px;
+      font-size: 19px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -469,19 +467,19 @@ export async function GET(
       box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
     }
     .ad-slot-copy h3 {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
       color: #f8fafc;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .ad-slot-copy p {
-      font-size: 12px;
-      color: #94a3b8;
-      line-height: 1.35;
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.4;
     }
     .skip-btn {
       width: 100%;
-      padding: 14px 18px;
+      padding: 15px 18px;
       border-radius: 14px;
       border: none;
       background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
@@ -500,30 +498,6 @@ export async function GET(
     }
     .skip-btn:active {
       transform: scale(0.98);
-    }
-    .progress-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .countdown-text {
-      font-size: 12px;
-      color: #94a3b8;
-      font-weight: 600;
-    }
-    .progress-track {
-      width: 100%;
-      height: 6px;
-      background: rgba(30, 41, 59, 0.9);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #f59e0b, #fde047);
-      border-radius: 999px;
-      transition: width 4s linear;
     }
     .brand-footer {
       margin-top: 16px;
@@ -545,13 +519,13 @@ export async function GET(
   <div></div>
 
   <main class="bridge-card">
-    <!-- 1. Encabezado de Estado -->
+    <!-- 1. Encabezado de Estado (Sello fijo sin movimiento distractor) -->
     <div class="status-header">
-      <div class="spinner-ring" aria-hidden="true"></div>
-      <span class="status-badge">✓ Conexión Verificada • ${escaparHtml(resolvedCardId)}</span>
+      <div class="verified-seal" aria-hidden="true">✓</div>
+      <span class="status-badge">Conexión Verificada • ${escaparHtml(resolvedCardId)}</span>
       <p class="status-title">
         Estás siendo dirigido a
-        <strong>${escaparHtml(displayCommerceName)}...</strong>
+        <strong>${escaparHtml(displayCommerceName)}</strong>
       </p>
     </div>
 
@@ -567,21 +541,13 @@ export async function GET(
       </div>
     </section>
 
-    <!-- 3. Botón de Salto Inmediato (Skip Button) -->
+    <!-- 3. Botón de Continuar Inmediato -->
     <button type="button" id="skip-btn" class="skip-btn">
-      <span>Saltar ahora →</span>
+      <span>Continuar ahora →</span>
     </button>
-
-    <!-- 4. Contador inferior y barra de progreso -->
-    <div class="progress-wrap">
-      <p id="countdown-label" class="countdown-text">Redirigiendo automáticamente en 4s...</p>
-      <div class="progress-track">
-        <div id="progress-bar" class="progress-bar"></div>
-      </div>
-    </div>
   </main>
 
-  <!-- 5. Pie de marca -->
+  <!-- 4. Pie de marca -->
   <footer class="brand-footer">
     <a href="/" target="_blank" rel="noopener noreferrer">
       Tecnología sin contacto por starTAP Panamá
@@ -592,16 +558,7 @@ export async function GET(
     (function() {
       var targetUrl = ${safeTargetUrlJson};
       var hasRedirected = false;
-      var countdownLabel = document.getElementById('countdown-label');
-      var progressBar = document.getElementById('progress-bar');
       var skipBtn = document.getElementById('skip-btn');
-
-      // Iniciar animación de barra de progreso de 4s
-      requestAnimationFrame(function() {
-        if (progressBar) {
-          progressBar.style.width = '100%';
-        }
-      });
 
       function executeRedirect(method) {
         if (hasRedirected) return;
@@ -614,7 +571,7 @@ export async function GET(
               card_id: ${safeCardIdJson},
               group_name: ${safeGroupNameJson},
               method: method,
-              engagement_time_msec: 4000,
+              engagement_time_msec: 6000,
               transport_type: 'beacon'
             });
           }
@@ -629,30 +586,10 @@ export async function GET(
         });
       }
 
+      // Redirección silenciosa a los 6 segundos sin barras ni contadores que distraigan la lectura
       setTimeout(function() {
-        if (!hasRedirected && countdownLabel) {
-          countdownLabel.textContent = 'Redirigiendo automáticamente en 3s...';
-        }
-      }, 1000);
-
-      setTimeout(function() {
-        if (!hasRedirected && countdownLabel) {
-          countdownLabel.textContent = 'Redirigiendo automáticamente en 2s...';
-        }
-      }, 2000);
-
-      setTimeout(function() {
-        if (!hasRedirected && countdownLabel) {
-          countdownLabel.textContent = 'Redirigiendo automáticamente en 1s...';
-        }
-      }, 3000);
-
-      setTimeout(function() {
-        if (!hasRedirected && countdownLabel) {
-          countdownLabel.textContent = 'Redirigiendo automáticamente en 0s...';
-        }
-        executeRedirect('auto_4s');
-      }, 4000);
+        executeRedirect('auto_6s');
+      }, 6000);
     })();
   </script>
 </body>
