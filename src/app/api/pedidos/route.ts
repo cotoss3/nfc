@@ -272,6 +272,68 @@ export async function POST(req: NextRequest) {
       console.error('[PEDIDOS_TAGS] No se pudo guardar tags_pendientes', errPendientes);
     }
 
+    // --- Sincronizar descuento de inventario y Kardex en Supabase ---
+    if (admin && (placasAsignadas.length > 0 || tarjetasAsignadas.length > 0)) {
+      (async () => {
+        try {
+          if (placasAsignadas.length > 0) {
+            const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'placa-nfc-mostrador').maybeSingle();
+            const nextSt = row ? Math.max(0, row.current_stock - placasAsignadas.length) : 0;
+            if (row) {
+              await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'placa-nfc-mostrador');
+            }
+            await admin.from('inventory_kardex').insert({
+              id: `MOV-WEB-${Date.now()}-PLACA-${orderNumber}`,
+              created_at: new Date().toISOString(),
+              type: 'salida_venta',
+              product_id: 'placa-nfc-mostrador',
+              product_name: 'Placa NFC para Reseñas de Google',
+              quantity_change: -placasAsignadas.length,
+              resulting_stock: nextSt,
+              reference: `Pedido Online #${orderNumber}`,
+              channel: 'web'
+            });
+          }
+
+          if (tarjetasAsignadas.length > 0) {
+            const { data: row } = await admin.from('inventory_stocks').select('current_stock').eq('product_id', 'tarjeta-nfc-bolsillo').maybeSingle();
+            const nextSt = row ? Math.max(0, row.current_stock - tarjetasAsignadas.length) : 0;
+            if (row) {
+              await admin.from('inventory_stocks').update({ current_stock: nextSt, updated_at: new Date().toISOString() }).eq('product_id', 'tarjeta-nfc-bolsillo');
+            }
+            await admin.from('inventory_kardex').insert({
+              id: `MOV-WEB-${Date.now()}-TARJETA-${orderNumber}`,
+              created_at: new Date().toISOString(),
+              type: 'salida_venta',
+              product_id: 'tarjeta-nfc-bolsillo',
+              product_name: 'Tarjeta NFC de Bolsillo',
+              quantity_change: -tarjetasAsignadas.length,
+              resulting_stock: nextSt,
+              reference: `Pedido Online #${orderNumber}`,
+              channel: 'web'
+            });
+          }
+
+          // Recalcular combo pack trío en Supabase
+          const { data: trioRows } = await admin
+            .from('inventory_stocks')
+            .select('product_id, current_stock')
+            .in('product_id', ['placa-nfc-mostrador', 'tarjeta-nfc-bolsillo']);
+
+          if (trioRows && trioRows.length === 2) {
+            const plStock = trioRows.find((r: any) => r.product_id === 'placa-nfc-mostrador')?.current_stock || 0;
+            const tjStock = trioRows.find((r: any) => r.product_id === 'tarjeta-nfc-bolsillo')?.current_stock || 0;
+            await admin
+              .from('inventory_stocks')
+              .update({ current_stock: Math.min(plStock, Math.floor(tjStock / 2)), updated_at: new Date().toISOString() })
+              .eq('product_id', 'pack-trio-comercial');
+          }
+        } catch (e) {
+          console.error('[PEDIDOS_INVENTORY_SYNC_ERROR]', e);
+        }
+      })();
+    }
+
     return NextResponse.json({ success: true, orderNumber, tagsAsignados, tagsPendientes });
   } catch (error: any) {
     console.error('[PEDIDOS_ERROR]', error);

@@ -145,20 +145,32 @@ export default function InventarioPage() {
     let dbCards = dbLocal.getCards();
     let dbProducts = dbLocal.getProducts();
     let dbAbandoned = dbLocal.getAbandonedCheckouts();
+    let dbStocks: any[] = [];
+    let dbBatches: any[] = [];
+    let dbKardex: any[] = [];
 
     if (supabase) {
       try {
-        const [resOrders, resCards, resProducts, resAbandoned] = await Promise.all([
+        const [resOrders, resCards, resProducts, resAbandoned, resStocks, resBatches, resKardex] = await Promise.all([
           supabase.from('orders').select('*').order('created_at', { ascending: false }),
-          supabase.from('nfc_cards').select('*').order('created_at', { ascending: false }),
+          supabase.from('nfc_cards').select('*').order('card_id', { ascending: true }),
           supabase.from('products').select('*'),
           supabase.from('abandoned_checkouts').select('*').order('created_at', { ascending: false }),
+          supabase.from('inventory_stocks').select('*'),
+          supabase.from('inventory_batches').select('*').order('received_at', { ascending: false }),
+          supabase.from('inventory_kardex').select('*').order('created_at', { ascending: false }),
         ]);
 
         if (!resOrders.error && resOrders.data && resOrders.data.length > 0) dbOrders = resOrders.data as Order[];
-        if (!resCards.error && resCards.data && resCards.data.length > 0) dbCards = resCards.data as NfcCard[];
+        if (!resCards.error && resCards.data && resCards.data.length > 0) {
+          dbCards = resCards.data as NfcCard[];
+          dbLocal.setStorageItem('nfc_cards', dbCards);
+        }
         if (!resProducts.error && resProducts.data && resProducts.data.length > 0) dbProducts = resProducts.data as Product[];
         if (!resAbandoned.error && resAbandoned.data && resAbandoned.data.length > 0) dbAbandoned = resAbandoned.data as AbandonedCheckout[];
+        if (!resStocks.error && resStocks.data && resStocks.data.length > 0) dbStocks = resStocks.data;
+        if (!resBatches.error && resBatches.data && resBatches.data.length > 0) dbBatches = resBatches.data;
+        if (!resKardex.error && resKardex.data && resKardex.data.length > 0) dbKardex = resKardex.data;
       } catch (err) {
         console.error('Error sincronizando con Supabase:', err);
       }
@@ -169,167 +181,159 @@ export default function InventarioPage() {
     setProducts(dbProducts);
     setAbandoned(dbAbandoned);
 
-    // Initial Product Stocks setup & persistence (únicamente los 4 productos oficiales del catálogo)
+    // Initial Product Stocks setup & persistence
     const savedStocks = dbLocal.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
     const cleanStocks: { [id: string]: ProductStockInfo } = {};
 
-    dbProducts.forEach((p, idx) => {
-      if (!p || !p.id) return;
-      const existing = savedStocks[p.id];
-      const pid = (p.id || '').toLowerCase();
+    // 1. Cargar stock prioritariamente desde Supabase (Fuente Única de Verdad)
+    if (dbStocks && dbStocks.length > 0) {
+      dbStocks.forEach((s: any) => {
+        cleanStocks[s.product_id] = {
+          product_id: s.product_id,
+          sku: s.sku,
+          name: s.name,
+          category: s.category,
+          current_stock: s.current_stock,
+          min_alert_stock: s.min_alert_stock,
+          unit_cost: Number(s.unit_cost),
+          selling_price: Number(s.selling_price),
+          is_bundle: Boolean(s.is_bundle),
+        };
+      });
+    } else {
+      // Fallback si Supabase estuviera sin datos iniciales
+      dbProducts.forEach((p, idx) => {
+        if (!p || !p.id) return;
+        const pid = (p.id || '').toLowerCase();
+        let defaultQty = 10;
+        let officialUnitCost = 2.25;
 
-      let defaultQty = 10;
-      let officialUnitCost = 2.25;
+        if (pid.includes('tarjeta')) {
+          defaultQty = 18;
+          officialUnitCost = 1.50;
+        } else if (pid.includes('placa')) {
+          defaultQty = 50;
+          officialUnitCost = 2.25;
+        } else if (pid.includes('stand')) {
+          defaultQty = 99;
+          officialUnitCost = 2.00;
+        } else if (pid.includes('pack')) {
+          defaultQty = 9;
+          officialUnitCost = 5.25;
+        }
 
-      if (pid.includes('tarjeta') || pid === 'tarjeta-nfc' || pid === 'tarjeta-nfc-bolsillo') {
-        defaultQty = 20;
-        officialUnitCost = 1.50;
-      } else if (pid.includes('placa') || pid === 'placa-nfc-mostrador' || pid === 'placa-google' || pid === 'nfc_10001') {
-        defaultQty = 50;
-        officialUnitCost = 2.25;
-      } else if (pid.includes('stand') || pid === 'stand-nfc-mesa' || pid === 'stand-nfc' || pid === 'nfc10002') {
-        defaultQty = 0;
-        officialUnitCost = 2.00;
-      } else if (pid.includes('pack') || pid === 'pack-trio-comercial') {
-        defaultQty = 10;
-        officialUnitCost = 5.25; // 1 Placa ($2.25) + 2 Tarjetas ($3.00)
-      }
-
-      const pPrice = typeof p.price === 'number' && !isNaN(p.price) ? p.price : 0;
-      const unitCostVal = existing && typeof existing.unit_cost === 'number' && !isNaN(existing.unit_cost) && existing.unit_cost > 0
-        ? existing.unit_cost
-        : officialUnitCost;
-
-      const sellingPriceVal = existing && typeof existing.selling_price === 'number' && !isNaN(existing.selling_price)
-        ? existing.selling_price
-        : pPrice;
-
-      const isBundleProd = pid.includes('pack') || pid === 'pack-trio-comercial';
-
-      cleanStocks[p.id] = {
-        product_id: p.id,
-        sku: (p as any).sku || existing?.sku || `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
-        name: p.name || existing?.name || p.id,
-        category: p.category || existing?.category || 'plates',
-        current_stock: existing && typeof existing.current_stock === 'number' ? existing.current_stock : defaultQty,
-        min_alert_stock: existing && typeof existing.min_alert_stock === 'number' ? existing.min_alert_stock : 10,
-        unit_cost: officialUnitCost, // Forzar costo unitario oficial de compra
-        selling_price: sellingPriceVal,
-        is_bundle: isBundleProd,
-      };
-    });
-
-    // Asegurar conteo físico exacto inicial y costos oficiales
-    if (cleanStocks['placa-nfc-mostrador']) {
-      if (savedStocks['placa-nfc-mostrador'] === undefined) cleanStocks['placa-nfc-mostrador'].current_stock = 50;
-      cleanStocks['placa-nfc-mostrador'].unit_cost = 2.25;
+        const existing = savedStocks[p.id];
+        cleanStocks[p.id] = {
+          product_id: p.id,
+          sku: (p as any).sku || existing?.sku || `STP-${(100 + idx + 1).toString().padStart(4, '0')}`,
+          name: p.name || existing?.name || p.id,
+          category: p.category || existing?.category || 'plates',
+          current_stock: existing && typeof existing.current_stock === 'number' ? existing.current_stock : defaultQty,
+          min_alert_stock: existing && typeof existing.min_alert_stock === 'number' ? existing.min_alert_stock : 10,
+          unit_cost: officialUnitCost,
+          selling_price: p.price || existing?.selling_price || 0,
+          is_bundle: pid.includes('pack'),
+        };
+      });
     }
-    if (cleanStocks['tarjeta-nfc-bolsillo']) {
-      if (savedStocks['tarjeta-nfc-bolsillo'] === undefined) cleanStocks['tarjeta-nfc-bolsillo'].current_stock = 20;
-      cleanStocks['tarjeta-nfc-bolsillo'].unit_cost = 1.50;
-    }
-    if (cleanStocks['stand-nfc-mesa']) {
-      cleanStocks['stand-nfc-mesa'].current_stock = 100;
-      cleanStocks['stand-nfc-mesa'].unit_cost = 2.00;
-      cleanStocks['stand-nfc-mesa'].selling_price = 35.00;
-    }
+
+    // Asegurar que el combo Pack Trío siempre refleje el stock disponible armable (1 Placa + 2 Tarjetas)
     if (cleanStocks['pack-trio-comercial']) {
-      const pStock = cleanStocks['placa-nfc-mostrador'] ? cleanStocks['placa-nfc-mostrador'].current_stock : 50;
-      const tStock = cleanStocks['tarjeta-nfc-bolsillo'] ? cleanStocks['tarjeta-nfc-bolsillo'].current_stock : 20;
+      const pStock = cleanStocks['placa-nfc-mostrador']?.current_stock ?? 50;
+      const tStock = cleanStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 18;
       cleanStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
-      cleanStocks['pack-trio-comercial'].unit_cost = 5.25; // 1 Placa ($2.25) + 2 Tarjetas ($3.00)
+      cleanStocks['pack-trio-comercial'].unit_cost = 5.25;
       cleanStocks['pack-trio-comercial'].is_bundle = true;
     }
 
     setProductStocks(cleanStocks);
     dbLocal.setStorageItem('inventory_product_stocks', cleanStocks);
 
-    // Initial Batches setup con costos unitarios oficiales
+    // Initial Batches setup
     const savedBatches = dbLocal.getStorageItem<InventoryBatch[]>('inventory_batches', []);
-    const defaultInitialBatches: InventoryBatch[] = [
-      {
-        id: 'LOTE-2026-10S',
-        product_id: 'stand-nfc-mesa',
-        product_name: 'Stand NFC para Reseñas de Google',
-        quantity_initial: 100,
-        quantity_remaining: 100,
-        unit_cost: 2.00,
-        supplier: 'Shenzhen Micro-NFC Tech',
-        received_at: new Date().toISOString(),
-        status: 'active',
-        notes: 'Stand Acrílico triangular 3mm + Impresión UV + Chip NTAG216',
-      },
-      {
-        id: 'LOTE-2026-09A',
-        product_id: 'placa-nfc-mostrador',
-        product_name: 'Placa NFC para Reseñas de Google',
-        quantity_initial: 50,
-        quantity_remaining: 50,
-        unit_cost: 2.25,
-        supplier: 'Shenzhen Micro-NFC Tech',
-        received_at: new Date(Date.now() - 86400000 * 12).toISOString(),
-        status: 'active',
-        notes: 'Acrílico 3mm + Impresión UV + Chip NTAG216',
-      },
-      {
-        id: 'LOTE-2026-08B',
-        product_id: 'tarjeta-nfc-bolsillo',
-        product_name: 'Tarjeta NFC de Bolsillo',
-        quantity_initial: 20,
-        quantity_remaining: 20,
-        unit_cost: 1.50,
-        supplier: 'SmartCard Global Panama',
-        received_at: new Date(Date.now() - 86400000 * 25).toISOString(),
-        status: 'active',
-        notes: 'PVC Mate 0.76mm contactless',
-      }
-    ];
-
-    const cleanBatches: InventoryBatch[] = (savedBatches.length > 0 ? savedBatches : defaultInitialBatches).map(b => {
-      const pName = (b.product_name || '').toLowerCase();
-      const pId = (b.product_id || '').toLowerCase();
-      let cost = b.unit_cost;
-      if (pName.includes('tarjeta') || pId.includes('tarjeta')) cost = 1.50;
-      else if (pName.includes('placa') || pId.includes('placa')) cost = 2.25;
-      else if (pName.includes('stand') || pId.includes('stand')) cost = 2.00;
-      else if (pName.includes('pack') || pId.includes('pack')) cost = 5.25;
-      return { ...b, unit_cost: cost };
-    });
+    const cleanBatches: InventoryBatch[] = (dbBatches && dbBatches.length > 0)
+      ? (dbBatches as InventoryBatch[])
+      : (savedBatches.length > 0 ? savedBatches : [
+          {
+            id: 'LOTE-2026-10S',
+            product_id: 'stand-nfc-mesa',
+            product_name: 'Stand NFC para Reseñas de Google',
+            quantity_initial: 100,
+            quantity_remaining: cleanStocks['stand-nfc-mesa']?.current_stock ?? 99,
+            unit_cost: 2.00,
+            supplier: 'Shenzhen Micro-NFC Tech',
+            received_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+            status: 'active' as const,
+            notes: 'Stand Acrílico triangular 3mm + Impresión UV + Chip NTAG216. 1 unidad vendida en visita (STTS-1051).'
+          },
+          {
+            id: 'LOTE-2026-09A',
+            product_id: 'placa-nfc-mostrador',
+            product_name: 'Placa NFC para Reseñas de Google',
+            quantity_initial: 50,
+            quantity_remaining: cleanStocks['placa-nfc-mostrador']?.current_stock ?? 50,
+            unit_cost: 2.25,
+            supplier: 'Shenzhen Micro-NFC Tech',
+            received_at: new Date(Date.now() - 86400000 * 12).toISOString(),
+            status: 'active' as const,
+            notes: 'Acrílico 3mm + Impresión UV + Chip NTAG216'
+          },
+          {
+            id: 'LOTE-2026-08B',
+            product_id: 'tarjeta-nfc-bolsillo',
+            product_name: 'Tarjeta NFC de Bolsillo',
+            quantity_initial: 20,
+            quantity_remaining: cleanStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 18,
+            unit_cost: 1.50,
+            supplier: 'SmartCard Global Panama',
+            received_at: new Date(Date.now() - 86400000 * 25).toISOString(),
+            status: 'active' as const,
+            notes: 'PVC Mate 0.76mm contactless. 2 unidades entregadas como regalía (STTT-1003, STTT-1004).'
+          }
+        ]);
 
     setBatches(cleanBatches);
     dbLocal.setStorageItem('inventory_batches', cleanBatches);
 
     // Initial Movements Kardex setup
     const savedMovements = dbLocal.getStorageItem<StockMovement[]>('inventory_kardex', []);
-    if (savedMovements.length === 0) {
-      const defaultMovements: StockMovement[] = [
-        {
-          id: 'MOV-101',
-          created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
-          type: 'salida_venta',
-          product_name: dbProducts[0]?.name || 'Placa NFC para Reseñas de Google',
-          quantity_change: -2,
-          resulting_stock: (cleanStocks[dbProducts[0]?.id]?.current_stock || 48),
-          reference: 'Orden #1024',
-        },
-        {
-          id: 'MOV-100',
-          created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
-          type: 'entrada_lote',
-          product_name: dbProducts[1]?.name || 'Tarjeta NFC de Bolsillo',
-          quantity_change: 20,
-          resulting_stock: (cleanStocks[dbProducts[1]?.id]?.current_stock || 20),
-          reference: 'LOTE-2026-08B',
-        },
-      ];
-      setStockMovements(defaultMovements);
-      dbLocal.setStorageItem('inventory_kardex', defaultMovements);
-    } else {
-      setStockMovements(savedMovements);
-    }
+    const cleanMovements: StockMovement[] = (dbKardex && dbKardex.length > 0)
+      ? (dbKardex as StockMovement[])
+      : (savedMovements.length > 0 ? savedMovements : [
+          {
+            id: 'MOV-VENTA-STTS1051',
+            created_at: '2026-09-24T01:30:00+00:00',
+            type: 'salida_visita' as any,
+            product_name: 'Stand NFC de Mesa',
+            quantity_change: -1,
+            resulting_stock: 99,
+            reference: 'Venta Presencial #PED-VISITA-STTS1051 ($50.00)'
+          },
+          {
+            id: 'MOV-REG-STTT1003',
+            created_at: '2026-09-24T01:30:00+00:00',
+            type: 'salida_regalia' as any,
+            product_name: 'Tarjeta NFC de Bolsillo',
+            quantity_change: -1,
+            resulting_stock: 19,
+            reference: 'Regalía Pack Trío #PED-VISITA-STTT1003 ($0.00)'
+          },
+          {
+            id: 'MOV-REG-STTT1004',
+            created_at: '2026-09-24T01:30:00+00:00',
+            type: 'salida_regalia' as any,
+            product_name: 'Tarjeta NFC de Bolsillo',
+            quantity_change: -1,
+            resulting_stock: 18,
+            reference: 'Regalía Pack Trío #PED-VISITA-STTT1004 ($0.00)'
+          },
+        ]);
+
+    setStockMovements(cleanMovements);
+    dbLocal.setStorageItem('inventory_kardex', cleanMovements);
 
     setBatchProductSelect(dbProducts[0]?.id || '');
-    setBatchCodeInput(`LOTE-2026-${(batches.length + 10).toString()}`);
+    setBatchCodeInput(`LOTE-2026-${(cleanBatches.length + 10).toString()}`);
     const initialTagCode = dbLocal.getNextStickerCode('stand');
     setTagCode(initialTagCode);
     setTagLabel(`Stand NFC de Mesa (${initialTagCode})`);
@@ -456,7 +460,7 @@ export default function InventarioPage() {
   }, [cards, tagSearch, tagClaimFilter, tagChannelFilter, tagHardwareFilter]);
 
   // Handle Manual Stock Adjustment (+ / -)
-  const handleAdjustStock = (productId: string, delta: number) => {
+  const handleAdjustStock = async (productId: string, delta: number) => {
     const target = productStocks[productId];
     if (!target) return;
 
@@ -468,6 +472,15 @@ export default function InventarioPage() {
         current_stock: newStock,
       },
     };
+
+    // If placa or tarjeta, update combo pack trio
+    if (productId === 'placa-nfc-mostrador' || productId === 'tarjeta-nfc-bolsillo') {
+      const pStock = productId === 'placa-nfc-mostrador' ? newStock : (updatedStocks['placa-nfc-mostrador']?.current_stock ?? 50);
+      const tStock = productId === 'tarjeta-nfc-bolsillo' ? newStock : (updatedStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 18);
+      if (updatedStocks['pack-trio-comercial']) {
+        updatedStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+      }
+    }
 
     setProductStocks(updatedStocks);
     dbLocal.setStorageItem('inventory_product_stocks', updatedStocks);
@@ -486,10 +499,40 @@ export default function InventarioPage() {
     const updatedMovements = [newMovement, ...stockMovements];
     setStockMovements(updatedMovements);
     dbLocal.setStorageItem('inventory_kardex', updatedMovements);
+
+    // Persist to Supabase
+    if (supabase) {
+      try {
+        await supabase
+          .from('inventory_stocks')
+          .update({ current_stock: newStock, updated_at: new Date().toISOString() })
+          .eq('product_id', productId);
+
+        if (updatedStocks['pack-trio-comercial']) {
+          await supabase
+            .from('inventory_stocks')
+            .update({ current_stock: updatedStocks['pack-trio-comercial'].current_stock, updated_at: new Date().toISOString() })
+            .eq('product_id', 'pack-trio-comercial');
+        }
+
+        await supabase.from('inventory_kardex').insert({
+          id: newMovement.id,
+          type: newMovement.type,
+          product_id: productId,
+          product_name: target.name,
+          quantity_change: delta,
+          resulting_stock: newStock,
+          reference: newMovement.reference,
+          channel: 'ajuste_admin'
+        });
+      } catch (err) {
+        console.error('Error persisting stock adjustment to Supabase:', err);
+      }
+    }
   };
 
   // Handle Create New Production Batch
-  const handleCreateBatch = (e: React.FormEvent) => {
+  const handleCreateBatch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!batchCodeInput.trim()) return alert('Por favor ingresa un código de lote');
     if (!batchProductSelect) return alert('Selecciona un producto para el lote');
@@ -520,21 +563,34 @@ export default function InventarioPage() {
     dbLocal.setStorageItem('inventory_batches', updatedBatches);
 
     // Auto-update stock for this product
+    let newStockVal = 0;
+    let newMovement: StockMovement | null = null;
+    let updatedStocks = { ...productStocks };
+
     if (productStocks[batchProductSelect]) {
       const current = productStocks[batchProductSelect];
-      const newStockVal = current.current_stock + qty;
-      const updatedStocks = {
+      newStockVal = current.current_stock + qty;
+      updatedStocks = {
         ...productStocks,
         [batchProductSelect]: {
           ...current,
           current_stock: newStockVal,
         },
       };
+
+      if (batchProductSelect === 'placa-nfc-mostrador' || batchProductSelect === 'tarjeta-nfc-bolsillo') {
+        const pStock = batchProductSelect === 'placa-nfc-mostrador' ? newStockVal : (updatedStocks['placa-nfc-mostrador']?.current_stock ?? 50);
+        const tStock = batchProductSelect === 'tarjeta-nfc-bolsillo' ? newStockVal : (updatedStocks['tarjeta-nfc-bolsillo']?.current_stock ?? 18);
+        if (updatedStocks['pack-trio-comercial']) {
+          updatedStocks['pack-trio-comercial'].current_stock = Math.min(pStock, Math.floor(tStock / 2));
+        }
+      }
+
       setProductStocks(updatedStocks);
       dbLocal.setStorageItem('inventory_product_stocks', updatedStocks);
 
       // Record Kardex movement
-      const newMovement: StockMovement = {
+      newMovement = {
         id: `MOV-${Date.now().toString().slice(-4)}`,
         created_at: new Date().toISOString(),
         type: 'entrada_lote',
@@ -546,6 +602,53 @@ export default function InventarioPage() {
       const updatedMovements = [newMovement, ...stockMovements];
       setStockMovements(updatedMovements);
       dbLocal.setStorageItem('inventory_kardex', updatedMovements);
+    }
+
+    // Persist to Supabase
+    if (supabase) {
+      try {
+        await supabase.from('inventory_batches').insert({
+          id: newBatch.id,
+          product_id: newBatch.product_id,
+          product_name: newBatch.product_name,
+          quantity_initial: newBatch.quantity_initial,
+          quantity_remaining: newBatch.quantity_remaining,
+          unit_cost: newBatch.unit_cost,
+          supplier: newBatch.supplier,
+          received_at: newBatch.received_at,
+          status: newBatch.status,
+          notes: newBatch.notes
+        });
+
+        if (newStockVal > 0) {
+          await supabase
+            .from('inventory_stocks')
+            .update({ current_stock: newStockVal, updated_at: new Date().toISOString() })
+            .eq('product_id', batchProductSelect);
+
+          if (updatedStocks['pack-trio-comercial']) {
+            await supabase
+              .from('inventory_stocks')
+              .update({ current_stock: updatedStocks['pack-trio-comercial'].current_stock, updated_at: new Date().toISOString() })
+              .eq('product_id', 'pack-trio-comercial');
+          }
+        }
+
+        if (newMovement) {
+          await supabase.from('inventory_kardex').insert({
+            id: newMovement.id,
+            type: newMovement.type,
+            product_id: batchProductSelect,
+            product_name: prodName,
+            quantity_change: qty,
+            resulting_stock: newStockVal,
+            reference: newBatch.id,
+            channel: 'proveedor_lote'
+          });
+        }
+      } catch (err) {
+        console.error('Error persisting batch to Supabase:', err);
+      }
     }
 
     setBatchSuccessMsg(`¡Lote ${newBatch.id} de ${qty} unidades registrado con éxito!`);

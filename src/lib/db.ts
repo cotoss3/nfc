@@ -1912,6 +1912,58 @@ class LocalDbService {
     movements.unshift(newMovement);
     this.setStorageItem('inventory_kardex', movements);
 
+    if (supabase) {
+      (async () => {
+        try {
+          await supabase.from('inventory_stocks').upsert({
+            product_id: productId,
+            sku: productStocks[productId].sku,
+            name: productStocks[productId].name,
+            category: productStocks[productId].category,
+            current_stock: productStocks[productId].current_stock,
+            min_alert_stock: productStocks[productId].min_alert_stock || 10,
+            unit_cost: cost,
+            selling_price: productStocks[productId].selling_price,
+            is_bundle: false,
+            updated_at: new Date().toISOString()
+          });
+
+          if (productStocks['pack-trio-comercial']) {
+            await supabase.from('inventory_stocks').update({
+              current_stock: productStocks['pack-trio-comercial'].current_stock,
+              updated_at: new Date().toISOString()
+            }).eq('product_id', 'pack-trio-comercial');
+          }
+
+          await supabase.from('inventory_batches').insert({
+            id: newBatch.id,
+            product_id: newBatch.product_id,
+            product_name: newBatch.product_name,
+            quantity_initial: newBatch.quantity_initial,
+            quantity_remaining: newBatch.quantity_remaining,
+            unit_cost: newBatch.unit_cost,
+            supplier: newBatch.supplier,
+            received_at: newBatch.received_at,
+            status: newBatch.status,
+            notes: newBatch.notes
+          });
+
+          await supabase.from('inventory_kardex').insert({
+            id: newMovement.id,
+            type: newMovement.type,
+            product_id: productId,
+            product_name: productName,
+            quantity_change: quantity,
+            resulting_stock: productStocks[productId].current_stock,
+            reference: newMovement.reference,
+            channel: 'proveedor_lote'
+          });
+        } catch (e) {
+          console.error('Error sincronizando lote de inventario en Supabase:', e);
+        }
+      })();
+    }
+
     return {
       success: true,
       message: `¡Lote ${cleanBatchId} de ${quantity} unidades (${startCode} a ${endCode}) registrado y cuadrado con inventario!`,
@@ -2034,9 +2086,51 @@ class LocalDbService {
       }
     });
 
-    // Guardar cambios
+    // Guardar cambios localmente
     this.setStorageItem('inventory_product_stocks', productStocks);
     this.setStorageItem('inventory_kardex', movements);
+
+    // Sincronizar cuadre con Supabase
+    if (supabase) {
+      (async () => {
+        try {
+          for (const item of audit) {
+            await supabase
+              .from('inventory_stocks')
+              .upsert({
+                product_id: item.productId,
+                sku: `STP-${item.hardwareType === 'stand' ? '0103' : item.hardwareType === 'card' ? '0102' : '0101'}`,
+                name: item.productName,
+                category: item.hardwareType === 'card' ? 'cards' : 'plates',
+                current_stock: item.unclaimedTagsCount,
+                min_alert_stock: 10,
+                unit_cost: item.hardwareType === 'stand' ? 2.0 : item.hardwareType === 'card' ? 1.5 : 2.25,
+                selling_price: item.hardwareType === 'stand' ? 35 : item.hardwareType === 'card' ? 25 : 29,
+                is_bundle: item.hardwareType === 'bundle',
+                updated_at: new Date().toISOString()
+              });
+          }
+
+          if (adjustments.length > 0) {
+            await supabase.from('inventory_kardex').insert(
+              adjustments.map(adj => ({
+                id: `MOV-AUDIT-${Date.now()}-${adj.productId}`,
+                created_at: new Date().toISOString(),
+                type: 'ajuste_manual',
+                product_id: adj.productId,
+                product_name: adj.productId,
+                quantity_change: adj.newStock - adj.previousStock,
+                resulting_stock: adj.newStock,
+                reference: 'Auditoría: Cuadre con Tags Físicos en Stock',
+                channel: 'auditoria'
+              }))
+            );
+          }
+        } catch (e) {
+          console.error('Error sincronizando cuadre de inventario en Supabase:', e);
+        }
+      })();
+    }
 
     return {
       success: true,
@@ -2124,17 +2218,87 @@ class LocalDbService {
       }
 
       // Asentar en Kardex
-      const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
-      movements.unshift({
-        id: `MOV-VISITA-${Date.now()}-${cleanId}`,
+      const movId = `MOV-VISITA-${Date.now()}-${cleanId}`;
+      const movObj: StockMovement = {
+        id: movId,
         created_at: new Date().toISOString(),
-        type: 'salida_visita',
+        type: tipo === 'regalia' ? 'salida_regalia' as any : 'salida_visita',
         product_name: productName,
         quantity_change: -1,
         resulting_stock: productStocks[productId]?.current_stock ?? 0,
-        reference: `Venta Presencial / Visita - ${cleanId} ($${precio.toFixed(2)})`
-      });
+        reference: `${tipo === 'regalia' ? 'Regalía' : 'Venta Presencial'} - ${cleanId} ($${precio.toFixed(2)})`
+      };
+      const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
+      movements.unshift(movObj);
       this.setStorageItem('inventory_kardex', movements);
+
+      // Sincronización en tiempo real con Supabase
+      if (supabase) {
+        (async () => {
+          try {
+            // 1. Descontar en inventory_stocks
+            const { data: stockRow } = await supabase
+              .from('inventory_stocks')
+              .select('current_stock')
+              .eq('product_id', productId)
+              .maybeSingle();
+
+            if (stockRow) {
+              const updatedStock = Math.max(0, stockRow.current_stock - 1);
+              await supabase
+                .from('inventory_stocks')
+                .update({ current_stock: updatedStock, updated_at: new Date().toISOString() })
+                .eq('product_id', productId);
+
+              // Recalcular combo pack trío en Supabase
+              const { data: trioRows } = await supabase
+                .from('inventory_stocks')
+                .select('product_id, current_stock')
+                .in('product_id', ['placa-nfc-mostrador', 'tarjeta-nfc-bolsillo']);
+
+              if (trioRows && trioRows.length === 2) {
+                const plStock = trioRows.find(r => r.product_id === 'placa-nfc-mostrador')?.current_stock || 0;
+                const tjStock = trioRows.find(r => r.product_id === 'tarjeta-nfc-bolsillo')?.current_stock || 0;
+                await supabase
+                  .from('inventory_stocks')
+                  .update({ current_stock: Math.min(plStock, Math.floor(tjStock / 2)), updated_at: new Date().toISOString() })
+                  .eq('product_id', 'pack-trio-comercial');
+              }
+            }
+
+            // 2. Descontar en lote activo de inventory_batches
+            const { data: batchRows } = await supabase
+              .from('inventory_batches')
+              .select('id, quantity_remaining')
+              .eq('product_id', productId)
+              .gt('quantity_remaining', 0)
+              .order('received_at', { ascending: true })
+              .limit(1);
+
+            if (batchRows && batchRows.length > 0) {
+              await supabase
+                .from('inventory_batches')
+                .update({ quantity_remaining: Math.max(0, batchRows[0].quantity_remaining - 1) })
+                .eq('id', batchRows[0].id);
+            }
+
+            // 3. Asentar en inventory_kardex
+            await supabase.from('inventory_kardex').insert({
+              id: movId,
+              created_at: new Date().toISOString(),
+              type: tipo === 'regalia' ? 'salida_regalia' : 'salida_visita',
+              product_id: productId,
+              product_name: productName,
+              quantity_change: -1,
+              resulting_stock: productStocks[productId]?.current_stock ?? 0,
+              reference: `${tipo === 'regalia' ? 'Regalía' : 'Venta Presencial'} - ${cleanId} ($${precio.toFixed(2)})`,
+              channel: 'visita'
+            });
+          } catch (syncErr) {
+            console.error('Error sincronizando inventario en Supabase:', syncErr);
+          }
+        })();
+      }
     }
 
     this.setStorageItem('nfc_orders', orders);
@@ -2244,9 +2408,10 @@ class LocalDbService {
       this.setStorageItem('inventory_product_stocks', productStocks);
 
       // Asentar en Kardex
+      const revMovId = `MOV-REV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const movements = this.getStorageItem<StockMovement[]>('inventory_kardex', []);
       movements.unshift({
-        id: `MOV-REV-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        id: revMovId,
         created_at: new Date().toISOString(),
         type: 'devolucion_cancelacion',
         product_name: order?.items[0]?.product_name || 'Productos Orden Cancelada',
@@ -2255,6 +2420,64 @@ class LocalDbService {
         reference: `Reversión y Cancelación de Pedido ${cleanOrderId}`
       });
       this.setStorageItem('inventory_kardex', movements);
+
+      // Sincronizar reversión con Supabase
+      if (supabase && order && Array.isArray(order.items)) {
+        (async () => {
+          try {
+            for (const itm of order.items) {
+              const pId = (itm.product_id || '').toLowerCase();
+              const qty = itm.quantity || 1;
+              const isPack = pId.includes('pack');
+
+              if (isPack) {
+                // Revertir 1 placa y 2 tarjetas
+                for (const [subId, subQty] of [['placa-nfc-mostrador', 1 * qty], ['tarjeta-nfc-bolsillo', 2 * qty]] as const) {
+                  const { data: row } = await supabase.from('inventory_stocks').select('current_stock').eq('product_id', subId).maybeSingle();
+                  if (row) {
+                    await supabase.from('inventory_stocks').update({ current_stock: row.current_stock + subQty, updated_at: new Date().toISOString() }).eq('product_id', subId);
+                  }
+                }
+              } else if (pId) {
+                const { data: row } = await supabase.from('inventory_stocks').select('current_stock').eq('product_id', pId).maybeSingle();
+                if (row) {
+                  await supabase.from('inventory_stocks').update({ current_stock: row.current_stock + qty, updated_at: new Date().toISOString() }).eq('product_id', pId);
+                }
+              }
+            }
+
+            // Recalcular combo pack trío en Supabase
+            const { data: trioRows } = await supabase
+              .from('inventory_stocks')
+              .select('product_id, current_stock')
+              .in('product_id', ['placa-nfc-mostrador', 'tarjeta-nfc-bolsillo']);
+
+            if (trioRows && trioRows.length === 2) {
+              const plStock = trioRows.find(r => r.product_id === 'placa-nfc-mostrador')?.current_stock || 0;
+              const tjStock = trioRows.find(r => r.product_id === 'tarjeta-nfc-bolsillo')?.current_stock || 0;
+              await supabase
+                .from('inventory_stocks')
+                .update({ current_stock: Math.min(plStock, Math.floor(tjStock / 2)), updated_at: new Date().toISOString() })
+                .eq('product_id', 'pack-trio-comercial');
+            }
+
+            // Asentar movimiento en inventory_kardex
+            await supabase.from('inventory_kardex').insert({
+              id: revMovId,
+              created_at: new Date().toISOString(),
+              type: 'devolucion_cancelacion',
+              product_id: order.items[0]?.product_id || 'varios',
+              product_name: order.items[0]?.product_name || 'Productos Orden Cancelada',
+              quantity_change: 1,
+              resulting_stock: 0,
+              reference: `Reversión y Cancelación de Pedido ${cleanOrderId}`,
+              channel: 'devolucion'
+            });
+          } catch (e) {
+            console.error('Error sincronizando reversión de inventario en Supabase:', e);
+          }
+        })();
+      }
     }
 
     // 2. Liberar tags físicos asignados
