@@ -523,7 +523,7 @@ export async function GET(
       width: 0%;
       background: linear-gradient(90deg, #f59e0b, #fde047);
       border-radius: 999px;
-      transition: width 2s linear;
+      transition: width 4s linear;
     }
     .brand-footer {
       margin-top: 16px;
@@ -574,7 +574,7 @@ export async function GET(
 
     <!-- 4. Contador inferior y barra de progreso -->
     <div class="progress-wrap">
-      <p id="countdown-label" class="countdown-text">Redirigiendo automáticamente en 2s...</p>
+      <p id="countdown-label" class="countdown-text">Redirigiendo automáticamente en 4s...</p>
       <div class="progress-track">
         <div id="progress-bar" class="progress-bar"></div>
       </div>
@@ -596,7 +596,7 @@ export async function GET(
       var progressBar = document.getElementById('progress-bar');
       var skipBtn = document.getElementById('skip-btn');
 
-      // Iniciar animación de barra de progreso de 2s
+      // Iniciar animación de barra de progreso de 4s
       requestAnimationFrame(function() {
         if (progressBar) {
           progressBar.style.width = '100%';
@@ -614,7 +614,7 @@ export async function GET(
               card_id: ${safeCardIdJson},
               group_name: ${safeGroupNameJson},
               method: method,
-              engagement_time_msec: 2000,
+              engagement_time_msec: 4000,
               transport_type: 'beacon'
             });
           }
@@ -631,16 +631,28 @@ export async function GET(
 
       setTimeout(function() {
         if (!hasRedirected && countdownLabel) {
-          countdownLabel.textContent = 'Redirigiendo automáticamente en 1s...';
+          countdownLabel.textContent = 'Redirigiendo automáticamente en 3s...';
         }
       }, 1000);
 
       setTimeout(function() {
         if (!hasRedirected && countdownLabel) {
+          countdownLabel.textContent = 'Redirigiendo automáticamente en 2s...';
+        }
+      }, 2000);
+
+      setTimeout(function() {
+        if (!hasRedirected && countdownLabel) {
+          countdownLabel.textContent = 'Redirigiendo automáticamente en 1s...';
+        }
+      }, 3000);
+
+      setTimeout(function() {
+        if (!hasRedirected && countdownLabel) {
           countdownLabel.textContent = 'Redirigiendo automáticamente en 0s...';
         }
-        executeRedirect('auto_2s');
-      }, 2000);
+        executeRedirect('auto_4s');
+      }, 4000);
     })();
   </script>
 </body>
