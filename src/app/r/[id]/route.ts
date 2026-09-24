@@ -107,22 +107,22 @@ export async function GET(
         <title>Dispositivo Inactivo | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
-      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
-          <div class="w-16 h-16 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+      <body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-xl space-y-6">
+          <div class="w-16 h-16 bg-rose-50 border border-rose-200 text-rose-600 rounded-2xl flex items-center justify-center mx-auto text-3xl">
             🚫
           </div>
           <div>
-            <span class="inline-block px-3 py-1 bg-slate-800 text-rose-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+            <span class="inline-block px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
               DISPOSITIVO INACTIVO
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(resolvedCardId)}</h1>
-            <p class="text-slate-400 text-sm mt-2">
+            <h1 class="text-2xl font-black text-slate-900">${escaparHtml(resolvedCardId)}</h1>
+            <p class="text-slate-600 text-sm mt-2">
               Este ID de dispositivo está inactivo. El administrador debe habilitar este código desde el Panel Administrativo para permitir la redirección.
             </p>
           </div>
-          <div class="bg-slate-950/60 p-4 rounded-xl text-xs text-slate-400 border border-slate-800 text-left space-y-1">
-            <p class="font-semibold text-slate-300">🔒 Control Exclusivo de Administrador</p>
+          <div class="bg-slate-50 p-4 rounded-xl text-xs text-slate-600 border border-slate-200 text-left space-y-1">
+            <p class="font-bold text-slate-800">🔒 Control Exclusivo de Administrador</p>
             <p>Sólo el administrador del sistema puede activar nuevos códigos o rehabilitar dispositivos suspendidos.</p>
           </div>
         </div>
@@ -150,18 +150,18 @@ export async function GET(
         <title>Canal no habilitado | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
-      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
-          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+      <body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-xl space-y-6">
+          <div class="w-16 h-16 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl">
             ⚠️
           </div>
           <div>
-            <span class="inline-block px-3 py-1 bg-slate-800 text-amber-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+            <span class="inline-block px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
               CANAL QR DESHABILITADO
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(resolvedCardId)}</h1>
-            <p class="text-slate-400 text-sm mt-2">
-              Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-400">Chip NFC</strong>.
+            <h1 class="text-2xl font-black text-slate-900">${escaparHtml(resolvedCardId)}</h1>
+            <p class="text-slate-600 text-sm mt-2">
+              Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-700">Chip NFC</strong>.
             </p>
           </div>
         </div>
@@ -188,18 +188,18 @@ export async function GET(
         <title>Canal no habilitado | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
-      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
-          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
+      <body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-xl space-y-6">
+          <div class="w-16 h-16 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl">
             ⚠️
           </div>
           <div>
-            <span class="inline-block px-3 py-1 bg-slate-800 text-amber-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
+            <span class="inline-block px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">
               CANAL NFC DESHABILITADO
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(resolvedCardId)}</h1>
-            <p class="text-slate-400 text-sm mt-2">
-              Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-400">Código QR</strong>.
+            <h1 class="text-2xl font-black text-slate-900">${escaparHtml(resolvedCardId)}</h1>
+            <p class="text-slate-600 text-sm mt-2">
+              Este dispositivo fue configurado por el administrador para uso exclusivo mediante <strong class="text-amber-700">Código QR</strong>.
             </p>
           </div>
         </div>
@@ -265,25 +265,25 @@ export async function GET(
         <title>Enlace no configurado | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
-      <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
-          <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+      <body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-xl space-y-6">
+          <div class="w-16 h-16 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
             ⚠️
           </div>
           <div>
-            <span class="inline-block px-3 py-1 bg-slate-800 text-slate-400 text-xs font-semibold rounded-full mb-3 uppercase tracking-wider">
+            <span class="inline-block px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200 text-xs font-semibold rounded-full mb-3 uppercase tracking-wider">
               ${escaparHtml(resolvedCardId)} • ${escaparHtml(groupName)}
             </span>
-            <h1 class="text-2xl font-bold text-slate-100">${escaparHtml(cardLabel)}</h1>
-            <p class="text-slate-400 text-sm mt-2">
-              Este dispositivo no tiene un enlace asignado para escaneo mediante <strong class="text-amber-400 font-semibold">${escaparHtml(channelName)}</strong>.
+            <h1 class="text-2xl font-black text-slate-900">${escaparHtml(cardLabel)}</h1>
+            <p class="text-slate-600 text-sm mt-2">
+              Este dispositivo no tiene un enlace asignado para escaneo mediante <strong class="text-amber-700 font-semibold">${escaparHtml(channelName)}</strong>.
             </p>
           </div>
-          <div class="bg-slate-950/60 p-4 rounded-xl text-xs text-slate-400 border border-slate-800 text-left space-y-1">
-            <p class="font-semibold text-slate-300">💡 ¿Eres el administrador?</p>
+          <div class="bg-slate-50 p-4 rounded-xl text-xs text-slate-600 border border-slate-200 text-left space-y-1">
+            <p class="font-bold text-slate-800">💡 ¿Eres el administrador?</p>
             <p>Puedes configurar y cambiar este enlace en cualquier momento desde tu panel de control.</p>
           </div>
-          <a href="/dashboard" class="block w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20">
+          <a href="/dashboard" class="block w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-md">
             Ir al Dashboard de Administración
           </a>
         </div>
@@ -325,14 +325,15 @@ export async function GET(
   const safeDeviceJson = JSON.stringify(device);
   const safeTargetUrlJson = JSON.stringify(safeTargetUrl);
 
-  // 6. Pantalla Puente de 2 Segundos (Diseño Oscuro starTAP Panamá + Ad Slot + Anti-Rebote GA4 + SEO Noindex)
+  // 6. Pantalla Puente Clara Ejecutiva (6 Segundos + Anuncio Visual starTAP + Anti-Rebote GA4 + SEO Noindex)
   return new NextResponse(`<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Redirigiendo a ${escaparHtml(displayCommerceName)} | starTAP Panamá</title>
+  <title>${escaparHtml(displayCommerceName)} | Conexión Verificada starTAP</title>
+  <link rel="preload" as="image" href="/images/startap-bridge-ad.jpg">
   <!-- Google Analytics 4 (G-VQH5VW4KF9) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQH5VW4KF9"></script>
   <script>
@@ -352,155 +353,196 @@ export async function GET(
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 70%);
-      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+      color: #0f172a;
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 24px 16px;
+      padding: 18px 14px;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
     .bridge-card {
       width: 100%;
       max-width: 420px;
       margin: auto;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(245, 158, 11, 0.22);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
       border-radius: 28px;
-      padding: 28px 22px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(245, 158, 11, 0.08);
+      padding: 22px 18px 20px;
+      box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.03);
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
+    /* 1. Cabecera de Destino Verificado */
     .status-header {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-    }
-    .verified-seal {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #34d399;
-      font-size: 22px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      gap: 8px;
     }
     .status-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      padding: 5px 12px;
       border-radius: 999px;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #fbbf24;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-    .status-title {
-      font-size: 16px;
-      line-height: 1.45;
-      color: #cbd5e1;
-      font-weight: 500;
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
     }
-    .status-title strong {
-      color: #ffffff;
-      font-weight: 800;
-      display: block;
+    .status-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .commerce-name {
+      color: #0f172a;
+      font-weight: 900;
       font-size: 22px;
-      margin-top: 4px;
-      letter-spacing: -0.01em;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
-    /* Espacio Publicitario Preparado (Ad Slot) */
+    /* 2. Espacio Publicitario Visual (Ad Slot) */
     .ad-slot {
-      position: relative;
-      background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(2, 6, 23, 0.95));
-      border: 1px solid rgba(245, 158, 11, 0.25);
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 20px;
-      padding: 20px 18px;
-      text-align: left;
       overflow: hidden;
+      text-align: left;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .ad-slot:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 8px 20px -8px rgba(15, 23, 42, 0.08);
+    }
+    .ad-slot-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #f1f5f9;
     }
     .ad-slot-tag {
-      display: inline-block;
       font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #fbbf24;
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      padding: 3px 9px;
-      border-radius: 6px;
-      margin-bottom: 12px;
+      letter-spacing: 0.07em;
+      color: #475569;
     }
-    .ad-slot-body {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .ad-slot-pill {
+      font-size: 10px;
+      font-weight: 800;
+      color: #b45309;
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 999px;
     }
-    .ad-slot-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #020617;
-      font-weight: 900;
-      font-size: 19px;
+    .ad-image-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .ad-image-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-height: 295px;
+      background: #f1f5f9;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    .ad-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ad-cta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 14px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+    }
+    .ad-cta-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+    .ad-cta-text span {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748b;
+    }
+    .ad-cta-chip {
       flex-shrink: 0;
-      box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
-    }
-    .ad-slot-copy h3 {
-      font-size: 15px;
+      font-size: 11px;
       font-weight: 800;
-      color: #f8fafc;
-      margin-bottom: 4px;
+      color: #0f172a;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
     }
-    .ad-slot-copy p {
-      font-size: 13px;
-      color: #cbd5e1;
-      line-height: 1.4;
-    }
+    /* 3. Botón Principal de Continuar al Comercio */
     .skip-btn {
       width: 100%;
       padding: 15px 18px;
-      border-radius: 14px;
+      border-radius: 16px;
       border: none;
-      background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-      color: #020617;
+      background: #0f172a;
+      color: #ffffff;
       font-size: 14px;
-      font-weight: 900;
-      letter-spacing: 0.02em;
+      font-weight: 800;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.45);
+      transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 10px 22px -6px rgba(15, 23, 42, 0.28);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       text-decoration: none;
     }
+    .skip-btn:hover {
+      background: #1e293b;
+    }
     .skip-btn:active {
       transform: scale(0.98);
     }
+    .skip-arrow {
+      color: #fbbf24;
+      font-weight: 900;
+      font-size: 16px;
+    }
+    /* 4. Pie Corporativo */
     .brand-footer {
-      margin-top: 16px;
+      margin-top: 12px;
       text-align: center;
     }
     .brand-footer a {
@@ -510,8 +552,12 @@ export async function GET(
       text-decoration: none;
       transition: color 0.2s ease;
     }
+    .brand-footer a strong {
+      color: #0f172a;
+      font-weight: 800;
+    }
     .brand-footer a:hover {
-      color: #fbbf24;
+      color: #0f172a;
     }
   </style>
 </head>
@@ -519,38 +565,59 @@ export async function GET(
   <div></div>
 
   <main class="bridge-card">
-    <!-- 1. Encabezado de Estado (Sello fijo sin movimiento distractor) -->
+    <!-- 1. Cabecera Clara de Destino Verificado -->
     <div class="status-header">
-      <div class="verified-seal" aria-hidden="true">✓</div>
-      <span class="status-badge">Conexión Verificada • ${escaparHtml(resolvedCardId)}</span>
-      <p class="status-title">
-        Estás siendo dirigido a
-        <strong>${escaparHtml(displayCommerceName)}</strong>
-      </p>
+      <span class="status-badge">
+        <span class="status-dot"></span>
+        Conexión Verificada • ${escaparHtml(resolvedCardId)}
+      </span>
+      <p class="status-subtitle">Estás entrando al perfil oficial de</p>
+      <h1 class="commerce-name">${escaparHtml(displayCommerceName)}</h1>
     </div>
 
-    <!-- 2. Espacio Publicitario Preparado (Ad Slot) -->
-    <section id="startap-ad-slot" class="ad-slot" aria-label="Espacio patrocinado starTAP">
-      <span class="ad-slot-tag">Verificación Oficial • Espacio Destacado</span>
-      <div class="ad-slot-body">
-        <div class="ad-slot-icon">★</div>
-        <div class="ad-slot-copy">
-          <h3>starTAP Panamá • Tap &amp; Connect</h3>
-          <p>Dispositivo inteligente verificado. Impulsa tus reseñas de Google, redes y catálogo digital al instante.</p>
-        </div>
+    <!-- 2. Espacio Publicitario Visual (Ad Slot con Imagen Oficial starTAP) -->
+    <section id="startap-ad-slot" class="ad-slot" aria-label="Espacio patrocinado starTAP Panamá">
+      <div class="ad-slot-header">
+        <span class="ad-slot-tag">Destacado • starTAP Panamá</span>
+        <span class="ad-slot-pill">★ Google Reviews NFC</span>
       </div>
+      <a
+        id="ad-slot-link"
+        href="/catalogo?utm_source=bridge_ad&amp;utm_medium=nfc_qr&amp;utm_campaign=startap_stand"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ad-image-link"
+      >
+        <div class="ad-image-wrap">
+          <img
+            src="/images/startap-bridge-ad.jpg"
+            alt="Tecnología Contactless de starTAP: Rápido y sin complicaciones"
+            class="ad-image"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+        <div class="ad-cta-bar">
+          <div class="ad-cta-text">
+            ¿Tienes un negocio? Impulsa tus reseñas en Google
+            <span>Consigue tu Stand NFC personalizado en Panamá</span>
+          </div>
+          <span class="ad-cta-chip">Ver planes ↗</span>
+        </div>
+      </a>
     </section>
 
-    <!-- 3. Botón de Continuar Inmediato -->
+    <!-- 3. Botón Principal de Paso Inmediato -->
     <button type="button" id="skip-btn" class="skip-btn">
-      <span>Continuar ahora →</span>
+      <span>Continuar a ${escaparHtml(displayCommerceName)}</span>
+      <span class="skip-arrow">→</span>
     </button>
   </main>
 
   <!-- 4. Pie de marca -->
   <footer class="brand-footer">
     <a href="/" target="_blank" rel="noopener noreferrer">
-      Tecnología sin contacto por starTAP Panamá
+      Tecnología sin contacto verificada por <strong>starTAP Panamá</strong>
     </a>
   </footer>
 
@@ -559,6 +626,7 @@ export async function GET(
       var targetUrl = ${safeTargetUrlJson};
       var hasRedirected = false;
       var skipBtn = document.getElementById('skip-btn');
+      var adLink = document.getElementById('ad-slot-link');
 
       function executeRedirect(method) {
         if (hasRedirected) return;
@@ -583,6 +651,21 @@ export async function GET(
       if (skipBtn) {
         skipBtn.addEventListener('click', function() {
           executeRedirect('skip_button');
+        });
+      }
+
+      if (adLink) {
+        adLink.addEventListener('click', function() {
+          try {
+            if (typeof gtag === 'function') {
+              gtag('event', 'ad_click_startap', {
+                card_id: ${safeCardIdJson},
+                group_name: ${safeGroupNameJson},
+                ad_id: 'startap_google_reviews_stand',
+                transport_type: 'beacon'
+              });
+            }
+          } catch (e) {}
         });
       }
 

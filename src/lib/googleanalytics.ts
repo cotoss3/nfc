@@ -14,7 +14,8 @@ export type GAEventName =
   | 'contact'
   | 'regalia_demo'
   | 'scan_startap'
-  | 'redirect_complete';
+  | 'redirect_complete'
+  | 'ad_click_startap';
 
 export function trackGA(eventName: GAEventName, params?: Record<string, unknown>): void {
   if (typeof window === 'undefined' || !window.gtag) return;
