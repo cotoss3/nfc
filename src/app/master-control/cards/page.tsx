@@ -720,6 +720,10 @@ export default function CardsManagementPage() {
                                   <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-900 border border-amber-300">
                                     🤝 Venta en Visita (${Number(c.precio_venta || 0).toFixed(2)})
                                   </span>
+                                ) : c.tipo_activacion === 'regalia' ? (
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
+                                    🎁 Regalía / Combo ($0.00)
+                                  </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-indigo-900 border border-indigo-300">
                                     🧪 Demo / Muestra ($0.00)

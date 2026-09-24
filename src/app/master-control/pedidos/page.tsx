@@ -78,7 +78,8 @@ export default function PedidosPage() {
   const totalRevenue = orders.filter(o => o.payment_status === 'completed').reduce((acc, o) => acc + (o.total || 0), 0);
   const visitSales = orders.filter(o => o.canal === 'visita' || o.payment_method === 'presencial' || o.id.startsWith('PED-VISITA'));
   const visitRevenue = visitSales.reduce((acc, o) => acc + (o.total || 0), 0);
-  const demoCount = visitSales.filter(o => o.total === 0).length;
+  const regaliaCount = visitSales.filter(o => o.total === 0 && (o.admin_notes?.includes('Regalía') || o.customer_name?.includes('Regalía') || (o as any).tipo_activacion === 'regalia')).length;
+  const demoCount = visitSales.filter(o => o.total === 0 && !o.admin_notes?.includes('Regalía') && !o.customer_name?.includes('Regalía') && (o as any).tipo_activacion !== 'regalia').length;
 
   if (loading) return <div className="p-8 text-center text-slate-500">Cargando pedidos...</div>;
 
@@ -130,8 +131,8 @@ export default function PedidosPage() {
           <span className="text-amber-800 text-xs font-bold uppercase tracking-wider">Ventas en Visita</span>
           <div className="flex items-center justify-between">
             <span className="text-2xl font-black text-amber-950">${visitRevenue.toFixed(2)}</span>
-            <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-              {visitSales.length - demoCount} ventas · {demoCount} demos
+            <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+              {visitSales.length - (regaliaCount + demoCount)} ventas · {regaliaCount} regalías · {demoCount} demos
             </span>
           </div>
         </div>
@@ -231,6 +232,10 @@ export default function PedidosPage() {
                             {order.total > 0 ? (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
                                 🤝 Venta en Visita (${order.total.toFixed(2)})
+                              </span>
+                            ) : (order.admin_notes?.includes('Regalía') || order.customer_name?.includes('Regalía') || (order as any).tipo_activacion === 'regalia') ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
+                                🎁 Regalía / Paquete ($0.00)
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-900 border border-indigo-300">

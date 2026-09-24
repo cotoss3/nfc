@@ -261,7 +261,7 @@ export async function POST(request: NextRequest) {
         precioVenta: typeof precio_venta === 'number' ? precio_venta : (tipo_activacion === 'venta' ? 35 : 0),
         label: label || existingCard?.label || `TAG ${cleanId}`,
         targetUrl: finalUrl,
-        tipoActivacion: (tipo_activacion as 'venta' | 'prueba') || (precio_venta && precio_venta > 0 ? 'venta' : 'prueba')
+        tipoActivacion: (tipo_activacion as 'venta' | 'prueba' | 'regalia') || (precio_venta && precio_venta > 0 ? 'venta' : 'prueba')
       });
     }
 

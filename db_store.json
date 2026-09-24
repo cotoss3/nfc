@@ -958,7 +958,9 @@
       "claimed": false,
       "type": "google",
       "channels": "both",
-      "created_at": "2026-09-20T04:05:24.172Z"
+      "created_at": "2026-09-20T04:05:24.172Z",
+      "tipo_activacion": "regalia",
+      "precio_venta": 0
     },
     {
       "card_id": "STTT-1004",
@@ -975,7 +977,9 @@
       "claimed": false,
       "type": "google",
       "channels": "both",
-      "created_at": "2026-09-20T05:05:24.172Z"
+      "created_at": "2026-09-20T05:05:24.172Z",
+      "tipo_activacion": "regalia",
+      "precio_venta": 0
     },
     {
       "card_id": "STTT-1005",
@@ -1295,18 +1299,18 @@
   "nfc_orders": [
     {
       "id": "PED-VISITA-STTT1004",
-      "customer_name": "Muestra / Prueba (STTT-1004)",
+      "customer_name": "Regalía Pack Trío () - Tarjeta STTT-1004",
       "customer_email": "prueba.visita@startap.com.pa",
       "customer_phone": "6483-9004",
       "shipping_province": "Panamá",
       "shipping_district": "Venta Presencial",
-      "shipping_address": "Prueba / Demo en Campo",
+      "shipping_address": "Regalía incluida con Stand STTS-1051",
       "payment_method": "presencial",
       "payment_status": "completed",
       "status": "delivered",
       "canal": "visita",
       "total": 0,
-      "admin_notes": "Activación de Muestra/Prueba (Demo) con TAG STTT-1004 (.00 USD)",
+      "admin_notes": "🎁 Tarjeta entregada como Regalía en el paquete de  (Stand STTS-1051)",
       "items": [
         {
           "id": "item-STTT-1004",
@@ -1318,22 +1322,23 @@
           "initial_redirect_url": "https://search.google.com/local/writereview?placeid=ChIJq-9x93SXrI8RCA0Ewoz6iz4"
         }
       ],
-      "created_at": "2026-09-24T01:30:00.000Z"
+      "created_at": "2026-09-24T01:30:00.000Z",
+      "tipo_activacion": "regalia"
     },
     {
       "id": "PED-VISITA-STTT1003",
-      "customer_name": "Muestra / Prueba (STTT-1003)",
+      "customer_name": "Regalía Pack Trío () - Tarjeta STTT-1003",
       "customer_email": "prueba.visita@startap.com.pa",
       "customer_phone": "6483-9004",
       "shipping_province": "Panamá",
       "shipping_district": "Venta Presencial",
-      "shipping_address": "Prueba / Demo en Campo",
+      "shipping_address": "Regalía incluida con Stand STTS-1051",
       "payment_method": "presencial",
       "payment_status": "completed",
       "status": "delivered",
       "canal": "visita",
       "total": 0,
-      "admin_notes": "Activación de Muestra/Prueba (Demo) con TAG STTT-1003 (.00 USD)",
+      "admin_notes": "🎁 Tarjeta entregada como Regalía en el paquete de  (Stand STTS-1051)",
       "items": [
         {
           "id": "item-STTT-1003",
@@ -1345,11 +1350,12 @@
           "initial_redirect_url": "https://search.google.com/local/writereview?placeid=ChIJq-9x93SXrI8RCA0Ewoz6iz4"
         }
       ],
-      "created_at": "2026-09-24T01:30:00.000Z"
+      "created_at": "2026-09-24T01:30:00.000Z",
+      "tipo_activacion": "regalia"
     },
     {
       "id": "PED-VISITA-STTS1051",
-      "customer_name": "Cliente Visita Presencial (Stant STTS-1051)",
+      "customer_name": "Cliente Visita - Pack Trío Comercial ()",
       "customer_email": "venta.visita@startap.com.pa",
       "customer_phone": "6483-9004",
       "shipping_province": "Panamá",
@@ -1360,7 +1366,7 @@
       "status": "delivered",
       "canal": "visita",
       "total": 50,
-      "admin_notes": "Venta comercial en visita presencial con TAG STTS-1051 por .00 USD",
+      "admin_notes": "Venta Pack Trío Comercial (Stand STTS-1051 + 2 Tarjetas de Regalía STTT-1003 y STTT-1004) por .00 USD",
       "items": [
         {
           "id": "item-STTS-1051",

@@ -24,7 +24,8 @@ import {
   DollarSign,
   FlaskConical,
   X,
-  ShoppingBag
+  ShoppingBag,
+  Gift
 } from 'lucide-react';
 
 export default function TagScannerAPKPage() {
@@ -36,8 +37,8 @@ export default function TagScannerAPKPage() {
   const [label, setLabel] = useState('');
   const [isActive, setIsActive] = useState(true);
   
-  // Nuevos estados para Venta vs Prueba
-  const [tipoActivacion, setTipoActivacion] = useState<'venta' | 'prueba'>('venta');
+  // Nuevos estados para Venta vs Regalía vs Prueba
+  const [tipoActivacion, setTipoActivacion] = useState<'venta' | 'prueba' | 'regalia'>('venta');
   const [precioVenta, setPrecioVenta] = useState<string>('35.00');
   const [showActivationModal, setShowActivationModal] = useState(false);
 
@@ -249,7 +250,7 @@ export default function TagScannerAPKPage() {
     }
   };
 
-  const handleConfirmModalActivation = (tipo: 'venta' | 'prueba', precio: number) => {
+  const handleConfirmModalActivation = (tipo: 'venta' | 'prueba' | 'regalia', precio: number) => {
     setShowActivationModal(false);
     setTipoActivacion(tipo);
     setPrecioVenta(precio.toString());
@@ -258,7 +259,7 @@ export default function TagScannerAPKPage() {
 
   const saveTagState = async (
     activeState: boolean, 
-    tipo: 'venta' | 'prueba' = tipoActivacion, 
+    tipo: 'venta' | 'prueba' | 'regalia' = tipoActivacion, 
     precio: number = parseFloat(precioVenta) || 0
   ) => {
     if (!currentTag && !searchCode) return;
@@ -291,7 +292,7 @@ export default function TagScannerAPKPage() {
         setPrecioVenta(finalPrice.toString());
         
         const modoTexto = activeState 
-          ? (tipo === 'venta' ? `🏷️ VENTA ($${finalPrice.toFixed(2)} USD)` : '🧪 PRUEBA / DEMO')
+          ? (tipo === 'venta' ? `🏷️ VENTA ($${finalPrice.toFixed(2)} USD)` : tipo === 'regalia' ? '🎁 REGALÍA / COMBO' : '🧪 PRUEBA / DEMO')
           : 'INACTIVO';
 
         setMessage({ 
@@ -741,33 +742,47 @@ export default function TagScannerAPKPage() {
             </p>
 
             {/* Selección de Tipo */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setTipoActivacion('venta')}
-                className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 font-bold transition text-xs ${
+                className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 font-bold transition text-xs ${
                   tipoActivacion === 'venta'
                     ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/50'
                     : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                 }`}
               >
-                <ShoppingBag className="w-6 h-6 text-emerald-400" />
-                <span>🏷️ VENTA</span>
-                <span className="text-[10px] text-emerald-400 font-semibold">Registra Ingreso</span>
+                <ShoppingBag className="w-5 h-5 text-emerald-400" />
+                <span className="text-[11px]">🏷️ VENTA</span>
+                <span className="text-[9px] text-emerald-400 font-semibold">Con Precio</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTipoActivacion('regalia')}
+                className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 font-bold transition text-xs ${
+                  tipoActivacion === 'regalia'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 ring-2 ring-amber-500/50'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`}
+              >
+                <Gift className="w-5 h-5 text-amber-400" />
+                <span className="text-[11px]">🎁 REGALÍA</span>
+                <span className="text-[9px] text-amber-400 font-semibold">Combo ($0)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setTipoActivacion('prueba')}
-                className={`p-4 rounded-2xl border flex flex-col items-center justify-center gap-2 font-bold transition text-xs ${
+                className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 font-bold transition text-xs ${
                   tipoActivacion === 'prueba'
                     ? 'bg-purple-500/20 border-purple-500 text-purple-300 ring-2 ring-purple-500/50'
                     : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
                 }`}
               >
-                <FlaskConical className="w-6 h-6 text-purple-400" />
-                <span>🧪 PRUEBA</span>
-                <span className="text-[10px] text-purple-400 font-semibold">Demo (Costo $0)</span>
+                <FlaskConical className="w-5 h-5 text-purple-400" />
+                <span className="text-[11px]">🧪 PRUEBA</span>
+                <span className="text-[9px] text-purple-400 font-semibold">Demo ($0)</span>
               </button>
             </div>
 
