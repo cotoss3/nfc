@@ -77,18 +77,35 @@ export default function MasterControlDashboard() {
   // Abandoned Checkouts Search / Filter
   const [abandonedSearch, setAbandonedSearch] = useState('');
 
-  // Live Online Visitors State (100% Real Data)
+  // Live Online Visitors & Persistent Site Visits State (100% Real Data from Supabase)
   const [realActiveSessions, setRealActiveSessions] = useState<any[]>([]);
   const [totalVisitsToday, setTotalVisitsToday] = useState<number>(0);
+  const [visitorStats, setVisitorStats] = useState({
+    today: 0,
+    yesterday: 0,
+    week: 0,
+    month: 0,
+    all: 0,
+    pageviews_today: 0,
+    pageviews_yesterday: 0,
+    pageviews_week: 0,
+    pageviews_month: 0,
+    all_pageviews: 0,
+  });
 
   const fetchLiveSessions = async () => {
     try {
       const res = await fetch('/api/tracking/ping');
       const data = await res.json();
-      if (data.success && Array.isArray(data.sessions)) {
-        setRealActiveSessions(data.sessions);
+      if (data.success) {
+        if (Array.isArray(data.sessions)) {
+          setRealActiveSessions(data.sessions);
+        }
         if (typeof data.total_visits_today === 'number') {
           setTotalVisitsToday(data.total_visits_today);
+        }
+        if (data.stats) {
+          setVisitorStats(data.stats);
         }
       }
     } catch (e) {
@@ -210,13 +227,20 @@ export default function MasterControlDashboard() {
   }, [activeAbandoned, abandonedSearch]);
 
   const totalVisits = useMemo(() => {
-    const calculatedVisits = Math.max(
-      totalVisitsToday,
-      realActiveSessions.length,
-      totalOrdersCount + activeAbandoned.length
-    );
-    return calculatedVisits;
-  }, [totalVisitsToday, realActiveSessions.length, totalOrdersCount, activeAbandoned.length]);
+    if (period === 'hoy') {
+      return Math.max(visitorStats.today, realActiveSessions.length);
+    }
+    if (period === 'ayer') {
+      return visitorStats.yesterday;
+    }
+    if (period === 'semana') {
+      return visitorStats.week;
+    }
+    if (period === 'mes') {
+      return visitorStats.month;
+    }
+    return visitorStats.all;
+  }, [period, visitorStats, realActiveSessions.length]);
 
   const conversionRate = useMemo(() => {
     if (totalVisits === 0) return 0;
@@ -546,17 +570,25 @@ export default function MasterControlDashboard() {
           </div>
         </div>
 
-        {/* 5. % CONVERSIÓN FRENTE A VISITAS */}
-        <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-2xs flex flex-col justify-between min-h-[110px]">
+        {/* 5. % CONVERSIÓN FRENTE A VISITAS (CLICKABLE TO LIVE VISITORS) */}
+        <div 
+          onClick={() => setActiveTab('live_visitors')}
+          className="bg-white border border-slate-200 p-5 rounded-2xl shadow-2xs flex flex-col justify-between min-h-[110px] cursor-pointer hover:border-blue-400 hover:shadow-md transition group"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-slate-600 text-xs font-bold uppercase tracking-wider">% Conversión vs Visitas</span>
-            <span className="p-2 bg-blue-50 rounded-xl">
+            <span className="text-slate-600 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-500" />
+              % Conversión vs Visitas
+            </span>
+            <span className="p-2 bg-blue-50 rounded-xl group-hover:scale-110 transition-transform">
               <Activity className="w-4 h-4 text-blue-600" />
             </span>
           </div>
           <div className="mt-2.5 flex items-center justify-between gap-3 border-t border-slate-100 pt-2">
             <div>
-              <span className="text-xl font-extrabold text-blue-600 font-mono block leading-none">{conversionRate.toFixed(1)}%</span>
+              <span className="text-xl font-extrabold text-blue-600 font-mono block leading-none">
+                {totalVisits > 0 ? `${conversionRate.toFixed(1)}%` : '0.0%'}
+              </span>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight block mt-1">Tasa Conversión</span>
             </div>
             <div className="text-right border-l border-slate-100 pl-3">
@@ -565,7 +597,7 @@ export default function MasterControlDashboard() {
                 <span className="text-[10px] text-slate-500 font-normal">visitas reales</span>
               </div>
               <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">
-                {totalOrdersCount} conversiones ({realActiveSessions.length} en vivo)
+                {totalOrdersCount} {totalOrdersCount === 1 ? 'venta' : 'ventas'} ({realActiveSessions.length} online)
               </div>
             </div>
           </div>
@@ -1008,6 +1040,45 @@ export default function MasterControlDashboard() {
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                 </button>
+              </div>
+            </div>
+
+            {/* Real Persistent Traffic Metrics Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Visitas Hoy</span>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl font-black text-slate-900 font-mono">{visitorStats.today}</span>
+                  <span className="text-[11px] text-slate-500 font-medium">únicos</span>
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">{visitorStats.pageviews_today} vistas de página</span>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Visitas Ayer</span>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl font-black text-slate-900 font-mono">{visitorStats.yesterday}</span>
+                  <span className="text-[11px] text-slate-500 font-medium">únicos</span>
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">{visitorStats.pageviews_yesterday} vistas de página</span>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Últimos 7 Días</span>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl font-black text-slate-900 font-mono">{visitorStats.week}</span>
+                  <span className="text-[11px] text-slate-500 font-medium">únicos</span>
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">{visitorStats.pageviews_week} vistas de página</span>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Total Histórico</span>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                  <span className="text-2xl font-black text-slate-900 font-mono">{visitorStats.all}</span>
+                  <span className="text-[11px] text-slate-500 font-medium">registrados</span>
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">{visitorStats.all_pageviews} vistas totales</span>
               </div>
             </div>
 

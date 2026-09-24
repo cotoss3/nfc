@@ -20,8 +20,9 @@ function getOrSetSessionId(): string {
   if (typeof window === 'undefined') return '';
   let id = sessionStorage.getItem('startap_session_id');
   if (!id) {
-    const randomPart = Math.floor(1000 + Math.random() * 9000);
-    id = `VIS-${randomPart}`;
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+    id = `VIS-${timestamp}-${randomPart}`;
     sessionStorage.setItem('startap_session_id', id);
   }
   return id;
