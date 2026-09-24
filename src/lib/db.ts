@@ -2317,18 +2317,18 @@ class LocalDbService {
     }
 
     for (const card of cards) {
-      const isVenta = card.tipo_activacion === 'venta' || (typeof card.precio_venta === 'number' && card.precio_venta > 0);
-      const isPrueba = card.tipo_activacion === 'prueba';
+      const isVenta = (card.tipo_activacion === 'venta' && typeof card.precio_venta === 'number' && card.precio_venta > 0) || (typeof card.precio_venta === 'number' && card.precio_venta > 0);
+      const isRegalia = card.tipo_activacion === 'regalia';
 
-      if (isVenta || (isPrueba && card.is_active)) {
+      if (isVenta || isRegalia) {
         const orderId = `PED-VISITA-${card.card_id.replace(/[^A-Za-z0-9]/g, '')}`;
         if (!existingOrderIds.has(orderId)) {
           this.registrarVentaVisita({
             cardId: card.card_id,
-            precioVenta: card.precio_venta || (isVenta ? 35 : 0),
+            precioVenta: isVenta ? Number(card.precio_venta || 0) : 0,
             label: card.label,
             targetUrl: card.target_url,
-            tipoActivacion: isVenta ? 'venta' : 'prueba'
+            tipoActivacion: isVenta ? 'venta' : 'regalia'
           });
           existingOrderIds.add(orderId);
           count++;

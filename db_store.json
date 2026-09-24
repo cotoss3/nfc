@@ -924,7 +924,9 @@
       "claimed": false,
       "type": "google",
       "channels": "both",
-      "created_at": "2026-09-20T02:05:24.172Z"
+      "created_at": "2026-09-20T02:05:24.172Z",
+      "estado": "en_stock",
+      "order_id": null
     },
     {
       "card_id": "STTT-1002",

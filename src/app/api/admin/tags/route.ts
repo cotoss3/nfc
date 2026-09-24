@@ -254,14 +254,26 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Sincronización Automática con Inventario y Reporte de Ventas (OMS)
+    // SÓLO se asienta en ventas si fue explícitamente confirmado como VENTA con precio > 0, o como REGALÍA
     let orderInfo: any = null;
-    if (is_active) {
+    const isExplicitVenta = is_active && tipo_activacion === 'venta' && typeof precio_venta === 'number' && precio_venta > 0;
+    const isExplicitRegalia = is_active && tipo_activacion === 'regalia';
+
+    if (isExplicitVenta) {
       orderInfo = dbLocal.registrarVentaVisita({
         cardId: cleanId,
-        precioVenta: typeof precio_venta === 'number' ? precio_venta : (tipo_activacion === 'venta' ? 35 : 0),
+        precioVenta: precio_venta,
         label: label || existingCard?.label || `TAG ${cleanId}`,
         targetUrl: finalUrl,
-        tipoActivacion: (tipo_activacion as 'venta' | 'prueba' | 'regalia') || (precio_venta && precio_venta > 0 ? 'venta' : 'prueba')
+        tipoActivacion: 'venta'
+      });
+    } else if (isExplicitRegalia) {
+      orderInfo = dbLocal.registrarVentaVisita({
+        cardId: cleanId,
+        precioVenta: 0,
+        label: label || existingCard?.label || `TAG ${cleanId}`,
+        targetUrl: finalUrl,
+        tipoActivacion: 'regalia'
       });
     }
 

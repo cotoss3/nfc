@@ -72,12 +72,12 @@ export default function TagScannerAPKPage() {
         setCurrentTag(data.card);
         setTargetUrl(data.card.target_url || data.card.nfc_target_url || '');
         setLabel(data.card.label || '');
-        setIsActive(data.card.is_active !== false);
-        setTipoActivacion(data.card.tipo_activacion || 'venta');
+        setIsActive(Boolean(data.card.is_active));
+        setTipoActivacion(data.card.tipo_activacion || 'prueba');
         setPrecioVenta(
           typeof data.card.precio_venta === 'number' && data.card.precio_venta > 0 
             ? data.card.precio_venta.toString() 
-            : '35.00'
+            : '0.00'
         );
         setMessage({ type: 'success', text: `TAG ${data.card.card_id} localizado exitosamente` });
       } else {
