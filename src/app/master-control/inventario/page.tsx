@@ -306,8 +306,17 @@ export default function InventarioPage() {
             type: 'salida_visita' as any,
             product_name: 'Stand NFC de Mesa',
             quantity_change: -1,
-            resulting_stock: 99,
-            reference: 'Venta Presencial #PED-VISITA-STTS1051 ($50.00)'
+            resulting_stock: 100,
+            reference: 'Venta Presencial #PED-VISITA-STTS1051 ($25.00) - Arepitas Q Chimba'
+          },
+          {
+            id: 'MOV-VENTA-STT1004',
+            created_at: '2026-09-24T01:30:00+00:00',
+            type: 'salida_visita' as any,
+            product_name: 'Placa NFC para Reseñas de Google',
+            quantity_change: -1,
+            resulting_stock: 51,
+            reference: 'Venta Pack Trío #PED-VISITA-STT1004 ($50.00)'
           },
           {
             id: 'MOV-REG-STTT1003',
@@ -316,7 +325,7 @@ export default function InventarioPage() {
             product_name: 'Tarjeta NFC de Bolsillo',
             quantity_change: -1,
             resulting_stock: 19,
-            reference: 'Regalía Pack Trío #PED-VISITA-STTT1003 ($0.00)'
+            reference: 'Regalía Pack Trío #PED-VISITA-STTT1003 ($0.00) vinculada a Placa STT-1004'
           },
           {
             id: 'MOV-REG-STTT1004',
@@ -325,7 +334,7 @@ export default function InventarioPage() {
             product_name: 'Tarjeta NFC de Bolsillo',
             quantity_change: -1,
             resulting_stock: 18,
-            reference: 'Regalía Pack Trío #PED-VISITA-STTT1004 ($0.00)'
+            reference: 'Regalía Pack Trío #PED-VISITA-STTT1004 ($0.00) vinculada a Placa STT-1004'
           },
         ]);
 
