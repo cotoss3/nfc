@@ -103,6 +103,7 @@ export async function GET(
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex, nofollow">
         <title>Dispositivo Inactivo | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
@@ -129,7 +130,11 @@ export async function GET(
       </html>
     `, {
       status: 403,
-      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex, nofollow'
+      }
     });
   }
 
@@ -141,6 +146,7 @@ export async function GET(
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex, nofollow">
         <title>Canal no habilitado | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
@@ -163,7 +169,11 @@ export async function GET(
       </html>
     `, {
       status: 403,
-      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex, nofollow'
+      }
     });
   }
 
@@ -174,6 +184,7 @@ export async function GET(
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex, nofollow">
         <title>Canal no habilitado | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
@@ -196,7 +207,11 @@ export async function GET(
       </html>
     `, {
       status: 403,
-      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex, nofollow'
+      }
     });
   }
 
@@ -214,30 +229,19 @@ export async function GET(
   const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
   const referrer = isQr ? 'QR Code' : 'NFC Scan';
 
-  // Registrar analítica de escaneo asegurando escritura en Supabase y dbLocal
+  // 5. Persistencia segura en Supabase y dbLocal (sin condición de carrera de 250ms)
   try {
-    const scanPromise = (async () => {
-      try {
-        dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
-        if (supabase) {
-          await supabase.from('scans').insert({
-            id: `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-            card_id: resolvedCardId,
-            device,
-            referrer,
-            scan_type: scanType,
-            group_name: groupName
-          });
-        }
-      } catch (e) {
-        console.error('Error registrando analítica:', e);
-      }
-    })();
-
-    await Promise.race([
-      scanPromise,
-      new Promise(resolve => setTimeout(resolve, 250))
-    ]);
+    dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
+    if (supabase) {
+      await supabase.from('scans').insert({
+        id: `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        card_id: resolvedCardId,
+        device,
+        referrer,
+        scan_type: scanType,
+        group_name: groupName
+      });
+    }
   } catch (err) {
     console.error('Error registrando analítica:', err);
   }
@@ -257,6 +261,7 @@ export async function GET(
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex, nofollow">
         <title>Enlace no configurado | starTAP Panamá</title>
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
@@ -288,7 +293,8 @@ export async function GET(
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'X-Robots-Tag': 'noindex, nofollow'
       }
     });
   }
@@ -298,27 +304,357 @@ export async function GET(
     selectedUrl = `https://${selectedUrl}`;
   }
 
+  // Validar URL final; si falla, usar fallback seguro
+  let safeTargetUrl = selectedUrl;
   try {
-    return NextResponse.redirect(new URL(selectedUrl), {
-      status: 307,
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'Surrogate-Control': 'no-store'
-      }
-    });
-  } catch (err) {
-    console.error('Error procesando URL de redirección:', err);
-    return NextResponse.redirect(new URL('https://google.com'), {
-      status: 307,
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'Surrogate-Control': 'no-store'
-      }
-    });
+    safeTargetUrl = new URL(selectedUrl).toString();
+  } catch {
+    safeTargetUrl = 'https://google.com';
   }
+
+  const displayCommerceName =
+    cardLabel && cardLabel !== 'Dispositivo TAP'
+      ? cardLabel
+      : groupName && groupName !== 'General'
+      ? groupName
+      : cardLabel || resolvedCardId;
+
+  const safeCardIdJson = JSON.stringify(resolvedCardId);
+  const safeGroupNameJson = JSON.stringify(groupName);
+  const safeScanTypeJson = JSON.stringify(scanType);
+  const safeDeviceJson = JSON.stringify(device);
+  const safeTargetUrlJson = JSON.stringify(safeTargetUrl);
+
+  // 6. Pantalla Puente de 2 Segundos (Diseño Oscuro starTAP Panamá + Ad Slot + Anti-Rebote GA4 + SEO Noindex)
+  return new NextResponse(`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Redirigiendo a ${escaparHtml(displayCommerceName)} | starTAP Panamá</title>
+  <!-- Google Analytics 4 (G-VQH5VW4KF9) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQH5VW4KF9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VQH5VW4KF9', { send_page_view: true });
+
+    // Evento 1 (Segundo 0): Escaneo inicial starTAP
+    gtag('event', 'scan_startap', {
+      card_id: ${safeCardIdJson},
+      group_name: ${safeGroupNameJson},
+      scan_type: ${safeScanTypeJson},
+      device: ${safeDeviceJson}
+    });
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 70%);
+      color: #f8fafc;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 16px;
+      overflow-x: hidden;
+    }
+    .bridge-card {
+      width: 100%;
+      max-width: 420px;
+      margin: auto;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.22);
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(245, 158, 11, 0.08);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .status-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .spinner-ring {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid rgba(245, 158, 11, 0.2);
+      border-top-color: #f59e0b;
+      animation: spin 0.85s linear infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .status-title {
+      font-size: 17px;
+      line-height: 1.45;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .status-title strong {
+      color: #ffffff;
+      font-weight: 800;
+      display: block;
+      font-size: 21px;
+      margin-top: 4px;
+      letter-spacing: -0.01em;
+    }
+    /* Espacio Publicitario Preparado (Ad Slot) */
+    .ad-slot {
+      position: relative;
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.75), rgba(2, 6, 23, 0.9));
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 20px;
+      padding: 18px 16px;
+      text-align: left;
+      overflow: hidden;
+    }
+    .ad-slot-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .ad-slot-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .ad-slot-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #020617;
+      font-weight: 900;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+    }
+    .ad-slot-copy h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 3px;
+    }
+    .ad-slot-copy p {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+    .skip-btn {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      color: #020617;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.45);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .skip-btn:active {
+      transform: scale(0.98);
+    }
+    .progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .countdown-text {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(30, 41, 59, 0.9);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #fde047);
+      border-radius: 999px;
+      transition: width 2s linear;
+    }
+    .brand-footer {
+      margin-top: 16px;
+      text-align: center;
+    }
+    .brand-footer a {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .brand-footer a:hover {
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <div></div>
+
+  <main class="bridge-card">
+    <!-- 1. Encabezado de Estado -->
+    <div class="status-header">
+      <div class="spinner-ring" aria-hidden="true"></div>
+      <span class="status-badge">✓ Conexión Verificada • ${escaparHtml(resolvedCardId)}</span>
+      <p class="status-title">
+        Estás siendo dirigido a
+        <strong>${escaparHtml(displayCommerceName)}...</strong>
+      </p>
+    </div>
+
+    <!-- 2. Espacio Publicitario Preparado (Ad Slot) -->
+    <section id="startap-ad-slot" class="ad-slot" aria-label="Espacio patrocinado starTAP">
+      <span class="ad-slot-tag">Verificación Oficial • Espacio Destacado</span>
+      <div class="ad-slot-body">
+        <div class="ad-slot-icon">★</div>
+        <div class="ad-slot-copy">
+          <h3>starTAP Panamá • Tap &amp; Connect</h3>
+          <p>Dispositivo inteligente verificado. Impulsa tus reseñas de Google, redes y catálogo digital al instante.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Botón de Salto Inmediato (Skip Button) -->
+    <button type="button" id="skip-btn" class="skip-btn">
+      <span>Saltar ahora →</span>
+    </button>
+
+    <!-- 4. Contador inferior y barra de progreso -->
+    <div class="progress-wrap">
+      <p id="countdown-label" class="countdown-text">Redirigiendo automáticamente en 2s...</p>
+      <div class="progress-track">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 5. Pie de marca -->
+  <footer class="brand-footer">
+    <a href="/" target="_blank" rel="noopener noreferrer">
+      Tecnología sin contacto por starTAP Panamá
+    </a>
+  </footer>
+
+  <script>
+    (function() {
+      var targetUrl = ${safeTargetUrlJson};
+      var hasRedirected = false;
+      var countdownLabel = document.getElementById('countdown-label');
+      var progressBar = document.getElementById('progress-bar');
+      var skipBtn = document.getElementById('skip-btn');
+
+      // Iniciar animación de barra de progreso de 2s
+      requestAnimationFrame(function() {
+        if (progressBar) {
+          progressBar.style.width = '100%';
+        }
+      });
+
+      function executeRedirect(method) {
+        if (hasRedirected) return;
+        hasRedirected = true;
+
+        try {
+          if (typeof gtag === 'function') {
+            // Evento 2: Sesión con interacción (Anti-Rebote GA4) con beacon
+            gtag('event', 'redirect_complete', {
+              card_id: ${safeCardIdJson},
+              group_name: ${safeGroupNameJson},
+              method: method,
+              engagement_time_msec: 2000,
+              transport_type: 'beacon'
+            });
+          }
+        } catch (e) {}
+
+        window.location.replace(targetUrl);
+      }
+
+      if (skipBtn) {
+        skipBtn.addEventListener('click', function() {
+          executeRedirect('skip_button');
+        });
+      }
+
+      setTimeout(function() {
+        if (!hasRedirected && countdownLabel) {
+          countdownLabel.textContent = 'Redirigiendo automáticamente en 1s...';
+        }
+      }, 1000);
+
+      setTimeout(function() {
+        if (!hasRedirected && countdownLabel) {
+          countdownLabel.textContent = 'Redirigiendo automáticamente en 0s...';
+        }
+        executeRedirect('auto_2s');
+      }, 2000);
+    })();
+  </script>
+</body>
+</html>`, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0, private',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
+      'X-Robots-Tag': 'noindex, nofollow'
+    }
+  });
 }
+
 

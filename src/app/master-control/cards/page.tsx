@@ -31,6 +31,7 @@ import {
   Boxes,
   X
 } from 'lucide-react';
+import { trackGA, itemsParaGA } from '@/lib/googleanalytics';
 
 export default function CardsManagementPage() {
   const [cards, setCards] = useState<NfcCard[]>([]);
@@ -56,6 +57,9 @@ export default function CardsManagementPage() {
   const [newOwnerEmail, setNewOwnerEmail] = useState('');
   const [newOwnerName, setNewOwnerName] = useState('');
   const [newIsActive, setNewIsActive] = useState(true);
+  const [newTipoActivacion, setNewTipoActivacion] = useState<'venta' | 'regalia' | 'prueba'>('venta');
+  const [newPrecioVenta, setNewPrecioVenta] = useState<string>('35.00');
+  const [newMetodoPago, setNewMetodoPago] = useState<'Yappy' | 'Efectivo' | 'ACH' | 'Tarjeta / POS'>('Yappy');
   const [createSuccessMsg, setCreateSuccessMsg] = useState('');
 
   // Edit Card Modal States
@@ -205,6 +209,7 @@ export default function CardsManagementPage() {
     const cleanEmail = newOwnerEmail.trim().toLowerCase();
     const isClientEmail = Boolean(cleanEmail && cleanEmail !== 'admin@startap.com.pa' && cleanEmail !== 'info@startap.com.pa');
     const cleanName = newOwnerName.trim() || (isClientEmail ? cleanEmail.split('@')[0] : 'Cliente starTAP');
+    const numericPrice = newTipoActivacion === 'venta' ? (parseFloat(newPrecioVenta) || 0) : 0;
 
     const newCardObj: NfcCard = {
       card_id: cleanCode,
@@ -216,8 +221,10 @@ export default function CardsManagementPage() {
       target_url: newUrl.trim() || 'https://search.google.com/local/writereview?placeid=...',
       nfc_target_url: newUrl.trim() || 'https://search.google.com/local/writereview?placeid=...',
       is_active: newIsActive,
-      claimed: isClientEmail ? true : false,
-      estado: isClientEmail ? (newUrl.trim() ? 'configurado' : 'asignado') : 'en_stock',
+      claimed: isClientEmail || newTipoActivacion === 'venta' || newTipoActivacion === 'regalia',
+      estado: isClientEmail || newTipoActivacion === 'venta' || newTipoActivacion === 'regalia' ? (newUrl.trim() ? 'configurado' : 'asignado') : 'en_stock',
+      tipo_activacion: newTipoActivacion,
+      precio_venta: numericPrice,
       type: newType,
       channels: newChannels,
       created_at: new Date().toISOString(),
@@ -239,6 +246,67 @@ export default function CardsManagementPage() {
       supabase.from('nfc_cards').upsert([newCardObj]).then(({ error }) => {
         if (error) console.error('Error guardando tarjeta en Supabase:', error);
       });
+    }
+
+    // Si está activo, sincronizar orden presencial en OMS e Inventario + Disparar Analítica GA4
+    if (newIsActive) {
+      if (newTipoActivacion === 'venta' && numericPrice > 0) {
+        const resVenta = dbLocal.registrarVentaVisita({
+          cardId: cleanCode,
+          precioVenta: numericPrice,
+          customerName: cleanName,
+          customerEmail: cleanEmail || undefined,
+          label: newCardObj.label,
+          targetUrl: newCardObj.target_url,
+          tipoActivacion: 'venta',
+        });
+
+        const txId = resVenta.order?.id || `PED-VISITA-${cleanCode.replace(/[^A-Za-z0-9]/g, '')}`;
+        const prodId = cleanCode.startsWith('STTS-')
+          ? 'stand-nfc-mesa'
+          : cleanCode.startsWith('STTT-')
+          ? 'tarjeta-nfc-bolsillo'
+          : 'placa-nfc-mostrador';
+        const prodName = cleanCode.startsWith('STTS-')
+          ? 'Stand NFC de Mesa'
+          : cleanCode.startsWith('STTT-')
+          ? 'Tarjeta NFC de Bolsillo'
+          : 'Placa NFC para Reseñas de Google';
+
+        trackGA('purchase', {
+          transaction_id: txId,
+          value: numericPrice,
+          currency: 'USD',
+          affiliation: 'Venta Física Presencial',
+          payment_type: newMetodoPago,
+          items: itemsParaGA([
+            {
+              product_id: prodId,
+              product_name: prodName,
+              quantity: 1,
+              price: numericPrice,
+            },
+          ]),
+        });
+      } else {
+        if (newTipoActivacion === 'regalia') {
+          dbLocal.registrarVentaVisita({
+            cardId: cleanCode,
+            precioVenta: 0,
+            customerName: cleanName,
+            customerEmail: cleanEmail || undefined,
+            label: newCardObj.label,
+            targetUrl: newCardObj.target_url,
+            tipoActivacion: 'regalia',
+          });
+        }
+
+        // Filtro de Regalías y Demos (total === 0): NO disparar 'purchase'
+        trackGA('regalia_demo', {
+          card_id: cleanCode,
+          tipo_activacion: newTipoActivacion,
+        });
+      }
     }
 
     setCreateSuccessMsg(`¡Dispositivo TAG "${cleanCode}" registrado con éxito!`);
@@ -387,10 +455,10 @@ export default function CardsManagementPage() {
 
       {/* KPI STAT CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-slate-950 text-white p-4.5 rounded-2xl shadow-md border border-slate-800">
-          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Total Dispositivos TAG</span>
-          <span className="text-2xl font-black text-amber-400 font-mono mt-1 block">{stats.total}</span>
-          <span className="text-[10px] text-slate-400 block mt-0.5">en base de datos</span>
+        <div className="bg-amber-50/70 text-slate-900 p-4.5 rounded-2xl shadow-2xs border border-amber-200">
+          <span className="text-amber-900 text-[10px] font-bold uppercase tracking-wider block">Total Dispositivos TAG</span>
+          <span className="text-2xl font-black text-amber-700 font-mono mt-1 block">{stats.total}</span>
+          <span className="text-[10px] text-amber-800/80 block mt-0.5">en base de datos</span>
         </div>
 
         <div className="bg-white border border-emerald-200 p-4.5 rounded-2xl shadow-2xs">
@@ -567,6 +635,84 @@ export default function CardsManagementPage() {
               </div>
             </div>
 
+            {/* CLASIFICACIÓN COMERCIAL & GA4 */}
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+              <label className="font-bold text-slate-700 block">Tipo de Operación (Inventario & Analytics GA4) *</label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewTipoActivacion('venta');
+                    if (parseFloat(newPrecioVenta) === 0) setNewPrecioVenta('35.00');
+                  }}
+                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition ${
+                    newTipoActivacion === 'venta'
+                      ? 'bg-emerald-600 text-white border-emerald-700'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  🏷️ Venta Física
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewTipoActivacion('regalia');
+                    setNewPrecioVenta('0.00');
+                  }}
+                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition ${
+                    newTipoActivacion === 'regalia'
+                      ? 'bg-amber-500 text-slate-950 border-amber-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  🎁 Regalía ($0)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewTipoActivacion('prueba');
+                    setNewPrecioVenta('0.00');
+                  }}
+                  className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition ${
+                    newTipoActivacion === 'prueba'
+                      ? 'bg-purple-600 text-white border-purple-700'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  🧪 Demo ($0)
+                </button>
+              </div>
+
+              {newTipoActivacion === 'venta' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-700 block mb-1">Precio Venta ($ USD)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={newPrecioVenta}
+                      onChange={e => setNewPrecioVenta(e.target.value)}
+                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-mono font-bold text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-700 block mb-1">Método de Pago</label>
+                    <select
+                      value={newMetodoPago}
+                      onChange={e => setNewMetodoPago(e.target.value as any)}
+                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-800"
+                    >
+                      <option value="Yappy">Yappy</option>
+                      <option value="Efectivo">Efectivo</option>
+                      <option value="ACH">ACH / Transferencia</option>
+                      <option value="Tarjeta / POS">Tarjeta / POS</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="flex items-center gap-2 pt-1">
               <input
                 type="checkbox"
@@ -582,9 +728,9 @@ export default function CardsManagementPage() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-2 active:scale-[0.99]"
             >
-              <Plus className="w-4 h-4 text-amber-400" />
+              <Plus className="w-4 h-4 text-white" />
               <span>Guardar y Vincular Dispositivo TAG</span>
             </button>
           </form>

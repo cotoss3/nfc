@@ -122,23 +122,43 @@ export async function GET(request: NextRequest) {
       comboCard2 = `STTT-${n}`;
     }
 
+    const enrichedCards = allCards.map(c => {
+      const cid = String(c.card_id || '').toUpperCase();
+      const free = isCardFreeInStock(c);
+      return {
+        ...c,
+        is_free_stock: free,
+        scan_count: scanCounts[cid] || 0,
+      };
+    });
+
+    const ventasCount = enrichedCards.filter(c => !c.is_free_stock && c.tipo_activacion === 'venta').length;
+    const regaliasCount = enrichedCards.filter(c => !c.is_free_stock && c.tipo_activacion === 'regalia').length;
+    const pruebasCount = enrichedCards.filter(c => !c.is_free_stock && c.tipo_activacion !== 'venta' && c.tipo_activacion !== 'regalia').length;
+
+    const statsObj = {
+      total_cards: enrichedCards.length,
+      active_cards: enrichedCards.filter(c => c.is_active).length,
+      ventas_count: ventasCount,
+      regalias_count: regaliasCount,
+      pruebas_count: pruebasCount,
+      free_total: sttInfo.freeCount + stttInfo.freeCount + sttsInfo.freeCount,
+      total_scans: allScans.length,
+      stt_free: sttInfo.freeCount,
+      sttt_free: stttInfo.freeCount,
+      stts_free: sttsInfo.freeCount,
+      next_stt: sttInfo.nextCode,
+      next_sttt: stttInfo.nextCode,
+      next_stts: sttsInfo.nextCode,
+      combo_sttt_pair: [comboCard1, comboCard2],
+    };
+
     return NextResponse.json({
       success: true,
-      cards: allCards,
+      cards: enrichedCards,
       scan_counts: scanCounts,
-      summary: {
-        total_cards: allCards.length,
-        active_cards: allCards.filter(c => c.is_active).length,
-        free_total: sttInfo.freeCount + stttInfo.freeCount + sttsInfo.freeCount,
-        total_scans: allScans.length,
-        stt_free: sttInfo.freeCount,
-        sttt_free: stttInfo.freeCount,
-        stts_free: sttsInfo.freeCount,
-        next_stt: sttInfo.nextCode,
-        next_sttt: stttInfo.nextCode,
-        next_stts: sttsInfo.nextCode,
-        combo_sttt_pair: [comboCard1, comboCard2],
-      }
+      stats: statsObj,
+      summary: statsObj,
     });
   }
 
@@ -511,6 +531,7 @@ export async function POST(request: NextRequest) {
       tipo_activacion,
       precio_venta,
       order_id: mainRes.orderInfo?.order?.id,
+      order: mainRes.orderInfo?.order || null,
       nfc_link: `https://startap.com.pa/r/${mainRes.cleanId}?m=nfc`,
       qr_link: `https://startap.com.pa/r/${mainRes.cleanId}?m=qr`,
       message: `TAG ${mainRes.cleanId}${comboMsg} guardado exitosamente` + (mainRes.orderInfo?.order ? ` y asentado en ventas (#${mainRes.orderInfo.order.id})` : ''),

@@ -40,6 +40,7 @@ import {
   ArrowUpRight,
   Download
 } from 'lucide-react';
+import { trackGA, itemsParaGA } from '@/lib/googleanalytics';
 
 interface TagRecord {
   card_id: string;
@@ -99,6 +100,7 @@ export default function TagScannerWorkstationPage() {
   // Clasificación financiera
   const [tipoActivacion, setTipoActivacion] = useState<'venta' | 'prueba' | 'regalia'>('venta');
   const [precioVenta, setPrecioVenta] = useState<string>('35.00');
+  const [metodoPagoFisico, setMetodoPagoFisico] = useState<'Yappy' | 'Efectivo' | 'ACH' | 'Tarjeta / POS'>('Yappy');
 
   // Modo Combo Pack Trío ($50: 1 Placa + 2 Tarjetas de Regalía)
   const [operationMode, setOperationMode] = useState<'single' | 'combo'>('single');
@@ -477,9 +479,66 @@ export default function TagScannerWorkstationPage() {
       const data = await res.json();
 
       if (data.success) {
+        const cleanSavedId = String(data.card_id || tagId).toUpperCase();
+
+        // ANALÍTICA GA4: Registrar Venta Física (total > 0) o Evento de Regalía/Demo (total === 0)
+        if (isActive) {
+          if (tipoActivacion === 'venta' && numericPrice > 0) {
+            const txId = data.order_id || `PED-VISITA-${cleanSavedId.replace(/[^A-Za-z0-9]/g, '')}`;
+            const prodId =
+              operationMode === 'combo'
+                ? 'pack-trio-comercial'
+                : cleanSavedId.startsWith('STTS-')
+                ? 'stand-nfc-mesa'
+                : cleanSavedId.startsWith('STTT-')
+                ? 'tarjeta-nfc-bolsillo'
+                : 'placa-nfc-mostrador';
+            const prodName =
+              operationMode === 'combo'
+                ? 'Combo Pack Trío (1 Placa + 2 Tarjetas NFC)'
+                : cleanSavedId.startsWith('STTS-')
+                ? 'Stand NFC de Mesa'
+                : cleanSavedId.startsWith('STTT-')
+                ? 'Tarjeta NFC de Bolsillo'
+                : 'Placa NFC para Reseñas de Google';
+
+            trackGA('purchase', {
+              transaction_id: txId,
+              value: numericPrice,
+              currency: 'USD',
+              affiliation: 'Venta Física Presencial',
+              payment_type: metodoPagoFisico,
+              items: itemsParaGA([
+                {
+                  product_id: prodId,
+                  product_name: prodName,
+                  quantity: 1,
+                  price: numericPrice,
+                },
+              ]),
+            });
+
+            // Si es Combo Pack, registrar las tarjetas acompañantes de cortesía como 'regalia_demo' ($0)
+            if (extraCards.length > 0) {
+              extraCards.forEach((extraCode) => {
+                trackGA('regalia_demo', {
+                  card_id: extraCode,
+                  tipo_activacion: 'regalia',
+                });
+              });
+            }
+          } else {
+            // Filtro de Regalías y Demos (total === 0): NO disparar 'purchase'
+            trackGA('regalia_demo', {
+              card_id: cleanSavedId,
+              tipo_activacion: tipoActivacion,
+            });
+          }
+        }
+
         const modoTexto = isActive
           ? tipoActivacion === 'venta'
-            ? `Venta Comercial ($${numericPrice.toFixed(2)})`
+            ? `Venta Comercial ($${numericPrice.toFixed(2)} vía ${metodoPagoFisico})`
             : tipoActivacion === 'regalia'
             ? 'Regalía ($0.00)'
             : 'Demo / Muestra ($0.00)'
@@ -1069,6 +1128,27 @@ export default function TagScannerWorkstationPage() {
                         className="w-full pl-8 pr-14 py-2 rounded-xl bg-white border border-emerald-300 text-slate-900 font-mono text-sm font-black focus:outline-none focus:border-emerald-600"
                       />
                       <span className="absolute right-3.5 top-2.5 text-xs font-bold text-slate-400">USD</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-1 border-t border-emerald-200/70">
+                      <span className="text-[11px] font-bold text-emerald-900">
+                        Método de Pago Presencial (GA4):
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(['Yappy', 'Efectivo', 'ACH', 'Tarjeta / POS'] as const).map((metodo) => (
+                          <button
+                            key={metodo}
+                            type="button"
+                            onClick={() => setMetodoPagoFisico(metodo)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
+                              metodoPagoFisico === metodo
+                                ? 'bg-slate-900 text-white border-slate-900'
+                                : 'bg-white text-emerald-900 border-emerald-300 hover:bg-emerald-100'
+                            }`}
+                          >
+                            {metodo}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}

@@ -41,6 +41,7 @@ import {
   ShieldCheck,
   Warehouse
 } from 'lucide-react';
+import { trackGA, itemsParaGA } from '@/lib/googleanalytics';
 
 export interface InventoryBatch {
   id: string; // e.g. LOTE-2026-09A
@@ -129,6 +130,9 @@ export default function InventarioPage() {
   const [tagChannels, setTagChannels] = useState<'both' | 'nfc' | 'qr'>('both');
   const [tagOwnerEmail, setTagOwnerEmail] = useState('');
   const [tagOwnerName, setTagOwnerName] = useState('');
+  const [tagTipoActivacion, setTagTipoActivacion] = useState<'venta' | 'regalia' | 'prueba'>('venta');
+  const [tagPrecioVenta, setTagPrecioVenta] = useState<string>('35.00');
+  const [tagMetodoPago, setTagMetodoPago] = useState<'Yappy' | 'Efectivo' | 'ACH' | 'Tarjeta / POS'>('Yappy');
   const [tagSuccessMsg, setTagSuccessMsg] = useState('');
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -719,26 +723,34 @@ export default function InventarioPage() {
     e.preventDefault();
     if (!tagCode.trim()) return alert('Ingresa el código serial (ej. STT-1050)');
 
+    const cleanCode = tagCode.trim().toUpperCase();
     const cleanEmail = tagOwnerEmail.trim().toLowerCase() || 'admin@startap.com.pa';
     const cleanName = tagOwnerName.trim() || 'Cliente starTAP';
+    const numericPrice = tagTipoActivacion === 'venta' ? (parseFloat(tagPrecioVenta) || 0) : 0;
 
     const newCardObj: NfcCard = {
-      card_id: tagCode.trim().toUpperCase(),
-      activation_code: tagCode.trim().toUpperCase(),
+      card_id: cleanCode,
+      activation_code: cleanCode,
       owner_id: 'user-session',
       owner_name: cleanName,
       owner_email: cleanEmail,
-      label: tagLabel.trim() || `Dispositivo TAP (${tagCode.trim().toUpperCase()})`,
+      label: tagLabel.trim() || `Dispositivo TAP (${cleanCode})`,
       target_url: tagUrl.trim() || 'https://search.google.com/local/writereview?placeid=...',
       nfc_target_url: tagUrl.trim() || 'https://search.google.com/local/writereview?placeid=...',
       is_active: true,
       claimed: true,
+      estado: 'configurado',
+      tipo_activacion: tagTipoActivacion,
+      precio_venta: numericPrice,
       type: tagType,
       channels: tagChannels,
       created_at: new Date().toISOString(),
     };
 
-    const updated = [newCardObj, ...cards];
+    const existingIdx = cards.findIndex(c => c.card_id === cleanCode);
+    const updated = existingIdx !== -1
+      ? cards.map((c, idx) => (idx === existingIdx ? newCardObj : c))
+      : [newCardObj, ...cards];
     setCards(updated);
     dbLocal.setStorageItem('nfc_cards', updated);
 
@@ -748,7 +760,66 @@ export default function InventarioPage() {
       });
     }
 
-    setTagSuccessMsg(`¡TAG "${newCardObj.card_id}" creado exitosamente!`);
+    // Registrar orden presencial en OMS / Inventario y disparar Analítica GA4
+    if (tagTipoActivacion === 'venta' && numericPrice > 0) {
+      const resVenta = dbLocal.registrarVentaVisita({
+        cardId: cleanCode,
+        precioVenta: numericPrice,
+        customerName: cleanName,
+        customerEmail: cleanEmail !== 'admin@startap.com.pa' ? cleanEmail : undefined,
+        label: newCardObj.label,
+        targetUrl: newCardObj.target_url,
+        tipoActivacion: 'venta',
+      });
+
+      const txId = resVenta.order?.id || `PED-VISITA-${cleanCode.replace(/[^A-Za-z0-9]/g, '')}`;
+      const prodId = cleanCode.startsWith('STTS-')
+        ? 'stand-nfc-mesa'
+        : cleanCode.startsWith('STTT-')
+        ? 'tarjeta-nfc-bolsillo'
+        : 'placa-nfc-mostrador';
+      const prodName = cleanCode.startsWith('STTS-')
+        ? 'Stand NFC de Mesa'
+        : cleanCode.startsWith('STTT-')
+        ? 'Tarjeta NFC de Bolsillo'
+        : 'Placa NFC para Reseñas de Google';
+
+      trackGA('purchase', {
+        transaction_id: txId,
+        value: numericPrice,
+        currency: 'USD',
+        affiliation: 'Venta Física Presencial',
+        payment_type: tagMetodoPago,
+        items: itemsParaGA([
+          {
+            product_id: prodId,
+            product_name: prodName,
+            quantity: 1,
+            price: numericPrice,
+          },
+        ]),
+      });
+    } else {
+      if (tagTipoActivacion === 'regalia') {
+        dbLocal.registrarVentaVisita({
+          cardId: cleanCode,
+          precioVenta: 0,
+          customerName: cleanName,
+          customerEmail: cleanEmail !== 'admin@startap.com.pa' ? cleanEmail : undefined,
+          label: newCardObj.label,
+          targetUrl: newCardObj.target_url,
+          tipoActivacion: 'regalia',
+        });
+      }
+
+      // Filtro de Regalías y Demos (total === 0): NO disparar 'purchase'
+      trackGA('regalia_demo', {
+        card_id: cleanCode,
+        tipo_activacion: tagTipoActivacion,
+      });
+    }
+
+    setTagSuccessMsg(`¡TAG "${newCardObj.card_id}" creado y registrado exitosamente!`);
     const nextTagCode = dbLocal.getNextStickerCode(tagHardwareType);
     setTagCode(nextTagCode);
     const labelMap: Record<'stand' | 'plate' | 'card', string> = {
@@ -1671,11 +1742,81 @@ export default function InventarioPage() {
                   </div>
                 </div>
 
+                {/* Tipo de Activación (Venta Física vs Regalía / Demo) */}
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="font-bold text-slate-700 text-[11px] uppercase tracking-wider">Modalidad de Activación (GA4 + OMS)</label>
+                    <div className="flex bg-white border border-slate-200 rounded-lg p-0.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTagTipoActivacion('venta');
+                          if (tagPrecioVenta === '0') setTagPrecioVenta('35');
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
+                          tagTipoActivacion === 'venta'
+                            ? 'bg-emerald-600 text-white shadow-2xs'
+                            : 'text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        💵 Venta ($ &gt; 0)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTagTipoActivacion('regalia');
+                          setTagPrecioVenta('0');
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
+                          tagTipoActivacion === 'regalia'
+                            ? 'bg-amber-500 text-white shadow-2xs'
+                            : 'text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        🎁 Regalía / Demo ($0)
+                      </button>
+                    </div>
+                  </div>
+
+                  {tagTipoActivacion === 'venta' ? (
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-600">Monto Cobrado ($ USD)</label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={tagPrecioVenta}
+                          onChange={e => setTagPrecioVenta(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg font-mono font-bold text-slate-900 outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-600">Método de Pago</label>
+                        <select
+                          value={tagMetodoPago}
+                          onChange={e => setTagMetodoPago(e.target.value as 'Yappy' | 'Efectivo' | 'ACH' | 'Tarjeta / POS')}
+                          className="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg font-bold text-slate-800 outline-none"
+                        >
+                          <option value="Yappy">Yappy Comercial</option>
+                          <option value="Efectivo">Efectivo</option>
+                          <option value="ACH">Transferencia ACH</option>
+                          <option value="Tarjeta / POS">Tarjeta / POS</option>
+                        </select>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-1.5 rounded-lg font-medium">
+                      Se registrará con costo <strong>$0.00</strong> y disparará <code>regalia_demo</code> en GA4 sin distorsionar el ticket promedio de ventas.
+                    </p>
+                  )}
+                </div>
+
                 <button
                   type="submit"
-                  className="w-full py-3 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
+                  className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
                 >
-                  <Plus className="w-4 h-4 text-amber-400" />
+                  <Plus className="w-4 h-4 text-slate-950" />
                   <span>Crear y Vincular Dispositivo TAG</span>
                 </button>
               </form>
@@ -1716,7 +1857,7 @@ export default function InventarioPage() {
                       onClick={() => setTagHardwareFilter('all')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
                         tagHardwareFilter === 'all'
-                          ? 'bg-slate-900 text-white shadow-xs'
+                          ? 'bg-amber-500 text-slate-950 shadow-xs'
                           : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                       }`}
                     >
@@ -1865,9 +2006,9 @@ export default function InventarioPage() {
         <div className="space-y-8">
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-slate-950 text-white p-4.5 rounded-2xl shadow-md border border-slate-800">
-              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Ventas Totales ($ USD)</span>
-              <span className="text-2xl font-black text-amber-400 font-mono mt-1 block">${totalRevenue.toFixed(2)}</span>
+            <div className="bg-amber-50 border border-amber-200 p-4.5 rounded-2xl shadow-2xs">
+              <span className="text-amber-800 text-[10px] font-bold uppercase tracking-wider block">Ventas Totales ($ USD)</span>
+              <span className="text-2xl font-black text-amber-700 font-mono mt-1 block">${totalRevenue.toFixed(2)}</span>
             </div>
 
             <div className="bg-white border border-slate-200 p-4.5 rounded-2xl shadow-2xs">
