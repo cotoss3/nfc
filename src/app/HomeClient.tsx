@@ -485,7 +485,7 @@ export default function HomeClient() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               <div className="md:col-span-8 space-y-3">
                 <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $30.01)
+                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $20.00)
                 </div>
                 
                 <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
@@ -514,7 +514,7 @@ export default function HomeClient() {
 
               <div className="md:col-span-4 space-y-4 text-left md:text-right border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
                 <div>
-                  {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $44.99 */}
+                  {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $50.00 */}
                   <div className="grid grid-cols-3 gap-2.5 w-full mb-3.5">
                     <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border-2 border-amber-400 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
@@ -555,11 +555,11 @@ export default function HomeClient() {
                   </div>
 
                   <div className="flex items-baseline gap-2 md:justify-end">
-                    <span className="text-3xl font-black text-amber-400 font-mono">$44.99</span>
-                    <span className="text-xs text-slate-400 line-through font-semibold">$75.00</span>
+                    <span className="text-3xl font-black text-amber-400 font-mono">$50.00</span>
+                    <span className="text-xs text-slate-400 line-through font-semibold">$70.00</span>
                   </div>
                   <span className="inline-block mt-1 text-[10px] font-black text-slate-950 bg-amber-400 px-2.5 py-0.5 rounded shadow-xs">
-                    AHORRAS $30.01 USD
+                    AHORRAS $20.00 USD
                   </span>
                 </div>
 
@@ -568,7 +568,7 @@ export default function HomeClient() {
                     addToCart({
                       product_id: 'pack-trio-comercial',
                       product_name: 'Pack Comercio Completo (1 Placa + 2 Tarjetas NFC)',
-                      price: 44.99,
+                      price: 50,
                       quantity: 1,
                       selected_color: 'Acrílico 3mm + PVC 0.76mm'
                     });
@@ -577,7 +577,7 @@ export default function HomeClient() {
                   className="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-5 py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Comprar Pack ($44.99 USD)</span>
+                  <span>Comprar Pack ($50.00 USD)</span>
                 </button>
               </div>
             </div>
