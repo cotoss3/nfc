@@ -42,15 +42,58 @@ interface TapBehaviorItem {
   created_at: string;
 }
 
+function formatExactDateTime(iso: string | null): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleString('es-PA', {
+    timeZone: 'America/Panama',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
+function formatElapsedTime(iso: string | null, nowMs: number): string {
+  if (!iso) return '';
+  const targetMs = new Date(iso).getTime();
+  if (isNaN(targetMs)) return '';
+
+  const diffSec = Math.max(0, Math.floor((nowMs - targetMs) / 1000));
+  if (diffSec < 60) {
+    return `Hace ${diffSec} seg`;
+  }
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) {
+    return `Hace ${diffMin} min`;
+  }
+  const diffHours = Math.floor(diffMin / 60);
+  const remMin = diffMin % 60;
+  if (diffHours < 24) {
+    return remMin > 0 ? `Hace ${diffHours} h ${remMin} min` : `Hace ${diffHours} h`;
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  const remHours = diffHours % 24;
+  if (diffDays < 30) {
+    return remHours > 0 ? `Hace ${diffDays} d ${remHours} h` : `Hace ${diffDays} días`;
+  }
+  const diffMonths = Math.floor(diffDays / 30);
+  return `Hace ${diffMonths} mes${diffMonths > 1 ? 'es' : ''}`;
+}
+
 export default function ComportamientoPage() {
   const [items, setItems] = useState<TapBehaviorItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'active' | 'with_reads' | 'all'>('active');
   const [sortBy, setSortBy] = useState<'reads' | 'cta' | 'time' | 'ad' | 'code'>('reads');
+  const [nowMs, setNowMs] = useState<number>(Date.now());
 
-  const fetchBehavior = async () => {
-    setLoading(true);
+  const fetchBehavior = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const res = await fetch('/api/r/event', { cache: 'no-store' });
       const data = await res.json();
@@ -60,12 +103,22 @@ export default function ComportamientoPage() {
     } catch (err) {
       console.error('Error cargando métricas de comportamiento:', err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBehavior();
+    fetchBehavior(false);
+    const pollInterval = setInterval(() => {
+      fetchBehavior(true);
+    }, 8000);
+    const clockInterval = setInterval(() => {
+      setNowMs(Date.now());
+    }, 10000);
+    return () => {
+      clearInterval(pollInterval);
+      clearInterval(clockInterval);
+    };
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -110,6 +163,8 @@ export default function ComportamientoPage() {
   const totals = useMemo(() => {
     const base = statusFilter === 'active' ? items.filter((i) => i.is_active) : filteredItems;
     let totalReads = 0;
+    let totalNfc = 0;
+    let totalQr = 0;
     let autoTime = 0;
     let ctaClick = 0;
     let adClick = 0;
@@ -117,6 +172,8 @@ export default function ComportamientoPage() {
 
     for (const i of base) {
       totalReads += i.total_reads;
+      totalNfc += i.nfc_reads;
+      totalQr += i.qr_reads;
       autoTime += i.auto_time_count;
       ctaClick += i.cta_click_count;
       adClick += i.ad_click_count;
@@ -126,6 +183,8 @@ export default function ComportamientoPage() {
     return {
       activeCount: items.filter((i) => i.is_active).length,
       totalReads,
+      totalNfc,
+      totalQr,
       autoTime,
       ctaClick,
       adClick,
@@ -146,7 +205,8 @@ export default function ComportamientoPage() {
       'Toco Boton de Resena',
       'Toco Publicidad',
       'Cerro Publicidad (X)',
-      'Ultima Lectura',
+      'Fecha y Hora Ultima Lectura',
+      'Tiempo Transcurrido',
     ];
 
     const rows = filteredItems.map((i) => [
@@ -161,7 +221,8 @@ export default function ComportamientoPage() {
       i.cta_click_count,
       i.ad_click_count,
       i.ad_close_count,
-      i.last_read_at ? new Date(i.last_read_at).toLocaleString('es-PA') : 'Sin lecturas',
+      i.last_read_at ? `"${formatExactDateTime(i.last_read_at)}"` : 'Sin lecturas',
+      i.last_read_at ? `"${formatElapsedTime(i.last_read_at, nowMs)}"` : '-',
     ]);
 
     const csvContent =
@@ -196,7 +257,7 @@ export default function ComportamientoPage() {
             Comportamiento de TAPs Activos
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
-            Monitorea cuántas veces fue leído cada TAP activo, cuántos usuarios esperaron la redirección automática de 8 segundos, cuántos tocaron el botón de reseña y cuántos tocaron la publicidad.
+            Monitorea cuántas veces fue leído cada TAP activo (por NFC o QR), cuántos usuarios se redirigieron por tiempo (8s), cuántos tocaron el botón de reseña y cuántos tocaron la publicidad.
           </p>
         </div>
 
@@ -209,7 +270,7 @@ export default function ComportamientoPage() {
             Exportar CSV
           </button>
           <button
-            onClick={fetchBehavior}
+            onClick={() => fetchBehavior(false)}
             disabled={loading}
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs transition shadow-sm disabled:opacity-50"
           >
@@ -230,7 +291,7 @@ export default function ComportamientoPage() {
               Anuncio No Invasivo Activo (Estándares Google &amp; Coalition for Better Ads)
             </h2>
             <p className="text-xs text-emerald-800 mt-0.5 leading-relaxed">
-              Carga asíncrona después del bloque principal • Altura controlada (&le; 26% de la pantalla vertical, bajo el límite del 30%) • Botón de cierre (✕) visible al instante • Sin pop-ups, sin bloqueo de cuenta atrás y sin sonido.
+              Carga asíncrona después del bloque principal • Altura controlada (&le; 29.5% de la pantalla vertical, bajo el límite del 30%) • Botón de cierre (✕) visible al instante • Sin pop-ups, sin bloqueo de cuenta atrás y sin sonido.
             </p>
           </div>
         </div>
@@ -264,7 +325,7 @@ export default function ComportamientoPage() {
             {totals.totalReads}
           </p>
           <span className="text-[11px] text-slate-500 font-medium">
-            Total aperturas NFC + QR
+            {totals.totalNfc} NFC • {totals.totalQr} QR
           </span>
         </div>
 
@@ -448,7 +509,7 @@ export default function ComportamientoPage() {
                     {/* 2. NÚMERO DE CÓDIGO DE TAP */}
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-black text-slate-950 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg text-xs">
+                        <span className="font-mono font-black text-slate-950 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg text-xs whitespace-nowrap">
                           {item.card_id}
                         </span>
                         <Link
@@ -462,12 +523,12 @@ export default function ComportamientoPage() {
                       </div>
                       <div className="mt-1">
                         {item.is_active ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                             TAP Activo
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
                             Inactivo
                           </span>
@@ -475,20 +536,25 @@ export default function ComportamientoPage() {
                       </div>
                     </td>
 
-                    {/* 3. CUÁNTAS VECES FUE LEÍDO */}
+                    {/* 3. CUÁNTAS VECES FUE LEÍDO (CON CONTEO NFC Y QR FUNCIONANDO) */}
                     <td className="py-3.5 px-4 text-center">
                       <span className="inline-flex items-center justify-center min-w-[44px] px-2.5 py-1 rounded-xl bg-slate-900 text-white font-black text-sm">
                         {item.total_reads}
                       </span>
-                      <div className="flex items-center justify-center gap-2 mt-1 text-[10px] font-bold text-slate-500">
-                        <span className="inline-flex items-center gap-0.5" title="Lecturas por Chip NFC">
-                          <Smartphone className="w-3 h-3 text-slate-400" />
-                          {item.nfc_reads} NFC
+                      <div className="flex items-center justify-center gap-1.5 mt-1.5 text-[10px] font-extrabold whitespace-nowrap">
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 border border-sky-200"
+                          title="Lecturas por Chip NFC"
+                        >
+                          <Smartphone className="w-3 h-3 text-sky-600 shrink-0" />
+                          <span>{item.nfc_reads} NFC</span>
                         </span>
-                        <span>•</span>
-                        <span className="inline-flex items-center gap-0.5" title="Lecturas por Código QR">
-                          <QrCode className="w-3 h-3 text-slate-400" />
-                          {item.qr_reads} QR
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-violet-50 text-violet-800 border border-violet-200"
+                          title="Lecturas por Código QR"
+                        >
+                          <QrCode className="w-3 h-3 text-violet-600 shrink-0" />
+                          <span>{item.qr_reads} QR</span>
                         </span>
                       </div>
                     </td>
@@ -499,7 +565,7 @@ export default function ComportamientoPage() {
                         <Clock className="w-3.5 h-3.5 text-indigo-600" />
                         <span>{item.auto_time_count}</span>
                       </div>
-                      <div className="text-[10px] font-bold text-slate-500 mt-1">
+                      <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
                         {formatPercent(item.auto_time_count, item.total_reads)} de lecturas
                       </div>
                     </td>
@@ -510,7 +576,7 @@ export default function ComportamientoPage() {
                         <MousePointerClick className="w-3.5 h-3.5 text-amber-600" />
                         <span>{item.cta_click_count}</span>
                       </div>
-                      <div className="text-[10px] font-bold text-slate-500 mt-1">
+                      <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
                         {formatPercent(item.cta_click_count, item.total_reads)} de lecturas
                       </div>
                     </td>
@@ -521,23 +587,29 @@ export default function ComportamientoPage() {
                         <Megaphone className="w-3.5 h-3.5 text-emerald-600" />
                         <span>{item.ad_click_count}</span>
                       </div>
-                      <div className="text-[10px] font-bold text-slate-500 mt-1">
+                      <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
                         CTR {formatPercent(item.ad_click_count, item.total_reads)}
                         {item.ad_close_count > 0 ? ` • ${item.ad_close_count} ✕` : ''}
                       </div>
                     </td>
 
-                    {/* 7. ÚLTIMA LECTURA */}
-                    <td className="py-3.5 px-4 text-right text-xs text-slate-500 font-medium whitespace-nowrap">
-                      {item.last_read_at
-                        ? new Date(item.last_read_at).toLocaleString('es-PA', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
-                        : 'Sin lecturas aún'}
+                    {/* 7. ÚLTIMA LECTURA: FECHA Y HORA + CUÁNTO HA PASADO */}
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                      {item.last_read_at ? (
+                        <div className="inline-flex flex-col items-end gap-1">
+                          <span className="text-xs font-bold text-slate-900">
+                            {formatExactDateTime(item.last_read_at)}
+                          </span>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-extrabold">
+                            <Clock className="w-2.5 h-2.5 text-amber-600" />
+                            {formatElapsedTime(item.last_read_at, nowMs)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-400 font-medium">
+                          Sin lecturas aún
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))

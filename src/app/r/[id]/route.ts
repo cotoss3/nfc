@@ -232,22 +232,38 @@ export async function GET(
   const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
   const referrer = isQr ? 'QR Code' : 'NFC Scan';
   const scanId = `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  const nowIso = new Date().toISOString();
 
-  // 5. Persistencia segura en Supabase y dbLocal (1 sola inserción por lectura)
+  // 5. Persistencia segura en Supabase (scans + site_visits revt_) y dbLocal
   try {
     dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName, {
       id: scanId,
       skipSupabase: true,
     });
     if (supabase) {
-      await supabase.from('scans').insert({
-        id: scanId,
-        card_id: resolvedCardId,
-        device,
-        referrer,
-        scan_type: scanType,
-        group_name: groupName
-      });
+      await Promise.allSettled([
+        supabase.from('scans').insert({
+          id: scanId,
+          card_id: resolvedCardId,
+          device,
+          referrer,
+          scan_type: scanType,
+          group_name: groupName,
+          created_at: nowIso,
+        }),
+        supabase.from('site_visits').insert({
+          id: `revt_r_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          session_id: `revt_${scanId}`,
+          page: `/r-event/${resolvedCardId.toUpperCase()}/read_${scanType}`,
+          referrer: scanId,
+          device: `${scanType}:${device}`,
+          ip: '0.0.0.0',
+          country: 'Panamá',
+          province: 'Panamá',
+          district: 'Panamá',
+          created_at: nowIso,
+        }),
+      ]);
     }
   } catch (err) {
     console.error('Error registrando analítica:', err);
@@ -767,6 +783,7 @@ export async function GET(
       var targetUrl = ${safeTargetUrlJson};
       var cardId = ${safeCardIdJson};
       var scanId = ${safeScanIdJson};
+      var scanType = ${safeScanTypeJson};
       var hasRedirected = false;
       var skipBtn = document.getElementById('skip-btn');
       var adSlot = document.getElementById('startap-ad-slot');
@@ -804,6 +821,7 @@ export async function GET(
           var payload = JSON.stringify({
             cardId: cardId,
             scanId: scanId,
+            scanType: scanType,
             action: action
           });
           if (navigator.sendBeacon) {
