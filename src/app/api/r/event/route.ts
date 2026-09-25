@@ -103,8 +103,10 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const ownerEmailParam = (req.nextUrl.searchParams.get('owner_email') || '').trim().toLowerCase();
+
     let cards: NfcCard[] = dbLocal.getCards();
     let scans: ScanRecord[] = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
     let remoteEventVisits: Array<{
@@ -145,6 +147,14 @@ export async function GET() {
       } catch (e) {
         console.error('Error consultando Supabase en comportamiento:', e);
       }
+    }
+
+    if (ownerEmailParam) {
+      cards = cards.filter(
+        (c) =>
+          c.claimed !== false &&
+          (c.owner_email || '').trim().toLowerCase() === ownerEmailParam
+      );
     }
 
     const localBehaviorMap = dbLocal.getTapBehaviorMap();

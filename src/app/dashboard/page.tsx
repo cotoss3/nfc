@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { dbLocal, NfcCard, ScanRecord } from '@/lib/db';
 import { authService } from '@/lib/auth';
@@ -10,10 +10,74 @@ import {
   Edit2, QrCode, Smartphone, Eye, EyeOff, Check, ExternalLink, BarChart2, 
   ShieldAlert, Folder, Users, Settings, LogOut, Plus, Search, 
   Filter, Copy, Radio, Globe, AlertTriangle, Download, Layers,
-  ChevronRight, ArrowUpRight, Lock, Key
+  ChevronRight, ArrowUpRight, Lock, Key, Activity, Clock,
+  MousePointerClick, RefreshCw, ArrowUpDown, CheckCircle2
 } from 'lucide-react';
 
-type ModuleTab = 'devices' | 'groups' | 'analytics' | 'settings';
+type ModuleTab = 'devices' | 'behavior' | 'groups' | 'analytics' | 'settings';
+
+interface ClientTapBehaviorItem {
+  card_id: string;
+  activation_code: string;
+  business_name: string;
+  label: string;
+  group_name: string;
+  owner_name: string;
+  owner_email: string;
+  target_url: string;
+  type: string;
+  is_active: boolean;
+  claimed: boolean;
+  total_reads: number;
+  nfc_reads: number;
+  qr_reads: number;
+  auto_time_count: number;
+  cta_click_count: number;
+  last_read_at: string | null;
+  created_at: string;
+}
+
+function formatExactDateTime(iso: string | null): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleString('es-PA', {
+    timeZone: 'America/Panama',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
+function formatElapsedTime(iso: string | null, nowMs: number): string {
+  if (!iso) return '';
+  const targetMs = new Date(iso).getTime();
+  if (isNaN(targetMs)) return '';
+
+  const diffSec = Math.max(0, Math.floor((nowMs - targetMs) / 1000));
+  if (diffSec < 60) {
+    return `Hace ${diffSec} seg`;
+  }
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) {
+    return `Hace ${diffMin} min`;
+  }
+  const diffHours = Math.floor(diffMin / 60);
+  const remMin = diffMin % 60;
+  if (diffHours < 24) {
+    return remMin > 0 ? `Hace ${diffHours} h ${remMin} min` : `Hace ${diffHours} h`;
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  const remHours = diffHours % 24;
+  if (diffDays < 30) {
+    return remHours > 0 ? `Hace ${diffDays} d ${remHours} h` : `Hace ${diffDays} días`;
+  }
+  const diffMonths = Math.floor(diffDays / 30);
+  return `Hace ${diffMonths} mes${diffMonths > 1 ? 'es' : ''}`;
+}
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -70,8 +134,14 @@ function DashboardContent() {
   // QR Modal state
   const [qrModalCard, setQrModalCard] = useState<NfcCard | null>(null);
 
-  // Analytics states
+  // Analytics & Behavior states
   const [allScans, setAllScans] = useState<ScanRecord[]>([]);
+  const [behaviorItems, setBehaviorItems] = useState<ClientTapBehaviorItem[]>([]);
+  const [behaviorLoading, setBehaviorLoading] = useState<boolean>(false);
+  const [behaviorSearch, setBehaviorSearch] = useState<string>('');
+  const [behaviorStatusFilter, setBehaviorStatusFilter] = useState<'active' | 'with_reads' | 'all'>('active');
+  const [behaviorSortBy, setBehaviorSortBy] = useState<'reads' | 'cta' | 'time' | 'code'>('reads');
+  const [nowMs, setNowMs] = useState<number>(Date.now());
 
   const handleClaimTap = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -218,6 +288,39 @@ function DashboardContent() {
     }
   }, [searchParams]);
 
+  const fetchClientBehavior = async (email: string, silent = false) => {
+    if (!email) return;
+    if (!silent) setBehaviorLoading(true);
+    try {
+      const res = await fetch(`/api/r/event?owner_email=${encodeURIComponent(email.trim().toLowerCase())}`, {
+        cache: 'no-store',
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.items)) {
+        setBehaviorItems(data.items);
+      }
+    } catch (err) {
+      console.error('Error cargando comportamiento de TAPs del cliente:', err);
+    } finally {
+      if (!silent) setBehaviorLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!userEmail) return;
+    fetchClientBehavior(userEmail, false);
+    const pollInterval = setInterval(() => {
+      fetchClientBehavior(userEmail, true);
+    }, 10000);
+    const clockInterval = setInterval(() => {
+      setNowMs(Date.now());
+    }, 10000);
+    return () => {
+      clearInterval(pollInterval);
+      clearInterval(clockInterval);
+    };
+  }, [userEmail]);
+
   const loadUserData = async (email: string) => {
     // Carga síncrona inmediata (local)
     const initialCards = dbLocal.getCardsByOwner(email);
@@ -231,6 +334,8 @@ function DashboardContent() {
     if (initialCards.length > 0) {
       handleSelectCard(initialCards[0]);
     }
+
+    fetchClientBehavior(email, true);
 
     // Sincronización en tiempo real desde Supabase
     try {
@@ -347,6 +452,7 @@ function DashboardContent() {
     setCards([]);
     setSelectedCard(null);
     setAllScans([]);
+    setBehaviorItems([]);
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('current_user_email');
       sessionStorage.removeItem('current_user_name');
@@ -434,6 +540,7 @@ function DashboardContent() {
 
     if (userEmail) {
       setGroupsList(dbLocal.getGroupsForOwner(userEmail));
+      fetchClientBehavior(userEmail, true);
     }
     
     setTimeout(() => setUpdateSuccess(false), 2000);
@@ -485,6 +592,9 @@ function DashboardContent() {
     if (selectedCard && selectedCard.card_id === cardId) {
       setSelectedCard({ ...selectedCard, is_active: newStatus });
     }
+    if (userEmail) {
+      fetchClientBehavior(userEmail, true);
+    }
   };
 
   const handleCreateGroup = (e: React.FormEvent) => {
@@ -517,9 +627,172 @@ function DashboardContent() {
     return matchesGroup && matchesSearch;
   });
 
+  // Comportamiento de TAPs del cliente (filtrado y ordenado sin anuncios)
+  const ownedCardIdsSet = useMemo(
+    () => new Set(cards.map((c) => c.card_id.trim().toUpperCase())),
+    [cards]
+  );
+
+  const clientBehaviorSource = useMemo(() => {
+    const byId = new Map<string, ClientTapBehaviorItem>();
+    for (const item of behaviorItems) {
+      const key = item.card_id.trim().toUpperCase();
+      if (
+        ownedCardIdsSet.has(key) ||
+        (userEmail && (item.owner_email || '').trim().toLowerCase() === userEmail.trim().toLowerCase())
+      ) {
+        byId.set(key, item);
+      }
+    }
+    for (const c of cards) {
+      const key = c.card_id.trim().toUpperCase();
+      if (!byId.has(key)) {
+        byId.set(key, {
+          card_id: c.card_id,
+          activation_code: c.activation_code || c.card_id,
+          business_name: c.label || c.group_name || userName || c.card_id,
+          label: c.label || '',
+          group_name: c.group_name || 'General',
+          owner_name: c.owner_name || userName,
+          owner_email: c.owner_email || userEmail || '',
+          target_url: c.nfc_target_url || c.target_url || c.qr_target_url || '',
+          type: c.type || 'google',
+          is_active: Boolean(c.is_active),
+          claimed: Boolean(c.claimed),
+          total_reads: 0,
+          nfc_reads: 0,
+          qr_reads: 0,
+          auto_time_count: 0,
+          cta_click_count: 0,
+          last_read_at: null,
+          created_at: c.created_at,
+        });
+      }
+    }
+    return Array.from(byId.values());
+  }, [behaviorItems, cards, ownedCardIdsSet, userEmail, userName]);
+
+  const filteredBehaviorItems = useMemo(() => {
+    const q = behaviorSearch.trim().toLowerCase();
+    const list = clientBehaviorSource.filter((item) => {
+      if (behaviorStatusFilter === 'active' && !item.is_active) return false;
+      if (behaviorStatusFilter === 'with_reads' && item.total_reads === 0) return false;
+
+      if (q) {
+        const matchCode = item.card_id.toLowerCase().includes(q);
+        const matchName = (item.business_name || '').toLowerCase().includes(q);
+        const matchLabel = (item.label || '').toLowerCase().includes(q);
+        const matchGroup = (item.group_name || '').toLowerCase().includes(q);
+        return matchCode || matchName || matchLabel || matchGroup;
+      }
+      return true;
+    });
+
+    return list.sort((a, b) => {
+      if (behaviorSortBy === 'reads') {
+        if (b.total_reads !== a.total_reads) return b.total_reads - a.total_reads;
+        return a.card_id.localeCompare(b.card_id);
+      }
+      if (behaviorSortBy === 'cta') {
+        if (b.cta_click_count !== a.cta_click_count) return b.cta_click_count - a.cta_click_count;
+        return b.total_reads - a.total_reads;
+      }
+      if (behaviorSortBy === 'time') {
+        if (b.auto_time_count !== a.auto_time_count) return b.auto_time_count - a.auto_time_count;
+        return b.total_reads - a.total_reads;
+      }
+      return a.card_id.localeCompare(b.card_id);
+    });
+  }, [clientBehaviorSource, behaviorSearch, behaviorStatusFilter, behaviorSortBy]);
+
+  const behaviorTotals = useMemo(() => {
+    const base =
+      behaviorStatusFilter === 'active'
+        ? clientBehaviorSource.filter((i) => i.is_active)
+        : filteredBehaviorItems;
+
+    let totalReads = 0;
+    let totalNfc = 0;
+    let totalQr = 0;
+    let autoTime = 0;
+    let ctaClick = 0;
+
+    for (const i of base) {
+      totalReads += i.total_reads;
+      totalNfc += i.nfc_reads;
+      totalQr += i.qr_reads;
+      autoTime += i.auto_time_count;
+      ctaClick += i.cta_click_count;
+    }
+
+    return {
+      activeCount: clientBehaviorSource.filter((i) => i.is_active).length,
+      totalReads,
+      totalNfc,
+      totalQr,
+      autoTime,
+      ctaClick,
+    };
+  }, [clientBehaviorSource, filteredBehaviorItems, behaviorStatusFilter]);
+
+  const formatPercent = (part: number, total: number) => {
+    if (!total || total <= 0) return '0%';
+    const pct = Math.min(100, Math.round((part / total) * 100));
+    return `${pct}%`;
+  };
+
+  const exportBehaviorCsv = () => {
+    const headers = [
+      'Nombre de Dispositivo / Negocio',
+      'Grupo / Sucursal',
+      'Codigo de TAP',
+      'Estado',
+      'Veces Leido (Total)',
+      'Lecturas NFC',
+      'Lecturas QR',
+      'Redirigido por Tiempo (8s)',
+      'Toco Boton de Resena',
+      'Fecha y Hora Ultima Lectura',
+      'Tiempo Transcurrido',
+    ];
+
+    const rows = filteredBehaviorItems.map((i) => [
+      `"${(i.label || i.business_name || '').replace(/"/g, '""')}"`,
+      `"${(i.group_name || 'General').replace(/"/g, '""')}"`,
+      i.card_id,
+      i.is_active ? 'ACTIVO' : 'INACTIVO',
+      i.total_reads,
+      i.nfc_reads,
+      i.qr_reads,
+      i.auto_time_count,
+      i.cta_click_count,
+      i.last_read_at ? `"${formatExactDateTime(i.last_read_at)}"` : 'Sin lecturas',
+      i.last_read_at ? `"${formatElapsedTime(i.last_read_at, nowMs)}"` : '-',
+    ]);
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,\uFEFF' +
+      [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `comportamiento_mis_taps_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Calculate analytics
-  const nfcScansCount = allScans.filter(s => s.scan_type === 'nfc' || s.referrer.toLowerCase().includes('nfc')).length;
-  const qrScansCount = allScans.filter(s => s.scan_type === 'qr' || s.referrer.toLowerCase().includes('qr')).length;
+  const nfcScansCount = Math.max(
+    allScans.filter(s => s.scan_type === 'nfc' || s.referrer.toLowerCase().includes('nfc')).length,
+    behaviorTotals.totalNfc
+  );
+  const qrScansCount = Math.max(
+    allScans.filter(s => s.scan_type === 'qr' || s.referrer.toLowerCase().includes('qr')).length,
+    behaviorTotals.totalQr
+  );
+  const totalScansCount = Math.max(allScans.length, nfcScansCount + qrScansCount);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row pb-20 md:pb-0">
@@ -751,6 +1024,23 @@ function DashboardContent() {
               </button>
 
               <button
+                onClick={() => setActiveTab('behavior')}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                  activeTab === 'behavior'
+                    ? 'bg-slate-900 text-white shadow-md font-bold'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Activity className="w-4 h-4" />
+                  <span>Comportamiento</span>
+                </div>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'behavior' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
+                  {behaviorTotals.totalReads}
+                </span>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('groups')}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
                   activeTab === 'groups'
@@ -780,7 +1070,7 @@ function DashboardContent() {
                   <span>Analíticas de Grupo</span>
                 </div>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeTab === 'analytics' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-100 text-slate-600'}`}>
-                  {allScans.length}
+                  {totalScansCount}
                 </span>
               </button>
 
@@ -815,7 +1105,7 @@ function DashboardContent() {
           <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex items-center justify-around py-2 px-1 shadow-lg shadow-slate-900/10">
             <button
               onClick={() => setActiveTab('devices')}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+              className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'devices' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
@@ -824,8 +1114,18 @@ function DashboardContent() {
             </button>
 
             <button
+              onClick={() => setActiveTab('behavior')}
+              className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'behavior' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <Activity className="w-5 h-5" />
+              <span className="text-[10px] font-semibold">Comportamiento</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('groups')}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+              className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'groups' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
@@ -835,7 +1135,7 @@ function DashboardContent() {
 
             <button
               onClick={() => setActiveTab('analytics')}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+              className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'analytics' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
@@ -845,7 +1145,7 @@ function DashboardContent() {
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition ${
+              className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'settings' ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
               }`}
             >

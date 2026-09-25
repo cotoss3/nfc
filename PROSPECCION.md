@@ -269,6 +269,29 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-09-24 | Top Luxor Autos | Taller mecanico | Arraijan | 7 | 4.7 | llamada | 343-0550 | pendiente | llamar; top2 24/73 |
 | 2026-09-24 | Auto Servicio Delgado S.A. | Taller mecanico | La Chorrera | 10 | 4.7 | llamada | 253-2522 | pendiente | llamar; top2 15/143 |
 | 2026-09-24 | Taller de Diagnostico Automotriz S.A. | Taller mecanico | Arraijan | 17 | 4.6 | llamada | 344-9756 | pendiente | llamar; top2 24/73 |
+| 2026-09-25 | Casa Chorrerana N. 2 | Ferreteria | La Chorrera | 14 | 4.5 | WhatsApp | 6934-7221 | pendiente | vendedor 1; top2 ferreterias 140/101 |
+| 2026-09-25 | Centro Materiales | Ferreteria | La Chorrera (Santa Elena) | 28 | 4.8 | WhatsApp | 6566-5599 | pendiente | vendedor 1; top2 ferreterias 140/101 |
+| 2026-09-25 | Phone Accessories | Celulares | La Chorrera | 7 | 5.0 | WhatsApp | 6354-2990 | pendiente | vendedor 1; top2 celulares 17/32 |
+| 2026-09-25 | Boutique China | Tienda de ropa | La Chorrera | 15 | 4.3 | WhatsApp | 6369-6963 | pendiente | vendedor 2; top2 boutiques 19/15 |
+| 2026-09-25 | Glamour Marce Boutique | Boutique | La Chorrera (Barrio Balboa) | 2 | 4.5 | WhatsApp | 6812-6907 | pendiente | vendedor 2; top2 boutiques 19/15 |
+| 2026-09-25 | Nicol's Boutique | Boutique | La Chorrera | 11 | 5.0 | WhatsApp | 6314-0308 | pendiente | vendedor 2; entrega a domicilio; top2 19/15 |
+| 2026-09-25 | Dreams and Flowers | Floristeria | La Chorrera (Maribel) | 4 | 5.0 | WhatsApp | 6433-3670 | pendiente | vendedor 2; cierra 10pm; top2 floristerias 507/27 |
+| 2026-09-25 | Celulares Oeste 2 | Celulares | La Chorrera | 17 | 5.0 | WhatsApp | 6502-7742 | pendiente | vendedor 2; top1 de su busqueda, el segundo tiene 32 |
+| 2026-09-25 | RESIDENCIAL LA FUENTE | Hospedaje | La Chorrera | 14 | 4.4 | llamada | 258-6772 | pendiente | llamar; top2 hoteles 374/238 |
+| 2026-09-25 | Mundo Floral | Floristeria | La Chorrera | 12 | 4.8 | llamada | 350-2766 | pendiente | llamar; top2 floristerias 507/27 |
+| 2026-09-25 | Rueda Clean Car Wash & Llanteria | Autolavado | La Chorrera | 10 | 4.6 | WhatsApp | 6520-9811 | pendiente | vendedor 2 lote 2; cierra 10pm; top2 autolavados 57/80 |
+| 2026-09-25 | Royal Car Wash Chorrera | Autolavado | La Chorrera | 2 | 4.5 | WhatsApp | 6866-6552 | pendiente | vendedor 2 lote 2; top2 autolavados 57/80 |
+| 2026-09-25 | Premium Carwash | Autolavado | La Chorrera | 3 | 5.0 | WhatsApp | 6199-4017 | pendiente | vendedor 2 lote 2; cierra 11pm; top2 57/80 |
+| 2026-09-25 | Llanteria y Reparaciones XERA | Llanteria | La Chorrera | 15 | 4.8 | WhatsApp | 6217-2531 | pendiente | vendedor 2 lote 2; top1, el segundo tiene 43 |
+| 2026-09-25 | Reparaciones Morillo S.R | Llanteria | La Chorrera | 3 | 4.3 | WhatsApp | 6962-7499 | pendiente | vendedor 2 lote 2; top2 llanterias 15/43 |
+| 2026-09-25 | Llanteria Grupo Russo | Llanteria | La Chorrera | 23 | 4.7 | WhatsApp | 6875-7274 | pendiente | vendedor 2 lote 2; top2 llanterias 15/43 |
+| 2026-09-25 | Tapizar Panama | Tapiceria | La Chorrera | 4 | 5.0 | WhatsApp | 6314-4542 | pendiente | vendedor 2 lote 2; citas en linea; top1 tapiceria 109 |
+| 2026-09-25 | CG Diseno y Publicidad | Imprenta | La Chorrera (Matuna) | 2 | 5.0 | WhatsApp | 6016-7552 | pendiente | vendedor 2 lote 2; top2 imprentas 26/94 |
+| 2026-09-25 | Mazgraphics | Publicidad | La Chorrera | 13 | 4.9 | WhatsApp | 6220-8676 | pendiente | vendedor 2 lote 2; tiene web; top2 26/94 |
+| 2026-09-25 | REM Medios Publicidad | Rotulos | La Chorrera | 14 | 4.7 | WhatsApp | 6219-7698 | pendiente | vendedor 2 lote 2; top2 imprentas 26/94 |
+| 2026-09-25 | VISIONARTE | Imprenta | Costa Verde | 1 | 5.0 | WhatsApp | 6590-3653 | pendiente | vendedor 2 lote 2; Plaza Fortune Center; top2 26/94 |
+| 2026-09-25 | Servillantas MON #1 | Llanteria | La Chorrera | 13 | 4.5 | llamada | 253-6102 | pendiente | llamar; top2 llanterias 15/43 |
+| 2026-09-25 | Tapiceria Victor | Tapiceria de autos | La Chorrera | 7 | 4.7 | llamada | 244-0345 | pendiente | llamar; top1 tapiceria 109 |
 
 ---
 
