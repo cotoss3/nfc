@@ -30,9 +30,13 @@ function getOrSetSessionId(): string {
 
 export default function RealTimeTracker() {
   const pathname = usePathname();
-  const { cart, getCartTotal, getItemCount } = useCart();
+  const { cart } = useCart();
   const pageStartTimeRef = useRef<string>(new Date().toISOString());
   const prevPathnameRef = useRef<string>(pathname || '/');
+
+  const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
+  const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const firstItemName = cart[0]?.product_name || '';
 
   useEffect(() => {
     if (pathname !== prevPathnameRef.current) {
@@ -44,8 +48,10 @@ export default function RealTimeTracker() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Do not track admin panel pages as customer traffic
-    if (pathname && pathname.startsWith('/master-control')) return;
+    // Do not track admin or client dashboard panel pages as public store traffic
+    if (pathname && (pathname.startsWith('/master-control') || pathname.startsWith('/dashboard'))) {
+      return;
+    }
 
     const sessionId = getOrSetSessionId();
     const device = getDeviceType();
@@ -62,13 +68,9 @@ export default function RealTimeTracker() {
       }
     }
 
-    const cartCount = getItemCount ? getItemCount() : 0;
-    const cartTotal = getCartTotal ? getCartTotal() : 0;
-    
     let cartSummary = 'Carrito vacío';
-    if (cartCount > 0 && cart && cart.length > 0) {
-      const firstItem = cart[0];
-      cartSummary = `${cartCount}x ${firstItem.product_name} ($${cartTotal.toFixed(2)})`;
+    if (cartCount > 0 && firstItemName) {
+      cartSummary = `${cartCount}x ${firstItemName} ($${cartTotal.toFixed(2)})`;
     }
 
     const payload = {
@@ -88,14 +90,20 @@ export default function RealTimeTracker() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      }).catch(err => console.debug('Tracking ping error:', err));
+        keepalive: true,
+      }).catch((err) => console.debug('Tracking ping error:', err));
     };
 
-    sendPing();
+    // Defer initial ping slightly so it does not compete with LCP/INP during route transitions
+    const initialTimer = setTimeout(sendPing, 800);
     const interval = setInterval(sendPing, 45000);
 
-    return () => clearInterval(interval);
-  }, [pathname, cart, getCartTotal, getItemCount]);
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+    };
+  }, [pathname, cartCount, cartTotal, firstItemName]);
 
   return null;
 }
+

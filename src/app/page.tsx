@@ -36,40 +36,6 @@ export default function Page() {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'LocalBusiness',
-        '@id': 'https://startap.com.pa/#organization',
-        'name': 'starTAP Panamá',
-        'alternateName': ['starTAP', 'StarTAP', 'Star TAP'],
-        'url': 'https://startap.com.pa/',
-        'logo': 'https://startap.com.pa/logos/Logo.webp',
-        'image': 'https://startap.com.pa/images/posicionamiento-seo-google-maps-panama-startap.webp',
-        'description': 'Dispositivos NFC y códigos QR para que negocios en Panamá multipliquen sus reseñas de Google Maps, sin mensualidades.',
-        'telephone': '+507 6483-9004',
-        'email': 'info@startap.com.pa',
-        'priceRange': '$20.00 - $50.00',
-        'currenciesAccepted': 'USD',
-        'paymentAccepted': 'Yappy, Visa, Mastercard',
-        'areaServed': {
-          '@type': 'Country',
-          'name': 'Panamá'
-        },
-        'address': {
-          '@type': 'PostalAddress',
-          'addressLocality': 'Arraiján',
-          'addressRegion': 'Panamá Oeste',
-          'addressCountry': 'PA'
-        },
-        'sameAs': [
-          'https://www.datakorex.com',
-          'https://www.facebook.com/profile.php?id=61594455868652'
-        ],
-        'parentOrganization': {
-          '@type': 'Organization',
-          'name': 'DataKorex',
-          'url': 'https://www.datakorex.com'
-        }
-      },
-      {
         '@type': 'Product',
         'name': 'Tarjeta NFC de Bolsillo',
         'description': 'Tarjeta PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para solicitar valoraciones en entregas, visitas técnicas o eventos.',
@@ -148,7 +114,7 @@ export default function Page() {
         },
         'offers': {
           '@type': 'Offer',
-          'price': '30.00',
+          'price': '35.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',

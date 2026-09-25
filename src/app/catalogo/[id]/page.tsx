@@ -1,20 +1,13 @@
 import type { Metadata } from 'next';
-import ProductDetailClient from '@/app/shop/[id]/ProductDetailClient';
+import { permanentRedirect } from 'next/navigation';
+import ProductDetailClient from './ProductDetailClient';
 import { PRODUCTS, getProductById as getCentralProductById } from '@/config/products';
+import { getLandingCopy } from '@/lib/landings';
 
 const BASE_URL = 'https://startap.com.pa';
 
 export async function generateStaticParams() {
-  const params: { id: string }[] = [];
-  PRODUCTS.forEach((product) => {
-    params.push({ id: product.id });
-    if (product.aliases) {
-      product.aliases.forEach((alias) => {
-        params.push({ id: alias });
-      });
-    }
-  });
-  return params;
+  return PRODUCTS.map((product) => ({ id: product.id }));
 }
 
 export async function generateMetadata({
@@ -51,7 +44,7 @@ export async function generateMetadata({
       'product:price:currency': 'USD',
       'product:availability': 'in stock',
       'product:condition': 'new',
-      'product:retailer_item_id': product.sku || `STP-${product.id.toUpperCase()}`
+      'product:retailer_item_id': product.sku || `STP-${product.id.toUpperCase()}`,
     },
   };
 }
@@ -59,13 +52,22 @@ export async function generateMetadata({
 export default function Page({ params }: { params: { id: string } }) {
   const product = getCentralProductById(params.id);
 
+  if (product && product.id !== params.id) {
+    permanentRedirect(`/catalogo/${product.id}`);
+  }
+
+  const landingCopy = product ? getLandingCopy(product.id) : undefined;
+
   const productSchema = product
     ? {
         '@context': 'https://schema.org',
         '@type': 'Product',
+        '@id': `${BASE_URL}/catalogo/${product.id}#product`,
         name: product.name,
         description: product.description,
-        image: (product.images || [product.image]).filter(Boolean).map((i) => (i.startsWith('http') ? i : `${BASE_URL}${i}`)),
+        image: (product.images || [product.image])
+          .filter(Boolean)
+          .map((i) => (i.startsWith('http') ? i : `${BASE_URL}${i}`)),
         material: product.material,
         brand: { '@type': 'Brand', name: 'starTAP Panamá' },
         sku: product.sku || `STP-${product.id.toUpperCase()}`,
@@ -126,6 +128,36 @@ export default function Page({ params }: { params: { id: string } }) {
       }
     : null;
 
+  const breadcrumbSchema = product
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Inicio', item: BASE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${BASE_URL}/catalogo` },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: product.name,
+            item: `${BASE_URL}/catalogo/${product.id}`,
+          },
+        ],
+      }
+    : null;
+
+  const faqSchema =
+    landingCopy && landingCopy.faqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: landingCopy.faqs.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        }
+      : null;
+
   return (
     <>
       {productSchema && (
@@ -134,7 +166,19 @@ export default function Page({ params }: { params: { id: string } }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
         />
       )}
-      <ProductDetailClient params={params} />
+      {breadcrumbSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
+      )}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+      <ProductDetailClient params={params} initialProduct={product || null} />
     </>
   );
 }

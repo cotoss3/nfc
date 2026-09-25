@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { dbLocal, Product } from '@/lib/db';
+import { getProductById as getCentralProductById } from '@/config/products';
 import { useCart } from '@/context/CartContext';
-import { ArrowLeft, Upload, Check, Info, Zap, QrCode, ChevronLeft, ChevronRight, Image as ImageIcon, MapPin, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Upload, Check, Zap, QrCode, ChevronLeft, ChevronRight, Image as ImageIcon, MapPin, CheckCircle2 } from 'lucide-react';
 import ProductLanding from '@/components/landings/ProductLanding';
 import { getLandingCopy } from '@/lib/landings';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
@@ -20,13 +21,33 @@ function isColorDisabled(productId: string, colorName: string): boolean {
   return false;
 }
 
-export default function ProductDetailClient({ params }: { params: { id: string } }) {
+export default function ProductDetailClient({
+  params,
+  initialProduct,
+}: {
+  params: { id: string };
+  initialProduct?: Product | null;
+}) {
   const router = useRouter();
   const { addToCart } = useCart();
-  const [product, setProduct] = useState<Product | null>(null);
-  
+
+  const seedProduct = initialProduct || getCentralProductById(params.id) || null;
+  const [product, setProduct] = useState<Product | null>(seedProduct);
+
   // Customization & Add-on States
-  const [color, setColor] = useState('Blanco Premium');
+  const [color, setColor] = useState(() => {
+    if (!seedProduct) return 'Blanco Premium';
+    const landingCopy = getLandingCopy(seedProduct.id);
+    const defaultColors =
+      seedProduct.colors ||
+      landingCopy?.coloresPorDefecto ||
+      (seedProduct.category === 'cards'
+        ? ['Blanco Premium', 'Negro Premium']
+        : seedProduct.category === 'plates'
+        ? ['Acrílico Transparente', 'Acrílico Blanco', 'Acrílico Negro']
+        : ['Blanco Brillante', 'Negro Mate']);
+    return defaultColors.find((c) => !isColorDisabled(seedProduct.id, c)) || defaultColors[0];
+  });
   const [businessName, setBusinessName] = useState('');
   const [hasCustomLogo, setHasCustomLogo] = useState(false);
   const [hasQrCode, setHasQrCode] = useState(false);
@@ -35,22 +56,25 @@ export default function ProductDetailClient({ params }: { params: { id: string }
   const [quantity, setQuantity] = useState(1);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(seedProduct?.image || '');
 
   useEffect(() => {
-    const found = dbLocal.getProductById(params.id);
+    const found = dbLocal.getProductById(params.id) || getCentralProductById(params.id);
     if (!found) {
       notFound();
     } else {
       setProduct(found);
       setSelectedImage(found.image);
-      
+
       const landingCopy = getLandingCopy(found.id);
-      const defaultColors = found.colors || (landingCopy?.coloresPorDefecto) || (found.category === 'cards' 
-        ? ['Blanco Premium', 'Negro Premium'] 
-        : found.category === 'plates'
-        ? ['Acrílico Transparente', 'Acrílico Blanco', 'Acrílico Negro']
-        : ['Blanco Brillante', 'Negro Mate']);
+      const defaultColors =
+        found.colors ||
+        landingCopy?.coloresPorDefecto ||
+        (found.category === 'cards'
+          ? ['Blanco Premium', 'Negro Premium']
+          : found.category === 'plates'
+          ? ['Acrílico Transparente', 'Acrílico Blanco', 'Acrílico Negro']
+          : ['Blanco Brillante', 'Negro Mate']);
       const validColor = defaultColors.find((c) => !isColorDisabled(found.id, c)) || defaultColors[0];
       setColor(validColor);
 
@@ -214,7 +238,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
                       (selectedImage || product.image) === img ? 'border-brand-950 ring-2 ring-brand-950' : 'border-brand-200'
                     }`}
                   >
-                    <img src={img} alt={`Miniatura ${idx}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`Miniatura ${idx}`} className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
@@ -239,7 +263,7 @@ export default function ProductDetailClient({ params }: { params: { id: string }
             {/* Header info */}
             <div className="space-y-2">
               <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest block">Colección Oficial</span>
-              <h2 className="text-2xl sm:text-3xl font-black text-brand-950 uppercase tracking-wide">{product.name}</h2>
+              <h1 className="text-2xl sm:text-3xl font-black text-brand-950 uppercase tracking-wide">{product.name}</h1>
               <div className="flex items-center space-x-3 flex-wrap gap-2">
                 <span className="text-2xl font-black text-brand-950">${unitPrice.toFixed(2)}</span>
                 <span className="text-xs text-green-700 bg-green-50 px-2.5 py-1 font-bold uppercase rounded-lg border border-green-200">Pago único • Sin Suscripción</span>

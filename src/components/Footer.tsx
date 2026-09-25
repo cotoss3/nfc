@@ -120,10 +120,12 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="inline-block w-full max-w-[240px]">
               <img
-                src="/logos/negativo.jpeg"
+                src="/logos/negativo.webp"
                 alt="starTAP Logo"
                 width="240"
                 height="80"
+                loading="lazy"
+                decoding="async"
                 className="w-[calc(100%-5px)] h-auto object-contain invert mix-blend-screen opacity-95 block"
               />
             </Link>

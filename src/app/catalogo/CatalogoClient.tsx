@@ -123,13 +123,13 @@ export default function CatalogoClient() {
 
                 <div className="pt-2 space-y-4">
                   <div className="flex flex-wrap items-baseline gap-2.5">
-                    <span className="text-3xl sm:text-4xl font-black text-amber-400">${specialPacks[0].price}.00</span>
-                    <span className="text-sm text-slate-400 line-through font-semibold">$70.00</span>
+                    <span className="text-3xl sm:text-4xl font-black text-amber-400">${specialPacks[0].price.toFixed(2)}</span>
+                    <span className="text-sm text-slate-400 line-through font-semibold">$75.00</span>
                     <span className="text-xs font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-md shadow-sm">
-                      28% OFF
+                      40% OFF
                     </span>
                     <span className="text-xs font-bold text-amber-300 bg-amber-400/20 px-2.5 py-1 rounded-md">
-                      Ahorras $20.00
+                      Ahorras $30.01
                     </span>
                   </div>
 
@@ -164,6 +164,7 @@ export default function CatalogoClient() {
                     src={specialPacks[0].image}
                     alt={specialPacks[0].name}
                     fill
+                    sizes="(max-width: 768px) 100vw, 380px"
                     className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
@@ -209,6 +210,7 @@ export default function CatalogoClient() {
                       src={product.image}
                       alt={product.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, 380px"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </Link>
@@ -235,7 +237,7 @@ export default function CatalogoClient() {
                 <div className="p-5 pt-0 space-y-3">
                   <div className="flex items-baseline justify-between pt-3 border-t border-slate-100">
                     <div>
-                      <span className="text-2xl font-black text-slate-900">${product.price}.00</span>
+                      <span className="text-2xl font-black text-slate-900">${product.price.toFixed(2)}</span>
                       <span className="text-[10px] text-slate-500 block uppercase font-medium">USD | Pago único</span>
                     </div>
                     <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">

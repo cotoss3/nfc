@@ -14,8 +14,8 @@ export interface Product {
   colors?: string[];
   material?: string;
   in_stock?: boolean;
-  category: 'plates' | 'cards' | 'accessories';
-  type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'airbnb' | 'custom';
+  category: 'plates' | 'cards' | 'accessories' | 'stands' | 'packs' | string;
+  type: 'google' | 'tripadvisor' | 'instagram' | 'vcard' | 'airbnb' | 'custom' | string;
 }
 
 export interface OrderItem {

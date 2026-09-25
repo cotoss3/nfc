@@ -36,6 +36,13 @@ export interface Industria {
   faqs: { q: string; a: string }[];
   imagen: string;
   imagenAlt: string;
+  /**
+   * Variantes con las que la gente busca esto en Panama. Google las trata como
+   * consultas distintas aunque signifiquen lo mismo: "resenas" es el termino de
+   * la documentacion, pero en Panama se dice "comentarios" y la propia interfaz
+   * de Google Maps en espanol dice "opiniones".
+   */
+  keywords?: string[];
 }
 
 export const INDUSTRIAS: Industria[] = [
@@ -43,12 +50,12 @@ export const INDUSTRIAS: Industria[] = [
     slug: 'restaurantes',
     nombre: 'restaurantes',
     nombreSingular: 'restaurante',
-    h1: 'Más reseñas de Google para restaurantes en Panamá',
-    title: 'Más Reseñas de Google para Restaurantes en Panamá',
+    h1: 'Más reseñas y comentarios de Google para restaurantes en Panamá',
+    title: 'Comentarios y Reseñas de Google para Restaurantes en Panamá',
     description:
-      'Consigue más reseñas de 5 estrellas para tu restaurante en Panamá. Stand NFC en la mesa o en la caja: el cliente acerca el celular y deja su reseña en segundos.',
+      'Consigue más comentarios y reseñas de 5 estrellas para tu restaurante en Panamá. Stand NFC en la mesa o en la caja: el cliente acerca el celular y deja su opinión en segundos.',
     intro:
-      'En Panamá, la mayoría de la gente elige dónde comer buscando en Google Maps. El restaurante con más reseñas y mejor calificación se lleva la mesa, aunque el de al lado cocine igual de bien.',
+      'En Panamá, la mayoría de la gente elige dónde comer buscando en Google Maps. El restaurante con más comentarios y mejor calificación se lleva la mesa, aunque el de al lado cocine igual de bien.',
     dolor:
       'El problema no es que a tus clientes no les guste la comida. Es que salen contentos y nunca escriben nada. Pedirles que busquen tu restaurante en Google y redacten una reseña son cinco pasos, y ahí se pierde la mayoría.',
     momento:
@@ -76,7 +83,7 @@ export const INDUSTRIAS: Industria[] = [
     },
     manejoPreventivo: {
       titulo: 'Protocolo Preventivo Anti-Reseñas Negativas en Sala',
-      subtitulo: 'El 90% de las malas reseñas en Google Maps para restaurantes en Panamá provienen de clientes que sintieron que nadie los escuchó en el local:',
+      subtitulo: 'Buena parte de los malos comentarios en Google Maps los deja un cliente que sintió que nadie lo escuchó en el local. Tres reglas para tu equipo:',
       reglas: [
         {
           alerta: 'Nunca presentes el Stand a una mesa con quejas',
@@ -122,7 +129,7 @@ export const INDUSTRIAS: Industria[] = [
     },
     beneficios: [
       'Apareces más arriba cuando alguien busca "restaurante cerca de mí" en tu zona',
-      'Más reseñas recientes suben tu calificación promedio y bajan el peso de una mala reseña vieja',
+      'Más comentarios recientes suben tu calificación promedio y bajan el peso de una mala reseña vieja',
       'Tu equipo no tiene que explicar nada: el cliente acerca el celular y listo',
       'Funciona con cualquier teléfono moderno, y el código QR cubre el resto',
     ],
@@ -130,8 +137,20 @@ export const INDUSTRIAS: Industria[] = [
     productoRazon:
       'El stand de mostrador es el que mejor funciona en restaurantes: se queda en la mesa o en la caja, se ve y no se pierde.',
     imagen: '/images/resenas-google/resenas-google-restaurantes-panama-startap.webp',
-    imagenAlt: 'Stand NFC starTAP para reseñas de Google en la mesa de un restaurante en Panamá',
+    imagenAlt: 'Stand NFC starTAP para reseñas y comentarios de Google en la mesa de un restaurante en Panamá',
+    keywords: [
+      'google comentarios restaurantes',
+      'comentarios de Google para restaurantes',
+      'opiniones de Google restaurantes Panamá',
+      'reseñas de Google para restaurantes Panamá',
+      'cómo conseguir comentarios en Google para mi restaurante',
+      'stand NFC para restaurantes Panamá',
+    ],
     faqs: [
+      {
+        q: '¿Los comentarios de Google son lo mismo que las reseñas?',
+        a: 'Sí. Es la misma cosa con tres nombres. En Panamá casi todo el mundo dice "comentarios", la documentación de Google dice "reseñas", y la propia ficha en Google Maps te las cuenta como "opiniones". Cuando alguien busca comentarios de un restaurante, está mirando lo mismo que decide si tu local sale en el bloque de tres de arriba.',
+      },
       {
         q: '¿Puedo pedirle la reseña solo a los clientes que quedaron contentos?',
         a: 'No, y no conviene. Filtrar reseñas va contra las políticas de Google y puede costarte la ficha del negocio. El dispositivo se le ofrece a todos por igual; lo que sube tu promedio es el volumen de clientes satisfechos, que siempre son la mayoría.',

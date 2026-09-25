@@ -837,3 +837,100 @@ antes de publicar el artículo.
    - Conversión de foto de placa starTAP a formato WebP optimizado (500x500 px, ~29.9 KB) en `public/blog/placa-nfc-google-startap-sidebar.webp`.
    - Inserción de imagen, distintivo de precio ("Desde $20.00") y atributos SEO (`alt`, `width`, `height`, `loading="lazy"`) en el cuadro "Solución starTAP" del sidebar de artículos (`src/app/blog/[slug]/page.tsx`).
 
+
+## 25 sep 2026 · Refuerzo de /resenas-google/restaurantes para "comentarios"
+
+Objetivo: capturar "google comentarios restaurantes" y variantes. La página usaba
+"reseñas" en todo el texto y nunca "comentarios" ni "opiniones", que es como
+busca la gente en Panamá (y "opiniones" es lo que muestra la propia ficha de
+Google Maps en español).
+
+- Nuevo campo `keywords?: string[]` en la interfaz `Industria`, emitido en
+  `generateMetadata` de `resenas-google/[industria]/page.tsx`.
+- Entrada de restaurantes: H1, title, description, intro, un beneficio y el alt
+  de la imagen reescritos para incluir "comentarios" sin sacar "reseñas".
+- FAQ nueva de entrada: "¿Los comentarios de Google son lo mismo que las
+  reseñas?" — captura la consulta exacta y aclara los tres nombres
+  (comentarios / reseñas / opiniones).
+- Densidad resultante en la entrada: 13 "comentario", 18 "reseña", 4 "opinión".
+
+**Cifra inventada eliminada.** El bloque `manejoPreventivo` decía "El 90% de las
+malas reseñas en Google Maps para restaurantes en Panamá provienen de clientes
+que sintieron que nadie los escuchó". Ese dato no existe y viola
+`REGLAS_CONTENIDO.md`. Reescrito sin número. Es la tercera cifra inventada que
+aparece en el proyecto (las otras dos estaban en los creativos de Meta).
+
+**Duda pendiente para Fernando:** el sitio usa +507 6483-9004 en los 10 enlaces
+de WhatsApp y en el texto visible, de forma consistente. La memoria del proyecto
+tenía 6713-4341 como el número de starTAP. Hay que confirmar cuál es el bueno y
+que coincida con el de la ficha de Google Business, o es una inconsistencia NAP
+propia.
+
+`npx tsc --noEmit` limpio. Sin commit ni push.
+
+### Verificación contra REGLAS_CONTENIDO (mismo día)
+
+Se pasó un script sobre el texto de la entrada de restaurantes. Resultado: 0
+rayas largas, 0 flechas, 0 emojis, 0 vocabulario delator, 0 aperturas de
+carraspeo, 0 muletillas, 0 porcentajes sin fuente, y 0 tramos de tres frases
+seguidas del mismo largo sobre 39 frases.
+
+Dos fallos corregidos:
+1. "exactamente" en la FAQ nueva. Borrado.
+2. "los malos comentarios no vienen de la comida, sino de un cliente que…" era
+   contraste binario disfrazado. Reescrito como afirmación directa.
+
+Se mantuvo a propósito el trío de la FAQ ("es la misma cosa con tres nombres" +
+los tres términos): el tres ahí es el conteo real, no un agrupamiento retórico.
+
+**Pendiente de voz, no de reglas:** el bloque `momentoDetalle` de restaurantes
+(los tres pasos de sala) tiene tono de manual corporativo, no de Fernando.
+Frases como "la psicología del comensal responde con éxito a esta secuencia" o
+"El momento cumbre". No rompe ninguna regla; es candidato número uno si algún
+día se barre el sitio por voz.
+
+**Tarea sugerida:** barrer todo el sitio buscando porcentajes. Ya van tres
+cifras inventadas encontradas (dos en los creativos de Meta, una aquí), todas
+con el mismo patrón: un 90% redondo sin fuente.
+
+## 25 sep 2026 (cont.) · Análisis de 15 keywords + tercer artículo
+
+**Análisis** → anexo nuevo al final de `ANALISIS_KEYWORDS.md`. De las 15
+consultas que trajo Fernando, **10 se descartan**:
+- 6 son del consumidor buscando las reseñas que ÉL escribió ("mis reseñas de
+  google", "ver tus reseñas en google"). Google responde con
+  `google.com/maps/contrib`. Cero valor comercial.
+- 4 son genéricos sin contexto ("comentarios en google" también lo busca quien
+  quiere comentarios en Google Docs).
+- 5 ("reseñas google maps" y sus permutaciones) son LA MISMA consulta con las
+  palabras movidas. Una página por variante = canibalización de manual. Van como
+  `keywords` del hub `/resenas-google`, sin página nueva.
+- Ninguna lleva "Panamá": es el terreno de turiaprint.es / tapstar.es, donde el
+  propio análisis original ya dice que no se gana.
+
+Regla que quedó escrita: **una intención, una página.** No una consulta, una
+página.
+
+**Artículo nuevo (borrador)** → `contenido/articulo-ver-y-responder-resenas.md`,
+766 palabras. "Cómo ver y responder las reseñas de tu negocio en Google".
+Captura la tajada de dueño de negocio del grupo descartado, y **no canibaliza**:
+las páginas de industria venden conseguir reseñas, esta explica administrar las
+que ya tienes.
+
+Datos verificados contra la documentación oficial de Google (enlazada en el
+artículo): se gestiona en business.google.com → Leer reseñas; Google revisa las
+respuestas antes de publicarlas (~10 min); la respuesta sale a nombre del
+negocio; solo se retiran reseñas que incumplen políticas (spam, malsonante,
+legal, privacidad), no las injustas; la evaluación tarda varios días; existe una
+herramienta de gestión con estados pendiente / revisada / derivado; se puede
+apelar una vez, hasta 10 reseñas juntas.
+
+Verificación anti-IA: 0 rayas largas, 0 adverbios en -mente, 0 vocabulario
+delator, 0 carraspeo, 0 porcentajes sin fuente, 0 contraste binario. El primer
+pase dio **4 tramos de tres frases del mismo largo**; se reescribieron y quedó
+en 0 sobre 35 frases.
+
+**Pendiente Fernando:** los dos `TODO_EXPERIENCIA` del artículo. Esta vez son
+más fáciles que los del artículo de Maps: (1) un número suyo sobre negocios con
+reseñas sin responder, (2) su experiencia reportando una reseña, y "nunca he
+tenido que reportar una" también sirve como respuesta honesta.

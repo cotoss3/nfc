@@ -40,6 +40,7 @@ export function generateMetadata({
   return {
     title: ind.title,
     description: ind.description,
+    ...(ind.keywords?.length ? { keywords: ind.keywords } : {}),
     alternates: { canonical: `/resenas-google/${ind.slug}` },
     openGraph: {
       title: `${ind.title} | starTAP Panamá`,

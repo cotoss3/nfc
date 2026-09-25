@@ -238,6 +238,16 @@ function ProductCarousel({
 
           alt={`${alt} - Foto ${currentIndex + 1}`}
 
+          width={800}
+
+          height={800}
+
+          loading={currentIndex === 0 ? 'eager' : 'lazy'}
+
+          fetchPriority={currentIndex === 0 ? 'high' : 'auto'}
+
+          decoding="async"
+
           className="w-full h-full object-contain transition-all duration-300"
 
         />
@@ -339,6 +349,14 @@ function ProductCarousel({
                 src={img}
 
                 alt={`Miniatura ${idx + 1}`}
+
+                width={64}
+
+                height={64}
+
+                loading="lazy"
+
+                decoding="async"
 
                 className="w-full h-full object-contain"
 

@@ -159,3 +159,115 @@ pequeño. El SEO va a traerte clientes, pero es siembra lenta y probablemente se
 decenas de búsquedas al mes, no cientos. Para llenar la agenda a corto plazo
 pesan más la venta directa, el perfil de Google y los anuncios de Meta que ya
 dejamos configurados.
+
+---
+
+# Anexo · Las 15 consultas de "reseñas / comentarios"
+**25 de septiembre de 2026**
+
+Lista evaluada por intención de búsqueda, no por volumen. La pregunta de cada
+una es la misma: **quién teclea esto, y me compra algo.**
+
+## El veredicto corto
+
+De las 15, **diez se descartan**. Lo que queda no da para una página nueva por
+consulta: da para **una sola página** y un refuerzo del hub.
+
+Ninguna de las 15 lleva "Panamá". El propio `ANALISIS_KEYWORDS.md` ya establece
+que en los términos genéricos sin país compiten turiaprint.es, tapstar.es y
+tapreview.es, con dominios viejos y backlinks. Ahí no se gana, y el que llega no
+compra porque ni siquiera está en el país donde enviamos.
+
+## Grupo A · El que busca las reseñas que él escribió (6)
+
+```
+google mis reseñas          mis reseñas de google
+mis comentarios en google   ver mis reseñas de google
+mis comentarios google      ver tus reseñas en google
+```
+
+**Quién teclea esto:** una persona que dejó reseñas como cliente y quiere
+encontrarlas o editarlas. Google tiene una página para eso
+(`google.com/maps/contrib`) y la posiciona primera, porque es la respuesta.
+
+**Valor comercial: ninguno.** Es un consumidor, no un dueño de negocio.
+
+**La excepción que sí importa:** una parte de los que escriben "mis reseñas de
+Google" son dueños hablando de **las reseñas de su negocio**. Esa es la única
+tajada aprovechable de este grupo, y se captura con la página del punto 1 de
+abajo. No con seis.
+
+**Decisión: descartar el grupo, capturar la tajada de dueño con una página.**
+
+## Grupo B · Reseñas de Google Maps (5)
+
+```
+comentarios google maps     reseñas en google maps
+google maps comentarios     reseñas google maps
+reseñas de google maps
+```
+
+Son la misma consulta con las palabras movidas de sitio. Google las entiende
+como una. **Hacer cinco páginas para esto es el ejemplo de manual de
+canibalización:** cinco URLs compitiendo entre ellas, ninguna con fuerza, y el
+buscador eligiendo por su cuenta cuál enseña.
+
+**Decisión: cero páginas nuevas.** Van como variantes en el `keywords` y en el
+texto del hub `/resenas-google`, que es la página que ya cubre ese terreno.
+
+## Grupo C · Genéricos sin contexto (4)
+
+```
+google comentarios      comentarios en google
+comentario de google    ver reseñas google
+```
+
+Tan amplios que ni se sabe de qué producto hablan. "Comentarios en Google"
+también lo teclea quien busca comentarios en Google Docs o en YouTube. Quien
+llegue por ahí no tiene ninguna relación con un dispositivo NFC en Panamá.
+
+**Decisión: descartar.**
+
+## Qué sí hacer
+
+### 1. Una página nueva, de gestión y no de venta
+
+**Tema:** cómo ver, responder y gestionar las reseñas de tu propio negocio en
+Google.
+
+**Por qué esta y no otra:** es la única forma honesta de capturar al dueño que
+teclea "ver mis reseñas de Google" pensando en su negocio. Y es un tema donde
+hay algo real que enseñar: dónde se ven, cómo se responde, qué hacer con una
+negativa, qué se puede reportar y qué no.
+
+**Por qué no canibaliza nada:** las páginas de industria venden conseguir
+reseñas nuevas. Esta explica administrar las que ya tienes. Distinta intención,
+distinto momento del dueño, distinta página.
+
+**Dónde:** en el blog, no en `/resenas-google/`, que está segmentado por
+industria y no admite un tema transversal sin romper el patrón.
+
+**Enlaza a:** el artículo de pedir reseñas sin penalización, el de por qué no
+apareces en Maps, y el hub de industrias.
+
+### 2. Reforzar el hub con las variantes de Maps
+
+`/resenas-google` recibe el grupo B como `keywords` y un par de menciones
+naturales en el texto. Sin página nueva, sin repetir la palabra quince veces.
+
+### 3. La regla que evita el problema de fondo
+
+**Una intención, una página.** No una consulta, una página. Cuando dos consultas
+se contestan con el mismo texto, son la misma página. Esta lista tiene 15
+consultas y tres intenciones, y solo una de las tres nos sirve.
+
+## Lo que esta lista deja ver
+
+Salió de una herramienta sin filtro de intención: volumen ordenado de mayor a
+menor, sin preguntar quién busca. Por eso trae seis variantes de un consumidor
+buscando lo que él mismo escribió.
+
+Las consultas que dan dinero siguen siendo las de los grupos A y B del análisis
+original: "cómo conseguir más reseñas en Google", "por qué mi negocio no aparece
+en Google Maps", "tarjeta NFC reseñas Google Panamá". Tienen menos volumen y
+cierran ventas.

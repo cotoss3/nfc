@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { dbLocal, Product } from '@/lib/db';
 import { useCart } from '@/context/CartContext';
@@ -191,16 +192,14 @@ export default function HomeClient() {
           {/* Hero Image Column */}
           <div className="lg:col-span-5 relative order-1 lg:order-2 px-2 sm:px-4 lg:pb-12">
             <div className="aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 relative">
-              <img
+              <Image
                 src="/images/startap_negocio_resenas.webp"
                 alt="Empresario usando placa NFC StarTAP para conseguir reseñas en Google Maps en Panamá"
                 title="Placas y Tarjetas NFC para Reseñas de Google en Panamá | StarTAP"
-                width={1024}
-                height={1024}
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                className="w-full h-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 480px"
+                className="object-cover"
               />
             </div>
 
@@ -324,6 +323,10 @@ export default function HomeClient() {
                     <img
                       src={homeProducts[0].image}
                       alt={homeProducts[0].name}
+                      width={360}
+                      height={360}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
@@ -375,6 +378,10 @@ export default function HomeClient() {
                     <img
                       src={homeProducts[1].image}
                       alt={homeProducts[1].name}
+                      width={360}
+                      height={360}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
@@ -423,6 +430,10 @@ export default function HomeClient() {
                     <img
                       src={homeProducts[2].image}
                       alt={homeProducts[2].name}
+                      width={360}
+                      height={360}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
@@ -474,7 +485,7 @@ export default function HomeClient() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               <div className="md:col-span-8 space-y-3">
                 <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $20.00)
+                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $30.01)
                 </div>
                 
                 <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
@@ -503,12 +514,16 @@ export default function HomeClient() {
 
               <div className="md:col-span-4 space-y-4 text-left md:text-right border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
                 <div>
-                  {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $50.00 */}
+                  {/* MINI THUMBNAILS ROW (1 Placa + 2 Tarjetas) JUST ABOVE $44.99 */}
                   <div className="grid grid-cols-3 gap-2.5 w-full mb-3.5">
                     <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border-2 border-amber-400 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/NFC_10001/NFC_10001_Placa.webp"
                         alt="1x Placa Acrílica de Mostrador"
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        decoding="async"
                         className="max-h-full max-w-full object-contain hover:scale-105 transition-transform"
                         title="1x Placa Acrílica de Mostrador (3mm)"
                       />
@@ -517,6 +532,10 @@ export default function HomeClient() {
                       <img
                         src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
                         alt="1x Tarjeta NFC de Bolsillo"
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        decoding="async"
                         className="max-h-full max-w-full object-contain hover:scale-105 transition-transform"
                         title="1x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
                       />
@@ -525,6 +544,10 @@ export default function HomeClient() {
                       <img
                         src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
                         alt="2x Tarjeta NFC de Bolsillo"
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        decoding="async"
                         className="max-h-full max-w-full object-contain hover:scale-105 transition-transform"
                         title="2x Tarjeta NFC de Bolsillo (PVC 0.76mm)"
                       />
@@ -532,20 +555,20 @@ export default function HomeClient() {
                   </div>
 
                   <div className="flex items-baseline gap-2 md:justify-end">
-                    <span className="text-3xl font-black text-amber-400 font-mono">$50.00</span>
-                    <span className="text-xs text-slate-400 line-through font-semibold">$70.00</span>
+                    <span className="text-3xl font-black text-amber-400 font-mono">$44.99</span>
+                    <span className="text-xs text-slate-400 line-through font-semibold">$75.00</span>
                   </div>
                   <span className="inline-block mt-1 text-[10px] font-black text-slate-950 bg-amber-400 px-2.5 py-0.5 rounded shadow-xs">
-                    AHORRAS $20.00 USD
+                    AHORRAS $30.01 USD
                   </span>
                 </div>
 
                 <button
                   onClick={() => {
                     addToCart({
-                      product_id: 'pack-negocio-3in1',
+                      product_id: 'pack-trio-comercial',
                       product_name: 'Pack Comercio Completo (1 Placa + 2 Tarjetas NFC)',
-                      price: 50.00,
+                      price: 44.99,
                       quantity: 1,
                       selected_color: 'Acrílico 3mm + PVC 0.76mm'
                     });
@@ -554,7 +577,7 @@ export default function HomeClient() {
                   className="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-5 py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Comprar Pack ($50 USD)</span>
+                  <span>Comprar Pack ($44.99 USD)</span>
                 </button>
               </div>
             </div>

@@ -12,6 +12,7 @@ export interface ProductConfig {
   useCase: string;
   image: string;
   images: string[];
+  colors?: string[];
   isPack?: boolean;
   savingsText?: string;
   shippingNote?: string;
