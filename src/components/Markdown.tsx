@@ -125,6 +125,31 @@ export default function Markdown({ children }: { children: string }) {
       cerrarLista();
       const alt = imgMatch[1];
       const src = imgMatch[2];
+      if (src.startsWith('placeholder:')) {
+        const rutaSugerida = src.replace(/^placeholder:/, '');
+        salida.push(
+          <figure
+            key={`fig-${k++}`}
+            className="my-8 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50/40 p-6 sm:p-8 text-center"
+          >
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-amber-600 shadow-xs border border-amber-200 font-black text-lg">
+              📷
+            </div>
+            <p className="text-[11px] font-black uppercase tracking-widest text-amber-800">
+              Espacio para foto del artículo
+            </p>
+            <p className="mt-2 text-sm font-semibold text-brand-800 max-w-xl mx-auto leading-relaxed">
+              {alt}
+            </p>
+            {rutaSugerida && (
+              <p className="mt-2 text-xs font-mono text-brand-500">
+                Archivo sugerido: <code className="bg-white px-2 py-0.5 rounded border border-brand-200">{rutaSugerida}</code>
+              </p>
+            )}
+          </figure>
+        );
+        continue;
+      }
       salida.push(
         <figure key={`fig-${k++}`} className="my-8">
           {/* eslint-disable-next-line @next/next/no-img-element */}

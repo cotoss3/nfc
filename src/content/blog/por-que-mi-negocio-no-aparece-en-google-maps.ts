@@ -29,6 +29,7 @@ export const post: BlogPost = {
   },
   relacionados: [
     { titulo: 'Cómo pedir reseñas sin que te penalicen', href: '/blog/como-pedir-resenas-google-sin-penalizacion' },
+    { titulo: 'Cómo ver y responder reseñas en Google', href: '/blog/ver-y-responder-resenas-de-tu-negocio-en-google' },
     { titulo: 'Más reseñas para restaurantes', href: '/resenas-google/restaurantes' },
     { titulo: 'Ver los dispositivos NFC', href: '/catalogo' },
   ],

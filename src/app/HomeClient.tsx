@@ -235,7 +235,7 @@ export default function HomeClient() {
               Impacto Inmediato en Ventas
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-950 uppercase tracking-tight">
-              ¿Por qué el 90% de tus clientes no dejan reseña?
+              ¿Por qué la mayoría de tus clientes no dejan reseña?
             </h2>
             <p className="text-slate-600 text-xs sm:text-sm max-w-xl mx-auto">
               Pedirle a un cliente que busque tu negocio en Google Maps genera demasiada fricción. starTAP elimina los pasos.
@@ -260,7 +260,7 @@ export default function HomeClient() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-rose-500 font-bold">✕</span>
-                  Solo 1 de cada 50 clientes publica una valoracion (98% de pérdida).
+                  Muy pocos clientes terminan el proceso cuando tienen que buscar el local por su cuenta.
                 </li>
               </ul>
             </div>

@@ -28,6 +28,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 
   const autor = getAutor(post.autor);
   const url = `${BASE_URL}/blog/${post.slug}`;
+  const ogImgSrc = post.imagen.src.startsWith('placeholder:')
+    ? '/og/startap-og.jpg'
+    : post.imagen.src;
 
   return {
     title: post.tituloSeo,
@@ -45,7 +48,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       authors: autor ? [autor.nombre] : undefined,
       images: [
         {
-          url: `${BASE_URL}${post.imagen.src}`,
+          url: `${BASE_URL}${ogImgSrc}`,
           width: post.imagen.ancho,
           height: post.imagen.alto,
           alt: post.imagen.alt,
@@ -56,7 +59,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       card: 'summary_large_image',
       title: post.titulo,
       description: post.descripcion,
-      images: [`${BASE_URL}${post.imagen.src}`],
+      images: [`${BASE_URL}${ogImgSrc}`],
     },
   };
 }
@@ -68,6 +71,9 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
   const autor = getAutor(post.autor);
   const url = `${BASE_URL}/blog/${post.slug}`;
   const secciones = extraerEncabezados(post.cuerpo);
+  const schemaImgSrc = post.imagen.src.startsWith('placeholder:')
+    ? '/og/startap-og.jpg'
+    : post.imagen.src;
 
   const autorSchema = autor
     ? {
@@ -101,7 +107,7 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
     wordCount: post.cuerpo.split(/\s+/).length,
     image: {
       '@type': 'ImageObject',
-      url: `${BASE_URL}${post.imagen.src}`,
+      url: `${BASE_URL}${schemaImgSrc}`,
       width: post.imagen.ancho,
       height: post.imagen.alto,
     },
@@ -222,14 +228,34 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
 
         {/* Hero Image */}
         <div className="max-w-5xl mx-auto px-5 mt-8 mb-12">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={post.imagen.src}
-            alt={post.imagen.alt}
-            width={post.imagen.ancho}
-            height={post.imagen.alto}
-            className="w-full rounded-2xl sm:rounded-3xl object-cover max-h-[500px] shadow-md border border-brand-100 bg-brand-50"
-          />
+          {post.imagen.src.startsWith('placeholder:') ? (
+            <div className="w-full rounded-2xl sm:rounded-3xl border-2 border-dashed border-amber-300 bg-amber-50/40 p-8 sm:p-12 text-center">
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-amber-600 shadow-xs border border-amber-200 text-2xl">
+                📷
+              </div>
+              <p className="text-xs font-black uppercase tracking-widest text-amber-800">
+                Espacio para foto de portada ({post.imagen.ancho} × {post.imagen.alto} px)
+              </p>
+              <p className="mt-2 text-sm sm:text-base font-semibold text-brand-800 max-w-2xl mx-auto leading-relaxed">
+                {post.imagen.alt}
+              </p>
+              <p className="mt-2.5 text-xs font-mono text-brand-500">
+                Archivo sugerido:{' '}
+                <code className="bg-white px-2 py-0.5 rounded border border-brand-200">
+                  public{post.imagen.src.replace(/^placeholder:/, '')}
+                </code>
+              </p>
+            </div>
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={post.imagen.src}
+              alt={post.imagen.alt}
+              width={post.imagen.ancho}
+              height={post.imagen.alto}
+              className="w-full rounded-2xl sm:rounded-3xl object-cover max-h-[500px] shadow-md border border-brand-100 bg-brand-50"
+            />
+          )}
         </div>
 
         {/* Main Content & Sidebar Grid */}

@@ -92,7 +92,7 @@ export default function BlogHub() {
                   >
                     {/* ── Imagen destacada FUERA del texto ── */}
                     <div className={`w-full overflow-hidden bg-slate-100 ${isHero ? 'h-64 sm:h-72' : 'h-48'}`}>
-                      {p.imagen?.src ? (
+                      {p.imagen?.src && !p.imagen.src.startsWith('placeholder:') ? (
                         <img
                           src={p.imagen.src}
                           alt={p.imagen.alt}
@@ -102,8 +102,14 @@ export default function BlogHub() {
                           loading={isHero ? 'eager' : 'lazy'}
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#01A6D2]/10 to-slate-100">
-                          <span className="text-4xl">⭐</span>
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-amber-50/60 border-b-2 border-dashed border-amber-300 p-4 text-center">
+                          <span className="text-2xl mb-1">📷</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-amber-800">
+                            Espacio para foto de portada
+                          </span>
+                          <span className="text-[11px] text-slate-600 line-clamp-2 mt-1 max-w-xs">
+                            {p.imagen?.alt}
+                          </span>
                         </div>
                       )}
                     </div>

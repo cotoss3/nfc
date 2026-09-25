@@ -74,7 +74,7 @@ export const LANDINGS: LandingCopy[] = [
       {
         titulo: 'Más rápido que un QR de papel',
         texto:
-          'Olvídate de pedirle al cliente que abra la cámara y enfoque un código arrugado. Con NFC —la misma tecnología con la que pagas con el móvil— solo acerca el teléfono al Stand y le aparece la pantalla de reseña.',
+          'Olvídate de pedirle al cliente que abra la cámara y enfoque un código arrugado. Con NFC, la misma tecnología con la que pagas con el móvil, solo acerca el teléfono al Stand y le aparece la pantalla de reseña.',
         icono: 'zap',
         imagenAlt: 'Cliente acercando su celular a un stand NFC para dejar una reseña de Google',
       },
@@ -88,7 +88,7 @@ export const LANDINGS: LandingCopy[] = [
       {
         titulo: 'Confianza instantánea para tus clientes',
         texto:
-          'El 93% de los consumidores leen reseñas antes de comprar. Destacar tus 5 estrellas en formato físico genera una prueba social inmediata que aumenta tu credibilidad y multiplica tus conversiones en mostrador.',
+          'La mayoría de los clientes revisan las calificaciones en Google Maps antes de decidir dónde comprar. Mostrar tu soporte físico en el mostrador refuerza tu credibilidad y facilita que quienes salen satisfechos dejen su opinión en el acto.',
         icono: 'sparkles',
         imagenAlt: 'Infografía sobre el aumento de confianza al usar starTAP en el negocio',
       },
@@ -215,12 +215,12 @@ export const LANDINGS: LandingCopy[] = [
     pasos: [
       { titulo: 'Instala la placa en tu caja', texto: 'Adhiérela al mostrador de cobro con la cinta 3M industrial incluida.' },
       { titulo: 'Entrega las tarjetas a tu equipo', texto: 'Tus vendedores o repartidores las llevan en la billetera o lanyard.' },
-      { titulo: 'Multiplica tus opiniones', texto: 'Captura reseñas desde múltiples puntos de contacto simultáneamente.' },
+      { titulo: 'Multiplica tus opiniones', texto: 'Captura reseñas desde varios puntos de contacto al mismo tiempo.' },
     ],
     faqs: [
-      { q: '¿Qué incluye exactamente el Pack Trío Comercial?', a: 'Incluye 1 Placa NFC de Mostrador en Acrílico Premium de 3mm y 2 Tarjetas NFC de Bolsillo en PVC técnico de 0.76mm.' },
-      { q: '¿Vienen todas programadas al mismo perfil de Google?', a: 'Sí, todas vienen listos y programadas hacia tu negocio. Si deseas programarlas a enlaces diferentes, puedes modificar cada una de forma independiente en tu portal.' },
-      { q: '¿Incluye costo de envío?', a: 'El envío es totalmente gratuito en Ciudad de Panamá y Panamá Oeste. Para provincias enviamos por Uno Express o Servientrega.' },
+      { q: '¿Qué incluye el Pack Trío Comercial?', a: 'Incluye 1 Placa NFC de Mostrador en Acrílico Premium de 3mm y 2 Tarjetas NFC de Bolsillo en PVC técnico de 0.76mm.' },
+      { q: '¿Vienen todas programadas al mismo perfil de Google?', a: 'Sí, todas vienen listas y programadas hacia tu negocio. Si deseas programarlas a enlaces diferentes, puedes modificar cada una de forma independiente en tu portal.' },
+      { q: '¿Incluye costo de envío?', a: 'El envío es gratuito en Ciudad de Panamá y Panamá Oeste. Para provincias enviamos por Uno Express o Servientrega.' },
     ],
     coloresPorDefecto: ['Acrílico 3mm + PVC 0.76mm'],
   }

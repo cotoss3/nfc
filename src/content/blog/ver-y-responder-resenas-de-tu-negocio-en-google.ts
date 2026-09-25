@@ -1,26 +1,66 @@
----
-titulo: "Cómo ver y responder las reseñas de tu negocio en Google"
-slug: "ver-y-responder-resenas-de-tu-negocio-en-google"
-descripcion: "Dónde se ven las reseñas de tu negocio, cómo responderlas, qué se puede reportar y qué no, y qué hacer cuando Google rechaza la denuncia. Con los plazos reales."
-autor: "Fernando Contreras"
-fecha: 2026-09-25
-actualizado: 2026-09-25
-categoria: "SEO local"
-imagen_portada: "placeholder:/blog/ver-y-responder-resenas-google-panama.webp"
----
+import type { BlogPost } from '@/lib/blog';
 
-# Cómo ver y responder las reseñas de tu negocio en Google
-
-Si buscaste "ver mis reseñas de Google" y llegaste acá, hay dos cosas distintas
+export const post: BlogPost = {
+  slug: 'ver-y-responder-resenas-de-tu-negocio-en-google',
+  titulo: 'Cómo ver y responder las reseñas de tu negocio en Google',
+  tituloSeo: 'Cómo Ver y Responder Reseñas de Google en tu Negocio',
+  descripcion:
+    'Dónde se ven las reseñas de tu negocio en Google, cómo responderlas, qué se puede reportar y qué hacer cuando Google rechaza una denuncia. Con plazos reales.',
+  resumen:
+    'Si buscaste "ver mis reseñas de Google", hay dos cosas distintas con el mismo nombre: las que tú escribiste como cliente y las que te dejaron a ti. Aquí vemos cómo gestionar las segundas.',
+  fecha: '2026-09-25',
+  actualizado: '2026-09-25',
+  categoria: 'SEO local',
+  autor: 'fernando-contreras',
+  minutosLectura: 5,
+  keywords: [
+    'ver mis reseñas de google',
+    'mis reseñas google',
+    'como ver mis reseñas en google',
+    'responder reseñas de google',
+    'cómo borrar una reseña de google',
+    'reportar reseña google maps',
+  ],
+  imagen: {
+    src: 'placeholder:/blog/ver-y-responder-resenas-google-panama.webp',
+    alt: 'Foto o captura real respondiendo reseñas de clientes en Google Business Profile desde Panamá (1200 × 675 px)',
+    ancho: 1200,
+    alto: 675,
+  },
+  relacionados: [
+    { titulo: 'Por qué tu negocio no aparece en Google Maps', href: '/blog/por-que-mi-negocio-no-aparece-en-google-maps' },
+    { titulo: 'Cómo pedir reseñas sin que te penalicen', href: '/blog/como-pedir-resenas-google-sin-penalizacion' },
+    { titulo: 'Guía de reseñas de Google por industria', href: '/resenas-google' },
+    { titulo: 'Ver los dispositivos NFC', href: '/catalogo' },
+  ],
+  faqs: [
+    {
+      q: '¿Dónde veo las reseñas que yo escribí como cliente en otros negocios?',
+      a: 'Esas no están en el panel de empresa. Entras a google.com/maps/contrib desde tu cuenta personal de Google, tocas "Tus contribuciones" y luego "Reseñas". Ahí puedes editar o borrar las opiniones que tú dejaste.',
+    },
+    {
+      q: '¿Cuánto tarda en publicarse mi respuesta a una reseña?',
+      a: 'Google pasa tu respuesta por un filtro antes de mostrarla al público. Casi siempre tarda cerca de diez minutos, aunque a veces demora un poco más. Si no sale de inmediato, no la envíes dos veces.',
+    },
+    {
+      q: '¿Puedo borrar una reseña de 1 estrella si el cliente miente?',
+      a: 'No tienes un botón para borrar reseñas ajenas. Solo puedes denunciarla ante Google si incumple sus políticas de contenido (spam, insultos, datos privados o conflicto de interés). Si es una queja subjetiva donde no se puede probar que infringe una norma, Google no la retira y lo mejor es responder con calma y datos claros.',
+    },
+    {
+      q: '¿Qué hago si denuncié una reseña desde el celular y no pasó nada?',
+      a: 'Entra desde el navegador a la herramienta de gestión de reseñas de Google Business Profile. Ahí ves el estado real de cada denuncia (pendiente, revisada o en apelación) y, si fue rechazada, puedes presentar una apelación formal seleccionando hasta diez reseñas a la vez.',
+    },
+  ],
+  cuerpo: `Si buscaste "ver mis reseñas de Google" y llegaste acá, hay dos cosas distintas
 con el mismo nombre. Una son las reseñas que **tú escribiste** como cliente de
-otros negocios, y esas viven en `google.com/maps/contrib`. Las otras son las que
+otros negocios, y esas viven en \`google.com/maps/contrib\`. Las otras son las que
 **te dejaron a ti**, y se gestionan en otro lado.
 
 Esta página es sobre las segundas.
 
 ## Dónde se ven
 
-En `business.google.com`, con la cuenta que administra la ficha, y luego en
+En \`business.google.com\`, con la cuenta que administra la ficha, y luego en
 **Leer reseñas**.
 
 ![Captura del panel de Google Business Profile mostrando el botón "Leer reseñas" y la lista de comentarios recibidos con la opción "Responder"](placeholder:/blog/panel-leer-resenas-google-business-panama.webp)
@@ -117,11 +157,9 @@ Nosotros vendemos placas y tarjetas NFC que acortan ese camino, y eso es lo
 haces tú en media hora.
 
 Si tu problema es que tienes cuatro reseñas, ningún manejo de reseñas te va a
-servir: primero hay que tener reseñas que manejar.
-
----
-
-**Fernando Contreras** es fundador de starTAP Panamá y de DataKorex. Instala
+servir: primero hay que tener reseñas que manejar.`,
+  ctaAuditoria: true,
+  cierre: `**Fernando Contreras** es fundador de starTAP Panamá y de DataKorex. Instala
 dispositivos NFC en negocios panameños y trabaja el SEO local de sus clientes.
 
 *Transparencia: vendemos dispositivos NFC para reseñas de Google. Nada de lo que
@@ -129,4 +167,5 @@ explico acá lo vendemos, y por eso mismo lo digo completo.*
 
 **Fuentes:**
 - [Responder a las reseñas](https://support.google.com/business/answer/3474050) · Ayuda de Perfil de Empresa de Google
-- [Retirar reseñas que incumplen las políticas](https://support.google.com/business/answer/4596773) · Google
+- [Retirar reseñas que incumplen las políticas](https://support.google.com/business/answer/4596773) · Google`,
+};

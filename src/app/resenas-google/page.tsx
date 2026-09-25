@@ -26,13 +26,21 @@ import { INDUSTRIAS } from '@/lib/industrias';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Guía de Reseñas de Google por Industria en Panamá | starTAP',
+  title: 'Reseñas y Comentarios en Google Maps por Industria | starTAP',
   description:
-    'Estrategias comprobadas por tipo de negocio en Panamá para multiplicar tus reseñas de Google en segundos con tecnología NFC + QR. Restaurantes, clínicas, barberías, talleres, hoteles y comercios.',
+    'Guía práctica por tipo de negocio en Panamá para conseguir más reseñas y comentarios en Google Maps con dispositivos NFC y QR. Restaurantes, clínicas, barberías, talleres, hoteles y comercios.',
+  keywords: [
+    'reseñas google maps',
+    'reseñas en google maps',
+    'reseñas de google maps',
+    'comentarios google maps',
+    'google maps comentarios',
+    'opiniones google maps panamá',
+  ],
   alternates: { canonical: '/resenas-google' },
   openGraph: {
-    title: 'Guía de Reseñas de Google por Industria en Panamá | starTAP',
-    description: 'Estrategias y tecnología NFC + QR para dominar el ranking de Google Maps en Panamá.',
+    title: 'Reseñas y Comentarios en Google Maps por Industria | starTAP',
+    description: 'Guía práctica y dispositivos NFC + QR para sumar reseñas y comentarios reales en Google Maps en Panamá.',
     url: `${BASE_URL}/resenas-google`,
     images: [
       {
@@ -88,20 +96,20 @@ export default function ResenasGoogleHub() {
             </h1>
 
             <p className="text-slate-300 text-base sm:text-xl max-w-3xl mx-auto leading-relaxed">
-              Las valoraciones de Google Maps deciden qué negocio se lleva al cliente en Panamá. 
-              Selecciona tu categoría comercial para conocer el <strong className="text-amber-400">momento exacto</strong>, 
-              la <strong className="text-amber-400">frase clave</strong> y el dispositivo <strong className="text-amber-400">NFC + QR</strong> de mayor conversión.
+              Las reseñas y comentarios en Google Maps deciden qué negocio se lleva al cliente en Panamá. 
+              Selecciona tu rubro comercial para ver el <strong className="text-amber-400">momento exacto</strong>, 
+              la <strong className="text-amber-400">frase indicada</strong> y el dispositivo <strong className="text-amber-400">NFC + QR</strong> que mejor convierte en mostrador.
             </p>
 
             <div className="pt-4 flex flex-wrap justify-center gap-3 sm:gap-4 text-xs font-bold text-slate-200">
               <span className="bg-slate-800/90 border border-slate-700 px-3.5 py-2 rounded-xl flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-emerald-400" /> +300% de Conversión Presencial
+                <TrendingUp className="w-4 h-4 text-emerald-400" /> Mayor Conversión en Local
               </span>
               <span className="bg-slate-800/90 border border-slate-700 px-3.5 py-2 rounded-xl flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-400" /> Captura en 2 Segundos
+                <Zap className="w-4 h-4 text-amber-400" /> Acceso en 2 Segundos
               </span>
               <span className="bg-slate-800/90 border border-slate-700 px-3.5 py-2 rounded-xl flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-blue-400" /> 100% Legal (Google Policies)
+                <ShieldCheck className="w-4 h-4 text-blue-400" /> Acorde a las Políticas de Google
               </span>
             </div>
           </div>
@@ -111,12 +119,12 @@ export default function ResenasGoogleHub() {
           {/* GRID DE INDUSTRIAS */}
           <section className="space-y-8">
             <div className="text-center space-y-2">
-              <span className="text-xs font-black uppercase tracking-widest text-brand-400">Guías Especializadas</span>
+              <span className="text-xs font-black uppercase tracking-widest text-brand-400">Guías por Rubro</span>
               <h2 className="text-2xl sm:text-4xl font-black text-slate-950 uppercase tracking-tight">
                 Selecciona Tu Tipo de Negocio
               </h2>
               <p className="text-slate-600 text-sm max-w-xl mx-auto">
-                Descubre cómo los líderes de cada sector en Panamá automatizan la recolección de reseñas positivas de 5 estrellas.
+                Mira cómo pedir opiniones y comentarios reales en Google Maps sin fricción en cada sector comercial de Panamá.
               </p>
             </div>
 
@@ -210,7 +218,7 @@ export default function ResenasGoogleHub() {
                   Abre tu ficha oficial en Google
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Directamente en la casilla para calificar con estrellas, sin descargar aplicaciones ni buscar el nombre de tu negocio.
+                  Sin escalas, directo en el cuadro para calificar con estrellas y escribir su comentario en Google Maps, sin descargar aplicaciones ni buscar el nombre del local.
                 </p>
               </div>
 
@@ -239,7 +247,7 @@ export default function ResenasGoogleHub() {
                 Lo Que NUNCA Debes Hacer al Solicitar Reseñas
               </h2>
               <p className="text-slate-400 text-xs sm:text-sm max-w-2xl">
-                Proteger la reputación de tu negocio en Panamá es nuestra máxima prioridad. Sigue estas reglas esenciales para evitar sanciones en Google Business Profile:
+                Proteger la reputación de tu negocio en Panamá es nuestra prioridad. Sigue estas reglas para evitar sanciones en Google Business Profile y lee también nuestra guía sobre <Link href="/blog/ver-y-responder-resenas-de-tu-negocio-en-google" className="text-amber-400 underline hover:text-amber-300">cómo ver y responder las reseñas de tu negocio en Google</Link>:
               </p>
             </div>
 
@@ -250,7 +258,7 @@ export default function ResenasGoogleHub() {
                   <span>No Filtres Clientes</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Ofrecer la placa o tarjeta únicamente a quienes expresen satisfacción explícita viola las normas de imparcialidad de Google. Pon el dispositivo disponible para todos.
+                  Ofrecer la placa o tarjeta solo a quienes expresen satisfacción viola las normas de imparcialidad de Google. Pon el dispositivo disponible para todos.
                 </p>
               </div>
 
@@ -260,7 +268,7 @@ export default function ResenasGoogleHub() {
                   <span>No incentives la reseña</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Regalar bebidas, descuentos o rifas a cambio de 5 estrellas está prohibido. Los algoritmos borran reseñas sospechosas automáticamente.
+                  Regalar bebidas, descuentos o rifas a cambio de 5 estrellas está prohibido. Los sistemas de detección de Google borran esas opiniones sin previo aviso.
                 </p>
               </div>
 

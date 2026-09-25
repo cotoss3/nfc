@@ -1,5 +1,6 @@
 import { post as articulo1 } from '@/content/blog/como-pedir-resenas-google-sin-penalizacion';
 import { post as articulo2 } from '@/content/blog/por-que-mi-negocio-no-aparece-en-google-maps';
+import { post as articulo3 } from '@/content/blog/ver-y-responder-resenas-de-tu-negocio-en-google';
 
 export const BASE_URL = 'https://startap.com.pa';
 
@@ -62,7 +63,7 @@ export const AUTORES: Record<string, Autor> = {
   },
 };
 
-export const POSTS: BlogPost[] = [articulo1, articulo2];
+export const POSTS: BlogPost[] = [articulo1, articulo2, articulo3];
 
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);

@@ -2,8 +2,34 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail, addContactToResend } from '@/lib/resend';
 import { buildWelcomeSubscriptionEmailHtml } from '@/components/email/SubscribeEmailTemplate';
 
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutos
+const MAX_REQUESTS_PER_WINDOW = 5;
+const ipHits = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const hits = (ipHits.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  if (hits.length >= MAX_REQUESTS_PER_WINDOW) {
+    ipHits.set(ip, hits);
+    return true;
+  }
+  hits.push(now);
+  ipHits.set(ip, hits);
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const forwardedFor = req.headers.get('x-forwarded-for');
+    const ip = forwardedFor?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
+
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { success: false, error: 'Demasiados intentos. Por favor intenta de nuevo en unos minutos.' },
+        { status: 429 }
+      );
+    }
+
     const { email } = await req.json();
 
     if (!email || !email.includes('@')) {

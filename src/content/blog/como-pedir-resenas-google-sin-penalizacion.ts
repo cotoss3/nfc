@@ -30,6 +30,7 @@ export const post: BlogPost = {
   },
   /** Productos y páginas propias que este artículo enlaza */
   relacionados: [
+    { titulo: 'Cómo ver y responder reseñas en Google', href: '/blog/ver-y-responder-resenas-de-tu-negocio-en-google' },
     { titulo: 'Más reseñas para restaurantes', href: '/resenas-google/restaurantes' },
     { titulo: 'Más reseñas para barberías y salones', href: '/resenas-google/barberias-y-salones' },
     { titulo: 'Ver los dispositivos NFC', href: '/catalogo' },

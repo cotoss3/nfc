@@ -934,3 +934,20 @@ en 0 sobre 35 frases.
 más fáciles que los del artículo de Maps: (1) un número suyo sobre negocios con
 reseñas sin responder, (2) su experiencia reportando una reseña, y "nunca he
 tenido que reportar una" también sirve como respuesta honesta.
+
+## 25 sep 2026 (cont. 2) · Auditoría SEO/Velocidad, publicación del 3er artículo con espacios para fotos y barrido de porcentajes
+
+1. **Publicación del 3er artículo (`/blog/ver-y-responder-resenas-de-tu-negocio-en-google`):**
+   - Convertido a `src/content/blog/ver-y-responder-resenas-de-tu-negocio-en-google.ts` y registrado en `POSTS` (`src/lib/blog.ts`).
+   - Completados `TODO_EXPERIENCIA_1` (dato real de `PROSPECCION.md`: de 66 fichas revisadas en septiembre entre La Chorrera y Arraiján, solo 3 tenían respuestas del propietario) y `TODO_EXPERIENCIA_2` (experiencia honesta sobre denuncias improcedentes vs políticas de Google).
+   - Añadido soporte de placeholders visuales (`placeholder:/blog/...`) en `src/components/Markdown.tsx`, `src/app/blog/[slug]/page.tsx` y `src/app/blog/page.tsx` para mostrar recuadros punteados indicando qué foto/captura va en portada y en los 2 puntos clave del cuerpo sin romper OpenGraph ni Schema.org.
+   - Enlazado cruzado entre los 3 artículos del blog y el hub `/resenas-google`.
+
+2. **Refuerzo del hub `/resenas-google` y barrido de porcentajes sin fuente:**
+   - Añadido `keywords` del Grupo B (`comentarios google maps`, `reseñas en google maps`, `google maps comentarios`, `reseñas google maps`, `reseñas de google maps`) y menciones naturales a "comentarios" y "opiniones" en `src/app/resenas-google/page.tsx`.
+   - Eliminados porcentajes redondos sin fuente: `+300%` en `src/app/resenas-google/page.tsx`, `90%` y `98%` en `src/app/HomeClient.tsx`, y `93%` en `src/lib/landings.ts` (junto con limpieza de adverbios en `-mente` y raya larga).
+
+3. **Seguridad y Auditoría Técnica SEO / Core Web Vitals:**
+   - Rate limit por IP (5 solicitudes / 10 min) en `src/app/api/email/subscribe/route.ts`.
+   - Pre-renderizado SSR/SSG real de `/catalogo/[id]` (`src/app/catalogo/[id]/page.tsx` y `ProductDetailClient.tsx`), redirecciones 308/301 de slugs duplicados, deduplicación de JSON-LD (`StructuredData.tsx`), desbloqueo de `/app` en `robots.ts` y limpieza de ~12 MB de imágenes sin uso en `public/`.
+
