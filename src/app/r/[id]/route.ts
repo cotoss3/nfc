@@ -559,16 +559,16 @@ export async function GET(
     }
     /* 2. Espacio Publicitario No Invasivo (Coalition for Better Ads / Google Standards:
           - Carga asíncrona después del contenido principal
-          - Máximo <= 26% de la altura vertical de pantalla (< 30% reglamentario)
+          - Máximo <= 29.5% de la altura vertical de pantalla (< 30% reglamentario)
           - Cierre fácil (X) amplio y separado del área clicable del anuncio
           - Estático, sin pop-ups, sin bloqueo y sin sonido) */
     .ad-slot {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 16px;
+      border-radius: 18px;
       overflow: hidden;
       text-align: left;
-      max-height: 26dvh;
+      max-height: 29.5dvh;
       display: flex;
       flex-direction: column;
       opacity: 0;
@@ -584,10 +584,11 @@ export async function GET(
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 4px 8px 4px 12px;
+      padding: 5px 8px 5px 12px;
       background: #f8fafc;
       border-bottom: 1px solid #e2e8f0;
       min-height: 30px;
+      flex-shrink: 0;
     }
     .ad-slot-tag {
       font-size: 9px;
@@ -620,22 +621,21 @@ export async function GET(
     }
     .ad-image-link {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 12px;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
       background: #ffffff;
       text-decoration: none;
       color: inherit;
     }
     .ad-image-wrap {
-      width: 92px;
-      height: 76px;
-      max-height: 14dvh;
-      flex-shrink: 0;
-      border-radius: 10px;
+      width: 100%;
+      height: clamp(135px, 19dvh, 175px);
       background: #f1f5f9;
       overflow: hidden;
-      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .ad-image {
       width: 100%;
@@ -644,12 +644,14 @@ export async function GET(
       display: block;
     }
     .ad-cta-bar {
-      flex: 1;
-      min-width: 0;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      flex-shrink: 0;
     }
     .ad-cta-text {
       font-size: 11px;
@@ -662,17 +664,17 @@ export async function GET(
       font-size: 10px;
       font-weight: 500;
       color: #64748b;
-      margin-top: 2px;
+      margin-top: 1px;
     }
     .ad-cta-chip {
-      align-self: flex-start;
-      font-size: 10px;
+      flex-shrink: 0;
+      font-size: 11px;
       font-weight: 800;
       color: #0f172a;
       background: #fef3c7;
       border: 1px solid #fde68a;
-      padding: 3px 9px;
-      border-radius: 7px;
+      padding: 5px 10px;
+      border-radius: 8px;
       white-space: nowrap;
     }
     /* 3. Pie Corporativo */
