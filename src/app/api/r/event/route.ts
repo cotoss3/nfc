@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
           }
         })(),
         supabase.from('site_visits').insert({
-          id: `revt_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
+          id: `revt_c_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
           session_id: `revt_${scanId || cardId}`,
           page: `/r-event/${cardId}/${action}`,
           referrer: scanId || cardId,
@@ -108,6 +108,7 @@ export async function GET() {
     let cards: NfcCard[] = dbLocal.getCards();
     let scans: ScanRecord[] = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
     let remoteEventVisits: Array<{
+      id?: string;
       session_id: string;
       page: string;
       referrer: string;
@@ -126,7 +127,7 @@ export async function GET() {
             .limit(10000),
           supabase
             .from('site_visits')
-            .select('session_id, page, referrer, device, created_at')
+            .select('id, session_id, page, referrer, device, created_at')
             .like('page', '/r-event/%')
             .order('created_at', { ascending: false })
             .limit(10000),
@@ -211,10 +212,9 @@ export async function GET() {
     }
 
     // 2. Procesar eventos en site_visits (/r-event/{CARD_ID}/{ACTION})
-    // Nota: en Supabase `scans` tiene RLS solo INSERT para anon, mientras que `site_visits`
-    // tiene INSERT + SELECT. Por tanto reconstruimos cada lectura única (`scanId`), su medio
-    // (NFC vs QR) y la fecha/hora exacta de la última lectura desde aquí también.
+    // Ignoramos cualquier fila con prefijo `revt_r_` (generada por prefetches automáticos de servidor)
     for (const v of remoteEventVisits) {
+      if (String(v.id || '').startsWith('revt_r_')) continue;
       const parts = String(v.page || '').split('/');
       // ['', 'r-event', CARD_ID, ACTION]
       const cid = (parts[2] || '').trim().toUpperCase();

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Link from 'next/link';
 import {
   Activity,
   Search,
@@ -512,14 +511,15 @@ export default function ComportamientoPage() {
                         <span className="font-mono font-black text-slate-950 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg text-xs whitespace-nowrap">
                           {item.card_id}
                         </span>
-                        <Link
+                        <a
                           href={`/r/${encodeURIComponent(item.card_id)}`}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition"
                           title="Abrir página puente de este TAP"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
-                        </Link>
+                        </a>
                       </div>
                       <div className="mt-1">
                         {item.is_active ? (

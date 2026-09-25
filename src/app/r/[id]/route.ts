@@ -229,20 +229,37 @@ export async function GET(
     device = 'Smart Phone';
   }
 
+  // Detectar peticiones automáticas de prefetch (Next.js Router, navegador) o bots de vista previa
+  const purpose = (request.headers.get('purpose') || request.headers.get('sec-purpose') || '').toLowerCase();
+  const isPrefetchRequest =
+    request.headers.get('next-router-prefetch') !== null ||
+    request.headers.get('x-middleware-prefetch') !== null ||
+    request.headers.get('rsc') !== null ||
+    purpose.includes('prefetch') ||
+    purpose.includes('preview') ||
+    purpose.includes('prerender');
+  const isBotUserAgent =
+    !userAgent ||
+    /bot|crawler|spider|crawling|whatsapp|facebookexternalhit|facebot|telegrambot|twitterbot|slackbot|discordbot|linkedinbot|pinterest|preview|headless|lighthouse|gtmetrix|pingdom|uptimerobot/i.test(
+      userAgent
+    );
+  const isAutomatedRequest = isPrefetchRequest || isBotUserAgent;
+
   const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
   const referrer = isQr ? 'QR Code' : 'NFC Scan';
   const scanId = `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   const nowIso = new Date().toISOString();
 
-  // 5. Persistencia segura en Supabase (scans + site_visits revt_) y dbLocal
-  try {
-    dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName, {
-      id: scanId,
-      skipSupabase: true,
-    });
-    if (supabase) {
-      await Promise.allSettled([
-        supabase.from('scans').insert({
+  // 5. Persistencia segura en Supabase (scans) y dbLocal solo si no es prefetch/bot.
+  // La lectura verificada de comportamiento (read_nfc / read_qr) se emite desde el navegador real al abrir la página.
+  if (!isAutomatedRequest) {
+    try {
+      dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName, {
+        id: scanId,
+        skipSupabase: true,
+      });
+      if (supabase) {
+        await supabase.from('scans').insert({
           id: scanId,
           card_id: resolvedCardId,
           device,
@@ -250,23 +267,11 @@ export async function GET(
           scan_type: scanType,
           group_name: groupName,
           created_at: nowIso,
-        }),
-        supabase.from('site_visits').insert({
-          id: `revt_r_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          session_id: `revt_${scanId}`,
-          page: `/r-event/${resolvedCardId.toUpperCase()}/read_${scanType}`,
-          referrer: scanId,
-          device: `${scanType}:${device}`,
-          ip: '0.0.0.0',
-          country: 'Panamá',
-          province: 'Panamá',
-          district: 'Panamá',
-          created_at: nowIso,
-        }),
-      ]);
+        });
+      }
+    } catch (err) {
+      console.error('Error registrando analítica:', err);
     }
-  } catch (err) {
-    console.error('Error registrando analítica:', err);
   }
 
   // Determinar URL de destino según el medio utilizado
@@ -836,6 +841,24 @@ export async function GET(
             }).catch(function() {});
           }
         } catch (e) {}
+      }
+
+      // Registrar lectura real únicamente cuando el navegador tiene la pestaña activa/visible (evita prefetches o prerenders ocultos)
+      var hasRecordedRead = false;
+      function recordInitialReadOnce() {
+        if (hasRecordedRead) return;
+        if (document.visibilityState === 'prerender') return;
+        hasRecordedRead = true;
+        recordBehavior(scanType === 'qr' ? 'read_qr' : 'read_nfc');
+      }
+      if (document.visibilityState === 'prerender') {
+        document.addEventListener('visibilitychange', function() {
+          if (document.visibilityState !== 'prerender') {
+            recordInitialReadOnce();
+          }
+        });
+      } else {
+        recordInitialReadOnce();
       }
 
       function executeRedirect(method, behaviorAction) {
