@@ -231,13 +231,17 @@ export async function GET(
 
   const scanType: 'nfc' | 'qr' = isQr ? 'qr' : 'nfc';
   const referrer = isQr ? 'QR Code' : 'NFC Scan';
+  const scanId = `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
-  // 5. Persistencia segura en Supabase y dbLocal (sin condición de carrera de 250ms)
+  // 5. Persistencia segura en Supabase y dbLocal (1 sola inserción por lectura)
   try {
-    dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName);
+    dbLocal.registerScan(resolvedCardId, device, referrer, scanType, groupName, {
+      id: scanId,
+      skipSupabase: true,
+    });
     if (supabase) {
       await supabase.from('scans').insert({
-        id: `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        id: scanId,
         card_id: resolvedCardId,
         device,
         referrer,
@@ -399,12 +403,13 @@ export async function GET(
   }
 
   const safeCardIdJson = JSON.stringify(resolvedCardId);
+  const safeScanIdJson = JSON.stringify(scanId);
   const safeGroupNameJson = JSON.stringify(groupName);
   const safeScanTypeJson = JSON.stringify(scanType);
   const safeDeviceJson = JSON.stringify(device);
   const safeTargetUrlJson = JSON.stringify(safeTargetUrl);
 
-  // 6. Pantalla Puente Clara Ejecutiva (8 Segundos + Texto Dinámico por Red + Anuncio Visual starTAP + Anti-Rebote GA4 + SEO Noindex)
+  // 6. Pantalla Puente Clara Ejecutiva (8 Segundos + Cumplimiento Better Ads / Google <=30% + Telemetría de Comportamiento)
   return new NextResponse(`<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -412,7 +417,6 @@ export async function GET(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>${escaparHtml(displayCommerceName)} | Conexión Verificada starTAP</title>
-  <link rel="preload" as="image" href="/images/startap-bridge-ad.jpg">
   <!-- Google Analytics 4 (G-VQH5VW4KF9) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQH5VW4KF9"></script>
   <script>
@@ -440,7 +444,7 @@ export async function GET(
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 14px;
+      padding: 16px 14px;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
@@ -451,12 +455,12 @@ export async function GET(
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 28px;
-      padding: 24px 18px 18px;
+      padding: 22px 18px 16px;
       box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.09), 0 4px 12px rgba(15, 23, 42, 0.03);
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
     }
     /* 1. Bloque Protagonista: Destino / Reseña del Comercio */
     .hero-review-box {
@@ -515,7 +519,7 @@ export async function GET(
     .commerce-name {
       color: #0f172a;
       font-weight: 900;
-      font-size: 26px;
+      font-size: 25px;
       line-height: 1.18;
       letter-spacing: -0.02em;
       margin-top: 2px;
@@ -524,7 +528,7 @@ export async function GET(
       border-radius: 12px;
       display: inline-block;
     }
-    /* Botón Protagonista Principal (Arriba, Máxima Jerarquía) */
+    /* Botón Protagonista Principal (Arriba, Máxima Jerarquía, Activo desde el segundo 0) */
     .skip-btn {
       width: 100%;
       margin-top: 10px;
@@ -553,89 +557,127 @@ export async function GET(
       font-weight: 900;
       font-size: 18px;
     }
-    /* 2. Espacio Publicitario Secundario (Debajo del Protagonista) */
+    /* 2. Espacio Publicitario No Invasivo (Coalition for Better Ads / Google Standards:
+          - Carga asíncrona después del contenido principal
+          - Máximo <= 26% de la altura vertical de pantalla (< 30% reglamentario)
+          - Cierre fácil (X) amplio y separado del área clicable del anuncio
+          - Estático, sin pop-ups, sin bloqueo y sin sonido) */
     .ad-slot {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
       text-align: left;
+      max-height: 26dvh;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .ad-slot.is-loaded {
+      opacity: 1;
+    }
+    .ad-slot.is-dismissed {
+      display: none !important;
     }
     .ad-slot-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 12px;
+      padding: 4px 8px 4px 12px;
       background: #f8fafc;
       border-bottom: 1px solid #e2e8f0;
+      min-height: 30px;
     }
     .ad-slot-tag {
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.06em;
       color: #94a3b8;
     }
-    .ad-slot-pill {
-      font-size: 9px;
-      font-weight: 700;
-      color: #64748b;
+    .ad-close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 34px;
+      min-height: 26px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ad-close-btn:hover, .ad-close-btn:active {
+      background: #f1f5f9;
+      color: #0f172a;
     }
     .ad-image-link {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: #ffffff;
       text-decoration: none;
       color: inherit;
     }
     .ad-image-wrap {
-      width: 100%;
-      max-height: 215px;
+      width: 92px;
+      height: 76px;
+      max-height: 14dvh;
+      flex-shrink: 0;
+      border-radius: 10px;
       background: #f1f5f9;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: 1px solid #e2e8f0;
     }
     .ad-image {
       width: 100%;
-      height: 215px;
+      height: 100%;
       object-fit: cover;
       display: block;
     }
     .ad-cta-bar {
+      flex: 1;
+      min-width: 0;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      background: #ffffff;
-      border-top: 1px solid #e2e8f0;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
     }
     .ad-cta-text {
       font-size: 11px;
-      font-weight: 700;
-      color: #334155;
-      line-height: 1.3;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
     }
     .ad-cta-text span {
       display: block;
       font-size: 10px;
       font-weight: 500;
       color: #64748b;
+      margin-top: 2px;
     }
     .ad-cta-chip {
-      flex-shrink: 0;
-      font-size: 11px;
+      align-self: flex-start;
+      font-size: 10px;
       font-weight: 800;
       color: #0f172a;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      padding: 5px 10px;
-      border-radius: 8px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      padding: 3px 9px;
+      border-radius: 7px;
       white-space: nowrap;
     }
     /* 3. Pie Corporativo */
     .brand-footer {
-      margin-top: 10px;
+      margin-top: 8px;
       text-align: center;
     }
     .brand-footer a {
@@ -675,11 +717,13 @@ export async function GET(
       </button>
     </div>
 
-    <!-- 2. ESPACIO PATROCINADO SECUNDARIO (Al Catálogo starTAP) -->
+    <!-- 2. ESPACIO PATROCINADO SECUNDARIO NO INVASIVO (<=26% vh, carga asíncrona, cierre X fácil) -->
     <section id="startap-ad-slot" class="ad-slot" aria-label="Espacio patrocinado starTAP Panamá">
       <div class="ad-slot-header">
-        <span class="ad-slot-tag">Patrocinado por starTAP Panamá</span>
-        <span class="ad-slot-pill">Tecnología Contactless</span>
+        <span class="ad-slot-tag">Patrocinado • starTAP Panamá</span>
+        <button type="button" id="ad-close-btn" class="ad-close-btn" aria-label="Cerrar anuncio">
+          <span>✕</span>
+        </button>
       </div>
       <a
         id="ad-slot-link"
@@ -690,10 +734,11 @@ export async function GET(
       >
         <div class="ad-image-wrap">
           <img
-            src="/images/startap-bridge-ad.jpg"
+            id="ad-async-img"
+            data-src="/images/startap-bridge-ad.jpg"
             alt="Tecnología Contactless de starTAP: Rápido y sin complicaciones"
             class="ad-image"
-            fetchpriority="high"
+            loading="lazy"
             decoding="async"
           />
         </div>
@@ -708,7 +753,7 @@ export async function GET(
     </section>
   </main>
 
-  <!-- 4. Pie de marca -->
+  <!-- 3. Pie de marca -->
   <footer class="brand-footer">
     <a href="/" target="_blank" rel="noopener noreferrer">
       Tecnología sin contacto verificada por <strong>starTAP Panamá</strong>
@@ -718,19 +763,71 @@ export async function GET(
   <script>
     (function() {
       var targetUrl = ${safeTargetUrlJson};
+      var cardId = ${safeCardIdJson};
+      var scanId = ${safeScanIdJson};
       var hasRedirected = false;
       var skipBtn = document.getElementById('skip-btn');
+      var adSlot = document.getElementById('startap-ad-slot');
       var adLink = document.getElementById('ad-slot-link');
+      var adCloseBtn = document.getElementById('ad-close-btn');
+      var adImg = document.getElementById('ad-async-img');
 
-      function executeRedirect(method) {
+      // 1. Carga asíncrona del anuncio DESPUÉS del contenido principal
+      function loadAdAsync() {
+        if (!adImg || !adSlot) return;
+        var src = adImg.getAttribute('data-src');
+        if (src) {
+          adImg.onload = function() {
+            adSlot.classList.add('is-loaded');
+          };
+          adImg.onerror = function() {
+            adSlot.classList.add('is-loaded');
+          };
+          adImg.src = src;
+        } else {
+          adSlot.classList.add('is-loaded');
+        }
+      }
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(function() {
+          setTimeout(loadAdAsync, 80);
+        });
+      } else {
+        setTimeout(loadAdAsync, 120);
+      }
+
+      // 2. Telemetría de comportamiento hacia Master Control (/api/r/event)
+      function recordBehavior(action) {
+        try {
+          var payload = JSON.stringify({
+            cardId: cardId,
+            scanId: scanId,
+            action: action
+          });
+          if (navigator.sendBeacon) {
+            var blob = new Blob([payload], { type: 'application/json' });
+            navigator.sendBeacon('/api/r/event', blob);
+          } else if (window.fetch) {
+            fetch('/api/r/event', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: payload,
+              keepalive: true
+            }).catch(function() {});
+          }
+        } catch (e) {}
+      }
+
+      function executeRedirect(method, behaviorAction) {
         if (hasRedirected) return;
         hasRedirected = true;
 
+        recordBehavior(behaviorAction);
+
         try {
           if (typeof gtag === 'function') {
-            // Evento 2: Sesión con interacción (Anti-Rebote GA4) con beacon
             gtag('event', 'redirect_complete', {
-              card_id: ${safeCardIdJson},
+              card_id: cardId,
               group_name: ${safeGroupNameJson},
               method: method,
               engagement_time_msec: 8000,
@@ -744,16 +841,17 @@ export async function GET(
 
       if (skipBtn) {
         skipBtn.addEventListener('click', function() {
-          executeRedirect('skip_button');
+          executeRedirect('skip_button', 'cta_click');
         });
       }
 
       if (adLink) {
         adLink.addEventListener('click', function() {
+          recordBehavior('ad_click');
           try {
             if (typeof gtag === 'function') {
               gtag('event', 'ad_click_startap', {
-                card_id: ${safeCardIdJson},
+                card_id: cardId,
                 group_name: ${safeGroupNameJson},
                 ad_id: 'startap_google_reviews_stand',
                 transport_type: 'beacon'
@@ -763,9 +861,18 @@ export async function GET(
         });
       }
 
+      if (adCloseBtn && adSlot) {
+        adCloseBtn.addEventListener('click', function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          adSlot.classList.add('is-dismissed');
+          recordBehavior('ad_close');
+        });
+      }
+
       // Redirección silenciosa a los 8 segundos sin barras ni contadores que distraigan la lectura
       setTimeout(function() {
-        executeRedirect('auto_8s');
+        executeRedirect('auto_8s', 'auto_time');
       }, 8000);
     })();
   </script>

@@ -167,6 +167,7 @@ async function getVisitorStats(): Promise<VisitorStats> {
     const mStart = new Date(boundaries.monthStart).getTime();
 
     for (const v of visits) {
+      if (String(v.session_id || '').startsWith('revt_')) continue;
       const cTime = new Date(v.created_at).getTime();
       if (cTime >= tStart) {
         todaySessions.add(v.session_id);

@@ -951,3 +951,7 @@ tenido que reportar una" también sirve como respuesta honesta.
    - Rate limit por IP (5 solicitudes / 10 min) en `src/app/api/email/subscribe/route.ts`.
    - Pre-renderizado SSR/SSG real de `/catalogo/[id]` (`src/app/catalogo/[id]/page.tsx` y `ProductDetailClient.tsx`), redirecciones 308/301 de slugs duplicados, deduplicación de JSON-LD (`StructuredData.tsx`), desbloqueo de `/app` en `robots.ts` y limpieza de ~12 MB de imágenes sin uso en `public/`.
 
+4. **Módulo «Comportamiento» en Master Control (`/master-control/comportamiento`) y Cumplimiento Better Ads en `/r/[id]`:**
+   - Nuevo módulo en `src/app/master-control/comportamiento/page.tsx` y menú en `src/app/master-control/layout.tsx` con tabla de TAPs activos: Nombre de negocio, Código de TAP, Veces leído (NFC/QR), Redirigido por tiempo (8s), Tocó botón de reseña y Tocó la publicidad (con exportación CSV).
+   - Endpoint de telemetría `src/app/api/r/event/route.ts` y métodos `registerTapBehaviorEvent` / `getTapBehaviorMap` en `src/lib/db.ts`.
+   - Rediseño del anuncio patrocinado en `src/app/r/[id]/route.ts` bajo estándares de Google & Coalition for Better Ads: carga asíncrona diferida después del bloque principal, altura máxima controlada (`<= 26dvh`, bajo el tope del 30%), botón de cierre (`✕`) amplio y separado del enlace para evitar clics accidentales, sin pop-ups, sin bloqueo pre-itinerante y sin audio.

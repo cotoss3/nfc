@@ -5,13 +5,14 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   CreditCard, Package, Users, Tag, BarChart2, QrCode, 
-  LogOut, ShoppingCart, Layers, Menu, X, ChevronRight 
+  LogOut, ShoppingCart, Layers, Menu, X, ChevronRight, Activity 
 } from 'lucide-react';
 import AdminAuthGuard from '@/components/AdminAuthGuard';
 import { authService } from '@/lib/auth';
 
 const navItems = [
   { id: 'dashboard', label: 'Resumen Ejecutivo', shortLabel: 'Resumen', icon: BarChart2, href: '/master-control' },
+  { id: 'comportamiento', label: 'Comportamiento', shortLabel: 'Comport.', icon: Activity, href: '/master-control/comportamiento' },
   { id: 'inventario', label: 'Inventario & Lotes', shortLabel: 'Inventario', icon: Layers, href: '/master-control/inventario' },
   { id: 'tag-scanner', label: 'Scanner & APK NFC', shortLabel: 'NFC APK', icon: QrCode, href: '/master-control/tag-scanner' },
   { id: 'pedidos', label: 'Pedidos (OMS)', shortLabel: 'Pedidos', icon: ShoppingCart, href: '/master-control/pedidos' },

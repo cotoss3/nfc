@@ -1660,11 +1660,19 @@ class LocalDbService {
     return { success: true, message: '¡Cuenta creada exitosamente!', user: newUser };
   }
 
-  // Analíticas de Escaneo
-  registerScan(cardId: string, device: string, referrer: string, scanType: 'nfc' | 'qr' = 'nfc', groupName: string = 'General'): void {
+  // Analíticas de Escaneo y Comportamiento en Página Puente
+  registerScan(
+    cardId: string,
+    device: string,
+    referrer: string,
+    scanType: 'nfc' | 'qr' = 'nfc',
+    groupName: string = 'General',
+    options?: { id?: string; skipSupabase?: boolean }
+  ): string {
     const scans = this.getStorageItem<ScanRecord[]>('nfc_scans', []);
+    const scanId = options?.id || `scan-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     const newScan: ScanRecord = {
-      id: `scan-${Date.now()}-${Math.random()}`,
+      id: scanId,
       card_id: cardId,
       device,
       referrer,
@@ -1677,7 +1685,7 @@ class LocalDbService {
     const cappedScans = scans.length > 500 ? scans.slice(-500) : scans;
     this.setStorageItem('nfc_scans', cappedScans);
 
-    if (supabase) {
+    if (supabase && !options?.skipSupabase) {
       supabase.from('scans').insert({
         id: newScan.id,
         card_id: cardId,
@@ -1689,6 +1697,76 @@ class LocalDbService {
         if (error) console.error('Error insertando escaneo en Supabase:', error);
       });
     }
+
+    return scanId;
+  }
+
+  registerTapBehaviorEvent(
+    cardId: string,
+    scanId: string,
+    action: 'auto_time' | 'cta_click' | 'ad_click' | 'ad_close'
+  ): void {
+    const cleanCardId = String(cardId || '').trim().toUpperCase();
+    if (!cleanCardId) return;
+
+    // 1. Actualizar el referrer del escaneo local si existe
+    const scans = this.getStorageItem<ScanRecord[]>('nfc_scans', []);
+    const tagMarker = `[${action}]`;
+    let updatedScan = false;
+    for (let i = scans.length - 1; i >= 0; i--) {
+      if (scans[i].id === scanId || (!scanId && scans[i].card_id.toUpperCase() === cleanCardId)) {
+        const currentRef = scans[i].referrer || '';
+        if (!currentRef.includes(tagMarker)) {
+          scans[i].referrer = `${currentRef} ${tagMarker}`.trim();
+          updatedScan = true;
+        }
+        break;
+      }
+    }
+    if (updatedScan) {
+      this.setStorageItem('nfc_scans', scans);
+    }
+
+    // 2. Mantener mapa acumulado por código de TAP en nfc_tap_behavior
+    const behaviorMap = this.getStorageItem<Record<string, {
+      auto_time: number;
+      cta_click: number;
+      ad_click: number;
+      ad_close: number;
+      processed_events?: string[];
+      updated_at: string;
+    }>>('nfc_tap_behavior', {});
+
+    const current = behaviorMap[cleanCardId] || {
+      auto_time: 0,
+      cta_click: 0,
+      ad_click: 0,
+      ad_close: 0,
+      processed_events: [],
+      updated_at: new Date().toISOString()
+    };
+
+    const dedupeKey = scanId ? `${scanId}:${action}` : `${Date.now()}:${action}`;
+    const processed = Array.isArray(current.processed_events) ? current.processed_events : [];
+    if (!processed.includes(dedupeKey)) {
+      current[action] = (current[action] || 0) + 1;
+      processed.push(dedupeKey);
+      current.processed_events = processed.slice(-300);
+      current.updated_at = new Date().toISOString();
+      behaviorMap[cleanCardId] = current;
+      this.setStorageItem('nfc_tap_behavior', behaviorMap);
+    }
+  }
+
+  getTapBehaviorMap(): Record<string, {
+    auto_time: number;
+    cta_click: number;
+    ad_click: number;
+    ad_close: number;
+    processed_events?: string[];
+    updated_at: string;
+  }> {
+    return this.getStorageItem('nfc_tap_behavior', {});
   }
 
   getScansForCard(cardId: string): ScanRecord[] {
