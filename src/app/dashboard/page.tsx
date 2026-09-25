@@ -1623,6 +1623,323 @@ function DashboardContent() {
               </div>
             )}
 
+            {/* ---------------- MODULE 1.5: COMPORTAMIENTO DE TAPs (SIN ANUNCIOS) ---------------- */}
+            {activeTab === 'behavior' && (
+              <div className="space-y-6">
+                {/* HEADER */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                  <div className="space-y-1">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-extrabold uppercase tracking-wider">
+                      <Activity className="w-3.5 h-3.5 text-amber-600" />
+                      Panel de Visualización de Lecturas
+                    </div>
+                    <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                      Comportamiento de tus TAPs
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
+                      Visualiza en tiempo real cuántas veces ha sido leído cada uno de tus dispositivos (por chip NFC o código QR), cuántos clientes fueron redirigidos por tiempo (8s) y cuántos tocaron directamente el botón de reseña.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={exportBehaviorCsv}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition"
+                    >
+                      <Download className="w-4 h-4" />
+                      Exportar CSV
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => userEmail && fetchClientBehavior(userEmail, false)}
+                      disabled={behaviorLoading}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-sm disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${behaviorLoading ? 'animate-spin' : ''}`} />
+                      Actualizar Datos
+                    </button>
+                  </div>
+                </div>
+
+                {/* TARJETAS KPI RESUMEN (4 TARJETAS, SIN PUBLICIDAD) */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
+                      <span>TAPs Activos</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <p className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
+                      {behaviorTotals.activeCount}
+                    </p>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Habilitados en tu cuenta
+                    </span>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
+                      <span>Veces Leído</span>
+                      <Eye className="w-4 h-4 text-sky-600" />
+                    </div>
+                    <p className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
+                      {behaviorTotals.totalReads}
+                    </p>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      {behaviorTotals.totalNfc} NFC • {behaviorTotals.totalQr} QR
+                    </span>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
+                      <span>Por Tiempo (8s)</span>
+                      <Clock className="w-4 h-4 text-indigo-600" />
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <p className="text-2xl sm:text-3xl font-black text-indigo-700">
+                        {behaviorTotals.autoTime}
+                      </p>
+                      <span className="text-xs font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                        {formatPercent(behaviorTotals.autoTime, behaviorTotals.totalReads)}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Redirección automática
+                    </span>
+                  </div>
+
+                  <div className="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between text-amber-800 text-xs font-bold">
+                      <span>Botón de Reseña</span>
+                      <MousePointerClick className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <p className="text-2xl sm:text-3xl font-black text-amber-600">
+                        {behaviorTotals.ctaClick}
+                      </p>
+                      <span className="text-xs font-extrabold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                        {formatPercent(behaviorTotals.ctaClick, behaviorTotals.totalReads)}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Toque directo en botón
+                    </span>
+                  </div>
+                </div>
+
+                {/* BARRA DE FILTROS Y BÚSQUEDA */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 shadow-sm">
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={behaviorSearch}
+                      onChange={(e) => setBehaviorSearch(e.target.value)}
+                      placeholder="Buscar por etiqueta, sucursal o código de TAP (ej. STT-1001)..."
+                      className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 focus:bg-white font-medium text-slate-900"
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                      <button
+                        type="button"
+                        onClick={() => setBehaviorStatusFilter('active')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorStatusFilter === 'active'
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        TAPs Activos ({clientBehaviorSource.filter((i) => i.is_active).length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setBehaviorStatusFilter('with_reads')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorStatusFilter === 'with_reads'
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        Con Lecturas ({clientBehaviorSource.filter((i) => i.total_reads > 0).length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setBehaviorStatusFilter('all')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorStatusFilter === 'all'
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        Todos ({clientBehaviorSource.length})
+                      </button>
+                    </div>
+
+                    <div className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                      <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
+                      <select
+                        value={behaviorSortBy}
+                        onChange={(e) => setBehaviorSortBy(e.target.value as any)}
+                        className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none"
+                      >
+                        <option value="reads">Ordenar: Más veces leído</option>
+                        <option value="cta">Ordenar: Más toques al botón</option>
+                        <option value="time">Ordenar: Más redirigidos por tiempo</option>
+                        <option value="code">Ordenar: Código de TAP</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* TABLA DE COMPORTAMIENTO DEL CLIENTE (SIN COLUMNA DE PUBLICIDAD) */}
+                <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-600">
+                          <th className="py-3.5 px-4">Dispositivo / Sucursal</th>
+                          <th className="py-3.5 px-4">Código de TAP</th>
+                          <th className="py-3.5 px-4 text-center">Veces Leído</th>
+                          <th className="py-3.5 px-4 text-center">Redirigido por Tiempo (8s)</th>
+                          <th className="py-3.5 px-4 text-center">Tocó Botón de Reseña</th>
+                          <th className="py-3.5 px-4 text-right">Última Lectura</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
+                        {behaviorLoading && filteredBehaviorItems.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">
+                              Cargando comportamiento de tus TAPs...
+                            </td>
+                          </tr>
+                        ) : filteredBehaviorItems.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">
+                              No se encontraron dispositivos TAP con los filtros seleccionados.
+                            </td>
+                          </tr>
+                        ) : (
+                          filteredBehaviorItems.map((item) => (
+                            <tr key={item.card_id} className="hover:bg-slate-50/80 transition-colors">
+                              {/* 1. DISPOSITIVO / SUCURSAL */}
+                              <td className="py-3.5 px-4">
+                                <div className="font-black text-slate-900 leading-snug">
+                                  {item.label || item.business_name}
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-slate-500">
+                                  <span className="font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                                    {item.group_name || 'General'}
+                                  </span>
+                                  {item.target_url && item.target_url !== 'https://google.com' && (
+                                    <a
+                                      href={item.target_url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 text-amber-700 hover:underline font-semibold truncate max-w-[200px]"
+                                      title={item.target_url}
+                                    >
+                                      <span>Ver destino</span>
+                                      <ExternalLink className="w-3 h-3 shrink-0" />
+                                    </a>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* 2. CÓDIGO DE TAP */}
+                              <td className="py-3.5 px-4">
+                                <span className="inline-block font-mono font-black text-slate-950 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg text-xs whitespace-nowrap">
+                                  {item.card_id}
+                                </span>
+                                <div className="mt-1">
+                                  {item.is_active ? (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 whitespace-nowrap">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                      TAP Activo
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 whitespace-nowrap">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                                      Inactivo
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* 3. VECES LEÍDO (NFC + QR) */}
+                              <td className="py-3.5 px-4 text-center">
+                                <span className="inline-flex items-center justify-center min-w-[44px] px-2.5 py-1 rounded-xl bg-slate-900 text-white font-black text-sm">
+                                  {item.total_reads}
+                                </span>
+                                <div className="flex items-center justify-center gap-1.5 mt-1.5 text-[10px] font-extrabold whitespace-nowrap">
+                                  <span
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-50 text-sky-800 border border-sky-200"
+                                    title="Lecturas por Chip NFC"
+                                  >
+                                    <Smartphone className="w-3 h-3 text-sky-600 shrink-0" />
+                                    <span>{item.nfc_reads} NFC</span>
+                                  </span>
+                                  <span
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-violet-50 text-violet-800 border border-violet-200"
+                                    title="Lecturas por Código QR"
+                                  >
+                                    <QrCode className="w-3 h-3 text-violet-600 shrink-0" />
+                                    <span>{item.qr_reads} QR</span>
+                                  </span>
+                                </div>
+                              </td>
+
+                              {/* 4. REDIRIGIDO POR TIEMPO (8s) */}
+                              <td className="py-3.5 px-4 text-center">
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-800 font-black text-sm">
+                                  <Clock className="w-3.5 h-3.5 text-indigo-600" />
+                                  <span>{item.auto_time_count}</span>
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
+                                  {formatPercent(item.auto_time_count, item.total_reads)} de lecturas
+                                </div>
+                              </td>
+
+                              {/* 5. TOCÓ BOTÓN DE RESEÑA */}
+                              <td className="py-3.5 px-4 text-center">
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 font-black text-sm">
+                                  <MousePointerClick className="w-3.5 h-3.5 text-amber-600" />
+                                  <span>{item.cta_click_count}</span>
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
+                                  {formatPercent(item.cta_click_count, item.total_reads)} de lecturas
+                                </div>
+                              </td>
+
+                              {/* 6. ÚLTIMA LECTURA: FECHA Y HORA + TIEMPO TRANSCURRIDO */}
+                              <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                                {item.last_read_at ? (
+                                  <div className="inline-flex flex-col items-end gap-1">
+                                    <span className="text-xs font-bold text-slate-900">
+                                      {formatExactDateTime(item.last_read_at)}
+                                    </span>
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-extrabold">
+                                      <Clock className="w-2.5 h-2.5 text-amber-600" />
+                                      {formatElapsedTime(item.last_read_at, nowMs)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-xs text-slate-400 font-medium">
+                                    Sin lecturas aún
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* ---------------- MODULE 2: GRUPOS Y SUCURSALES ---------------- */}
             {activeTab === 'groups' && (
               <div className="space-y-6">
@@ -1661,7 +1978,12 @@ function DashboardContent() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {groupsList.map(group => {
                     const groupCards = cards.filter(c => (c.group_name || 'General') === group);
+                    const groupCardIds = new Set(groupCards.map(c => c.card_id.trim().toUpperCase()));
+                    const groupBehaviorReads = clientBehaviorSource
+                      .filter(b => groupCardIds.has(b.card_id.trim().toUpperCase()))
+                      .reduce((acc, b) => acc + b.total_reads, 0);
                     const groupScans = allScans.filter(s => s.group_name === group);
+                    const groupTotalReads = Math.max(groupScans.length, groupBehaviorReads);
 
                     return (
                       <div key={group} className="p-5 bg-white border border-slate-200 rounded-2xl space-y-3 shadow-sm">
@@ -1675,7 +1997,7 @@ function DashboardContent() {
                         <div className="space-y-1.5 text-xs text-slate-500 pt-2 border-t border-slate-100">
                           <div className="flex justify-between">
                             <span>Escaneos Totales:</span>
-                            <span className="font-bold text-slate-900">{groupScans.length}</span>
+                            <span className="font-bold text-slate-900">{groupTotalReads}</span>
                           </div>
                         </div>
 
@@ -1711,7 +2033,7 @@ function DashboardContent() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Escaneos Totales</span>
-                    <p className="text-2xl font-black text-slate-900 mt-1">{allScans.length}</p>
+                    <p className="text-2xl font-black text-slate-900 mt-1">{totalScansCount}</p>
                   </div>
                   <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
                     <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest flex items-center gap-1">
@@ -1752,8 +2074,12 @@ function DashboardContent() {
                         <tbody className="divide-y divide-slate-100 text-slate-700">
                           {cards.map(card => {
                             const deviceScans = allScans.filter(s => s.card_id === card.card_id);
-                            const nfc = deviceScans.filter(s => s.scan_type === 'nfc' || (s.referrer && s.referrer.toLowerCase().includes('nfc'))).length;
-                            const qr = deviceScans.filter(s => s.scan_type === 'qr' || (s.referrer && s.referrer.toLowerCase().includes('qr'))).length;
+                            const beh = clientBehaviorSource.find(b => b.card_id.trim().toUpperCase() === card.card_id.trim().toUpperCase());
+                            const localNfc = deviceScans.filter(s => s.scan_type === 'nfc' || (s.referrer && s.referrer.toLowerCase().includes('nfc'))).length;
+                            const localQr = deviceScans.filter(s => s.scan_type === 'qr' || (s.referrer && s.referrer.toLowerCase().includes('qr'))).length;
+                            const nfc = Math.max(localNfc, beh?.nfc_reads || 0);
+                            const qr = Math.max(localQr, beh?.qr_reads || 0);
+                            const totalDevScans = Math.max(deviceScans.length, nfc + qr, beh?.total_reads || 0);
                             return (
                               <tr key={card.card_id} className="hover:bg-slate-50">
                                 <td className="py-3 font-bold text-slate-900 flex items-center gap-2">
@@ -1768,7 +2094,7 @@ function DashboardContent() {
                                 </td>
                                 <td className="py-3 text-center font-semibold text-emerald-600">{nfc}</td>
                                 <td className="py-3 text-center font-semibold text-blue-600">{qr}</td>
-                                <td className="py-3 text-right font-black text-slate-900">{deviceScans.length}</td>
+                                <td className="py-3 text-right font-black text-slate-900">{totalDevScans}</td>
                               </tr>
                             );
                           })}
