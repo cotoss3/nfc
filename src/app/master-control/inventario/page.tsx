@@ -134,6 +134,8 @@ export default function InventarioPage() {
   const [tagPrecioVenta, setTagPrecioVenta] = useState<string>('35.00');
   const [tagMetodoPago, setTagMetodoPago] = useState<'Yappy' | 'Efectivo' | 'ACH' | 'Tarjeta / POS'>('Yappy');
   const [tagSuccessMsg, setTagSuccessMsg] = useState('');
+  const [tagPage, setTagPage] = useState<number>(1);
+  const [tagPageSize, setTagPageSize] = useState<number>(15);
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -471,6 +473,17 @@ export default function InventarioPage() {
       return matchSearch && matchClaim && matchChannel && matchHardware;
     });
   }, [cards, tagSearch, tagClaimFilter, tagChannelFilter, tagHardwareFilter]);
+
+  useEffect(() => {
+    setTagPage(1);
+  }, [tagSearch, tagClaimFilter, tagChannelFilter, tagHardwareFilter, tagPageSize]);
+
+  const totalTagPages = Math.max(1, Math.ceil(filteredCards.length / tagPageSize));
+  const safeTagPage = Math.min(tagPage, totalTagPages);
+  const paginatedCards = useMemo(() => {
+    const start = (safeTagPage - 1) * tagPageSize;
+    return filteredCards.slice(start, start + tagPageSize);
+  }, [filteredCards, safeTagPage, tagPageSize]);
 
   // Handle Manual Stock Adjustment (+ / -)
   const handleAdjustStock = async (productId: string, delta: number) => {
@@ -1825,7 +1838,7 @@ export default function InventarioPage() {
               </form>
             </div>
 
-            {/* RIGHT: LISTADO DE TAGS REGISTRADOS CON FILTRO POR DISPOSITIVO */}
+            {/* RIGHT: LISTADO DE TAGS REGISTRADOS CON FILTRO POR DISPOSITIVO Y PAGINACIÓN */}
             <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
               <div className="p-5 bg-slate-50 border-b border-slate-200 space-y-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -1834,7 +1847,26 @@ export default function InventarioPage() {
                       <QrCode className="w-5 h-5 text-slate-700" />
                       Inventario de TAGs Registrados ({filteredCards.length})
                     </h2>
-                    <p className="text-xs text-slate-500">Fichas activas y listas para clientes.</p>
+                    <p className="text-xs text-slate-500">
+                      {filteredCards.length > 0
+                        ? `Mostrando ${(safeTagPage - 1) * tagPageSize + 1}–${Math.min(safeTagPage * tagPageSize, filteredCards.length)} de ${filteredCards.length} fichas registradas.`
+                        : 'Fichas activas y listas para clientes.'}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <label className="text-[11px] font-bold text-slate-500 whitespace-nowrap">Por página:</label>
+                    <select
+                      value={tagPageSize}
+                      onChange={e => setTagPageSize(Number(e.target.value))}
+                      className="px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                    >
+                      <option value={10}>10 TAGs</option>
+                      <option value={15}>15 TAGs</option>
+                      <option value={25}>25 TAGs</option>
+                      <option value={50}>50 TAGs</option>
+                      <option value={100}>100 TAGs</option>
+                    </select>
                   </div>
                 </div>
 
@@ -1926,12 +1958,12 @@ export default function InventarioPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {filteredCards.length === 0 ? (
+                    {paginatedCards.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="p-8 text-center text-slate-400 italic">No hay dispositivos TAG que coincidan con el filtro.</td>
                       </tr>
                     ) : (
-                      filteredCards.map(c => {
+                      paginatedCards.map(c => {
                         const redirectUrl = `https://startap.com.pa/r/${c.card_id}`;
                         const isStandTag = (c.card_id || '').toUpperCase().startsWith('STTS-') || (c.label && c.label.toLowerCase().includes('stand'));
                         const isCardTag = (c.card_id || '').toUpperCase().startsWith('STTT-') || (c.label && c.label.toLowerCase().includes('tarjeta'));
@@ -1996,6 +2028,91 @@ export default function InventarioPage() {
                   </tbody>
                 </table>
               </div>
+
+              {/* BARRA DE PAGINACIÓN DE INVENTARIO DE TAGS */}
+              {filteredCards.length > 0 && (
+                <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div className="text-slate-600 font-semibold">
+                    Mostrando{' '}
+                    <span className="font-black text-slate-900">
+                      {(safeTagPage - 1) * tagPageSize + 1}
+                    </span>
+                    {' – '}
+                    <span className="font-black text-slate-900">
+                      {Math.min(safeTagPage * tagPageSize, filteredCards.length)}
+                    </span>{' '}
+                    de <span className="font-black text-slate-900">{filteredCards.length}</span> TAGs
+                  </div>
+
+                  <div className="flex items-center gap-1 flex-wrap justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setTagPage(1)}
+                      disabled={safeTagPage <= 1}
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                      title="Primera página"
+                    >
+                      «
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTagPage(p => Math.max(1, p - 1))}
+                      disabled={safeTagPage <= 1}
+                      className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                    >
+                      ‹ Anterior
+                    </button>
+
+                    {Array.from({ length: totalTagPages }, (_, i) => i + 1)
+                      .filter(p => p === 1 || p === totalTagPages || Math.abs(p - safeTagPage) <= 1)
+                      .reduce<Array<number | 'ellipsis'>>((acc, p, idx, arr) => {
+                        if (idx > 0 && p - (arr[idx - 1] as number) > 1) {
+                          acc.push('ellipsis');
+                        }
+                        acc.push(p);
+                        return acc;
+                      }, [])
+                      .map((item, idx) =>
+                        item === 'ellipsis' ? (
+                          <span key={`ellipsis-${idx}`} className="px-1.5 text-slate-400 font-bold">
+                            …
+                          </span>
+                        ) : (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => setTagPage(item)}
+                            className={`min-w-[32px] px-2.5 py-1.5 rounded-lg font-black transition ${
+                              safeTagPage === item
+                                ? 'bg-amber-500 text-slate-950 shadow-2xs'
+                                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            {item}
+                          </button>
+                        )
+                      )}
+
+                    <button
+                      type="button"
+                      onClick={() => setTagPage(p => Math.min(totalTagPages, p + 1))}
+                      disabled={safeTagPage >= totalTagPages}
+                      className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                    >
+                      Siguiente ›
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTagPage(totalTagPages)}
+                      disabled={safeTagPage >= totalTagPages}
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                      title="Última página"
+                    >
+                      »
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

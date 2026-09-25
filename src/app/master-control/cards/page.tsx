@@ -81,6 +81,10 @@ export default function CardsManagementPage() {
   // Bulk Add Modal State
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(15);
+
   const handleSelectHardwareType = (hw: 'stand' | 'plate' | 'card') => {
     setNewHardwareType(hw);
     const code = dbLocal.getNextStickerCode(hw);
@@ -174,6 +178,17 @@ export default function CardsManagementPage() {
       return matchSearch && matchStatus && matchChannel && matchType && matchHardware;
     });
   }, [cards, searchQuery, statusFilter, channelFilter, typeFilter, hardwareFilter]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, channelFilter, typeFilter, hardwareFilter, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredCards.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedCards = useMemo(() => {
+    const start = (safePage - 1) * pageSize;
+    return filteredCards.slice(start, start + pageSize);
+  }, [filteredCards, safePage, pageSize]);
 
   // Statistics Summary
   const stats = useMemo(() => {
@@ -748,7 +763,26 @@ export default function CardsManagementPage() {
                   <CreditCard className="w-5 h-5 text-slate-700" />
                   Listado de Dispositivos TAG Registrados ({filteredCards.length})
                 </h2>
-                <p className="text-xs text-slate-500">Busca por código STTS/STT/STTT, filtra por tipo de dispositivo o cliente.</p>
+                <p className="text-xs text-slate-500">
+                  {filteredCards.length > 0
+                    ? `Mostrando ${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, filteredCards.length)} de ${filteredCards.length} dispositivos.`
+                    : 'Busca por código STTS/STT/STTT, filtra por tipo de dispositivo o cliente.'}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] font-bold text-slate-500 whitespace-nowrap">Por página:</label>
+                <select
+                  value={pageSize}
+                  onChange={e => setPageSize(Number(e.target.value))}
+                  className="px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                >
+                  <option value={10}>10 TAGs</option>
+                  <option value={15}>15 TAGs</option>
+                  <option value={25}>25 TAGs</option>
+                  <option value={50}>50 TAGs</option>
+                  <option value={100}>100 TAGs</option>
+                </select>
               </div>
             </div>
 
@@ -816,14 +850,14 @@ export default function CardsManagementPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                {filteredCards.length === 0 ? (
+                {paginatedCards.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-slate-400 italic">
                       No se encontraron dispositivos TAG que coincidan con la búsqueda.
                     </td>
                   </tr>
                 ) : (
-                  filteredCards.map(c => {
+                  paginatedCards.map(c => {
                     const redirectUrl = `https://startap.com.pa/r/${c.card_id}`;
 
                     return (
@@ -991,6 +1025,91 @@ export default function CardsManagementPage() {
               </tbody>
             </table>
           </div>
+
+          {/* BARRA DE PAGINACIÓN */}
+          {filteredCards.length > 0 && (
+            <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div className="text-slate-600 font-semibold">
+                Mostrando{' '}
+                <span className="font-black text-slate-900">
+                  {(safePage - 1) * pageSize + 1}
+                </span>
+                {' – '}
+                <span className="font-black text-slate-900">
+                  {Math.min(safePage * pageSize, filteredCards.length)}
+                </span>{' '}
+                de <span className="font-black text-slate-900">{filteredCards.length}</span> TAGs
+              </div>
+
+              <div className="flex items-center gap-1 flex-wrap justify-center">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage(1)}
+                  disabled={safePage <= 1}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                  title="Primera página"
+                >
+                  «
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={safePage <= 1}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                >
+                  ‹ Anterior
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(p => p === 1 || p === totalPages || Math.abs(p - safePage) <= 1)
+                  .reduce<Array<number | 'ellipsis'>>((acc, p, idx, arr) => {
+                    if (idx > 0 && p - (arr[idx - 1] as number) > 1) {
+                      acc.push('ellipsis');
+                    }
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item, idx) =>
+                    item === 'ellipsis' ? (
+                      <span key={`ellipsis-${idx}`} className="px-1.5 text-slate-400 font-bold">
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() => setCurrentPage(item)}
+                        className={`min-w-[32px] px-2.5 py-1.5 rounded-lg font-black transition ${
+                          safePage === item
+                            ? 'bg-amber-500 text-slate-950 shadow-2xs'
+                            : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    )
+                  )}
+
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={safePage >= totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                >
+                  Siguiente ›
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={safePage >= totalPages}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold disabled:opacity-40 disabled:pointer-events-none transition"
+                  title="Última página"
+                >
+                  »
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
