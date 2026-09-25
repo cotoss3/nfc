@@ -995,69 +995,67 @@ export default function InventarioPage() {
       {/* TAB 1: INVENTARIO DETALLADO DE PRODUCTOS Y REGISTRO POR LOTES             */}
       {/* ========================================================================= */}
       {activeTab === 'inventario_lotes' && (
-        <div className="space-y-8">
+        <div className="space-y-5">
           
-          {/* INVENTORY FINANCIAL & HEALTH SCORECARDS */}
+          {/* FILA 1: TARJETAS KPI DE VALORACIÓN Y SALUD DE STOCK */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-amber-50/70 text-slate-900 p-4 rounded-2xl shadow-2xs border border-amber-200 flex flex-col justify-between">
+            <div className="bg-amber-50/70 text-slate-900 p-3.5 rounded-2xl shadow-2xs border border-amber-200 flex flex-col justify-between">
               <span className="text-amber-900 text-[10px] font-bold uppercase tracking-wider block">Valoración de Stock (Costo)</span>
-              <div className="mt-2">
+              <div className="mt-1.5">
                 <span className="text-2xl font-black text-amber-700 font-mono">${inventoryMetrics.totalValuationCost.toFixed(2)}</span>
                 <span className="text-[10px] text-amber-800/80 block mt-0.5">costo total en almacén</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+            <div className="bg-white border border-slate-200 p-3.5 rounded-2xl shadow-2xs flex flex-col justify-between">
               <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Valoración Comercial</span>
-              <div className="mt-2">
+              <div className="mt-1.5">
                 <span className="text-2xl font-black text-emerald-600 font-mono">${inventoryMetrics.totalRetailValuation.toFixed(2)}</span>
                 <span className="text-[10px] text-slate-400 block mt-0.5">PVP estimado de venta</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+            <div className="bg-white border border-slate-200 p-3.5 rounded-2xl shadow-2xs flex flex-col justify-between">
               <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Unidades Físicas Total</span>
-              <div className="mt-2">
+              <div className="mt-1.5">
                 <span className="text-2xl font-black text-slate-900 font-mono">{inventoryMetrics.totalPhysicalUnits}</span>
                 <span className="text-[10px] text-slate-400 block mt-0.5">piezas en existencia</span>
               </div>
             </div>
 
-            <div className="bg-white border border-amber-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+            <div className="bg-white border border-amber-200 p-3.5 rounded-2xl shadow-2xs flex flex-col justify-between">
               <span className="text-amber-700 text-[10px] font-bold uppercase tracking-wider block">Alertas de Stock Bajo</span>
-              <div className="mt-2">
+              <div className="mt-1.5">
                 <span className="text-2xl font-black text-amber-700 font-mono">{inventoryMetrics.lowStockCount}</span>
                 <span className="text-[10px] text-amber-600 block mt-0.5">SKUs requieren reorden</span>
               </div>
             </div>
 
-            <div className="bg-white border border-rose-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+            <div className="bg-white border border-rose-200 p-3.5 rounded-2xl shadow-2xs flex flex-col justify-between">
               <span className="text-rose-600 text-[10px] font-bold uppercase tracking-wider block">Productos Agotados</span>
-              <div className="mt-2">
+              <div className="mt-1.5">
                 <span className="text-2xl font-black text-rose-700 font-mono">{inventoryMetrics.outOfStockCount}</span>
                 <span className="text-[10px] text-rose-500 block mt-0.5">sin stock disponible</span>
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-2xs flex flex-col justify-between">
+            <div className="bg-white border border-slate-200 p-3.5 rounded-2xl shadow-2xs flex flex-col justify-between">
               <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Lotes Activos</span>
-              <div className="mt-2">
+              <div className="mt-1.5">
                 <span className="text-2xl font-black text-blue-600 font-mono">{inventoryMetrics.activeBatchesCount}</span>
                 <span className="text-[10px] text-slate-400 block mt-0.5">remesas en stock</span>
               </div>
             </div>
           </div>
 
-          {/* TWO-COLUMN LAYOUT: REGISTRAR LOTE & TABLA DE CONTROL DE STOCK */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* FILA 2: ASISTENTE CORRELATIVO EN LOTE (5 COLS) + AUDITORÍA DE CUADRE HORIZONTAL (7 COLS) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
             
-            {/* LEFT: ENTRADA EN LOTE ASISTIDA & AUDITORÍA DE CUADRE */}
-            <div className="lg:col-span-4 space-y-6">
-              
-              {/* CARD 1: CTA ASISTIDO PARA AGREGAR EN LOTE */}
-              <div className="bg-gradient-to-br from-amber-50 via-white to-orange-50/50 text-slate-900 rounded-3xl p-6 shadow-xs border-2 border-amber-200 space-y-4">
+            {/* IZQUIERDA: MÓDULO DE AGREGAR EN LOTE */}
+            <div className="lg:col-span-5 bg-gradient-to-br from-amber-50 via-white to-orange-50/50 text-slate-900 rounded-3xl p-5 shadow-xs border-2 border-amber-200 flex flex-col justify-between gap-3">
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0">
                     <Boxes className="w-5 h-5" />
                   </div>
                   <div>
@@ -1065,497 +1063,525 @@ export default function InventarioPage() {
                       Módulo de Agregar en Lote
                     </h2>
                     <span className="text-[10px] text-amber-700 font-bold block">
-                      Generador Correlativo + Cuadre Automático
+                      Generador Correlativo (<code className="font-mono">STTS-</code>, <code className="font-mono">STT-</code>, <code className="font-mono">STTT-</code>) + Cuadre Automático
                     </span>
                   </div>
                 </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Genera códigos correlativos continuos (<code className="text-amber-800 bg-amber-100 px-1 rounded font-mono font-bold">STTS-</code>, <code className="text-amber-800 bg-amber-100 px-1 rounded font-mono font-bold">STT-</code>, <code className="text-amber-800 bg-amber-100 px-1 rounded font-mono font-bold">STTT-</code>) y cuadra automáticamente el inventario disponible.
-                </p>
-
-                <div className="grid grid-cols-3 gap-1.5 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => handleOpenBulkModal('stand')}
-                    className="p-2 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-[11px] transition text-center shadow-2xs"
-                  >
-                    + Stand NFC
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenBulkModal('plate')}
-                    className="p-2 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-[11px] transition text-center shadow-2xs"
-                  >
-                    + Placa NFC
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenBulkModal('card')}
-                    className="p-2 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-[11px] transition text-center shadow-2xs"
-                  >
-                    + Tarjeta NFC
-                  </button>
-                </div>
-
                 <button
                   type="button"
                   onClick={() => handleOpenBulkModal('stand')}
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-xs"
+                  className="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-[11px] uppercase tracking-wider transition flex items-center gap-1.5 shadow-xs shrink-0"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Abrir Asistente de Lotes</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Asistente</span>
                 </button>
               </div>
 
-              {/* CARD 2: AUDITORÍA Y CUADRE DE STOCK CON TAGS DISPONIBLES */}
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                    <div>
-                      <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight">
-                        Auditoría de Cuadre
-                      </h3>
-                      <p className="text-[10px] text-slate-500">Tags No Reclamados vs Stock Almacén</p>
-                    </div>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenBulkModal('stand')}
+                  className="p-2.5 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-xs transition text-center shadow-2xs flex flex-col items-center justify-center gap-0.5"
+                >
+                  <span>🏢 + Stand NFC</span>
+                  <span className="text-[9px] font-mono opacity-75">Serie STTS-</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOpenBulkModal('plate')}
+                  className="p-2.5 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-xs transition text-center shadow-2xs flex flex-col items-center justify-center gap-0.5"
+                >
+                  <span>🏷️ + Placa NFC</span>
+                  <span className="text-[9px] font-mono opacity-75">Serie STT-</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOpenBulkModal('card')}
+                  className="p-2.5 rounded-xl bg-white hover:bg-amber-500 hover:text-slate-950 border border-amber-200 text-slate-800 font-bold text-xs transition text-center shadow-2xs flex flex-col items-center justify-center gap-0.5"
+                >
+                  <span>💳 + Tarjeta NFC</span>
+                  <span className="text-[9px] font-mono opacity-75">Serie STTT-</span>
+                </button>
+              </div>
+            </div>
+
+            {/* DERECHA: AUDITORÍA DE CUADRE EN TARJETAS HORIZONTALES */}
+            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-5 shadow-xs flex flex-col justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <div>
+                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight">
+                      Auditoría de Cuadre (Tags No Reclamados vs Stock Almacén)
+                    </h3>
+                    <p className="text-[10px] text-slate-500">Verificación en tiempo real entre dispositivos físicos libres y existencias contables.</p>
                   </div>
+                </div>
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={loadData}
-                    className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 transition"
+                    className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 border border-slate-200 transition"
                     title="Recalcular auditoría"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                   </button>
+                  <button
+                    type="button"
+                    onClick={handleReconcileStock}
+                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-[11px] transition flex items-center gap-1.5 shadow-2xs"
+                  >
+                    <RefreshCw className="w-3 h-3 text-amber-400" />
+                    <span>Sincronizar & Cuadrar</span>
+                  </button>
                 </div>
-
-                <div className="space-y-2.5">
-                  {auditItems.map(item => (
-                    <div
-                      key={item.productId}
-                      className="p-2.5 rounded-xl border bg-slate-50 border-slate-200 text-xs flex items-center justify-between"
-                    >
-                      <div>
-                        <span className="font-bold text-slate-800 block text-[11px]">{item.productName}</span>
-                        <span className="text-[10px] text-slate-500">
-                          Tags Físicos: <strong className="text-slate-900 font-mono">{item.unclaimedTagsCount}</strong> · Almacén: <strong className="text-slate-900 font-mono">{item.recordedStock}</strong>
-                        </span>
-                      </div>
-                      <div>
-                        {item.isBalanced ? (
-                          <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">
-                            <Check className="w-3 h-3 text-emerald-600" /> Cuadrado
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
-                            Dif: {item.difference > 0 ? `+${item.difference}` : item.difference}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleReconcileStock}
-                  className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5"
-                >
-                  <RefreshCw className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Sincronizar & Cuadrar con Tags</span>
-                </button>
               </div>
 
-              {/* CARD 3: FORMULARIO DIRECTO MANUAL */}
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
-                <div className="border-b border-slate-100 pb-3">
-                  <h3 className="text-xs font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-slate-600" />
-                    Entrada Manual Rápida
-                  </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {auditItems.map(item => (
+                  <div
+                    key={item.productId}
+                    className="p-3 rounded-2xl border bg-slate-50/80 border-slate-200 text-xs flex flex-col justify-between gap-2"
+                  >
+                    <div className="flex items-start justify-between gap-1">
+                      <span className="font-bold text-slate-900 text-[11px] leading-tight line-clamp-1">{item.productName}</span>
+                      {item.isBalanced ? (
+                        <span className="inline-flex items-center gap-0.5 text-[9px] font-black uppercase text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300 shrink-0">
+                          <Check className="w-2.5 h-2.5 text-emerald-600" /> OK
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-0.5 text-[9px] font-black uppercase text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-300 shrink-0">
+                          Dif: {item.difference > 0 ? `+${item.difference}` : item.difference}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-200/70">
+                      <span className="text-slate-500">
+                        Tags: <strong className="text-slate-900 font-mono">{item.unclaimedTagsCount}</strong>
+                      </span>
+                      <span className="text-slate-500">
+                        Stock: <strong className="text-slate-900 font-mono">{item.recordedStock}</strong>
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* FILA 3: TABLA DE CONTROL DE EXISTENCIAS A ANCHO COMPLETO (SIN ESPACIOS VACÍOS) */}
+          <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+            <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div>
+                <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                  <Warehouse className="w-5 h-5 text-slate-700" />
+                  Inventario Físico de Productos ({filteredProductStocks.length})
+                </h2>
+                <p className="text-xs text-slate-500">Existencias actuales, valoración en costo/comercial y ajuste directo de stock.</p>
+              </div>
+
+              {/* CONTROLES DE BÚSQUEDA Y FILTRO EN LÍNEA */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs w-full lg:w-auto lg:min-w-[540px]">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    value={productSearch}
+                    onChange={e => setProductSearch(e.target.value)}
+                    placeholder="Buscar producto o SKU..."
+                    className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900"
+                  />
+                </div>
+
+                <select
+                  value={categoryFilter}
+                  onChange={e => setCategoryFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
+                >
+                  <option value="all">Todas las Categorías</option>
+                  <option value="plates">Placas de Mostrador</option>
+                  <option value="cards">Tarjetas NFC</option>
+                  <option value="accessories">Accesorios</option>
+                </select>
+
+                <select
+                  value={stockStatusFilter}
+                  onChange={e => setStockStatusFilter(e.target.value as any)}
+                  className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
+                >
+                  <option value="all">Todos los Estados</option>
+                  <option value="normal">Normal (En Stock)</option>
+                  <option value="low">Alerta Stock Bajo</option>
+                  <option value="out">Agotado</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-50/70 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
+                    <th className="py-3 px-4">SKU / Producto</th>
+                    <th className="py-3 px-3 text-center">Stock Actual</th>
+                    <th className="py-3 px-3 text-right">Costo Unit.</th>
+                    <th className="py-3 px-3 text-right">Precio Venta</th>
+                    <th className="py-3 px-3 text-right">Valor Costo</th>
+                    <th className="py-3 px-3 text-right">Valor Comercial</th>
+                    <th className="py-3 px-3 text-center">Estado</th>
+                    <th className="py-3 px-4 text-center">Ajuste Directo</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                  {filteredProductStocks.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="p-6 text-center text-slate-400 italic">
+                        No se encontraron productos en el filtro seleccionado.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredProductStocks.map(prod => {
+                      const currentStock = prod.current_stock || 0;
+                      const minAlert = prod.min_alert_stock || 10;
+                      const unitCost = typeof prod.unit_cost === 'number' && !isNaN(prod.unit_cost) ? prod.unit_cost : 0;
+                      const sellingPrice = typeof prod.selling_price === 'number' && !isNaN(prod.selling_price) ? prod.selling_price : 0;
+
+                      const isLow = currentStock <= minAlert && currentStock > 0;
+                      const isOut = currentStock === 0;
+                      const isBundle = prod.is_bundle || prod.product_id.includes('pack');
+                      const costVal = currentStock * unitCost;
+                      const retailVal = currentStock * sellingPrice;
+
+                      return (
+                        <tr key={prod.product_id} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 shrink-0">
+                                {prod.sku || 'STP-0000'}
+                              </span>
+                              <span className="font-bold text-slate-900 truncate">
+                                {prod.name || prod.product_id}
+                              </span>
+                              {isBundle && (
+                                <span className="text-[9px] font-black uppercase px-1.5 py-0.5 bg-purple-100 text-purple-800 border border-purple-300 rounded shrink-0">
+                                  Combo Virtual
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="py-3 px-3 text-center font-mono font-black text-base text-slate-900">
+                            {currentStock} ud.
+                            {isBundle && <span className="text-[10px] font-bold text-purple-700 block -mt-1">(armables)</span>}
+                          </td>
+
+                          <td className="py-3 px-3 text-right font-mono font-semibold text-slate-600">
+                            ${unitCost.toFixed(2)}
+                          </td>
+
+                          <td className="py-3 px-3 text-right font-mono font-bold text-slate-900">
+                            ${sellingPrice.toFixed(2)}
+                          </td>
+
+                          <td className="py-3 px-3 text-right font-mono font-black">
+                            {isBundle ? (
+                              <span className="text-[11px] font-bold text-slate-400 italic" title="No suma al total para evitar duplicar existencias de insumos">
+                                $0.00 (Combo)
+                              </span>
+                            ) : (
+                              <span className="text-amber-700">${costVal.toFixed(2)}</span>
+                            )}
+                          </td>
+
+                          <td className="py-3 px-3 text-right font-mono font-black">
+                            {isBundle ? (
+                              <span className="text-[11px] font-bold text-slate-400 italic" title="Derivado de 1 Placa + 2 Tarjetas físicas">
+                                $0.00 (Combo)
+                              </span>
+                            ) : (
+                              <span className="text-emerald-700">${retailVal.toFixed(2)}</span>
+                            )}
+                          </td>
+
+                          <td className="py-3 px-3 text-center">
+                            {isOut ? (
+                              <span className="px-2 py-0.5 bg-rose-100 text-rose-800 border border-rose-300 rounded font-bold uppercase text-[10px]">
+                                Agotado
+                              </span>
+                            ) : isLow ? (
+                              <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded font-bold uppercase text-[10px]">
+                                Stock Bajo ({prod.min_alert_stock})
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold uppercase text-[10px]">
+                                Disponible
+                              </span>
+                            )}
+                          </td>
+
+                          <td className="py-3 px-4 text-center">
+                            <div className="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                              <button
+                                type="button"
+                                onClick={() => handleAdjustStock(prod.product_id, -1)}
+                                className="w-6 h-6 bg-white hover:bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold shadow-2xs border border-slate-200 active:scale-95"
+                                title="Disminuir 1 unidad"
+                              >
+                                <Minus className="w-3.5 h-3.5" />
+                              </button>
+                              <span className="font-mono font-bold px-1.5 text-[11px] text-slate-800">{prod.current_stock}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleAdjustStock(prod.product_id, 1)}
+                                className="w-6 h-6 bg-white hover:bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center font-bold shadow-2xs border border-slate-200 active:scale-95"
+                                title="Aumentar 1 unidad"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* FILA 4: 3 PANELES SIMÉTRICOS (ENTRADA MANUAL 4 COLS + LOTES 5 COLS + KARDEX 3 COLS) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+            
+            {/* COL 1 (4 COLS): FORMULARIO ENTRADA MANUAL RÁPIDA */}
+            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="border-b border-slate-100 pb-3 mb-3 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-amber-600" />
+                      Entrada Manual Rápida
+                    </h3>
+                    <p className="text-[11px] text-slate-500">Registro contable directo de remesas.</p>
+                  </div>
                 </div>
 
                 {batchSuccessMsg && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-bold flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600" />
+                  <div className="mb-3 p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                     <span>{batchSuccessMsg}</span>
                   </div>
                 )}
+              </div>
 
-              <form onSubmit={handleCreateBatch} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="font-bold text-slate-700">Código de Lote / Importación *</label>
-                  <input
-                    type="text"
-                    required
-                    value={batchCodeInput}
-                    onChange={e => setBatchCodeInput(e.target.value)}
-                    placeholder="Ej. LOTE-2026-09C"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
-                  />
-                </div>
+              <form onSubmit={handleCreateBatch} className="space-y-3 text-xs flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 text-[11px]">Código de Lote *</label>
+                      <input
+                        type="text"
+                        required
+                        value={batchCodeInput}
+                        onChange={e => setBatchCodeInput(e.target.value)}
+                        placeholder="LOTE-2026-09C"
+                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
+                      />
+                    </div>
 
-                <div className="space-y-1">
-                  <label className="font-bold text-slate-700">Producto Asociado *</label>
-                  <select
-                    value={batchProductSelect}
-                    onChange={e => setBatchProductSelect(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800 outline-none cursor-pointer"
-                  >
-                    {products.map(p => (
-                      <option key={p.id} value={p.id}>{p.name} (${p.price.toFixed(2)})</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-700">Cantidad (Piezas) *</label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      value={batchQtyInput}
-                      onChange={e => setBatchQtyInput(e.target.value)}
-                      placeholder="Ej. 100"
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none"
-                    />
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 text-[11px]">Proveedor</label>
+                      <input
+                        type="text"
+                        value={batchSupplierInput}
+                        onChange={e => setBatchSupplierInput(e.target.value)}
+                        placeholder="Fabricante / Origen"
+                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700">Costo Unitario ($ USD) *</label>
+                    <label className="font-bold text-slate-700 text-[11px]">Producto Asociado *</label>
+                    <select
+                      value={batchProductSelect}
+                      onChange={e => setBatchProductSelect(e.target.value)}
+                      className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800 outline-none cursor-pointer"
+                    >
+                      {products.map(p => (
+                        <option key={p.id} value={p.id}>{p.name} (${p.price.toFixed(2)})</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 text-[11px]">Cantidad (Piezas) *</label>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        value={batchQtyInput}
+                        onChange={e => setBatchQtyInput(e.target.value)}
+                        placeholder="Ej. 100"
+                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 text-[11px]">Costo Unit. ($ USD) *</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        required
+                        value={batchCostInput}
+                        onChange={e => setBatchCostInput(e.target.value)}
+                        placeholder="Ej. 4.50"
+                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-700 text-[11px]">Notas / Especificaciones</label>
                     <input
-                      type="number"
-                      step="0.01"
-                      required
-                      value={batchCostInput}
-                      onChange={e => setBatchCostInput(e.target.value)}
-                      placeholder="Ej. 4.50"
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none"
+                      type="text"
+                      value={batchNotesInput}
+                      onChange={e => setBatchNotesInput(e.target.value)}
+                      placeholder="Detalles de acabado acrílico, chip NTAG216, etc."
+                      className="w-full px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
                     />
                   </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="font-bold text-slate-700">Proveedor / Fabricante</label>
-                  <input
-                    type="text"
-                    value={batchSupplierInput}
-                    onChange={e => setBatchSupplierInput(e.target.value)}
-                    placeholder="Nombre del proveedor"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="font-bold text-slate-700">Notas / Especificaciones Técnicas</label>
-                  <textarea
-                    rows={2}
-                    value={batchNotesInput}
-                    onChange={e => setBatchNotesInput(e.target.value)}
-                    placeholder="Detalles de acabado acrílico, chip NTAG216, etc."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
-                  />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
+                  className="w-full py-2.5 mt-3 bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-2 active:scale-[0.99]"
                 >
                   <Plus className="w-4 h-4 text-amber-400" />
                   <span>Ingresar Lote a Inventario</span>
                 </button>
               </form>
-              </div>
             </div>
 
-            {/* RIGHT: TABLA DE CONTROL DE EXISTENCIAS Y AJUSTE RÁPIDO */}
-            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
-              <div className="p-5 bg-slate-50 border-b border-slate-200 space-y-3">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {/* COL 2 (5 COLS): HISTORIAL DE LOTES DE IMPORTACIÓN Y PRODUCCIÓN */}
+            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                   <div>
-                    <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                      <Warehouse className="w-5 h-5 text-slate-700" />
-                      Inventario Físico de Productos ({filteredProductStocks.length})
+                    <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                      <History className="w-4 h-4 text-slate-700" />
+                      Lotes de Importación ({batches.length})
                     </h2>
-                    <p className="text-xs text-slate-500">Existencias actuales, valor en costo y ajuste directo de stock.</p>
+                    <p className="text-[11px] text-slate-500">Histórico de remesas recibidas y saldo por lote.</p>
                   </div>
                 </div>
 
-                {/* SEARCH & FILTER CONTROLS */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
-                  <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                    <input
-                      type="text"
-                      value={productSearch}
-                      onChange={e => setProductSearch(e.target.value)}
-                      placeholder="Buscar por producto o SKU..."
-                      className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900"
-                    />
-                  </div>
-
-                  <select
-                    value={categoryFilter}
-                    onChange={e => setCategoryFilter(e.target.value)}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
-                  >
-                    <option value="all">Todas las Categorías</option>
-                    <option value="plates">Placas de Mostrador</option>
-                    <option value="cards">Tarjetas NFC</option>
-                    <option value="accessories">Accesorios</option>
-                  </select>
-
-                  <select
-                    value={stockStatusFilter}
-                    onChange={e => setStockStatusFilter(e.target.value as any)}
-                    className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 outline-none cursor-pointer"
-                  >
-                    <option value="all">Todos los Estados de Stock</option>
-                    <option value="normal">Normal (En Stock)</option>
-                    <option value="low">Alerta Stock Bajo</option>
-                    <option value="out">Agotado</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto p-2">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                      <th className="p-3">SKU / Producto</th>
-                      <th className="p-3 text-center">Stock Actual</th>
-                      <th className="p-3 text-right">Costo Unit.</th>
-                      <th className="p-3 text-right">Precio Venta</th>
-                      <th className="p-3 text-right">Valor Costo</th>
-                      <th className="p-3 text-right">Valor Comercial</th>
-                      <th className="p-3 text-center">Estado</th>
-                      <th className="p-3 text-center">Ajuste Directo</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {filteredProductStocks.length === 0 ? (
-                      <tr>
-                        <td colSpan={8} className="p-8 text-center text-slate-400 italic">
-                          No se encontraron productos en el filtro seleccionado.
-                        </td>
+                <div className="overflow-x-auto max-h-[290px] overflow-y-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead className="sticky top-0 bg-slate-50 z-10">
+                      <tr className="text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                        <th className="p-3">Código Lote</th>
+                        <th className="p-3">Producto</th>
+                        <th className="p-3 text-center">Rest. / Inicial</th>
+                        <th className="p-3 text-right">Costo</th>
+                        <th className="p-3 text-center">Estado</th>
                       </tr>
-                    ) : (
-                      filteredProductStocks.map(prod => {
-                        const currentStock = prod.current_stock || 0;
-                        const minAlert = prod.min_alert_stock || 10;
-                        const unitCost = typeof prod.unit_cost === 'number' && !isNaN(prod.unit_cost) ? prod.unit_cost : 0;
-                        const sellingPrice = typeof prod.selling_price === 'number' && !isNaN(prod.selling_price) ? prod.selling_price : 0;
-
-                        const isLow = currentStock <= minAlert && currentStock > 0;
-                        const isOut = currentStock === 0;
-                        const isBundle = prod.is_bundle || prod.product_id.includes('pack');
-                        const costVal = currentStock * unitCost;
-                        const retailVal = currentStock * sellingPrice;
-
-                        return (
-                          <tr key={prod.product_id} className="hover:bg-slate-50 transition-colors">
-                            <td className="p-3">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-mono font-bold text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 block w-fit">
-                                  {prod.sku || 'STP-0000'}
-                                </span>
-                                {isBundle && (
-                                  <span className="text-[9px] font-black uppercase px-1.5 py-0.5 bg-purple-100 text-purple-800 border border-purple-300 rounded">
-                                    Combo Virtual
-                                  </span>
-                                )}
-                              </div>
-                              <span className="font-bold text-slate-900 block max-w-[220px] truncate mt-0.5">
-                                {prod.name || prod.product_id}
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                      {batches.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="p-8 text-center text-slate-400 italic">No se registran lotes aún.</td>
+                        </tr>
+                      ) : (
+                        batches.map(b => (
+                          <tr key={b.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="p-2.5 font-mono font-black text-slate-900 whitespace-nowrap">
+                              <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-[11px] inline-block font-bold">
+                                {b.id}
                               </span>
                             </td>
-
-                            <td className="p-3 text-center font-mono font-black text-base text-slate-900">
-                              {currentStock} ud.
-                              {isBundle && <span className="text-[10px] font-bold text-purple-700 block -mt-1">(armables)</span>}
+                            <td className="p-2.5 font-bold text-slate-900 max-w-[140px] truncate">
+                              {b.product_name}
                             </td>
-
-                            <td className="p-3 text-right font-mono font-semibold text-slate-600">
-                              ${unitCost.toFixed(2)}
+                            <td className="p-2.5 text-center font-mono">
+                              <span className="font-black text-amber-700">{b.quantity_remaining}</span>
+                              <span className="text-slate-400"> / {b.quantity_initial}</span>
                             </td>
-
-                            <td className="p-3 text-right font-mono font-bold text-slate-900">
-                              ${sellingPrice.toFixed(2)}
+                            <td className="p-2.5 text-right font-mono font-bold text-slate-900">
+                              ${b.unit_cost.toFixed(2)}
                             </td>
-
-                            <td className="p-3 text-right font-mono font-black">
-                              {isBundle ? (
-                                <span className="text-[11px] font-bold text-slate-400 italic" title="No suma al total para evitar duplicar existencias de insumos">
-                                  $0.00 (Combo)
-                                </span>
-                              ) : (
-                                <span className="text-amber-700">${costVal.toFixed(2)}</span>
-                              )}
-                            </td>
-
-                            <td className="p-3 text-right font-mono font-black">
-                              {isBundle ? (
-                                <span className="text-[11px] font-bold text-slate-400 italic" title="Derivado de 1 Placa + 2 Tarjetas físicas">
-                                  $0.00 (Combo)
-                                </span>
-                              ) : (
-                                <span className="text-emerald-700">${retailVal.toFixed(2)}</span>
-                              )}
-                            </td>
-
-                            <td className="p-3 text-center">
-                              {isOut ? (
-                                <span className="px-2 py-0.5 bg-rose-100 text-rose-800 border border-rose-300 rounded font-bold uppercase text-[10px]">
-                                  Agotado
-                                </span>
-                              ) : isLow ? (
-                                <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded font-bold uppercase text-[10px]">
-                                  Stock Bajo ({prod.min_alert_stock})
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold uppercase text-[10px]">
-                                  Disponible
-                                </span>
-                              )}
-                            </td>
-
-                            <td className="p-3 text-center">
-                              <div className="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                                <button
-                                  type="button"
-                                  onClick={() => handleAdjustStock(prod.product_id, -1)}
-                                  className="w-6 h-6 bg-white hover:bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold shadow-2xs border border-slate-200 active:scale-95"
-                                  title="Disminuir 1 unidad"
-                                >
-                                  <Minus className="w-3.5 h-3.5" />
-                                </button>
-                                <span className="font-mono font-bold px-1 text-[11px] text-slate-800">{prod.current_stock}</span>
-                                <button
-                                  type="button"
-                                  onClick={() => handleAdjustStock(prod.product_id, 1)}
-                                  className="w-6 h-6 bg-white hover:bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center font-bold shadow-2xs border border-slate-200 active:scale-95"
-                                  title="Aumentar 1 unidad"
-                                >
-                                  <Plus className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
+                            <td className="p-2.5 text-center">
+                              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold uppercase text-[9px]">
+                                {b.status === 'active' ? 'Activo' : 'Agotado'}
+                              </span>
                             </td>
                           </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          {/* HISTORIAL DE LOTES REGISTRADOS Y MOVIMIENTOS KARDEX */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* LEFT: HISTORIAL DE LOTES DE PRODUCCIÓN REGISTRADOS */}
-            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
-              <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                <div>
-                  <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <History className="w-5 h-5 text-slate-700" />
-                    Lotes de Importación y Producción ({batches.length})
-                  </h2>
-                  <p className="text-xs text-slate-500">Histórico de remesas recibidas de proveedores.</p>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              <div className="overflow-x-auto p-2">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider">
-                      <th className="p-3">Código Lote</th>
-                      <th className="p-3">Producto</th>
-                      <th className="p-3 text-center">Cant. Inicial</th>
-                      <th className="p-3 text-center">Restantes</th>
-                      <th className="p-3 text-right">Costo Unit.</th>
-                      <th className="p-3 text-center">Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {batches.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="p-8 text-center text-slate-400 italic">No se registran lotes aún.</td>
-                      </tr>
-                    ) : (
-                      batches.map(b => (
-                        <tr key={b.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="p-3 font-mono font-black text-slate-900 whitespace-nowrap">
-                            <span className="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded whitespace-nowrap inline-block font-bold">
-                              {b.id}
-                            </span>
-                          </td>
-                          <td className="p-3 font-bold text-slate-900 max-w-[180px] truncate">
-                            {b.product_name}
-                          </td>
-                          <td className="p-3 text-center font-mono font-bold text-slate-700">
-                            {b.quantity_initial} ud.
-                          </td>
-                          <td className="p-3 text-center font-mono font-black text-amber-700">
-                            {b.quantity_remaining} ud.
-                          </td>
-                          <td className="p-3 text-right font-mono font-bold text-slate-900">
-                            ${b.unit_cost.toFixed(2)}
-                          </td>
-                          <td className="p-3 text-center">
-                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold uppercase text-[10px]">
-                              {b.status === 'active' ? 'Activo' : 'Agotado'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+              <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
+                <span>
+                  Total inicial: <strong className="font-mono text-slate-900">{batches.reduce((acc, b) => acc + (b.quantity_initial || 0), 0)} ud.</strong>
+                </span>
+                <span>
+                  Disponible en lotes: <strong className="font-mono text-amber-700">{batches.reduce((acc, b) => acc + (b.quantity_remaining || 0), 0)} ud.</strong>
+                </span>
               </div>
             </div>
 
-            {/* RIGHT: AUDITORÍA KARDEX DE MOVIMIENTOS RECIENTES */}
-            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
-              <div className="p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                <div>
-                  <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                    <Sliders className="w-5 h-5 text-slate-700" />
-                    Kardex Auditable de Movimientos
-                  </h2>
-                  <p className="text-xs text-slate-500">Últimas entradas por lote y salidas por ordenes.</p>
+            {/* COL 3 (3 COLS): AUDITORÍA KARDEX DE MOVIMIENTOS RECIENTES */}
+            <div className="lg:col-span-3 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                      <Sliders className="w-4 h-4 text-slate-700" />
+                      Kardex ({stockMovements.length})
+                    </h2>
+                    <p className="text-[11px] text-slate-500">Últimas entradas y salidas.</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-3 p-4">
-                {stockMovements.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic py-6 text-center">No hay movimientos registrados.</p>
-                ) : (
-                  stockMovements.slice(0, 8).map(m => (
-                    <div key={m.id} className="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between text-xs">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase ${
-                            m.quantity_change > 0
-                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                              : 'bg-rose-100 text-rose-800 border border-rose-300'
-                          }`}>
-                            {m.quantity_change > 0 ? `+${m.quantity_change} Entrada` : `${m.quantity_change} Salida`}
-                          </span>
-                          <span className="font-bold text-slate-900">{m.product_name}</span>
+                <div className="space-y-2 p-3 max-h-[290px] overflow-y-auto">
+                  {stockMovements.length === 0 ? (
+                    <p className="text-xs text-slate-400 italic py-6 text-center">No hay movimientos registrados.</p>
+                  ) : (
+                    stockMovements.slice(0, 12).map(m => (
+                      <div key={m.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-2 text-xs">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase shrink-0 ${
+                              m.quantity_change > 0
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                : 'bg-rose-100 text-rose-800 border border-rose-300'
+                            }`}>
+                              {m.quantity_change > 0 ? `+${m.quantity_change}` : m.quantity_change}
+                            </span>
+                            <span className="font-bold text-slate-900 truncate text-[11px]">{m.product_name}</span>
+                          </div>
+                          <p className="text-[10px] text-slate-400 mt-0.5 font-mono truncate">
+                            {m.reference} · {new Date(m.created_at).toLocaleTimeString('es-PA', { hour: '2-digit', minute: '2-digit' })}
+                          </p>
                         </div>
-                        <p className="text-[10px] text-slate-400 mt-1 font-mono">
-                          Ref: {m.reference} | {new Date(m.created_at).toLocaleTimeString('es-PA')}
-                        </p>
+                        <span className="font-mono font-black text-slate-900 text-[11px] shrink-0">
+                          {m.resulting_stock} ud.
+                        </span>
                       </div>
-                      <span className="font-mono font-black text-slate-900 text-xs">
-                        {m.resulting_stock} ud. en stock
-                      </span>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
+                <span>
+                  Entradas: <strong className="font-mono text-emerald-700">{stockMovements.filter(m => m.quantity_change > 0).length}</strong>
+                </span>
+                <span>
+                  Salidas: <strong className="font-mono text-rose-700">{stockMovements.filter(m => m.quantity_change < 0).length}</strong>
+                </span>
               </div>
             </div>
           </div>
@@ -1567,12 +1593,12 @@ export default function InventarioPage() {
       {/* TAB 2: INVENTARIO DE FICHAS Y DISPOSITIVOS TAGS (STT-XXXX)                */}
       {/* ========================================================================= */}
       {activeTab === 'tags_hardware' && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* LEFT: REGISTRO Y PROGRAMACIÓN DE DISPOSITIVO TAG */}
-            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
+            <div className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col justify-between space-y-5">
               <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
@@ -1839,7 +1865,7 @@ export default function InventarioPage() {
             </div>
 
             {/* RIGHT: LISTADO DE TAGS REGISTRADOS CON FILTRO POR DISPOSITIVO Y PAGINACIÓN */}
-            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs space-y-4">
+            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs flex flex-col justify-between">
               <div className="p-5 bg-slate-50 border-b border-slate-200 space-y-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
