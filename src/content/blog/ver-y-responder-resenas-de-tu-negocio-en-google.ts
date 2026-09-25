@@ -22,8 +22,8 @@ export const post: BlogPost = {
     'reportar reseña google maps',
   ],
   imagen: {
-    src: 'placeholder:/blog/ver-y-responder-resenas-google-panama.webp',
-    alt: 'Foto o captura real respondiendo reseñas de clientes en Google Business Profile desde Panamá (1200 × 675 px)',
+    src: '/blog/ver-y-responder-resenas-google-panama.webp',
+    alt: 'Propietario de negocio en Panamá respondiendo una reseña de 5 estrellas en Google Maps desde su celular junto a una tarjeta NFC',
     ancho: 1200,
     alto: 675,
   },
@@ -63,7 +63,7 @@ Esta página es sobre las segundas.
 En \`business.google.com\`, con la cuenta que administra la ficha, y luego en
 **Leer reseñas**.
 
-![Captura del panel de Google Business Profile mostrando el botón "Leer reseñas" y la lista de comentarios recibidos con la opción "Responder"](placeholder:/blog/panel-leer-resenas-google-business-panama.webp)
+![Panel de Google Business Profile mostrando la sección de reseñas de clientes y el botón para responder cada comentario](/blog/panel-leer-resenas-google-business-panama.webp)
 
 Si nunca has entrado ahí y tu negocio ya aparece en Maps, es probable que la
 ficha exista sin que la hayas reclamado. Ese es otro problema y lo explico en
@@ -129,7 +129,7 @@ Desde la propia reseña en **Leer reseñas**, con el ícono de denuncia. Tambié
 hay una **herramienta de gestión de reseñas**: ahí se reporta igual, pero además
 puedes ver en qué va cada denuncia, que es lo que no te dice el celular.
 
-![Captura de la herramienta de gestión de reseñas de Google mostrando los estados de denuncia (pendiente, revisada, apelación) y la opción de apelar hasta 10 reseñas](placeholder:/blog/herramienta-gestion-denuncias-resenas-google.webp)
+![Herramienta de gestión de denuncias de reseñas en Google Business Profile mostrando estados pendiente, revisada con botón apelar y apelación en revisión](/blog/herramienta-gestion-denuncias-resenas-google.webp)
 
 Tres estados: pendiente, revisada con su resultado, y derivado cuando hay
 apelación en curso.
