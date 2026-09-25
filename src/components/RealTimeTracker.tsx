@@ -16,16 +16,26 @@ function getDeviceType(): string {
   return 'Navegador Web';
 }
 
+function isSearchBot(): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return true;
+  const ua = navigator.userAgent || '';
+  return /Googlebot|Google-InspectionTool|Storebot-Google|AdsBot-Google|Mediapartners-Google|bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot|Sogou|Exabot|facebot|ia_archiver|Lighthouse|HeadlessChrome/i.test(ua);
+}
+
 function getOrSetSessionId(): string {
   if (typeof window === 'undefined') return '';
-  let id = sessionStorage.getItem('startap_session_id');
-  if (!id) {
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-    id = `VIS-${timestamp}-${randomPart}`;
-    sessionStorage.setItem('startap_session_id', id);
+  try {
+    let id = sessionStorage.getItem('startap_session_id');
+    if (!id) {
+      const timestamp = Date.now().toString(36).toUpperCase();
+      const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+      id = `VIS-${timestamp}-${randomPart}`;
+      sessionStorage.setItem('startap_session_id', id);
+    }
+    return id;
+  } catch {
+    return `VIS-${Date.now().toString(36).toUpperCase()}`;
   }
-  return id;
 }
 
 export default function RealTimeTracker() {
@@ -46,7 +56,7 @@ export default function RealTimeTracker() {
   }, [pathname]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || isSearchBot()) return;
 
     // Do not track admin or client dashboard panel pages as public store traffic
     if (pathname && (pathname.startsWith('/master-control') || pathname.startsWith('/dashboard'))) {

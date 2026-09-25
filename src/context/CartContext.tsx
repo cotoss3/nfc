@@ -25,13 +25,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Cargar carrito de localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('nfc_cart');
-      if (savedCart) {
-        try {
+      try {
+        const savedCart = localStorage.getItem('nfc_cart');
+        if (savedCart) {
           setCart(JSON.parse(savedCart));
-        } catch (e) {
-          console.error('Error parsing cart from localStorage', e);
         }
+      } catch (e) {
+        console.error('Error parsing cart from localStorage', e);
       }
       setIsInitialized(true);
     }
@@ -40,7 +40,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
     if (isInitialized && typeof window !== 'undefined') {
-      localStorage.setItem('nfc_cart', JSON.stringify(cart));
+      try {
+        localStorage.setItem('nfc_cart', JSON.stringify(cart));
+      } catch {
+        // Ignorar errores de cuota o modo restringido
+      }
     }
   }, [cart, isInitialized]);
 

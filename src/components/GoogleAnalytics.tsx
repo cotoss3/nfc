@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Script from 'next/script';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export const GA_MEASUREMENT_ID = 'G-VQH5VW4KF9';
 
@@ -15,15 +15,15 @@ declare global {
 
 export default function GoogleAnalytics() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.gtag) return;
-    const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+    const search = window.location.search || '';
+    const url = pathname + search;
     window.gtag('config', GA_MEASUREMENT_ID, {
       page_path: url,
     });
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return (
     <>

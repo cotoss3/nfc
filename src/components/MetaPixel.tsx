@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Script from 'next/script';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { FB_PIXEL_ID } from '@/lib/fbpixel';
 
 /**
@@ -13,12 +13,11 @@ import { FB_PIXEL_ID } from '@/lib/fbpixel';
  */
 export default function MetaPixel() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!FB_PIXEL_ID || typeof window === 'undefined' || !window.fbq) return;
     window.fbq('track', 'PageView');
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   if (!FB_PIXEL_ID) return null;
 

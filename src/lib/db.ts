@@ -252,8 +252,12 @@ export const DEFAULT_SEED_CARDS: NfcCard[] = [
 class LocalDbService {
   public getStorageItem<T>(key: string, defaultValue: T): T {
     if (typeof window !== 'undefined') {
-      const data = localStorage.getItem(key);
-      if (data) return JSON.parse(data);
+      try {
+        const data = localStorage.getItem(key);
+        if (data) return JSON.parse(data);
+      } catch {
+        return defaultValue;
+      }
     } else {
       // Leer SIEMPRE la versión más fresca desde el archivo de disco db_store.json en cada petición
       try {
@@ -277,7 +281,11 @@ class LocalDbService {
 
   public setStorageItem<T>(key: string, value: T): void {
     if (typeof window !== 'undefined') {
-      localStorage.setItem(key, JSON.stringify(value));
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        // Ignorar errores de cuota o modo privado/crawler restringido
+      }
       // Notificar al servidor Next.js para sincronizar el archivo de almacenamiento
       fetch('/api/cards', {
         method: 'POST',
@@ -308,106 +316,37 @@ class LocalDbService {
     }
   }
 
-  // Inicializar bases simuladas si no existen
+  // Inicializar catálogo local en navegador sin disparar peticiones POST /api/cards ni sembrar datos ficticios
   init() {
     if (typeof window === 'undefined') return;
 
-    const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
-    const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
+    try {
+      const storedProducts = this.getStorageItem<Product[]>('nfc_products', []);
+      const deletedIds = this.getStorageItem<string[]>('nfc_deleted_product_ids', []);
 
-    // Solo sembrar los productos iniciales si el storage está completamente vacío.
-    // NO resembrar si el admin eliminó explícitamente un producto.
-    const currentIds = storedProducts.map(p => p.id.trim().toLowerCase());
-    const expectedSeedIds = INITIAL_PRODUCTS
-      .map(p => p.id.trim().toLowerCase())
-      .filter(id => !deletedIds.includes(id));
+      const currentIds = storedProducts.map(p => p.id.trim().toLowerCase());
+      const expectedSeedIds = INITIAL_PRODUCTS
+        .map(p => p.id.trim().toLowerCase())
+        .filter(id => !deletedIds.includes(id));
 
-    const missingAny = expectedSeedIds.some(id => !currentIds.includes(id));
+      const missingAny = expectedSeedIds.some(id => !currentIds.includes(id));
 
-    if (storedProducts.length === 0 || missingAny) {
-      if (storedProducts.length === 0 && deletedIds.length === 0) {
-        this.setStorageItem('nfc_products', INITIAL_PRODUCTS);
-      } else {
-        const merged = storedProducts.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
-        for (const seed of INITIAL_PRODUCTS) {
-          const seedIdNorm = seed.id.trim().toLowerCase();
-          if (!currentIds.includes(seedIdNorm) && !deletedIds.includes(seedIdNorm)) {
-            merged.push(seed);
-          }
-        }
-        this.setStorageItem('nfc_products', merged);
-      }
-    }
-    if (!localStorage.getItem('nfc_orders')) {
-      this.setStorageItem('nfc_orders', [
-        {
-          id: 'PED-9821',
-          customer_name: 'Carlos Mendoza',
-          customer_email: 'carlos.mendoza@gmail.com',
-          customer_phone: '6523-9821',
-          shipping_province: 'Panamá',
-          shipping_district: 'San Francisco',
-          shipping_address: 'Calle 74, Edificio Sunset, Apto 5B',
-          payment_method: 'yappy',
-          payment_status: 'completed',
-          status: 'processing',
-          total: 69.98,
-          items: [
-            {
-              id: 'item-1',
-              product_id: 'placa-google',
-              product_name: 'Placa NFC Google Reviews (Acrílico)',
-              quantity: 2,
-              price: 34.99,
-              initial_redirect_url: 'https://g.page/r/CZZzX-test',
-              selected_color: 'Negro Premium',
-              business_name: 'Café & Pan Panamá'
+      if (storedProducts.length === 0 || missingAny) {
+        if (storedProducts.length === 0 && deletedIds.length === 0) {
+          localStorage.setItem('nfc_products', JSON.stringify(INITIAL_PRODUCTS));
+        } else {
+          const merged = storedProducts.filter(p => !deletedIds.includes(p.id.trim().toLowerCase()));
+          for (const seed of INITIAL_PRODUCTS) {
+            const seedIdNorm = seed.id.trim().toLowerCase();
+            if (!currentIds.includes(seedIdNorm) && !deletedIds.includes(seedIdNorm)) {
+              merged.push(seed);
             }
-          ],
-          created_at: new Date(Date.now() - 3600000 * 24).toISOString() // Ayer
+          }
+          localStorage.setItem('nfc_products', JSON.stringify(merged));
         }
-      ]);
-    }
-    if (!localStorage.getItem('nfc_cards')) {
-      this.setStorageItem('nfc_cards', [
-        {
-          card_id: 'STT-1001',
-          activation_code: 'STT-1001',
-          owner_id: 'user-carlos',
-          owner_name: 'Carlos Mendoza',
-          owner_email: 'carlos.mendoza@gmail.com',
-          label: 'Placa de Mostrador (STT-1001)',
-          target_url: 'https://search.google.com/local/writereview?placeid=ChIJN1t_tDeoQI8Rk3_JiM7UtGU',
-          is_active: true,
-          claimed: true,
-          type: 'google',
-          created_at: new Date(Date.now() - 3600000 * 48).toISOString()
-        }
-      ]);
-    }
-    if (!localStorage.getItem('nfc_scans')) {
-      const cardId = 'STT-1001';
-      const mockScans: ScanRecord[] = [];
-      // Generar escaneos en los últimos 7 días
-      for (let i = 0; i < 45; i++) {
-        const daysAgo = Math.floor(Math.random() * 7);
-        const randomHour = Math.floor(Math.random() * 24);
-        const date = new Date();
-        date.setDate(date.getDate() - daysAgo);
-        date.setHours(randomHour);
-        
-        const devices = ['iPhone (Safari)', 'Android (Chrome)', 'Android (Firefox)', 'iPhone (Chrome)'];
-        const referrers = ['NFC Scan', 'QR Code'];
-
-        mockScans.push({
-          id: `scan-${i}`,
-          card_id: cardId,
-          device: devices[Math.floor(Math.random() * devices.length)],
-          referrer: referrers[Math.random() > 0.3 ? 0 : 1],
-          created_at: date.toISOString()
-        });
       }
-      this.setStorageItem('nfc_scans', mockScans);
+    } catch {
+      // Ignorar si localStorage está restringido (ej. crawlers o modo incógnito estricto)
     }
   }
 

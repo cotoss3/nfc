@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Script from 'next/script';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { TIKTOK_PIXEL_ID, pageTikTok } from '@/lib/tiktokpixel';
 
 /**
@@ -10,12 +10,11 @@ import { TIKTOK_PIXEL_ID, pageTikTok } from '@/lib/tiktokpixel';
  */
 export default function TikTokPixel() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!TIKTOK_PIXEL_ID) return;
     pageTikTok();
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   if (!TIKTOK_PIXEL_ID) return null;
 

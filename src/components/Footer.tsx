@@ -115,7 +115,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="inline-block w-full max-w-[240px]">
@@ -138,12 +138,26 @@ export default function Footer() {
           <div className="space-y-3">
             <h3 className="text-white font-bold text-xs uppercase tracking-wider">Productos & Legales</h3>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/catalogo" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
-              <li><Link href="/catalogo" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
+              <li><Link href="/catalogo/placa-nfc-mostrador" className="hover:text-white transition-colors">Placas NFC para Mostrador</Link></li>
+              <li><Link href="/catalogo/stand-nfc-mesa" className="hover:text-white transition-colors">Stands NFC de Mesa</Link></li>
+              <li><Link href="/catalogo/tarjeta-nfc-bolsillo" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
+              <li><Link href="/catalogo/pack-trio-comercial" className="hover:text-white transition-colors">Pack Comercio (3 en 1)</Link></li>
               <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Pedidos Corporativos B2B</Link></li>
-              <li><Link href="/envios" className="hover:text-white transition-colors text-amber-300 font-medium">Política de Envíos</Link></li>
-              <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-300">Términos y Condiciones</Link></li>
-              <li><Link href="/privacidad" className="hover:text-white transition-colors text-gray-300">Política de Privacidad</Link></li>
+              <li><Link href="/blog" className="hover:text-white transition-colors text-gray-300">Blog y Guías Google Maps</Link></li>
+            </ul>
+          </div>
+
+          {/* Industries Links (SEO Internal Linking) */}
+          <div className="space-y-3">
+            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Reseñas por Industria</h3>
+            <ul className="space-y-2 text-xs">
+              <li><Link href="/resenas-google" className="text-amber-300 font-semibold hover:text-white transition-colors">Guía General de Reseñas</Link></li>
+              <li><Link href="/resenas-google/restaurantes" className="hover:text-white transition-colors">Restaurantes y Cafés</Link></li>
+              <li><Link href="/resenas-google/clinicas" className="hover:text-white transition-colors">Clínicas y Consultorios</Link></li>
+              <li><Link href="/resenas-google/barberias-y-salones" className="hover:text-white transition-colors">Barberías y Salones</Link></li>
+              <li><Link href="/resenas-google/talleres-y-mecanicas" className="hover:text-white transition-colors">Talleres y Mecánicas</Link></li>
+              <li><Link href="/resenas-google/hoteles-y-hospedajes" className="hover:text-white transition-colors">Hoteles y Hospedajes</Link></li>
+              <li><Link href="/resenas-google/tiendas-y-comercios" className="hover:text-white transition-colors">Tiendas y Comercios</Link></li>
             </ul>
           </div>
 

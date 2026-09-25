@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
@@ -80,20 +79,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <head>
-        <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon.png" />
-      </head>
       <body className="flex flex-col min-h-screen bg-gray-50 text-gray-900 antialiased">
         {/* JSON-LD: va en el body, no en <head>. En el App Router los hijos de
             <head> en el layout raíz no se renderizan de forma fiable, y schema.org
             se lee igual desde el body. */}
         <StructuredData />
-        {/* Meta, TikTok & Google Analytics. useSearchParams necesita Suspense o el build estatico falla. */}
-        <Suspense fallback={null}>
-          <MetaPixel />
-          <TikTokPixel />
-          <GoogleAnalytics />
-        </Suspense>
+        <MetaPixel />
+        <TikTokPixel />
+        <GoogleAnalytics />
         <CartProvider>
           <RealTimeTracker />
           <Navbar />
