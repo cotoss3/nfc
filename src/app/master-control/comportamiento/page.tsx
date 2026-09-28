@@ -88,13 +88,14 @@ export default function ComportamientoPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'active' | 'with_reads' | 'all'>('active');
+  const [dateFilter, setDateFilter] = useState<'all' | 'month' | 'week' | 'today'>('all');
   const [sortBy, setSortBy] = useState<'reads' | 'cta' | 'time' | 'ad' | 'code'>('reads');
   const [nowMs, setNowMs] = useState<number>(Date.now());
 
-  const fetchBehavior = async (silent = false) => {
+  const fetchBehavior = async (silent = false, range = dateFilter) => {
     if (!silent) setLoading(true);
     try {
-      const res = await fetch('/api/r/event', { cache: 'no-store' });
+      const res = await fetch(`/api/r/event?date_range=${range}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && Array.isArray(data.items)) {
         setItems(data.items);
@@ -104,6 +105,11 @@ export default function ComportamientoPage() {
     } finally {
       if (!silent) setLoading(false);
     }
+  };
+
+  const handleDateFilterChange = (newRange: 'all' | 'month' | 'week' | 'today') => {
+    setDateFilter(newRange);
+    fetchBehavior(false, newRange);
   };
 
   useEffect(() => {
@@ -118,7 +124,7 @@ export default function ComportamientoPage() {
       clearInterval(pollInterval);
       clearInterval(clockInterval);
     };
-  }, []);
+  }, [dateFilter]);
 
   const filteredItems = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -397,6 +403,54 @@ export default function ComportamientoPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {/* FILTRO DE PERÍODO / FECHA */}
+          <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <button
+              type="button"
+              onClick={() => handleDateFilterChange('all')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                dateFilter === 'all'
+                  ? 'bg-amber-500 text-slate-950 shadow-2xs font-black'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Totalidad
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDateFilterChange('month')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                dateFilter === 'month'
+                  ? 'bg-amber-500 text-slate-950 shadow-2xs font-black'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Este Mes
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDateFilterChange('week')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                dateFilter === 'week'
+                  ? 'bg-amber-500 text-slate-950 shadow-2xs font-black'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Esta Semana
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDateFilterChange('today')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                dateFilter === 'today'
+                  ? 'bg-amber-500 text-slate-950 shadow-2xs font-black'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Hoy
+            </button>
+          </div>
+
           <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
             <button
               type="button"

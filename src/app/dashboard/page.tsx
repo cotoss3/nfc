@@ -52,6 +52,35 @@ function formatExactDateTime(iso: string | null): string {
   });
 }
 
+function getPanamaDateRangeStart(dateRange: string): Date | null {
+  const norm = (dateRange || '').trim().toLowerCase();
+  if (!norm || norm === 'all' || norm === 'totalidad') return null;
+
+  const now = new Date();
+  const panamaMs = now.getTime() - 5 * 60 * 60 * 1000;
+  const panamaDate = new Date(panamaMs);
+
+  const year = panamaDate.getUTCFullYear();
+  const month = panamaDate.getUTCMonth();
+  const day = panamaDate.getUTCDate();
+  const dayOfWeek = panamaDate.getUTCDay();
+
+  let startPanamaMs = 0;
+
+  if (norm === 'today' || norm === 'hoy') {
+    startPanamaMs = Date.UTC(year, month, day, 0, 0, 0, 0);
+  } else if (norm === 'week' || norm === 'semana' || norm === 'esta_semana') {
+    const distToMon = (dayOfWeek + 6) % 7;
+    startPanamaMs = Date.UTC(year, month, day - distToMon, 0, 0, 0, 0);
+  } else if (norm === 'month' || norm === 'mes' || norm === 'este_mes') {
+    startPanamaMs = Date.UTC(year, month, 1, 0, 0, 0, 0);
+  } else {
+    return null;
+  }
+
+  return new Date(startPanamaMs + 5 * 60 * 60 * 1000);
+}
+
 function formatElapsedTime(iso: string | null, nowMs: number): string {
   if (!iso) return '';
   const targetMs = new Date(iso).getTime();
@@ -140,6 +169,7 @@ function DashboardContent() {
   const [behaviorLoading, setBehaviorLoading] = useState<boolean>(false);
   const [behaviorSearch, setBehaviorSearch] = useState<string>('');
   const [behaviorStatusFilter, setBehaviorStatusFilter] = useState<'active' | 'with_reads' | 'all'>('active');
+  const [behaviorDateFilter, setBehaviorDateFilter] = useState<'all' | 'month' | 'week' | 'today'>('all');
   const [behaviorSortBy, setBehaviorSortBy] = useState<'reads' | 'cta' | 'time' | 'code'>('reads');
   const [nowMs, setNowMs] = useState<number>(Date.now());
 
@@ -288,13 +318,14 @@ function DashboardContent() {
     }
   }, [searchParams]);
 
-  const fetchClientBehavior = async (email: string, silent = false) => {
+  const fetchClientBehavior = async (email: string, silent = false, range = behaviorDateFilter) => {
     if (!email) return;
     if (!silent) setBehaviorLoading(true);
     try {
-      const res = await fetch(`/api/r/event?owner_email=${encodeURIComponent(email.trim().toLowerCase())}`, {
-        cache: 'no-store',
-      });
+      const res = await fetch(
+        `/api/r/event?owner_email=${encodeURIComponent(email.trim().toLowerCase())}&date_range=${range}`,
+        { cache: 'no-store' }
+      );
       const data = await res.json();
       if (data.success && Array.isArray(data.items)) {
         setBehaviorItems(data.items);
@@ -303,6 +334,13 @@ function DashboardContent() {
       console.error('Error cargando comportamiento de TAPs del cliente:', err);
     } finally {
       if (!silent) setBehaviorLoading(false);
+    }
+  };
+
+  const handleBehaviorDateFilterChange = (newRange: 'all' | 'month' | 'week' | 'today') => {
+    setBehaviorDateFilter(newRange);
+    if (userEmail) {
+      fetchClientBehavior(userEmail, false, newRange);
     }
   };
 
@@ -319,7 +357,7 @@ function DashboardContent() {
       clearInterval(pollInterval);
       clearInterval(clockInterval);
     };
-  }, [userEmail]);
+  }, [userEmail, behaviorDateFilter]);
 
   const loadUserData = async (email: string) => {
     // Carga síncrona inmediata (local)
@@ -633,6 +671,13 @@ function DashboardContent() {
     [cards]
   );
 
+  const filteredLocalScans = useMemo(() => {
+    const startDate = getPanamaDateRangeStart(behaviorDateFilter);
+    if (!startDate) return allScans;
+    const startMs = startDate.getTime();
+    return allScans.filter((s) => s.created_at && new Date(s.created_at).getTime() >= startMs);
+  }, [allScans, behaviorDateFilter]);
+
   const clientBehaviorSource = useMemo(() => {
     const byId = new Map<string, ClientTapBehaviorItem>();
     for (const item of behaviorItems) {
@@ -646,31 +691,46 @@ function DashboardContent() {
     }
     for (const c of cards) {
       const key = c.card_id.trim().toUpperCase();
-      if (!byId.has(key)) {
-        byId.set(key, {
-          card_id: c.card_id,
-          activation_code: c.activation_code || c.card_id,
-          business_name: c.label || c.group_name || userName || c.card_id,
-          label: c.label || '',
-          group_name: c.group_name || 'General',
-          owner_name: c.owner_name || userName,
-          owner_email: c.owner_email || userEmail || '',
-          target_url: c.nfc_target_url || c.target_url || c.qr_target_url || '',
-          type: c.type || 'google',
-          is_active: Boolean(c.is_active),
-          claimed: Boolean(c.claimed),
-          total_reads: 0,
-          nfc_reads: 0,
-          qr_reads: 0,
-          auto_time_count: 0,
-          cta_click_count: 0,
-          last_read_at: null,
-          created_at: c.created_at,
-        });
-      }
+      const beh = byId.get(key);
+
+      const deviceScans = filteredLocalScans.filter(
+        (s) => s.card_id && s.card_id.trim().toUpperCase() === key
+      );
+      const localNfc = deviceScans.filter(
+        (s) => s.scan_type === 'nfc' || (s.referrer && s.referrer.toLowerCase().includes('nfc'))
+      ).length;
+      const localQr = deviceScans.filter(
+        (s) => s.scan_type === 'qr' || (s.referrer && s.referrer.toLowerCase().includes('qr'))
+      ).length;
+      const localTotal = deviceScans.length;
+
+      const nfcReads = Math.max(localNfc, beh?.nfc_reads || 0);
+      const qrReads = Math.max(localQr, beh?.qr_reads || 0);
+      const totalReads = Math.max(localTotal, nfcReads + qrReads, beh?.total_reads || 0);
+
+      byId.set(key, {
+        card_id: c.card_id,
+        activation_code: c.activation_code || c.card_id,
+        business_name: c.label || c.group_name || userName || c.card_id,
+        label: c.label || '',
+        group_name: c.group_name || 'General',
+        owner_name: c.owner_name || userName,
+        owner_email: c.owner_email || userEmail || '',
+        target_url: c.nfc_target_url || c.target_url || c.qr_target_url || '',
+        type: c.type || 'google',
+        is_active: Boolean(c.is_active),
+        claimed: Boolean(c.claimed),
+        total_reads: totalReads,
+        nfc_reads: nfcReads,
+        qr_reads: qrReads,
+        auto_time_count: Math.max(beh?.auto_time_count || 0, 0),
+        cta_click_count: Math.max(beh?.cta_click_count || 0, 0),
+        last_read_at: beh?.last_read_at || (deviceScans.length > 0 ? deviceScans[0].created_at : null),
+        created_at: c.created_at,
+      });
     }
     return Array.from(byId.values());
-  }, [behaviorItems, cards, ownedCardIdsSet, userEmail, userName]);
+  }, [behaviorItems, cards, ownedCardIdsSet, userEmail, userName, filteredLocalScans]);
 
   const filteredBehaviorItems = useMemo(() => {
     const q = behaviorSearch.trim().toLowerCase();
@@ -1741,6 +1801,54 @@ function DashboardContent() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* FILTRO DE PERÍODO / FECHA */}
+                    <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+                      <button
+                        type="button"
+                        onClick={() => handleBehaviorDateFilterChange('all')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorDateFilter === 'all'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        Totalidad
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleBehaviorDateFilterChange('month')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorDateFilter === 'month'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        Este Mes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleBehaviorDateFilterChange('week')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorDateFilter === 'week'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        Esta Semana
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleBehaviorDateFilterChange('today')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                          behaviorDateFilter === 'today'
+                            ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                            : 'text-slate-600 hover:text-slate-900'
+                        }`}
+                      >
+                        Hoy
+                      </button>
+                    </div>
+
                     <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
                       <button
                         type="button"

@@ -103,9 +103,40 @@ export async function POST(req: NextRequest) {
   }
 }
 
+function getPanamaDateRangeStart(dateRange: string): Date | null {
+  const norm = (dateRange || '').trim().toLowerCase();
+  if (!norm || norm === 'all' || norm === 'totalidad') return null;
+
+  const now = new Date();
+  const panamaMs = now.getTime() - 5 * 60 * 60 * 1000;
+  const panamaDate = new Date(panamaMs);
+
+  const year = panamaDate.getUTCFullYear();
+  const month = panamaDate.getUTCMonth();
+  const day = panamaDate.getUTCDate();
+  const dayOfWeek = panamaDate.getUTCDay();
+
+  let startPanamaMs = 0;
+
+  if (norm === 'today' || norm === 'hoy') {
+    startPanamaMs = Date.UTC(year, month, day, 0, 0, 0, 0);
+  } else if (norm === 'week' || norm === 'semana' || norm === 'esta_semana') {
+    const distToMon = (dayOfWeek + 6) % 7;
+    startPanamaMs = Date.UTC(year, month, day - distToMon, 0, 0, 0, 0);
+  } else if (norm === 'month' || norm === 'mes' || norm === 'este_mes') {
+    startPanamaMs = Date.UTC(year, month, 1, 0, 0, 0, 0);
+  } else {
+    return null;
+  }
+
+  return new Date(startPanamaMs + 5 * 60 * 60 * 1000);
+}
+
 export async function GET(req: NextRequest) {
   try {
     const ownerEmailParam = (req.nextUrl.searchParams.get('owner_email') || '').trim().toLowerCase();
+    const dateRangeParam = (req.nextUrl.searchParams.get('date_range') || 'all').trim().toLowerCase();
+    const startDate = getPanamaDateRangeStart(dateRangeParam);
 
     let cards: NfcCard[] = dbLocal.getCards();
     let scans: ScanRecord[] = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
@@ -120,19 +151,29 @@ export async function GET(req: NextRequest) {
 
     if (supabase) {
       try {
+        let scansQuery = supabase
+          .from('scans')
+          .select('id, card_id, referrer, scan_type, device, created_at')
+          .order('created_at', { ascending: false })
+          .limit(10000);
+
+        let visitsQuery = supabase
+          .from('site_visits')
+          .select('id, session_id, page, referrer, device, created_at')
+          .like('page', '/r-event/%')
+          .order('created_at', { ascending: false })
+          .limit(10000);
+
+        if (startDate) {
+          const startIso = startDate.toISOString();
+          scansQuery = scansQuery.gte('created_at', startIso);
+          visitsQuery = visitsQuery.gte('created_at', startIso);
+        }
+
         const [cardsRes, scansRes, visitsRes] = await Promise.all([
           supabase.from('nfc_cards').select('*').order('created_at', { ascending: false }),
-          supabase
-            .from('scans')
-            .select('id, card_id, referrer, scan_type, device, created_at')
-            .order('created_at', { ascending: false })
-            .limit(10000),
-          supabase
-            .from('site_visits')
-            .select('id, session_id, page, referrer, device, created_at')
-            .like('page', '/r-event/%')
-            .order('created_at', { ascending: false })
-            .limit(10000),
+          scansQuery,
+          visitsQuery,
         ]);
 
         if (!cardsRes.error && cardsRes.data && cardsRes.data.length > 0) {
@@ -149,15 +190,21 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    if (ownerEmailParam) {
-      cards = cards.filter(
-        (c) =>
-          c.claimed !== false &&
-          (c.owner_email || '').trim().toLowerCase() === ownerEmailParam
+    if (startDate) {
+      const startMs = startDate.getTime();
+      scans = scans.filter((s) => s.created_at && new Date(s.created_at).getTime() >= startMs);
+      remoteEventVisits = remoteEventVisits.filter(
+        (v) => v.created_at && new Date(v.created_at).getTime() >= startMs
       );
     }
 
-    const localBehaviorMap = dbLocal.getTapBehaviorMap();
+    if (ownerEmailParam) {
+      cards = cards.filter(
+        (c) => (c.owner_email || '').trim().toLowerCase() === ownerEmailParam
+      );
+    }
+
+    const localBehaviorMap = startDate ? {} : dbLocal.getTapBehaviorMap();
 
     // Agrupar lecturas y eventos deduplicados por card_id y scanId
     const perCardReads: Record<
