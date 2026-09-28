@@ -282,6 +282,7 @@ export async function GET(req: NextRequest) {
       const scanKey = String(v.referrer || v.session_id || `${cid}_${v.created_at}`)
         .replace(/^revt_/, '')
         .trim();
+      const eventKey = String(v.id || `${cid}_${action}_${v.created_at}`);
 
       bucket.allScanIds.add(scanKey);
       updateLatestTimestamp(bucket, v.created_at);
@@ -299,10 +300,10 @@ export async function GET(req: NextRequest) {
         bucket.nfcScanIds.add(scanKey);
       }
 
-      if (action === 'auto_time') bucket.autoTimeSet.add(scanKey);
-      if (action === 'cta_click') bucket.ctaClickSet.add(scanKey);
-      if (action === 'ad_click') bucket.adClickSet.add(scanKey);
-      if (action === 'ad_close') bucket.adCloseSet.add(scanKey);
+      if (action === 'auto_time') bucket.autoTimeSet.add(eventKey);
+      if (action === 'cta_click') bucket.ctaClickSet.add(eventKey);
+      if (action === 'ad_click') bucket.adClickSet.add(eventKey);
+      if (action === 'ad_close') bucket.adCloseSet.add(eventKey);
     }
 
     // 3. Construir filas de comportamiento para todos los dispositivos

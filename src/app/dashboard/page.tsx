@@ -11,7 +11,7 @@ import {
   ShieldAlert, Folder, Users, Settings, LogOut, Plus, Search, 
   Filter, Copy, Radio, Globe, AlertTriangle, Download, Layers,
   ChevronRight, ArrowUpRight, Lock, Key, Activity, Clock,
-  MousePointerClick, RefreshCw, ArrowUpDown, CheckCircle2
+  MousePointerClick, RefreshCw, ArrowUpDown, CheckCircle2, Megaphone
 } from 'lucide-react';
 
 type ModuleTab = 'devices' | 'behavior' | 'groups' | 'analytics' | 'settings';
@@ -33,6 +33,8 @@ interface ClientTapBehaviorItem {
   qr_reads: number;
   auto_time_count: number;
   cta_click_count: number;
+  ad_click_count: number;
+  ad_close_count: number;
   last_read_at: string | null;
   created_at: string;
 }
@@ -170,7 +172,7 @@ function DashboardContent() {
   const [behaviorSearch, setBehaviorSearch] = useState<string>('');
   const [behaviorStatusFilter, setBehaviorStatusFilter] = useState<'active' | 'with_reads' | 'all'>('active');
   const [behaviorDateFilter, setBehaviorDateFilter] = useState<'all' | 'month' | 'week' | 'today'>('all');
-  const [behaviorSortBy, setBehaviorSortBy] = useState<'reads' | 'cta' | 'time' | 'code'>('reads');
+  const [behaviorSortBy, setBehaviorSortBy] = useState<'reads' | 'cta' | 'time' | 'ad' | 'code'>('reads');
   const [nowMs, setNowMs] = useState<number>(Date.now());
 
   const handleClaimTap = async (e: React.FormEvent) => {
@@ -725,6 +727,8 @@ function DashboardContent() {
         qr_reads: qrReads,
         auto_time_count: Math.max(beh?.auto_time_count || 0, 0),
         cta_click_count: Math.max(beh?.cta_click_count || 0, 0),
+        ad_click_count: Math.max(beh?.ad_click_count || 0, 0),
+        ad_close_count: Math.max(beh?.ad_close_count || 0, 0),
         last_read_at: beh?.last_read_at || (deviceScans.length > 0 ? deviceScans[0].created_at : null),
         created_at: c.created_at,
       });
@@ -761,6 +765,10 @@ function DashboardContent() {
         if (b.auto_time_count !== a.auto_time_count) return b.auto_time_count - a.auto_time_count;
         return b.total_reads - a.total_reads;
       }
+      if (behaviorSortBy === 'ad') {
+        if ((b.ad_click_count || 0) !== (a.ad_click_count || 0)) return (b.ad_click_count || 0) - (a.ad_click_count || 0);
+        return b.total_reads - a.total_reads;
+      }
       return a.card_id.localeCompare(b.card_id);
     });
   }, [clientBehaviorSource, behaviorSearch, behaviorStatusFilter, behaviorSortBy]);
@@ -776,6 +784,8 @@ function DashboardContent() {
     let totalQr = 0;
     let autoTime = 0;
     let ctaClick = 0;
+    let adClick = 0;
+    let adClose = 0;
 
     for (const i of base) {
       totalReads += i.total_reads;
@@ -783,6 +793,8 @@ function DashboardContent() {
       totalQr += i.qr_reads;
       autoTime += i.auto_time_count;
       ctaClick += i.cta_click_count;
+      adClick += (i.ad_click_count || 0);
+      adClose += (i.ad_close_count || 0);
     }
 
     return {
@@ -792,6 +804,8 @@ function DashboardContent() {
       totalQr,
       autoTime,
       ctaClick,
+      adClick,
+      adClose,
     };
   }, [clientBehaviorSource, filteredBehaviorItems, behaviorStatusFilter]);
 
@@ -812,6 +826,7 @@ function DashboardContent() {
       'Lecturas QR',
       'Redirigido por Tiempo (8s)',
       'Toco Boton de Resena',
+      'Toco Publicidad',
       'Fecha y Hora Ultima Lectura',
       'Tiempo Transcurrido',
     ];
@@ -826,6 +841,7 @@ function DashboardContent() {
       i.qr_reads,
       i.auto_time_count,
       i.cta_click_count,
+      i.ad_click_count || 0,
       i.last_read_at ? `"${formatExactDateTime(i.last_read_at)}"` : 'Sin lecturas',
       i.last_read_at ? `"${formatElapsedTime(i.last_read_at, nowMs)}"` : '-',
     ]);
@@ -1722,8 +1738,8 @@ function DashboardContent() {
                   </div>
                 </div>
 
-                {/* TARJETAS KPI RESUMEN (4 TARJETAS, SIN PUBLICIDAD) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                {/* TARJETAS KPI RESUMEN (5 TARJETAS CON PUBLICIDAD) */}
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                   <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
                       <span>TAPs Activos</span>
@@ -1783,6 +1799,24 @@ function DashboardContent() {
                     </div>
                     <span className="text-[11px] text-slate-500 font-medium">
                       Toque directo en botón
+                    </span>
+                  </div>
+
+                  <div className="bg-white border border-emerald-200 rounded-2xl p-4 shadow-sm col-span-2 lg:col-span-1">
+                    <div className="flex items-center justify-between text-emerald-800 text-xs font-bold">
+                      <span>Tocó Publicidad</span>
+                      <Megaphone className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <p className="text-2xl sm:text-3xl font-black text-emerald-600">
+                        {behaviorTotals.adClick}
+                      </p>
+                      <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        {formatPercent(behaviorTotals.adClick, behaviorTotals.totalReads)}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Clics en el anuncio ({behaviorTotals.adClose} ✕)
                     </span>
                   </div>
                 </div>
@@ -1895,13 +1929,14 @@ function DashboardContent() {
                         <option value="reads">Ordenar: Más veces leído</option>
                         <option value="cta">Ordenar: Más toques al botón</option>
                         <option value="time">Ordenar: Más redirigidos por tiempo</option>
+                        <option value="ad">Ordenar: Más toques a publicidad</option>
                         <option value="code">Ordenar: Código de TAP</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                {/* TABLA DE COMPORTAMIENTO DEL CLIENTE (SIN COLUMNA DE PUBLICIDAD) */}
+                {/* TABLA DE COMPORTAMIENTO DEL CLIENTE */}
                 <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -1912,19 +1947,20 @@ function DashboardContent() {
                           <th className="py-3.5 px-4 text-center">Veces Leído</th>
                           <th className="py-3.5 px-4 text-center">Redirigido por Tiempo (8s)</th>
                           <th className="py-3.5 px-4 text-center">Tocó Botón de Reseña</th>
+                          <th className="py-3.5 px-4 text-center">Tocó Publicidad</th>
                           <th className="py-3.5 px-4 text-right">Última Lectura</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
                         {behaviorLoading && filteredBehaviorItems.length === 0 ? (
                           <tr>
-                            <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">
+                            <td colSpan={7} className="py-12 text-center text-slate-500 font-medium">
                               Cargando comportamiento de tus TAPs...
                             </td>
                           </tr>
                         ) : filteredBehaviorItems.length === 0 ? (
                           <tr>
-                            <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">
+                            <td colSpan={7} className="py-12 text-center text-slate-500 font-medium">
                               No se encontraron dispositivos TAP con los filtros seleccionados.
                             </td>
                           </tr>
@@ -2017,6 +2053,17 @@ function DashboardContent() {
                                 </div>
                                 <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
                                   {formatPercent(item.cta_click_count, item.total_reads)} de lecturas
+                                </div>
+                              </td>
+
+                              {/* 6. TOCÓ LA PUBLICIDAD */}
+                              <td className="py-3.5 px-4 text-center">
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-black text-sm">
+                                  <Megaphone className="w-3.5 h-3.5 text-emerald-600" />
+                                  <span>{item.ad_click_count || 0}</span>
+                                </div>
+                                <div className="text-[10px] font-bold text-slate-500 mt-1 whitespace-nowrap">
+                                  {formatPercent(item.ad_click_count || 0, item.total_reads)} de lecturas
                                 </div>
                               </td>
 
