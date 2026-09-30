@@ -195,21 +195,21 @@ export const LANDINGS: LandingCopy[] = [
       'Incluye 1 Placa NFC de Mostrador en Acrílico Premium de 3mm + 2 Tarjetas NFC de Bolsillo en PVC 0.76mm. Ahorra $20.00 con envío gratis en Ciudad de Panamá.',
     nombreCorto: 'Pack Trío',
     heroImagenAlt:
-      'Pack Trío Comercial NFC starTAP con 1 placa acrílica de 3mm, 2 tarjetas de PVC y tarjeta explicativa de Beneficios Clave para Reseñas de Google en Panamá',
+      'Pack Trío Comercial NFC starTAP con 1 placa acrílica de 3mm y 2 tarjetas de PVC para Reseñas de Google en Panamá',
     beneficios: [
       {
         titulo: 'Cobertura total en el local y en movimiento',
         texto:
           'Captura reseñas en la caja de cobro con la placa fija en acrílico de 3mm y permite a tu equipo solicitar opiniones en ruta con las tarjetas de PVC técnico de 0.76mm.',
         icono: 'zap',
-        imagenAlt: 'Pack Trío Comercial starTAP con Placa de Mostrador 3mm, 2 Tarjetas NFC de Bolsillo 0.76mm y Tarjeta de Beneficios Clave para Reseñas de Google Panamá',
+        imagenAlt: 'Tarjetas NFC de Bolsillo starTAP para personal móvil y ventas en campo',
       },
       {
         titulo: 'Ahorro de $20.00 en paquete empresarial completo',
         texto:
           'Obtén la combinación perfecta para tu negocio por solo $50.00 en pago único, auto-configurable y con envío gratis en Ciudad de Panamá.',
         icono: 'sparkles',
-        imagenAlt: 'Beneficios clave del Pack Trío Comercial starTAP para incrementar visibilidad local y reseñas en Google Maps Panamá',
+        imagenAlt: 'Tarjeta de Beneficios Clave y Pack Trío Comercial starTAP con ahorro de $20 en paquete empresarial para reseñas en Google Panamá',
       },
     ],
     pasos: [

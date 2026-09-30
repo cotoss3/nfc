@@ -124,12 +124,11 @@ export const PRODUCTS: ProductConfig[] = [
     badge: 'Ahorro de $20.00 (28% OFF)',
     description: 'Equipa tu punto fijo de cobro y tu personal móvil. Incluye 1 Placa de Mostrador para recepción y 2 Tarjetas de Bolsillo para tu equipo de ventas o entregas.',
     useCase: 'Caja de cobro fija + personal móvil en campo.',
-    image: '/products/pack-trio/pack-trio-comercial-beneficios-resenas-google-panama.webp',
+    image: '/products/NFC_10001/NFC_10001_Placa.webp',
     images: [
-      '/products/pack-trio/pack-trio-comercial-beneficios-resenas-google-panama.webp',
-      '/products/pack-trio/pack-trio-comercial-beneficios-resenas-google-panama.webp',
       '/products/NFC_10001/NFC_10001_Placa.webp',
-      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp'
+      '/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp',
+      '/products/pack-trio/pack-trio-comercial-beneficios-resenas-google-panama.webp'
     ],
     isPack: true,
     savingsText: 'Ahorro de $20.00 (28% OFF) vs compra individual',
