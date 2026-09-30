@@ -205,7 +205,8 @@ export const LANDINGS: LandingCopy[] = [
         imagenAlt: 'Tarjetas NFC de Bolsillo starTAP para personal móvil y ventas en campo',
       },
       {
-        titulo: 'Ahorro de $20.00 en paquete empresarial completo',
+        titulo:
+          'Tarjeta de Beneficios Clave y Pack Trío Comercial starTAP con ahorro de $20 en paquete empresarial para reseñas en Google Panamá',
         texto:
           'Obtén la combinación perfecta para tu negocio por solo $50.00 en pago único, auto-configurable y con envío gratis en Ciudad de Panamá.',
         icono: 'sparkles',
