@@ -4,14 +4,23 @@ import CorporativoClient from './CorporativoClient';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Planes Corporativos y Multi-Sucursal para Reseñas NFC en Panamá',
+  title: 'Servicio de SEO Local & Planes Corporativos en Panamá | starTAP',
   description:
-    'Gestiona y multiplica las reseñas de Google Maps de todas tus sucursales en Panamá desde un solo panel. Dispositivos NFC en volumen, logo impreso y facturación B2B.',
+    'Servicio de SEO Local, posicionamiento móvil y soluciones B2B multi-sucursal en Panamá. Convierte tus locales en Top Local Business en Google Maps y potencia tu tienda online.',
+  keywords: [
+    'servicio seo local panama',
+    'top local business panama',
+    'posicionamiento movil en panama',
+    'posicionamiento tienda online en panama',
+    'planes corporativos nfc panama',
+    'seo local panama',
+    'marketing nfc empresas panama',
+  ],
   alternates: { canonical: `${BASE_URL}/corporativo` },
   openGraph: {
-    title: 'Planes Corporativos y Multi-Sucursal para Reseñas NFC en Panamá | starTAP',
+    title: 'Servicio de SEO Local & Planes Corporativos en Panamá | starTAP',
     description:
-      'Gestiona las reseñas de Google de todas tus sucursales en Panamá desde un solo panel. Dispositivos NFC personalizados en volumen.',
+      'Servicio de SEO Local, posicionamiento móvil y soluciones B2B multi-sucursal en Panamá. Convierte tus locales en Top Local Business en Google Maps.',
     url: `${BASE_URL}/corporativo`,
     siteName: 'starTAP Panamá',
   },

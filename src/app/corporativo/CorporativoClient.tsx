@@ -98,18 +98,18 @@ export default function CorporativoClient() {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-amber-400/10 border border-amber-400/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-amber-300 uppercase tracking-widest">
               <Building2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Soluciones B2B & Proyectos Corporativos en Panamá</span>
+              <span>Servicios de SEO Local & Soluciones Corporativas en Panamá</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] text-white">
-              Equipa a tu Empresa con <br className="hidden sm:block" />
+              Servicio de SEO Local & <br className="hidden sm:block" />
               <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-amber-200 bg-clip-text text-transparent">
                 Tecnología NFC Inteligente
               </span>
             </h1>
 
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-              Diseños corporativos 100% personalizados con el logo de tu marca. Ideal para tarjetas ejecutivas de ventas, placas de reseñas para redes de sucursales y control centralizado desde la nube.
+              Posiciona tus locales como <strong>Top Local Business</strong> en Google Maps Panamá. Estrategias de posicionamiento móvil y conexión directa entre tu mostrador físico, tu tienda online y tus sucursales con tarjetas y placas NFC 100% personalizadas.
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">

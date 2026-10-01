@@ -19,16 +19,19 @@ import {
   Sparkles,
   Smartphone,
   Cpu,
-  QrCode
+  QrCode,
+  Globe,
+  Search,
+  Award
 } from 'lucide-react';
 import { INDUSTRIAS } from '@/lib/industrias';
 
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Reseñas y Comentarios en Google Maps por Industria | starTAP',
+  title: 'Servicio de SEO Local, Posicionamiento Móvil y Reseñas en Panamá | starTAP',
   description:
-    'Guía práctica por tipo de negocio en Panamá para conseguir más reseñas y comentarios en Google Maps con dispositivos NFC y QR. Restaurantes, clínicas, barberías, talleres, hoteles y comercios.',
+    'Estrategia de SEO Local y posicionamiento móvil en Panamá para convertir tu negocio en un Top Local Business en Google Maps y potenciar tu tienda online o local comercial con tecnología NFC + QR.',
   keywords: [
     'reseñas google maps',
     'reseñas en google maps',
@@ -36,6 +39,11 @@ export const metadata: Metadata = {
     'comentarios google maps',
     'google maps comentarios',
     'opiniones google maps panamá',
+    'top local business panama',
+    'posicionamiento movil en panama',
+    'posicionamiento tienda online en panama',
+    'servicio seo local panama',
+    'estrategia seo local panama',
   ],
   alternates: { canonical: '/resenas-google' },
   openGraph: {
@@ -232,6 +240,113 @@ export default function ResenasGoogleHub() {
                 <p className="text-xs text-slate-600 leading-relaxed">
                   El cliente presiona publicar en menos de 5 segundos antes de salir de tu establecimiento.
                 </p>
+              </div>
+            </div>
+          </section>
+
+          {/* ESTRATEGIA DE SERVICIO SEO LOCAL & POSICIONAMIENTO MÓVIL EN PANAMÁ */}
+          <section className="bg-gradient-to-br from-slate-900 via-slate-950 to-brand-950 text-white rounded-3xl p-8 sm:p-12 space-y-10 border border-slate-800 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="text-center space-y-4 max-w-3xl mx-auto relative z-10">
+              <div className="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-black uppercase px-4 py-1.5 rounded-full">
+                <Search className="w-4 h-4 text-amber-400" />
+                <span>Servicio de SEO Local & Estrategia de Visibilidad Orgánica</span>
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white leading-tight">
+                Impulsa Tu Marca a Ser un <span className="text-amber-400">Top Local Business</span> en Panamá
+              </h2>
+
+              <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
+                El algoritmo de Google Maps premia la velocidad, autenticidad y frecuencia de interacciones en el punto de venta. Combinamos dispositivos NFC Contactless con optimización técnica para posicionar tu comercio físico y tu tienda online en los primeros lugares de búsqueda local.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+              {/* Pillar 1: Top Local Business */}
+              <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-4 hover:border-amber-400/60 transition-all group">
+                <div className="w-12 h-12 bg-amber-400/20 text-amber-400 rounded-xl flex items-center justify-center border border-amber-400/30 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                  <Award className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-white uppercase tracking-tight">
+                  Top Local Business en Panamá
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Consigue la insignia informal de preferencia local en Google Maps. Un flujo constante de reseñas de 5 estrellas de clientes reales mejora la autoridad de tu ficha comercial y te consolida en el Pack de 3 Resultados Locales (Google Local 3-Pack).
+                </p>
+                <ul className="text-xs space-y-2 text-slate-400 font-semibold pt-2 border-t border-slate-700/60">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Dominio del mapa en tu zona geográfica</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Aumento de confianza del consumidor panameño</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 2: Posicionamiento Móvil */}
+              <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-4 hover:border-amber-400/60 transition-all group">
+                <div className="w-12 h-12 bg-amber-400/20 text-amber-400 rounded-xl flex items-center justify-center border border-amber-400/30 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                  <Smartphone className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-white uppercase tracking-tight">
+                  Posicionamiento Móvil en Panamá
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Más del 85% de los consumidores en Panamá realizan búsquedas de servicios y locales desde teléfonos inteligentes (iPhone y Android). Nuestros soportes NFC y QR eliminan la fricción móvil y garantizan conversión inmediata en mostrador.
+                </p>
+                <ul className="text-xs space-y-2 text-slate-400 font-semibold pt-2 border-t border-slate-700/60">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Acceso Contactless en 2 segundos</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Optimización 100% responsive y móvil</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 3: Posicionamiento Tienda Online */}
+              <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-4 hover:border-amber-400/60 transition-all group">
+                <div className="w-12 h-12 bg-amber-400/20 text-amber-400 rounded-xl flex items-center justify-center border border-amber-400/30 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                  <Globe className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-white uppercase tracking-tight">
+                  Posicionamiento Tienda Online & Local
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Conecta tu establecimiento físico con tu tienda online o catálogo en Panamá. Redirige clientes presenciales satisfechos a tu e-commerce, perfil de Google o canal oficial de WhatsApp Business para ventas recurrentes.
+                </p>
+                <ul className="text-xs space-y-2 text-slate-400 font-semibold pt-2 border-t border-slate-700/60">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Sinergia entre mostrador físico y web e-commerce</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>Enlaces dinámicos modificables desde tu portal</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Sub-banner SEO Local */}
+            <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 text-center space-y-3 max-w-2xl mx-auto relative z-10">
+              <p className="text-xs sm:text-sm font-bold text-amber-300">
+                ¿Necesitas asesoría personalizada para tu red de sucursales o tienda online en Panamá?
+              </p>
+              <div className="pt-1">
+                <Link
+                  href="/corporativo"
+                  className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-950 bg-amber-400 hover:bg-amber-300 px-6 py-3 rounded-xl transition shadow-md"
+                >
+                  <span>Ver Planes Corporativos & Servicio SEO Local</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
           </section>
