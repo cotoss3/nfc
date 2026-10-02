@@ -171,6 +171,25 @@ export default function CatalogoPage() {
     })),
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: BASE_URL,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Catálogo de Dispositivos NFC',
+        item: `${BASE_URL}/catalogo`,
+      },
+    ],
+  };
+
   return (
     <>
       <script
@@ -180,6 +199,10 @@ export default function CatalogoPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <CatalogoClient />
     </>

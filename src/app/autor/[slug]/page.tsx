@@ -54,11 +54,25 @@ export default function AutorPage({ params }: { params: { slug: string } }) {
     ],
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
+      { '@type': 'ListItem', position: 3, name: autor.nombre, item: `${BASE_URL}/autor/${autor.slug}` },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <div className="max-w-3xl mx-auto px-5 py-12 sm:py-16">

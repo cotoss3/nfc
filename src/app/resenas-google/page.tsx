@@ -22,7 +22,8 @@ import {
   QrCode,
   Globe,
   Search,
-  Award
+  Award,
+  HelpCircle
 } from 'lucide-react';
 import { INDUSTRIAS } from '@/lib/industrias';
 
@@ -83,11 +84,85 @@ export default function ResenasGoogleHub() {
     })),
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: BASE_URL,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Reseñas de Google & SEO Local',
+        item: `${BASE_URL}/resenas-google`,
+      },
+    ],
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '¿Cómo ayuda un dispositivo NFC a posicionar mi negocio como Top Local Business en Google Maps Panamá?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Al colocar una placa o stand NFC en el mostrador, facilitas que los clientes satisfechos dejen una reseña de 5 estrellas en menos de 5 segundos con solo acercar su celular. La frecuencia, autenticidad y volumen de reseñas recientes son los factores principales que el algoritmo de Google Maps evalúa para posicionar a un negocio en el Local 3-Pack de Panamá.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Qué es el posicionamiento móvil y por qué es crucial para comercios en Panamá?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'El posicionamiento móvil optimiza la visibilidad de tu negocio para usuarios que buscan productos o servicios desde sus teléfonos inteligentes. Con dispositivos NFC contactless y códigos QR HD, eliminas la necesidad de buscar manualmente el negocio o descargar aplicaciones, logrando una tasa de conversión de opiniones mucho más alta en el punto de venta.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Cómo conectar el tráfico de mi local físico con mi tienda online en Panamá?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Los dispositivos inteligentes starTAP permiten redirigir a los clientes hacia tu tienda online, catálogo en WhatsApp Business o ficha de Google Maps. Esto crea una sinergia omnicanal (Offline to Online), permitiendo que los clientes que te visitaron en persona vuelvan a comprar por internet.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Los dispositivos NFC para reseñas requieren pagar mensualidades o suscripciones?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No. Los dispositivos starTAP son de pago único sin suscripciones ni mensualidades. Incluyen chip NFC de alta durabilidad, código QR vectorizado y acceso vitalicio al portal para actualizar el enlace de destino en cualquier momento.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Es legal según las políticas de Google solicitar reseñas con placas NFC?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Sí, es 100% legal y acorde a las directrices de Google Business Profile. Los dispositivos starTAP simplemente abren la ficha oficial del negocio desde el propio celular del cliente. No filtran opiniones ni ofrecen incentivos prohibidos, garantizando la seguridad y autenticidad de cada calificación.',
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       <div className="bg-slate-50 min-h-screen text-slate-900 font-sans pb-24">
@@ -404,6 +479,61 @@ export default function ResenasGoogleHub() {
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   Mapear palabras clave spam en el nombre oficial de tu negocio en Google Maps es motivo de penalización directa. Usa el nombre legal de tu letrero.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* PREGUNTAS FRECUENTES SOBRE SEO LOCAL & RESEÑAS EN PANAMÁ */}
+          <section className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-12 space-y-8 shadow-card">
+            <div className="text-center space-y-2 max-w-2xl mx-auto">
+              <span className="text-xs font-black uppercase tracking-widest text-brand-400">Preguntas Frecuentes</span>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-950 uppercase tracking-tight">
+                Dudas Comunes sobre SEO Local y Dispositivos NFC en Panamá
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600">
+                Todo lo que necesitas saber para optimizar tu presencia en Google Maps y escalar tu negocio local.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-3">
+                <h3 className="text-sm font-extrabold text-slate-950 flex items-start gap-2">
+                  <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <span>¿Cómo ayuda un dispositivo NFC a posicionar mi negocio como Top Local Business?</span>
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed pl-7">
+                  Al colocar una placa o stand NFC en el mostrador, facilitas que los clientes satisfechos dejen una reseña de 5 estrellas en menos de 5 segundos con solo acercar su celular. La frecuencia, autenticidad y volumen de reseñas recientes son los factores principales que el algoritmo de Google Maps evalúa para posicionar a un negocio en el Local 3-Pack de Panamá.
+                </p>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-3">
+                <h3 className="text-sm font-extrabold text-slate-950 flex items-start gap-2">
+                  <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <span>¿Qué es el posicionamiento móvil y por qué es crucial en Panamá?</span>
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed pl-7">
+                  El posicionamiento móvil optimiza la visibilidad de tu negocio para usuarios que buscan productos o servicios desde sus teléfonos inteligentes. Con dispositivos NFC contactless y códigos QR HD, eliminas la necesidad de buscar manualmente el negocio o descargar aplicaciones, logrando una tasa de conversión de opiniones mucho más alta en el punto de venta.
+                </p>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-3">
+                <h3 className="text-sm font-extrabold text-slate-950 flex items-start gap-2">
+                  <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <span>¿Cómo conectar el tráfico de mi local físico con mi tienda online?</span>
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed pl-7">
+                  Los dispositivos inteligentes starTAP permiten redirigir a los clientes hacia tu tienda online, catálogo en WhatsApp Business o ficha de Google Maps. Esto crea una sinergia omnicanal (Offline to Online), permitiendo que los clientes que te visitaron en persona vuelvan a comprar por internet.
+                </p>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-3">
+                <h3 className="text-sm font-extrabold text-slate-950 flex items-start gap-2">
+                  <HelpCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <span>¿Requieren pagar mensualidades o suscripciones?</span>
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed pl-7">
+                  No. Los dispositivos starTAP son de pago único sin suscripciones ni mensualidades. Incluyen chip NFC de alta durabilidad, código QR vectorizado y acceso vitalicio al portal para actualizar el enlace de destino en cualquier momento.
                 </p>
               </div>
             </div>
