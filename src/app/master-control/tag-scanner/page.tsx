@@ -216,6 +216,8 @@ export default function TagScannerWorkstationPage() {
         setPrecioVenta('50.00');
       } else if (card.card_id.startsWith('STTT-')) {
         setPrecioVenta('20.00');
+      } else if (card.card_id.startsWith('STTS-')) {
+        setPrecioVenta('30.00');
       } else {
         setPrecioVenta('35.00');
       }
@@ -1030,7 +1032,7 @@ export default function TagScannerWorkstationPage() {
                     onClick={() => {
                       setTipoActivacion('venta');
                       if ( parseFloat(precioVenta) === 0 ) {
-                        setPrecioVenta(operationMode === 'combo' ? '50.00' : activeCode.startsWith('STTT-') ? '20.00' : '35.00');
+                        setPrecioVenta(operationMode === 'combo' ? '50.00' : activeCode.startsWith('STTT-') ? '20.00' : activeCode.startsWith('STTS-') ? '30.00' : '35.00');
                       }
                     }}
                     className={`p-3.5 rounded-xl border text-left transition flex flex-col justify-between gap-1.5 ${
@@ -1102,8 +1104,8 @@ export default function TagScannerWorkstationPage() {
                       <div className="flex flex-wrap gap-1.5">
                         {[
                           { val: '20.00', tag: '$20 (Tarjeta)' },
-                          { val: '25.00', tag: '$25 (Promo Visita)' },
-                          { val: '35.00', tag: '$35 (Placa/Stand)' },
+                          { val: '30.00', tag: '$30 (Stand)' },
+                          { val: '35.00', tag: '$35 (Placa)' },
                           { val: '50.00', tag: '$50 (Combo Trío)' },
                         ].map((p) => (
                           <button

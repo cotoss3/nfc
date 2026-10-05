@@ -136,7 +136,7 @@ export function buildWelcomeSubscriptionEmailHtml(email: string): string {
                     <td width="48%" valign="top" style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; text-align: center;">
                       <img src="https://startap.com.pa/products/NFC_10001/NFC_10001_Placa.webp" width="90" height="90" alt="Placa NFC Mostrador" style="width: 90px; height: 90px; object-fit: contain; margin-bottom: 8px;" />
                       <strong style="color: #0f172a; font-size: 12px; display: block; margin-bottom: 4px;">Placa NFC para Mostrador</strong>
-                      <span style="color: #d97706; font-size: 13px; font-weight: 900; display: block; margin-bottom: 8px;">$30.00 USD</span>
+                      <span style="color: #d97706; font-size: 13px; font-weight: 900; display: block; margin-bottom: 8px;">$35.00 USD</span>
                       <a href="https://startap.com.pa/catalogo?producto=placa-nfc-mostrador" style="display: block; background-color: #0f172a; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 800; padding: 8px 0; border-radius: 8px;">Ver Placa</a>
                     </td>
 

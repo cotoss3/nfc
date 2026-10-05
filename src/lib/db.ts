@@ -1908,7 +1908,7 @@ class LocalDbService {
         current_stock: 0,
         min_alert_stock: 10,
         unit_cost: cost,
-        selling_price: hardwareType === 'stand' ? 35 : hardwareType === 'card' ? 25 : 29
+        selling_price: hardwareType === 'stand' ? 30 : hardwareType === 'card' ? 20 : 35
       };
     }
 
@@ -2109,7 +2109,7 @@ class LocalDbService {
             current_stock: item.unclaimedTagsCount,
             min_alert_stock: 10,
             unit_cost: item.hardwareType === 'stand' ? 2.0 : item.hardwareType === 'card' ? 1.5 : 2.25,
-            selling_price: item.hardwareType === 'stand' ? 35 : item.hardwareType === 'card' ? 25 : 29
+            selling_price: item.hardwareType === 'stand' ? 30 : item.hardwareType === 'card' ? 20 : 35
           };
         } else {
           productStocks[item.productId].current_stock = item.unclaimedTagsCount;
@@ -2154,7 +2154,7 @@ class LocalDbService {
                 current_stock: item.unclaimedTagsCount,
                 min_alert_stock: 10,
                 unit_cost: item.hardwareType === 'stand' ? 2.0 : item.hardwareType === 'card' ? 1.5 : 2.25,
-                selling_price: item.hardwareType === 'stand' ? 35 : item.hardwareType === 'card' ? 25 : 29,
+                selling_price: item.hardwareType === 'stand' ? 30 : item.hardwareType === 'card' ? 20 : 35,
                 is_bundle: item.hardwareType === 'bundle',
                 updated_at: new Date().toISOString()
               });

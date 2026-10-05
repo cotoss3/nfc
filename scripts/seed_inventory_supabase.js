@@ -15,10 +15,10 @@ async function run() {
 
     INSERT INTO inventory_stocks (product_id, sku, name, category, current_stock, min_alert_stock, unit_cost, selling_price, is_bundle, updated_at)
     VALUES
-      ('stand-nfc-mesa', 'STP-0103', 'Stand NFC de Mesa (STTS-)', 'plates', 99, 10, 2.00, 35.00, false, now()),
-      ('placa-nfc-mostrador', 'STP-0101', 'Placa NFC para Reseñas de Google (STT-)', 'plates', 50, 10, 2.25, 29.00, false, now()),
-      ('tarjeta-nfc-bolsillo', 'STP-0102', 'Tarjeta NFC de Bolsillo (STTT-)', 'cards', 18, 10, 1.50, 25.00, false, now()),
-      ('pack-trio-comercial', 'STP-0104', 'Pack Trío Comercial (1 Placa + 2 Tarjetas)', 'plates', 9, 10, 5.25, 49.99, true, now());
+      ('stand-nfc-mesa', 'STP-0103', 'Stand NFC de Mesa (STTS-)', 'plates', 99, 10, 2.00, 30.00, false, now()),
+      ('placa-nfc-mostrador', 'STP-0101', 'Placa NFC para Reseñas de Google (STT-)', 'plates', 50, 10, 2.25, 35.00, false, now()),
+      ('tarjeta-nfc-bolsillo', 'STP-0102', 'Tarjeta NFC de Bolsillo (STTT-)', 'cards', 18, 10, 1.50, 20.00, false, now()),
+      ('pack-trio-comercial', 'STP-0104', 'Pack Trío Comercial (1 Placa + 2 Tarjetas)', 'plates', 9, 10, 5.25, 50.00, true, now());
   `);
 
   // 2. Initial Batches

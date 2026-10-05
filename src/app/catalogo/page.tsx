@@ -6,7 +6,7 @@ const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
   title: 'Catálogo de Placas y Tarjetas NFC para Reseñas en Panamá | StarTAP',
-  description: 'Dispositivos NFC y QR contactless para capturar valoraciones en Google Maps. Placas desde $30.00, tarjetas desde $20.00 y Pack Trío Comercial. Sin mensualidades ni suscripciones.',
+  description: 'Dispositivos NFC y QR contactless para capturar valoraciones en Google Maps. Tarjetas desde $20.00, stands desde $30.00, placas desde $35.00 y Pack Trío Comercial. Sin mensualidades ni suscripciones.',
   alternates: {
     canonical: `${BASE_URL}/catalogo`,
   },

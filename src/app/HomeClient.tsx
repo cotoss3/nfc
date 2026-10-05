@@ -485,7 +485,7 @@ export default function HomeClient() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               <div className="md:col-span-8 space-y-3">
                 <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $20.00)
+                  <Tag className="w-4 h-4" /> PACK COMERCIO 3-EN-1 (AHORRAS $25.00)
                 </div>
                 
                 <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
@@ -556,10 +556,10 @@ export default function HomeClient() {
 
                   <div className="flex items-baseline gap-2 md:justify-end">
                     <span className="text-3xl font-black text-amber-400 font-mono">$50.00</span>
-                    <span className="text-xs text-slate-400 line-through font-semibold">$70.00</span>
+                    <span className="text-xs text-slate-400 line-through font-semibold">$75.00</span>
                   </div>
                   <span className="inline-block mt-1 text-[10px] font-black text-slate-950 bg-amber-400 px-2.5 py-0.5 rounded shadow-xs">
-                    AHORRAS $20.00 USD
+                    AHORRAS $25.00 USD
                   </span>
                 </div>
 

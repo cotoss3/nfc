@@ -175,7 +175,7 @@ export default function Page() {
         },
         'offers': {
           '@type': 'Offer',
-          'price': '35.00',
+          'price': '30.00',
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',

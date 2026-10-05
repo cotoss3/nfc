@@ -19,12 +19,12 @@ VALUES
   ('placa-nfc-mostrador',
    'Placa NFC para Reseñas de Google',
    'Placa acrílica de 3mm para mostrador o recepción.',
-   30.00, '/productos/placa-nfc-mostrador.webp', 'plates', 'google'),
+   35.00, '/productos/placa-nfc-mostrador.webp', 'plates', 'google'),
 
   ('stand-nfc-mesa',
    'Stand NFC para Reseñas de Google',
    'Stand de mesa para restaurantes, cafés y salones.',
-   35.00, '/productos/stand-nfc-mesa.webp', 'plates', 'google'),
+   30.00, '/productos/stand-nfc-mesa.webp', 'plates', 'google'),
 
   ('pack-trio-comercial',
    'Pack Trío Comercial (1 Placa Mostrador + 2 Tarjetas de Bolsillo)',
