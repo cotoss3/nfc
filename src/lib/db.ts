@@ -1352,7 +1352,7 @@ class LocalDbService {
       cards[index].nfc_target_url = cleanNfcUrl;
       cards[index].qr_target_url = cleanQrUrl;
       cards[index].group_name = groupName || 'General';
-      if (label) cards[index].label = label;
+      if (label !== undefined) cards[index].label = label.replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim();
       if (requestingEmail) cards[index].owner_email = requestingEmail.trim().toLowerCase();
 
       // Activacion al configurar: si el tag estaba 'asignado' (vendido pero apagado)
@@ -2216,14 +2216,16 @@ class LocalDbService {
     const orders = this.getOrders();
     const existingIdx = orders.findIndex(o => o.id === orderId);
 
+    const cleanOrderLabel = (params.label || '').replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim();
+
     const orderObj: Order = {
       id: orderId,
-      customer_name: params.customerName || params.label || (tipo === 'regalia' ? `Regalía / Combo (${cleanId})` : `Cliente Visita (${cleanId})`),
+      customer_name: params.customerName || cleanOrderLabel || (tipo === 'regalia' ? `Regalía (${cleanId})` : `Cliente Visita (${cleanId})`),
       customer_email: params.customerEmail || 'venta.visita@startap.com.pa',
       customer_phone: params.customerPhone || '6483-9004',
       shipping_province: 'Panamá',
       shipping_district: 'Venta Presencial',
-      shipping_address: params.label || (tipo === 'regalia' ? 'Tarjeta entregada como regalía de paquete' : 'Venta presencial en visita comercial'),
+      shipping_address: cleanOrderLabel || (tipo === 'regalia' ? 'Tarjeta entregada como cortesía / regalía' : 'Venta presencial en visita comercial'),
       payment_method: 'presencial',
       payment_status: 'completed',
       status: 'delivered',
@@ -2237,13 +2239,13 @@ class LocalDbService {
           quantity: 1,
           price: precio,
           initial_redirect_url: params.targetUrl || '',
-          business_name: params.label || ''
+          business_name: cleanOrderLabel || ''
         }
       ],
       admin_notes: tipo === 'venta' 
         ? `Venta comercial en visita presencial con TAG ${cleanId} por $${precio.toFixed(2)} USD`
         : tipo === 'regalia'
-        ? `🎁 Tarjeta entregada como Regalía / Paquete de cortesía ($0.00 USD) - TAG ${cleanId}`
+        ? `🎁 Tarjeta entregada como Regalía ($0.00 USD) - TAG ${cleanId}`
         : `Activación de Muestra/Prueba (Demo) con TAG ${cleanId} ($0.00 USD)`,
       created_at: existingIdx !== -1 ? orders[existingIdx].created_at : new Date().toISOString()
     };

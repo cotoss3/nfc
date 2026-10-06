@@ -249,7 +249,7 @@ export default function PedidosPage() {
                               </span>
                             ) : (order.admin_notes?.includes('Regalía') || order.customer_name?.includes('Regalía') || (order as any).tipo_activacion === 'regalia') ? (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
-                                🎁 Regalía / Paquete ($0.00)
+                                🎁 Regalía ($0.00)
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-900 border border-indigo-300">

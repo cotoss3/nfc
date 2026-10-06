@@ -4,6 +4,13 @@ import { dbLocal, supabase } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+function sanitizeTagLabel(rawLabel?: string | null): string {
+  if (!rawLabel) return '';
+  return String(rawLabel)
+    .replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '')
+    .trim();
+}
+
 function isCardFreeInStock(c: any): boolean {
   const url = (c.target_url || '').trim();
   const isPlaceholderUrl =
@@ -127,6 +134,7 @@ export async function GET(request: NextRequest) {
       const free = isCardFreeInStock(c);
       return {
         ...c,
+        label: sanitizeTagLabel(c.label),
         is_free_stock: free,
         scan_count: scanCounts[cid] || 0,
       };
@@ -234,7 +242,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           source: 'supabase',
-          card: data,
+          card: { ...data, label: sanitizeTagLabel(data.label) },
           scans_count: scansCount || 0,
           nfc_link: `https://startap.com.pa/r/${data.card_id}?m=nfc`,
           qr_link: `https://startap.com.pa/r/${data.card_id}?m=qr`,
@@ -251,7 +259,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       source: 'local',
-      card,
+      card: { ...card, label: sanitizeTagLabel(card.label) },
       scans_count: 0,
       nfc_link: `https://startap.com.pa/r/${card.card_id}?m=nfc`,
       qr_link: `https://startap.com.pa/r/${card.card_id}?m=qr`,
@@ -316,8 +324,14 @@ async function configureSingleTag(params: {
   // 1. Guardar localmente en dbLocal
   let existingCard = dbLocal.findCardById(cleanId);
 
+  const cleanProvidedLabel = label !== undefined && label !== null ? sanitizeTagLabel(String(label)) : undefined;
+  const currentSanitizedLabel = existingCard?.label ? sanitizeTagLabel(existingCard.label) : '';
+  const finalLabel = cleanProvidedLabel !== undefined
+    ? (cleanProvidedLabel || `TAG ${cleanId}`)
+    : (currentSanitizedLabel || `TAG ${cleanId}`);
+
   if (!existingCard && auto_create) {
-    existingCard = dbLocal.createAdminCard(cleanId, channels, is_active ?? true, label || `TAG ${cleanId}`);
+    existingCard = dbLocal.createAdminCard(cleanId, channels, is_active ?? true, finalLabel);
   }
 
   if (existingCard) {
@@ -325,7 +339,7 @@ async function configureSingleTag(params: {
       cleanId,
       finalUrl,
       finalUrl,
-      label || existingCard.label || `TAG ${cleanId}`,
+      finalLabel,
       group_name || existingCard.group_name || 'General'
     );
     if (typeof is_active === 'boolean') {
@@ -334,6 +348,7 @@ async function configureSingleTag(params: {
     const cards = dbLocal.getCards();
     const idx = cards.findIndex(c => c.card_id.toLowerCase() === cleanId.toLowerCase());
     if (idx !== -1) {
+      cards[idx].label = finalLabel;
       cards[idx].tipo_activacion = tipo_activacion as any;
       cards[idx].precio_venta = precio_venta;
       cards[idx].channels = channels;
@@ -360,7 +375,7 @@ async function configureSingleTag(params: {
         channels,
         type,
       };
-      if (label) payload.label = label;
+      if (cleanProvidedLabel !== undefined) payload.label = cleanProvidedLabel;
       if (group_name) payload.group_name = group_name;
       if (typeof is_active === 'boolean') payload.is_active = is_active;
       if (tipo_activacion) payload.tipo_activacion = tipo_activacion;
@@ -388,7 +403,7 @@ async function configureSingleTag(params: {
             owner_id: isClientEmail ? 'user-assigned' : 'admin',
             owner_name: cleanOwnerName || (cleanOwnerEmail ? cleanOwnerEmail.split('@')[0] : 'Administrador starTAP'),
             owner_email: cleanOwnerEmail || 'info@startap.com.pa',
-            label: label || `TAG ${cleanId}`,
+            label: finalLabel,
             target_url: finalUrl,
             nfc_target_url: finalUrl,
             qr_target_url: finalUrl,
@@ -420,7 +435,7 @@ async function configureSingleTag(params: {
       customerName: cleanOwnerName,
       customerEmail: cleanOwnerEmail,
       customerPhone,
-      label: label || existingCard?.label || `TAG ${cleanId}`,
+      label: finalLabel,
       targetUrl: finalUrl,
       tipoActivacion: 'venta'
     });
@@ -431,7 +446,7 @@ async function configureSingleTag(params: {
       customerName: cleanOwnerName,
       customerEmail: cleanOwnerEmail,
       customerPhone,
-      label: label ? `${label} (Regalía Paquete)` : `Regalía ${cleanId}`,
+      label: finalLabel,
       targetUrl: finalUrl,
       tipoActivacion: 'regalia'
     });
@@ -503,7 +518,7 @@ export async function POST(request: NextRequest) {
         const extraRes = await configureSingleTag({
           rawCardId: String(extraCode).trim(),
           finalUrl,
-          label: label ? `${label} (Tarjeta Paquete)` : `Tarjeta Combo ${extraCode}`,
+          label: sanitizeTagLabel(label) || `TAG ${extraCode}`,
           group_name,
           is_active: is_active ?? true,
           auto_create: true,

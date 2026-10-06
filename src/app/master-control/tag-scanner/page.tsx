@@ -188,8 +188,10 @@ export default function TagScannerWorkstationPage() {
   const populateTagForm = (card: TagRecord) => {
     setCurrentTag(card);
     setSearchCode(card.card_id);
-    setTargetUrl(card.target_url || card.nfc_target_url || '');
-    setLabel(card.label && !card.label.startsWith('Dispositivo Pre-generado') ? card.label : '');
+    const cleanInitialLabel = (card.label || '')
+      .replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '')
+      .trim();
+    setLabel(cleanInitialLabel && !cleanInitialLabel.startsWith('Dispositivo Pre-generado') ? cleanInitialLabel : '');
     setOwnerName(
       card.owner_name &&
       card.owner_name !== 'Inventario Libre' &&
@@ -468,8 +470,8 @@ export default function TagScannerWorkstationPage() {
         body: JSON.stringify({
           card_id: tagId,
           target_url: targetUrl.trim(),
-          label: label.trim() || ownerName.trim() || `TAG ${tagId}`,
-          owner_name: ownerName.trim() || label.trim() || undefined,
+          label: label.replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim() || ownerName.trim() || `TAG ${tagId}`,
+          owner_name: ownerName.trim() || label.replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim() || undefined,
           owner_email: ownerEmail.trim().toLowerCase() || undefined,
           customer_phone: customerPhone.trim() || undefined,
           channels,

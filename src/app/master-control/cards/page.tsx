@@ -114,7 +114,10 @@ export default function CardsManagementPage() {
         ]);
 
         if (!resCards.error && resCards.data && resCards.data.length > 0) {
-          dbCards = resCards.data as NfcCard[];
+          dbCards = (resCards.data as NfcCard[]).map(c => ({
+            ...c,
+            label: (c.label || '').replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim()
+          }));
           dbLocal.setStorageItem('nfc_cards', dbCards);
         }
         if (!resScans.error && typeof resScans.count === 'number') {
@@ -336,7 +339,7 @@ export default function CardsManagementPage() {
   // Open Full Edit Modal
   const handleOpenEditModal = (card: NfcCard) => {
     setEditingCard(card);
-    setEditLabel(card.label || '');
+    setEditLabel((card.label || '').replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim());
     setEditUrl(card.target_url || '');
     setEditType(card.type || 'google');
     setEditChannels(card.channels || 'both');
@@ -352,10 +355,11 @@ export default function CardsManagementPage() {
 
     const cleanEmail = editOwnerEmail.trim().toLowerCase();
     const isClientEmail = Boolean(cleanEmail && cleanEmail !== 'admin@startap.com.pa' && cleanEmail !== 'info@startap.com.pa');
+    const sanitizedLabel = editLabel.replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim();
 
     const updatedCard: NfcCard = {
       ...editingCard,
-      label: editLabel.trim(),
+      label: sanitizedLabel,
       target_url: editUrl.trim(),
       nfc_target_url: editUrl.trim(),
       type: editType,
