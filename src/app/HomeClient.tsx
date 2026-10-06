@@ -28,18 +28,42 @@ import {
   Tag,
   ShoppingBag
 } from 'lucide-react';
+import { ProductConfig } from '@/config/products';
 import AutoConfigGuide from '@/components/AutoConfigGuide';
 
-export default function HomeClient() {
+interface HomeClientProps {
+  initialProducts?: ProductConfig[];
+}
+
+export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
   const router = useRouter();
   const { addToCart, getItemCount } = useCart();
 
   // Los 3 productos principales del home
   const HOME_PRODUCT_IDS = ['tarjeta-nfc-bolsillo', 'placa-nfc-mostrador', 'stand-nfc-mesa'];
-  const allProducts = dbLocal.getProducts();
+  const catalog = (initialProducts && initialProducts.length > 0) ? initialProducts : dbLocal.getProducts();
   const homeProducts = HOME_PRODUCT_IDS.map(id =>
-    allProducts.find(p => p.id === id)
-  ).filter(Boolean) as typeof allProducts;
+    catalog.find(p => p.id === id)
+  ).filter(Boolean) as (Product | ProductConfig)[];
+
+  const packProduct = catalog.find(p => p.id === 'pack-trio-comercial');
+  const packPrice = packProduct?.price ?? 50;
+
+  // Sincronizar catálogo local / localStorage para que el navegador quede actualizado con Master / Supabase
+  useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      try {
+        const stored = dbLocal.getProducts();
+        const updated = stored.map(p => {
+          const match = initialProducts.find(ip => ip.id === p.id);
+          return match ? { ...p, price: match.price } : p;
+        });
+        dbLocal.setStorageItem('nfc_products', updated);
+      } catch {
+        // Ignorar si localStorage está restringido
+      }
+    }
+  }, [initialProducts]);
 
   // Feedback Toast de Carrito
   const [addedItemName, setAddedItemName] = useState<string | null>(null);
@@ -52,7 +76,7 @@ export default function HomeClient() {
   );
   const whatsappUrl = `https://wa.me/50764839004?text=${whatsappMessage}`;
 
-  const handleQuickAdd = (product: Product, redirect: boolean = false) => {
+  const handleQuickAdd = (product: Product | ProductConfig, redirect: boolean = false) => {
     addToCart({
       product_id: product.id,
       product_name: product.name,
@@ -555,7 +579,7 @@ export default function HomeClient() {
                   </div>
 
                   <div className="flex items-baseline gap-2 md:justify-end">
-                    <span className="text-3xl font-black text-amber-400 font-mono">$50.00</span>
+                    <span className="text-3xl font-black text-amber-400 font-mono">${packPrice.toFixed(2)}</span>
                     <span className="text-xs text-slate-400 line-through font-semibold">$75.00</span>
                   </div>
                   <span className="inline-block mt-1 text-[10px] font-black text-slate-950 bg-amber-400 px-2.5 py-0.5 rounded shadow-xs">
@@ -568,7 +592,7 @@ export default function HomeClient() {
                     addToCart({
                       product_id: 'pack-trio-comercial',
                       product_name: 'Pack Comercio Completo (1 Placa + 2 Tarjetas NFC)',
-                      price: 50,
+                      price: packPrice,
                       quantity: 1,
                       selected_color: 'Acrílico 3mm + PVC 0.76mm'
                     });
@@ -577,7 +601,7 @@ export default function HomeClient() {
                   className="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase px-5 py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Comprar Pack ($50.00 USD)</span>
+                  <span>Comprar Pack (${packPrice.toFixed(2)} USD)</span>
                 </button>
               </div>
             </div>

@@ -18,14 +18,19 @@ import {
   ArrowRight,
   Tag
 } from 'lucide-react';
-import { ProductConfig, getMainHardwareProducts, getSpecialPacks } from '@/config/products';
+import { ProductConfig, PRODUCTS } from '@/config/products';
 import { useCart } from '@/context/CartContext';
 
-export default function CatalogoClient() {
+interface CatalogoClientProps {
+  initialProducts?: ProductConfig[];
+}
+
+export default function CatalogoClient({ initialProducts }: CatalogoClientProps = {}) {
   const router = useRouter();
   const { addToCart } = useCart();
-  const hardwareProducts = getMainHardwareProducts();
-  const specialPacks = getSpecialPacks();
+  const allProducts = (initialProducts && initialProducts.length > 0) ? initialProducts : PRODUCTS;
+  const hardwareProducts = allProducts.filter((p) => !p.isPack && p.category !== 'test' && p.type !== 'test');
+  const specialPacks = allProducts.filter((p) => p.isPack && p.category !== 'test' && p.type !== 'test');
 
   const handleAddToCartPack = (product: ProductConfig) => {
     addToCart({

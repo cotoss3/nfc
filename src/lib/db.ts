@@ -344,6 +344,28 @@ class LocalDbService {
           }
           localStorage.setItem('nfc_products', JSON.stringify(merged));
         }
+      } else {
+        // Sincronizar precios de productos oficiales con INITIAL_PRODUCTS si quedaron desactualizados en localStorage
+        let changed = false;
+        const updated = storedProducts.map(sp => {
+          const norm = sp.id.trim().toLowerCase();
+          const seed = INITIAL_PRODUCTS.find(s => s.id.trim().toLowerCase() === norm);
+          if (seed && sp.price !== seed.price) {
+            if (
+              (norm === 'placa-nfc-mostrador' && sp.price === 30) ||
+              (norm === 'stand-nfc-mesa' && sp.price === 35) ||
+              (norm === 'tarjeta-nfc-bolsillo' && sp.price !== 20) ||
+              (norm === 'pack-trio-comercial' && sp.price !== 50)
+            ) {
+              changed = true;
+              return { ...sp, price: seed.price };
+            }
+          }
+          return sp;
+        });
+        if (changed) {
+          localStorage.setItem('nfc_products', JSON.stringify(updated));
+        }
       }
     } catch {
       // Ignorar si localStorage está restringido (ej. crawlers o modo incógnito estricto)
@@ -374,12 +396,22 @@ class LocalDbService {
 
         const existing = productMap.get(normId);
         if (existing) {
+          let resolvedPrice = p.price ?? existing.price;
+          // Si el precio guardado en caché local tiene la inversión antigua (placa en 30 o stand en 35),
+          // restaurar al precio oficial de INITIAL_PRODUCTS
+          if (
+            (normId === 'placa-nfc-mostrador' && p.price === 30) ||
+            (normId === 'stand-nfc-mesa' && p.price === 35)
+          ) {
+            resolvedPrice = existing.price;
+          }
+
           productMap.set(normId, {
             ...existing,
             ...p,
             name: p.name || existing.name,
             description: p.description !== undefined ? p.description : existing.description,
-            price: p.price ?? existing.price,
+            price: resolvedPrice,
             image: p.image || existing.image,
             images: p.images && p.images.length > 0 ? p.images : existing.images,
             material: p.material !== undefined ? p.material : existing.material,

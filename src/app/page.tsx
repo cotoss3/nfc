@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import HomeClient from './HomeClient';
+import { getCatalogoConPrecios } from '@/lib/precios';
 
 export const metadata: Metadata = {
   title: 'Tarjetas y Placas NFC para Reseñas de Google | starTAP Panamá',
@@ -31,7 +32,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+export default async function Page() {
+  const products = await getCatalogoConPrecios();
+  const tarjetaPrice = products.find(p => p.id === 'tarjeta-nfc-bolsillo')?.price ?? 20;
+  const placaPrice = products.find(p => p.id === 'placa-nfc-mostrador')?.price ?? 35;
+  const standPrice = products.find(p => p.id === 'stand-nfc-mesa')?.price ?? 30;
+
   const jsonLdSchema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -53,7 +59,7 @@ export default function Page() {
         },
         'offers': {
           '@type': 'Offer',
-          'price': '20.00',
+          'price': tarjetaPrice.toFixed(2),
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',
@@ -114,7 +120,7 @@ export default function Page() {
         },
         'offers': {
           '@type': 'Offer',
-          'price': '35.00',
+          'price': placaPrice.toFixed(2),
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',
@@ -175,7 +181,7 @@ export default function Page() {
         },
         'offers': {
           '@type': 'Offer',
-          'price': '30.00',
+          'price': standPrice.toFixed(2),
           'priceCurrency': 'USD',
           'availability': 'https://schema.org/InStock',
           'itemCondition': 'https://schema.org/NewCondition',
@@ -272,7 +278,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
       />
-      <HomeClient />
+      <HomeClient initialProducts={products} />
     </>
   );
 }

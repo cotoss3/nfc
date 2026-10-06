@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { PRODUCTS } from '@/config/products';
+import { getCatalogoConPrecios } from '@/lib/precios';
 import CatalogoClient from './CatalogoClient';
 
 const BASE_URL = 'https://startap.com.pa';
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CatalogoPage() {
+export default async function CatalogoPage() {
+  const products = await getCatalogoConPrecios();
+
   const aggregateProductSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -45,11 +48,11 @@ export default function CatalogoPage() {
       priceCurrency: 'USD',
       lowPrice: '20.00',
       highPrice: '50.00',
-      offerCount: PRODUCTS.length,
+      offerCount: products.length,
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@id': `${BASE_URL}/#organization` },
-      offers: PRODUCTS.map((product) => ({
+      offers: products.map((product) => ({
         '@type': 'Offer',
         name: product.name,
         price: product.price.toFixed(2),
@@ -204,7 +207,7 @@ export default function CatalogoPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <CatalogoClient />
+      <CatalogoClient initialProducts={products} />
     </>
   );
 }

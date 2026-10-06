@@ -19,7 +19,7 @@
       "id": "placa-nfc-mostrador",
       "name": "Placa NFC para Reseñas de Google",
       "description": "Acrílico pulido de 3mm con adhesivo 3M listo para instalar en tu caja de cobro o pared de atención. Captura reseñas antes de que el cliente abandone tu local.",
-      "price": 30,
+      "price": 35,
       "image": "/products/NFC_10001/NFC_10001_Placa.webp",
       "images": [
         "/products/NFC_10001/NFC_10001_Placa.webp",
@@ -33,7 +33,7 @@
       "id": "stand-nfc-mesa",
       "name": "Stand NFC para Reseñas de Google",
       "description": "Estructura rígida autoportante con ángulo de lectura optimizado para mesas y escritorios. Permite al cliente escanear o acercar el teléfono cómodamente.",
-      "price": 35,
+      "price": 30,
       "image": "/products/NFC10002/NFC_10002_Stan.webp",
       "images": [
         "/products/NFC10002/NFC_10002_Stan.webp",
@@ -1265,7 +1265,7 @@
       "current_stock": 50,
       "min_alert_stock": 10,
       "unit_cost": 8.4,
-      "selling_price": 30
+      "selling_price": 35
     },
     "tarjeta-nfc-bolsillo": {
       "product_id": "tarjeta-nfc-bolsillo",
@@ -1285,7 +1285,7 @@
       "current_stock": 0,
       "min_alert_stock": 10,
       "unit_cost": 9.8,
-      "selling_price": 35
+      "selling_price": 30
     },
     "pack-trio-comercial": {
       "product_id": "pack-trio-comercial",
