@@ -23,10 +23,10 @@ export const post: BlogPost = {
     'dispositivo NFC reseñas Google',
   ],
   imagen: {
-    src: 'placeholder:/blog/como-conseguir-100-resenas-reales-google-maps.webp',
-    alt: 'Dueño de negocio en Panamá recibiendo una reseña de 5 estrellas en su mostrador con un toque de celular sin incomodar al cliente',
+    src: '/blog/como-conseguir-100-resenas-reales-google-maps.webp',
+    alt: 'Cliente acercando su celular al Stand NFC de starTAP para dejar una reseña de 5 estrellas en Google Reviews',
     ancho: 1200,
-    alto: 630,
+    alto: 675,
   },
   relacionados: [
     { titulo: 'Cómo pedir reseñas sin que te penalicen', href: '/blog/como-pedir-resenas-google-sin-penalizacion' },
@@ -64,7 +64,7 @@ El cliente responde *"¡Claro que sí, con gusto!"*, cruza la puerta hacia la ca
 
 No es que te haya mentido. Es que se montó al carro, le entró una llamada, vio tres mensajes de WhatsApp y tu reseña pasó al puesto número 40 de sus prioridades del día.
 
-![Espacio para foto: Cliente saliendo de un local en Panamá mirando su celular mientras olvida la promesa de dejar una reseña](placeholder:/blog/cliente-saliendo-local-olvido-resena.webp)
+![Cliente en la calle buscando un negocio en Google Maps mientras el dueño pierde oportunidades de venta](/blog/cliente-buscando-negocio-google-maps-panama.webp)
 
 Pedir favores da pena, se siente como rogar y tiene una tasa de fracaso de casi el 95%.
 
@@ -89,7 +89,7 @@ Si dejas que las reseñas ocurran "de forma espontánea", tu ficha solo va a ref
 
 Son **6 pasos con fricción mental**. Cada paso pierde a la mitad de la gente. Al sexto paso, te queda el 1%.
 
-![Espacio para infografía o diagrama: Comparación del embudo tradicional de 6 pasos vs el sistema de 1 toque en mostrador](placeholder:/blog/embudo-friccion-resenas-google-vs-nfc.webp)
+![Comparación: Embudo tradicional de 6 pasos agotadores vs sistema de 1 toque directo con dispositivo NFC](/blog/embudo-friccion-resenas-google-vs-nfc.webp)
 
 ## La regla del "Pico de Satisfacción": Cuándo pedirla
 
@@ -122,7 +122,7 @@ Fíjate en lo que hace esta frase:
 
 No hay discursos largos. Una frase, una sonrisa y el dispositivo enfrente.
 
-![Espacio para foto: Stand NFC de mesa sobre el mostrador de cobro con el cliente acercando su teléfono](placeholder:/blog/stand-nfc-mostrador-pago-resena.webp)
+![Stand NFC de Google Reviews ubicado en el mostrador junto a la caja para conseguir reseñas al momento del cobro](/blog/stand-nfc-mostrador-cobro-resena.webp)
 
 ## Cero fricción: de 6 pasos a 1 solo toque
 
@@ -156,7 +156,7 @@ Hagamos números reales para un negocio promedio en Panamá:
 
 En mes y medio pasas de tener una ficha desierta con 4 opiniones viejas a tener más de 100 calificaciones frescas.
 
-![Espacio para captura de pantalla: Resultados locales de Google Maps mostrando negocio con más de 100 reseñas en el top 3 de su zona](placeholder:/blog/local-pack-google-maps-100-resenas.webp)
+![Resultados locales de Google Maps en celular mostrando un negocio posicionado en el top 1 con 142 reseñas de clientes](/blog/local-pack-google-maps-100-resenas.webp)
 
 ## Lo que NUNCA debes hacer (te costará la ficha)
 
