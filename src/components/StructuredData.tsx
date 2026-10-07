@@ -24,6 +24,7 @@ const organizationSchema = {
   sameAs: [
     'https://www.datakorex.com',
     'https://www.facebook.com/profile.php?id=61594455868652',
+    'https://www.tiktok.com/@startap507',
   ],
   address: {
     '@type': 'PostalAddress',
@@ -94,6 +95,13 @@ const storeSchema = {
   priceRange: '$20.00 - $50.00',
   currenciesAccepted: 'USD',
   paymentAccepted: 'Yappy, Visa, Mastercard',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5.0',
+    reviewCount: '5',
+    bestRating: '5',
+    worstRating: '1',
+  },
   areaServed: {
     '@type': 'Country',
     name: 'Panamá',
@@ -101,6 +109,7 @@ const storeSchema = {
   sameAs: [
     'https://www.datakorex.com',
     'https://www.facebook.com/profile.php?id=61594455868652',
+    'https://www.tiktok.com/@startap507',
   ],
   address: {
     '@type': 'PostalAddress',
