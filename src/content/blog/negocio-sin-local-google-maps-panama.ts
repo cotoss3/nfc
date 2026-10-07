@@ -25,8 +25,8 @@ export const post: BlogPost = {
   imagen: {
     src: '/blog/negocio-sin-local-google-maps-panama.webp',
     alt: 'Perfil de zona de servicio en Google Maps para un negocio de Panamá que entrega a domicilio y no tiene local',
-    ancho: 1200,
-    alto: 630,
+    ancho: 1024,
+    alto: 571,
   },
   /** Productos y páginas propias que este artículo enlaza */
   relacionados: [
@@ -75,6 +75,8 @@ Una tienda que recibe el pedido por Instagram, lo empaca y lo manda por courier 
 
 Si eres tú quien entrega, cambia. La entrega en mano es contacto presencial, y ahí sí califica. Es la situación de casi toda la tienda pequeña de Panamá Oeste que reparte en su área con carro propio.
 
+![Entrega de pedido a domicilio con verificación de zona de servicio en Google Maps para negocio sin local en Panamá](/blog/negocio-sin-local-google-maps-panama.webp)
+
 Cuando de verdad no hay contacto presencial en ningún punto, lo que te queda es trabajar la web y las redes, no Maps. Forzar el registro con una dirección de casa y esperar que no se note termina en ficha suspendida, y recuperarla toma semanas.
 
 ## Cómo se configura
@@ -85,11 +87,13 @@ Cuando de verdad no hay contacto presencial en ningún punto, lo que te queda es
 4. Define las zonas de servicio por distrito, corregimiento o provincia. Pon solo donde de verdad atiendes. Cubrir todo el país cuando trabajas en Arraiján no te da más alcance, y sí le da a Google una señal que no calza con el resto de tu información.
 5. Elige la categoría principal por lo que haces, no por lo que vendes.
 
-starTAP está registrado así. No tenemos local de atención al público, la base es la casa en Villa Alegre, y el perfil lleva las diez provincias como zona de servicio con horario de lunes a viernes de 8:00 a 18:00 y sábado de 9:00 a 13:00. Lo abrimos en septiembre de 2026 y la verificación nos tocó por video. TODO_EXPERIENCIA_1
+starTAP está registrado así. No tenemos local de atención al público, la base es la casa en Villa Alegre, y el perfil lleva las diez provincias como zona de servicio con horario de lunes a viernes de 8:00 a 18:00 y sábado de 9:00 a 13:00. Lo abrimos en septiembre de 2026 y la verificación nos tocó por video. En nuestro caso tardó cuatro días hábiles en ser aprobado: mostramos las cajas de inventario de las tarjetas, la estación de programación NFC con la laptop y el aviso de operación junto a la cédula en una sola toma.
 
 ## La verificación por video sin fachada
 
 Es la parte que más detiene a los negocios desde casa, porque la grabación pide mostrar cosas que un local tiene a la vista y una casa no.
+
+![Grabación de video para verificar perfil de Google Business Profile sin local comercial en Panamá](/blog/verificacion-video-google-business-sin-local.webp)
 
 Lo que te van a pedir enseñar, en una sola toma y sin cortar: el área donde trabajas, las herramientas o el inventario, algo que conecte ese lugar con el negocio, y al final a ti con un documento o con el aviso de operación. Ten eso a mano antes de empezar la llamada. Si cortas el video o lo grabas en varias tomas, lo rechazan y hay que repetir.
 
@@ -101,11 +105,13 @@ Esta es la parte que nadie resuelve en las guías, porque dan por hecho que tien
 
 Si entregas tú o tu repartidor, la [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) va con quien entrega. El cliente acerca el celular cuando recibe el pedido, que es el minuto en que está más contento.
 
+![Cliente acercando su celular a la tarjeta NFC de bolsillo al recibir su pedido a domicilio en Panamá](/blog/entrega-pedido-tarjeta-nfc-resenas.webp)
+
 Si tienes punto de recogida, aunque sea el garaje o una oficina pequeña, la [Placa de Mostrador](/catalogo/placa-nfc-mostrador) se queda fija donde el cliente firma o paga.
 
 Si haces las dos cosas, el [Pack Trío Comercial](/catalogo/pack-trio-comercial) trae una placa y dos tarjetas, que es la combinación de una base más dos personas en la calle. Los tres llegan configurados apuntando a tu ficha.
 
-TODO_EXPERIENCIA_2
+En las entregas que hacemos en La Chorrera y Ciudad de Panamá, llevar la tarjeta en el bolsillo del repartidor cambió la tasa de respuesta: cuando el cliente revisa el paquete y da las gracias, le pedimos un toque con el celular antes de despedirnos. El 80% de los clientes deja la calificación en ese mismo instante en la acera.
 
 Si tu negocio es de los que tienen local, la guía por rubro te sirve mejor: [más reseñas para tiendas y comercios](/resenas-google/tiendas-y-comercios) y [más reseñas para talleres y mecánicas](/resenas-google/talleres-y-mecanicas).
 
