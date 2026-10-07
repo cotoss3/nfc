@@ -26,6 +26,7 @@ const organizationSchema = {
     'https://www.datakorex.com',
     'https://www.facebook.com/profile.php?id=61594455868652',
     'https://www.tiktok.com/@startap507',
+    'https://www.instagram.com/startap507',
   ],
   address: {
     '@type': 'PostalAddress',
@@ -114,6 +115,7 @@ const storeSchema = {
     'https://www.datakorex.com',
     'https://www.facebook.com/profile.php?id=61594455868652',
     'https://www.tiktok.com/@startap507',
+    'https://www.instagram.com/startap507',
   ],
   address: {
     '@type': 'PostalAddress',

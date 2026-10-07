@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { CreditCard, Heart, MapPin, Phone, Mail, Send, CheckCircle2, Loader2 } from 'lucide-react';
+import { CreditCard, Heart, MapPin, Phone, Mail, Send, CheckCircle2, Loader2, Instagram } from 'lucide-react';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -156,6 +156,16 @@ export default function Footer() {
                 </svg>
                 <span>TikTok: @startap507</span>
               </a>
+              <a
+                href="https://www.instagram.com/startap507"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Seguir a starTAP en Instagram @startap507"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-pink-500/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
+              >
+                <Instagram className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+                <span>Instagram: @startap507</span>
+              </a>
             </div>
           </div>
 
@@ -248,7 +258,17 @@ export default function Footer() {
                 <Mail className="h-4 w-4 text-amber-400 flex-shrink-0" />
                 <span>info@startap.com.pa</span>
               </li>
-              <li className="pt-1">
+              <li className="pt-1 flex flex-col gap-1.5">
+                <a
+                  href="https://www.instagram.com/startap507"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram @startap507"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group"
+                >
+                  <Instagram className="h-4 w-4 text-pink-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+                  <span className="group-hover:underline">Instagram @startap507</span>
+                </a>
                 <a
                   href="https://www.tiktok.com/@startap507"
                   target="_blank"
@@ -282,6 +302,15 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex items-center space-x-4">
+            <a
+              href="https://www.instagram.com/startap507"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-400 hover:text-white transition-colors font-medium flex items-center gap-1"
+            >
+              <Instagram className="w-3.5 h-3.5" />
+              Instagram
+            </a>
             <a
               href="https://www.tiktok.com/@startap507"
               target="_blank"
