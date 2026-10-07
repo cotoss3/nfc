@@ -143,9 +143,22 @@ el panel de Tilopay.
 
 **El modo prueba de Tilopay hay que apagarlo** cuando terminen las pruebas.
 
-## 7b · Blog: hay un segundo artículo listo pero SIN PUBLICAR
+## 7b · Blog: resuelto (queda como historial)
 
-**Estado:** en línea hay **un** artículo (`como-pedir-resenas-google-sin-penalizacion`).
+**Estado al 3 oct 2026:** los tres primeros artículos ya están en `POSTS` y en
+línea. Lo de abajo quedó cumplido; se conserva porque describe el procedimiento
+que hay que repetir con cada artículo nuevo.
+
+**Corrección aplicada el 3 oct 2026 sobre el artículo ya publicado
+`por-que-mi-negocio-no-aparece-en-google-maps`:** tenía dos cifras sin fuente que
+violan `REGLAS_CONTENIDO.md`, "el 90% de los casos" y "cerca del 40% de los
+negocios que visitamos". Las dos salieron. También se quitó un contraste binario
+("No es que no existas. Es que Google no te está eligiendo."). Hay que
+redesplegar para que el cambio llegue al sitio.
+
+---
+
+**Estado original:** en línea hay **un** artículo (`como-pedir-resenas-google-sin-penalizacion`).
 El segundo está escrito y compilando, pero deliberadamente fuera del aire.
 
 - Borrador en markdown: `contenido/articulo-no-aparezco-en-google-maps.md`
@@ -186,6 +199,177 @@ El resto del artículo ya cumple: cero rayas largas, cero adverbios en -mente,
 sin vocabulario delator, con la sección de lo que el producto NO hace, la nota
 de transparencia por conflicto de interés y dos fuentes oficiales de Google
 enlazadas. Verificado con script, no a ojo.
+
+## 7c · Blog: CUARTO artículo escrito y SIN PUBLICAR
+
+**Archivo:** `src/content/blog/negocio-sin-local-google-maps-panama.ts`
+**Slug:** `/blog/negocio-sin-local-google-maps-panama`
+**NO está en `POSTS`**, por eso el sitio todavía no lo sirve. Compila limpio
+(`npx tsc --noEmit` sin errores).
+
+**Por qué este artículo y no el que se pidió.** La petición original era una guía
+"Cómo posicionar tu tienda online o negocio físico en Google Maps Panamá". Esa
+guía canibaliza a `por-que-mi-negocio-no-aparece-en-google-maps`, que ya está
+publicado y ya reclama las keywords "posicionar mi negocio en Google Maps Panamá"
+y "cómo salir primero en Google Maps". Fernando aprobó el 3 oct 2026 separar las
+intenciones: el artículo publicado se queda con el negocio físico que no aparece,
+y el nuevo ataca una intención que no estaba cubierta, el negocio sin local
+(tienda online, negocio desde casa, servicio a domicilio) y la figura de zona de
+servicio de Google.
+
+**Qué falta para publicarlo:**
+
+1. Los dos datos de experiencia que exige `REGLAS_CONTENIDO.md`. Están marcados
+   dentro del `cuerpo`:
+   - `TODO_EXPERIENCIA_1` — cuántos días tardó la verificación por video del
+     perfil de starTAP y en qué terminó. Va justo después del párrafo que
+     describe la configuración del perfil propio.
+   - `TODO_EXPERIENCIA_2` — un negocio sin local concreto, con permiso: qué
+     entregaba, dónde le pusimos el dispositivo y qué pasó. Va en la sección
+     "Dónde pones el dispositivo de reseñas si no hay mostrador".
+2. Verificar que no quede ninguno:
+   `grep -c TODO_EXPERIENCIA src/content/blog/negocio-sin-local-google-maps-panama.ts`
+   debe dar **0**.
+3. Imagen de portada: `/public/blog/negocio-sin-local-google-maps-panama.webp`
+   (1200×630), foto propia, no de banco de imágenes.
+4. Registrarlo en `src/lib/blog.ts`:
+   ```ts
+   import { post as articulo4 } from '@/content/blog/negocio-sin-local-google-maps-panama';
+   export const POSTS: BlogPost[] = [articulo1, articulo2, articulo3, articulo4];
+   ```
+5. Pasar la checklist de la PARTE 3 de `REGLAS_CONTENIDO.md`.
+
+Ya verificado con script: cero rayas largas, cero adverbios en -mente, sin
+vocabulario delator, sin porcentajes, sin contraste binario, con sección de lo
+que el producto NO hace, nota de transparencia y la documentación de Google
+enlazada.
+
+## 7d · Enlazado interno hacia los hubs de industria — HECHO, falta desplegar
+
+Los artículos del blog enlazaban a los hubs de `/resenas-google/...` solo desde
+el bloque `relacionados` del pie. Se añadieron enlaces dentro del cuerpo, con
+anchor exacto, que es lo que traspasa autoridad:
+
+- `como-pedir-resenas-google-sin-penalizacion` → restaurantes, barberías y
+  salones, talleres y mecánicas, clínicas.
+- `por-que-mi-negocio-no-aparece-en-google-maps` → barberías y salones, talleres
+  y mecánicas, dentro de la sección de categoría principal.
+- `ver-y-responder-resenas-de-tu-negocio-en-google` → restaurantes, tiendas y
+  comercios, hoteles y hospedajes.
+- El artículo nuevo enlaza a tiendas y comercios y a talleres y mecánicas.
+
+Falta cubrir el hub de clínicas desde más de un artículo y los hubs siguen sin
+enlazarse entre sí. Queda para la próxima pasada.
+
+## 9 · SEO: lo que salió del diagnóstico de Search Console (7 oct 2026)
+
+Datos del 9 jul al 5 oct 2026: 8 clics y 139 impresiones en todo el trimestre.
+Lo que sigue está ordenado por urgencia. Los puntos 9.1 y 9.2 son de código y van
+primero; el 9.5 no es de código y lo hace Fernando.
+
+### 9.1 · Quitar los ratings inventados — RESUELTO (7 oct 2026)
+
+Se eliminaron por completo:
+1. Las propiedades `ratingValue` y `reviewCount` de `src/config/products.ts` y de los cuatro productos.
+2. Los bloques `aggregateRating` del JSON-LD en `src/app/page.tsx`, `src/app/catalogo/page.tsx` y `src/app/catalogo/[id]/page.tsx`.
+3. Las estrellas ficticias y `({product.reviewCount})` en `src/app/not-found.tsx`, reemplazado por la etiqueta de valor `"NFC + Código QR"`.
+4. Verificado con `git grep -rn "aggregateRating\|ratingValue\|reviewCount" src/` dando **0** ocurrencias.
+5. Verificado con `npx tsc --noEmit` limpio y `npm run build` exitoso (54/54 páginas estáticas generadas).
+
+Search Console mostrará "Missing field aggregateRating" como advertencia informativa sin penalización alguna. Cuando se obtengan reseñas reales de clientes, se incorporarán con datos verídicos.
+
+### 9.2 · Enlaces internos hacia las páginas que Google no rastrea
+
+Estado de índice al 7 oct, por inspección de URL:
+
+| URL | Estado |
+| --- | --- |
+| `/` | Indexada |
+| `/catalogo` | Indexada |
+| `/catalogo/placa-nfc-mostrador` | Indexada |
+| `/resenas-google/restaurantes` | Indexada |
+| `/blog/ver-y-responder-resenas-de-tu-negocio-en-google` | Indexada |
+| `/resenas-google/barberias-y-salones` | **Descubierta, sin indexar** |
+| `/resenas-google/hoteles-y-hospedajes` | **Descubierta, sin indexar** |
+| `/blog/como-pedir-resenas-google-sin-penalizacion` | **Canónica ajena, ver 9.3** |
+
+"Descubierta, actualmente sin indexar" quiere decir que Google conoce la URL por
+el sitemap y decidió no gastar rastreo. Reenviar el sitemap no lo arregla; lo
+arreglan los enlaces internos desde páginas que sí están indexadas.
+
+Qué hacer:
+
+1. `src/app/HomeClient.tsx` **no tiene ni un solo enlace a `/resenas-google/`**
+   (verificado con grep). Añadir una sección con los seis enlaces, con anchor
+   exacto del tipo "Más reseñas para barberías y salones". La portada es la
+   página con más autoridad del sitio y hoy no reparte nada.
+2. En `/resenas-google` y en cada página de industria, enlazar a las otras cinco
+   industrias. Hoy los hubs no se enlazan entre sí.
+3. Enlazar desde la portada hacia los tres artículos del blog.
+
+### 9.3 · El artículo principal tiene canónica hacia un dominio de apuestas
+
+`https://startap.com.pa/blog/como-pedir-resenas-google-sin-penalizacion` devuelve
+"Duplicate without user-selected canonical" y el `googleCanonical` que eligió
+Google es `https://www.747live.bet/`.
+
+La etiqueta canónica de la página está correcta (verificado en la página en vivo,
+apunta a sí misma), así que **no es un fallo del código**. Es Google eligiendo
+otro documento como original.
+
+De código solo toca esto:
+
+1. Reforzar los enlaces internos hacia ese artículo desde la portada y desde
+   `/resenas-google`. Una página con enlazado interno fuerte es más difícil de
+   desplazar por una copia.
+2. Volver a enviarla por la Indexing API junto con el resto del sitio.
+
+Lo demás (buscar la copia y, si existe, presentar la retirada por derechos de
+autor ante Google) lo hace Fernando. No lo ejecutes tú.
+
+### 9.4 · Señales de entidad de marca
+
+Hoy `startap.com.pa` aparece en **posición 13** por la consulta "startap", su
+propia marca, y en posición 49 por "skin tap en panama", que no es su marca ni su
+rubro. Google no tiene claro qué entidad es el sitio.
+
+En `src/components/StructuredData.tsx` el `sameAs` aparece dos veces (líneas 24 y
+101) y en ambas solo trae dos entradas:
+
+```ts
+sameAs: [
+  'https://www.datakorex.com',
+  'https://www.facebook.com/profile.php?id=61594455868652',
+],
+```
+
+Añadir en los dos bloques el perfil de Google Business de starTAP y el Instagram
+cuando Fernando pase las URLs. Falta el perfil de Google, que es el que más pesa
+para una marca local.
+
+### 9.5 · Lo que NO es de código (lo hace Fernando)
+
+1. Buscar en Google desde Panamá una frase literal del artículo entre comillas y
+   comprobar si `747live.bet` lo copió. Si lo copió, retirada por derechos de autor.
+2. Terminar la recategorización del dominio en Cisco Talos y en Symantec, que
+   quedó pendiente desde lo de FortiGuard.
+3. Pasar las URLs del perfil de Google Business y del Instagram para el `sameAs`.
+4. Conseguir dos o tres menciones con enlace desde sitios panameños.
+
+### 9.6 · Lo que sí funciona y conviene extender
+
+Las consultas con la palabra "comentarios" ya están rankeando después del
+refuerzo de la página de restaurantes: "google comentarios restaurantes" en
+posición 7 y "comentarios de restaurantes" en posición 6. Aplicar el mismo
+tratamiento de "comentarios" y "opiniones" a las cinco industrias restantes en
+`src/lib/industrias.ts`. Es lo único con evidencia propia de que funciona en este
+sitio.
+
+### Línea base para medir dentro de un mes
+
+- "startap": posición 13 hoy. Meta, entre la 1 y la 3.
+- Indexación: 5 de 8 URLs inspeccionadas están indexadas. Meta, 8 de 8.
+- Clics: 8 en el trimestre, todos de Panamá.
 
 ## 8 · Deuda menor, para cuando haya tiempo
 

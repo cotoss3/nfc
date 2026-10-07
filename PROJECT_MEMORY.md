@@ -955,3 +955,41 @@ tenido que reportar una" también sirve como respuesta honesta.
    - Nuevo módulo en `src/app/master-control/comportamiento/page.tsx` y menú en `src/app/master-control/layout.tsx` con tabla de TAPs activos: Nombre de negocio, Código de TAP, Veces leído (NFC/QR), Redirigido por tiempo (8s), Tocó botón de reseña y Tocó la publicidad (con exportación CSV).
    - Endpoint de telemetría `src/app/api/r/event/route.ts` y métodos `registerTapBehaviorEvent` / `getTapBehaviorMap` en `src/lib/db.ts`.
    - Rediseño del anuncio patrocinado en `src/app/r/[id]/route.ts` bajo estándares de Google & Coalition for Better Ads: carga asíncrona diferida después del bloque principal, altura máxima controlada (`<= 26dvh`, bajo el tope del 30%), botón de cierre (`✕`) amplio y separado del enlace para evitar clics accidentales, sin pop-ups, sin bloqueo pre-itinerante y sin audio.
+
+## 3 oct 2026 · Cuarto artículo (negocio sin local), enlazado interno a hubs y limpieza de cifras inventadas
+
+1. **Artículo nuevo, escrito y SIN publicar** (`src/content/blog/negocio-sin-local-google-maps-panama.ts`):
+   - La petición original ("Cómo posicionar tu tienda online o negocio físico en Google Maps Panamá") canibalizaba a `por-que-mi-negocio-no-aparece-en-google-maps`, que ya está en línea y ya reclama "posicionar mi negocio en Google Maps Panamá". Fernando aprobó separar intenciones: el nuevo ataca el negocio SIN local (tienda online, desde casa, servicio a domicilio) y la figura de zona de servicio.
+   - Enlaza al Pack Trío Comercial (`/catalogo/pack-trio-comercial`), a la Placa de Mostrador (`/catalogo/placa-nfc-mostrador`) y a la tarjeta de bolsillo.
+   - No está en `POSTS`. Le faltan los dos `TODO_EXPERIENCIA` y la foto de portada. Procedimiento completo en el punto 7c de `INSTRUCCIONES_ANTIGRAVITY.md`.
+   - Verificado con script contra `REGLAS_CONTENIDO.md`: sin hallazgos. `npx tsc --noEmit` limpio.
+
+2. **Enlazado interno hacia los hubs de industria** (punto 7d de INSTRUCCIONES_ANTIGRAVITY.md): los tres artículos existentes solo enlazaban a los hubs desde el bloque `relacionados`. Se añadieron enlaces dentro del cuerpo con anchor exacto hacia restaurantes, barberías y salones, talleres y mecánicas, clínicas, tiendas y comercios, y hoteles y hospedajes.
+
+3. **Cifras inventadas eliminadas del artículo YA PUBLICADO** `por-que-mi-negocio-no-aparece-en-google-maps`: "el 90% de los casos" y "cerca del 40% de los negocios que visitamos". La segunda no se sostiene contra `PROSPECCION.md`: de 228 negocios prospectados solo 8 están anotados como "ficha sin reclamar". Se reemplazó por una afirmación sin número. También se quitó el contraste binario "No es que no existas. Es que Google no te está eligiendo.". **Hay que redesplegar.**
+
+4. **Pendiente detectado, no tocado:** `src/config/products.ts` lleva `ratingValue` y `reviewCount` inventados (4.9/128, 5.0/184, 4.9/96, 5.0/210) que se publican en el JSON-LD de `/catalogo` y de cada ficha de producto. Son reseñas que no existen. Google puede aplicar una acción manual por datos estructurados engañosos, y además rompe la regla de no inventar cifras. Decidir con Fernando si se quitan o se sustituyen por reseñas reales.
+
+## 7 oct 2026 · Diagnóstico de Search Console y plan SEO para Antigravity
+
+Revisión de GSC de `startap.com.pa` (9 jul – 5 oct 2026): 8 clics y 139 impresiones en el trimestre, todos los clics de Panamá. Hallazgos, en orden de gravedad:
+
+1. **`/blog/como-pedir-resenas-google-sin-penalizacion` tiene canónica ajena.** La inspección de URL devuelve "Duplicate without user-selected canonical" con `googleCanonical = https://www.747live.bet/`. La etiqueta canónica propia está correcta (verificado en vivo), así que es Google eligiendo otro documento. El artículo está efectivamente fuera del índice y no aparece en ninguna consulta del trimestre.
+2. **Reseñas inventadas ELIMINADAS (7 oct 2026):** Se erradicó por completo el riesgo de acción manual. Se eliminaron los campos `ratingValue` y `reviewCount` de `src/config/products.ts`, y todos los bloques `aggregateRating` del JSON-LD en la portada (`src/app/page.tsx`), catálogo (`src/app/catalogo/page.tsx`) y detalle de producto (`src/app/catalogo/[id]/page.tsx`), así como los fallbacks codificados a mano. En `src/app/not-found.tsx` se reemplazaron las estrellas artificiales por la etiqueta de producto "NFC + Código QR". Verificado con grep en 0 ocurrencias y build de Next.js limpio (54/54 páginas). Al redesplegar, Search Console reportará la falta de aggregateRating como advertencia estándar sin penalización.
+3. **No rankea por su propia marca:** "startap" en posición 13 con 0 clics, y "skin tap en panama" en posición 49. El `sameAs` de `src/components/StructuredData.tsx` (líneas 24 y 101) solo trae datakorex y Facebook; falta el perfil de Google Business.
+4. **`/resenas-google/barberias-y-salones` y `/resenas-google/hoteles-y-hospedajes` están "Descubiertas, sin indexar"**, nunca rastreadas. Causa probable: `src/app/HomeClient.tsx` no tiene ni un enlace a `/resenas-google/` (verificado con grep), y los hubs no se enlazan entre sí.
+5. **Lo que sí funciona:** "placas nfc" y "tarjeta de bolsillo" en posición 1; la ficha de la placa de mostrador con 14% de CTR (2 clics de 14 impresiones); y el refuerzo de "comentarios" en restaurantes rankeando en posiciones 6 y 7. Falta aplicar ese tratamiento a las otras cinco industrias.
+6. **Tráfico de España (23 impresiones, 0 clics)** entrando por el artículo de responder reseñas con consultas pan-hispanas. Los próximos artículos deben llevar Panamá en el título y en el H1.
+
+Plan completo con rutas de archivo y reparto Antigravity/Fernando en el punto 9 de `INSTRUCCIONES_ANTIGRAVITY.md`. Informe con tablas publicado como artifact "Diagnóstico GSC starTAP".
+
+## 7 oct 2026 (cont.) · Integración de TikTok en Pie de Página y Schema.org
+
+1. **Enlace oficial de TikTok (`https://www.tiktok.com/@startap507`):**
+   - Agregado en `src/components/Footer.tsx` en tres ubicaciones clave:
+     - Columna de marca con botón/insignia interactiva (`@startap507` con icono SVG oficial).
+     - Columna de «Contacto Directo» como canal de contacto.
+     - Barra inferior de enlaces legales y redes.
+   - Centralizado en `Config.social.tiktok` en `src/config/site.ts`.
+   - Incorporado en las matrices `sameAs` de `src/components/StructuredData.tsx` (Organization y Store) para potenciar la vinculación de entidades y autoridad de marca en Google Knowledge Graph.
+
