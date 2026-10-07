@@ -22,6 +22,7 @@ const organizationSchema = {
     name: 'Panamá',
   },
   sameAs: [
+    'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
     'https://www.datakorex.com',
     'https://www.facebook.com/profile.php?id=61594455868652',
     'https://www.tiktok.com/@startap507',
@@ -66,6 +67,7 @@ const serviceSchema = {
     { '@type': 'City', name: 'Colón' },
     { '@type': 'City', name: 'David' },
   ],
+  hasMap: 'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
   parentOrganization: { '@id': `${BASE_URL}/#organization` },
 };
 
@@ -106,7 +108,9 @@ const storeSchema = {
     '@type': 'Country',
     name: 'Panamá',
   },
+  hasMap: 'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
   sameAs: [
+    'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
     'https://www.datakorex.com',
     'https://www.facebook.com/profile.php?id=61594455868652',
     'https://www.tiktok.com/@startap507',

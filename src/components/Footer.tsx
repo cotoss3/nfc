@@ -132,6 +132,31 @@ export default function Footer() {
             <p className="text-xs text-gray-400 leading-relaxed">
               Placas y tarjetas NFC contactless en Panamá. Multiplica tus reseñas de 5 estrellas en Google Maps y TripAdvisor directamente en tu mostrador.
             </p>
+            {/* Social Media & Google Maps Links */}
+            <div className="pt-1 flex flex-wrap gap-2">
+              <a
+                href="https://maps.app.goo.gl/MG3YyRykfUTvL4B79"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ver perfil y reseñas de starTAP Panamá en Google Maps"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-amber-400/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
+              >
+                <span className="text-amber-400">★ 5.0</span>
+                <span>Google Maps (5 reseñas)</span>
+              </a>
+              <a
+                href="https://www.tiktok.com/@startap507"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Seguir a starTAP en TikTok @startap507"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-amber-400/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
+              >
+                <svg className="w-4 h-4 fill-current text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
+                </svg>
+                <span>TikTok: @startap507</span>
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -223,6 +248,20 @@ export default function Footer() {
                 <Mail className="h-4 w-4 text-amber-400 flex-shrink-0" />
                 <span>info@startap.com.pa</span>
               </li>
+              <li className="pt-1">
+                <a
+                  href="https://www.tiktok.com/@startap507"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok @startap507"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group"
+                >
+                  <svg className="h-4 w-4 fill-current text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
+                  </svg>
+                  <span className="group-hover:underline">TikTok @startap507</span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -243,6 +282,17 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex items-center space-x-4">
+            <a
+              href="https://www.tiktok.com/@startap507"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 hover:text-white transition-colors font-medium flex items-center gap-1"
+            >
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
+              </svg>
+              TikTok
+            </a>
             <Link href="/envios" className="hover:text-gray-200 underline">Envíos</Link>
             <Link href="/terminos" className="hover:text-gray-200 underline">Términos</Link>
             <Link href="/privacidad" className="hover:text-gray-200 underline">Privacidad</Link>
