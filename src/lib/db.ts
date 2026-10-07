@@ -676,18 +676,25 @@ class LocalDbService {
     return this.getOrders().find(o => o.id === id);
   }
 
-  // Generador de Códigos Secuenciales (STT-XXXX para Placas / STTS-XXXX para Stands / STTT-XXXX para Tarjetas)
+  // Generador de Códigos Secuenciales (STT-XXXX Placas / STTS-XXXX Stands / STTT-XXXX Tarjetas / STTD-XXXX Demos)
   getNextStickerCode(deviceType: string = 'plate'): string {
     const cards = this.getCards();
     const typeStr = (deviceType || '').toLowerCase();
-    const isStand = typeStr.includes('stand') || typeStr.includes('stts') || typeStr.includes('mesa');
-    const isCard = !isStand && (typeStr.includes('card') || typeStr.includes('tarjeta') || typeStr.includes('sttt') || typeStr.includes('bolsillo'));
-    const prefix = isStand ? 'STTS' : isCard ? 'STTT' : 'STT';
+    const isDemo = typeStr.includes('demo') || typeStr.includes('sttd') || typeStr.includes('regalo') || typeStr.includes('muestra');
+    const isStand = !isDemo && (typeStr.includes('stand') || typeStr.includes('stts') || typeStr.includes('mesa'));
+    const isCard = !isDemo && !isStand && (typeStr.includes('card') || typeStr.includes('tarjeta') || typeStr.includes('sttt') || typeStr.includes('bolsillo'));
+    const prefix = isDemo ? 'STTD' : isStand ? 'STTS' : isCard ? 'STTT' : 'STT';
     let maxNumber = 1000;
 
     cards.forEach(c => {
       const codeId = (c.activation_code || c.card_id || '').toUpperCase();
-      if (isStand) {
+      if (isDemo) {
+        const match = codeId.match(/^STTD-(\d+)/i);
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxNumber) maxNumber = num;
+        }
+      } else if (isStand) {
         const match = codeId.match(/^STTS-(\d+)/i);
         if (match && match[1]) {
           const num = parseInt(match[1], 10);
@@ -701,7 +708,7 @@ class LocalDbService {
         }
       } else {
         const match = codeId.match(/^STT-(\d+)/i);
-        if (match && match[1] && !codeId.startsWith('STTT-') && !codeId.startsWith('STTS-')) {
+        if (match && match[1] && !codeId.startsWith('STTT-') && !codeId.startsWith('STTS-') && !codeId.startsWith('STTD-')) {
           const num = parseInt(match[1], 10);
           if (!isNaN(num) && num > maxNumber) maxNumber = num;
         }
@@ -1801,9 +1808,10 @@ class LocalDbService {
     codes: string[];
   } {
     const typeStr = (deviceType || '').toLowerCase();
-    const isStand = typeStr.includes('stand') || typeStr.includes('stts') || typeStr.includes('mesa');
-    const isCard = !isStand && (typeStr.includes('card') || typeStr.includes('tarjeta') || typeStr.includes('sttt') || typeStr.includes('bolsillo'));
-    const prefix = isStand ? 'STTS' : isCard ? 'STTT' : 'STT';
+    const isDemo = typeStr.includes('demo') || typeStr.includes('sttd') || typeStr.includes('regalo') || typeStr.includes('prueba');
+    const isStand = !isDemo && (typeStr.includes('stand') || typeStr.includes('stts') || typeStr.includes('mesa'));
+    const isCard = !isDemo && !isStand && (typeStr.includes('card') || typeStr.includes('tarjeta') || typeStr.includes('sttt') || typeStr.includes('bolsillo'));
+    const prefix = isDemo ? 'STTD' : isStand ? 'STTS' : isCard ? 'STTT' : 'STT';
 
     let startNum = 1001;
     if (customStart && customStart.trim()) {

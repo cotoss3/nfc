@@ -118,8 +118,8 @@ export default function InventarioPage() {
   const [endDate, setEndDate] = useState<string>('');
 
   // TAG Hardware Inventory State
-  const [tagHardwareType, setTagHardwareType] = useState<'stand' | 'plate' | 'card'>('stand');
-  const [tagHardwareFilter, setTagHardwareFilter] = useState<'all' | 'stand' | 'plate' | 'card'>('all');
+  const [tagHardwareType, setTagHardwareType] = useState<'stand' | 'plate' | 'card' | 'demo'>('stand');
+  const [tagHardwareFilter, setTagHardwareFilter] = useState<'all' | 'stand' | 'plate' | 'card' | 'demo'>('all');
   const [tagSearch, setTagSearch] = useState('');
   const [tagChannelFilter, setTagChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
   const [tagClaimFilter, setTagClaimFilter] = useState<'all' | 'claimed' | 'unclaimed'>('all');
@@ -428,14 +428,15 @@ export default function InventarioPage() {
   }, [productStocks, productSearch, categoryFilter, stockStatusFilter]);
 
   // Switch Hardware Type for new TAG
-  const handleHardwareTypeChange = (type: 'stand' | 'plate' | 'card') => {
+  const handleHardwareTypeChange = (type: 'stand' | 'plate' | 'card' | 'demo') => {
     setTagHardwareType(type);
     const nextCode = dbLocal.getNextStickerCode(type);
     setTagCode(nextCode);
-    const labelMap: Record<'stand' | 'plate' | 'card', string> = {
+    const labelMap: Record<'stand' | 'plate' | 'card' | 'demo', string> = {
       stand: 'Stand NFC de Mesa',
       plate: 'Placa NFC de Mostrador',
       card: 'Tarjeta NFC de Bolsillo',
+      demo: 'Muestra Demo / Regalo',
     };
     setTagLabel(`${labelMap[type]} (${nextCode})`);
   };
@@ -460,12 +461,14 @@ export default function InventarioPage() {
         tagChannelFilter === 'all' || card.channels === tagChannelFilter;
 
       const codeUpper = (card.card_id || card.activation_code || '').toUpperCase();
-      const isStand = codeUpper.startsWith('STTS-') || (card.label && card.label.toLowerCase().includes('stand'));
-      const isCard = codeUpper.startsWith('STTT-') || (card.label && card.label.toLowerCase().includes('tarjeta'));
-      const isPlate = !isStand && !isCard;
+      const isDemo = codeUpper.startsWith('STTD-') || card.tipo_activacion === 'prueba';
+      const isStand = !isDemo && (codeUpper.startsWith('STTS-') || (card.label && card.label.toLowerCase().includes('stand')));
+      const isCard = !isDemo && !isStand && (codeUpper.startsWith('STTT-') || (card.label && card.label.toLowerCase().includes('tarjeta')));
+      const isPlate = !isDemo && !isStand && !isCard;
 
       const matchHardware =
         tagHardwareFilter === 'all' ||
+        (tagHardwareFilter === 'demo' && isDemo) ||
         (tagHardwareFilter === 'stand' && isStand) ||
         (tagHardwareFilter === 'card' && isCard) ||
         (tagHardwareFilter === 'plate' && isPlate);
@@ -835,10 +838,11 @@ export default function InventarioPage() {
     setTagSuccessMsg(`¡TAG "${newCardObj.card_id}" creado y registrado exitosamente!`);
     const nextTagCode = dbLocal.getNextStickerCode(tagHardwareType);
     setTagCode(nextTagCode);
-    const labelMap: Record<'stand' | 'plate' | 'card', string> = {
+    const labelMap: Record<'stand' | 'plate' | 'card' | 'demo', string> = {
       stand: 'Stand NFC de Mesa',
       plate: 'Placa NFC de Mostrador',
       card: 'Tarjeta NFC de Bolsillo',
+      demo: 'Muestra Demo / Regalo',
     };
     setTagLabel(`${labelMap[tagHardwareType]} (${nextTagCode})`);
     setTagUrl('');

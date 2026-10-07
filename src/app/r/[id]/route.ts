@@ -43,7 +43,7 @@ export async function GET(
     try {
       let clean = cardId.trim().toLowerCase();
       let searchCode = clean;
-      const prefixMatch = clean.match(/^(sttt|stts|stt)-?(\d+)$/i);
+      const prefixMatch = clean.match(/^(sttt|stts|sttd|stt)-?(\d+)$/i);
       if (prefixMatch) {
         const prefix = prefixMatch[1].toLowerCase();
         const num = parseInt(prefixMatch[2], 10);
@@ -423,12 +423,23 @@ export async function GET(
       break;
   }
 
+  const cleanIdUpper = (resolvedCardId || cardId).toUpperCase();
+  const isDemoTag = cleanIdUpper.startsWith('STTD-') || cardType === 'demo' || cardType === 'prueba';
+
+  if (isDemoTag) {
+    heroTopIcon = '🎁 ★★★★★';
+    heroGreeting = '¡Muestra Demo starTAP!';
+    heroSubtitle = 'Experiencia de prueba contactless para';
+    heroButtonLabel = 'Probar enlace de destino ↗';
+  }
+
   const safeCardIdJson = JSON.stringify(resolvedCardId);
   const safeScanIdJson = JSON.stringify(scanId);
   const safeGroupNameJson = JSON.stringify(groupName);
   const safeScanTypeJson = JSON.stringify(scanType);
   const safeDeviceJson = JSON.stringify(device);
   const safeTargetUrlJson = JSON.stringify(safeTargetUrl);
+  const safeIsDemoJson = JSON.stringify(isDemoTag);
 
   // 6. Pantalla Puente Clara Ejecutiva (8 Segundos + Cumplimiento Better Ads / Google <=30% + Telemetría de Comportamiento)
   return new NextResponse(`<!DOCTYPE html>
@@ -725,14 +736,20 @@ export async function GET(
   <main class="bridge-card">
     <!-- 1. PROTAGONISTA PRINCIPAL: Dinámico según Plataforma / Red del TAG -->
     <div class="hero-review-box">
-      <span class="status-badge">
-        <span class="status-dot"></span>
-        Conexión Oficial • ${escaparHtml(resolvedCardId)}
+      <span class="status-badge" ${isDemoTag ? 'style="background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8;"' : ''}>
+        <span class="status-dot" ${isDemoTag ? 'style="background: #3b82f6;"' : ''}></span>
+        ${isDemoTag ? '🎁 Muestra Demo de Regalo' : 'Conexión Oficial'} • ${escaparHtml(resolvedCardId)}
       </span>
       <div class="stars-row" aria-hidden="true">${escaparHtml(heroTopIcon)}</div>
       <p class="thanks-title">${escaparHtml(heroGreeting)}</p>
       <p class="status-subtitle">${escaparHtml(heroSubtitle)}</p>
       <h1 class="commerce-name">${escaparHtml(displayCommerceName)}</h1>
+
+      ${isDemoTag ? `
+      <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 8px 12px; margin: 8px 0; font-size: 11px; color: #475569; font-weight: 600; text-align: center;">
+        💡 <strong>Modo Demo / Regalo:</strong> Toca el botón amarillo para probar la redirección a tu enlace en vivo.
+      </div>
+      ` : ''}
 
       <button type="button" id="skip-btn" class="skip-btn">
         <span>${escaparHtml(heroButtonLabel)}</span>
@@ -789,6 +806,7 @@ export async function GET(
       var cardId = ${safeCardIdJson};
       var scanId = ${safeScanIdJson};
       var scanType = ${safeScanTypeJson};
+      var isDemoTag = ${safeIsDemoJson};
       var hasRedirected = false;
       var skipBtn = document.getElementById('skip-btn');
       var adSlot = document.getElementById('startap-ad-slot');
@@ -913,10 +931,12 @@ export async function GET(
         });
       }
 
-      // Redirección silenciosa a los 8 segundos sin barras ni contadores que distraigan la lectura
-      setTimeout(function() {
-        executeRedirect('auto_8s', 'auto_time');
-      }, 8000);
+      // Redirección silenciosa a los 8 segundos SOLO si no es etiqueta Demo/Regalo
+      if (!isDemoTag) {
+        setTimeout(function() {
+          executeRedirect('auto_8s', 'auto_time');
+        }, 8000);
+      }
     })();
   </script>
 </body>

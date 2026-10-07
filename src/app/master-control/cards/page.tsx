@@ -45,10 +45,10 @@ export default function CardsManagementPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'claimed' | 'unclaimed' | 'active' | 'inactive'>('all');
   const [channelFilter, setChannelFilter] = useState<'all' | 'both' | 'nfc' | 'qr'>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [hardwareFilter, setHardwareFilter] = useState<'all' | 'stand' | 'plate' | 'card'>('all');
+  const [hardwareFilter, setHardwareFilter] = useState<'all' | 'stand' | 'plate' | 'card' | 'demo'>('all');
 
   // Create Tag Form States
-  const [newHardwareType, setNewHardwareType] = useState<'stand' | 'plate' | 'card'>('stand');
+  const [newHardwareType, setNewHardwareType] = useState<'stand' | 'plate' | 'card' | 'demo'>('stand');
   const [newCardId, setNewCardId] = useState('');
   const [newLabel, setNewLabel] = useState('');
   const [newUrl, setNewUrl] = useState('');
@@ -84,19 +84,6 @@ export default function CardsManagementPage() {
   // Pagination State
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(15);
-
-  const handleSelectHardwareType = (hw: 'stand' | 'plate' | 'card') => {
-    setNewHardwareType(hw);
-    const code = dbLocal.getNextStickerCode(hw);
-    setNewCardId(code);
-    if (!newLabel || newLabel.startsWith('Stand') || newLabel.startsWith('Placa') || newLabel.startsWith('Tarjeta')) {
-      const defaultName =
-        hw === 'stand' ? `Stand NFC de Mesa (${code})` :
-        hw === 'card' ? `Tarjeta NFC de Bolsillo (${code})` :
-        `Placa NFC de Mostrador (${code})`;
-      setNewLabel(defaultName);
-    }
-  };
 
   const loadData = async () => {
     setLoading(true);
@@ -168,12 +155,14 @@ export default function CardsManagementPage() {
         typeFilter === 'all' || (card.type || 'google') === typeFilter;
 
       const codeUpper = (card.card_id || card.activation_code || '').toUpperCase();
-      const isStand = codeUpper.startsWith('STTS-') || (card.label && card.label.toLowerCase().includes('stand'));
-      const isCard = codeUpper.startsWith('STTT-') || (card.label && card.label.toLowerCase().includes('tarjeta'));
-      const isPlate = !isStand && !isCard;
+      const isDemo = codeUpper.startsWith('STTD-') || card.tipo_activacion === 'prueba';
+      const isStand = !isDemo && (codeUpper.startsWith('STTS-') || (card.label && card.label.toLowerCase().includes('stand')));
+      const isCard = !isDemo && !isStand && (codeUpper.startsWith('STTT-') || (card.label && card.label.toLowerCase().includes('tarjeta')));
+      const isPlate = !isDemo && !isStand && !isCard;
 
       const matchHardware =
         hardwareFilter === 'all' ||
+        (hardwareFilter === 'demo' && isDemo) ||
         (hardwareFilter === 'stand' && isStand) ||
         (hardwareFilter === 'card' && isCard) ||
         (hardwareFilter === 'plate' && isPlate);
@@ -399,6 +388,24 @@ export default function CardsManagementPage() {
     }
   };
 
+  // Select Hardware Type for new card
+  const handleSelectHardwareType = (type: 'stand' | 'plate' | 'card' | 'demo') => {
+    setNewHardwareType(type);
+    const nextCode = dbLocal.getNextStickerCode(type);
+    setNewCardId(nextCode);
+    const labelMap: Record<'stand' | 'plate' | 'card' | 'demo', string> = {
+      stand: 'Stand NFC de Mesa',
+      plate: 'Placa NFC de Mostrador',
+      card: 'Tarjeta NFC de Bolsillo',
+      demo: 'Muestra Demo / Regalo',
+    };
+    setNewLabel(`${labelMap[type]} (${nextCode})`);
+    if (type === 'demo') {
+      setNewTipoActivacion('prueba');
+      setNewPrecioVenta('0.00');
+    }
+  };
+
   // Copy URL to Clipboard
   const copyToClipboard = (text: string, id: string) => {
     if (navigator.clipboard) {
@@ -518,7 +525,7 @@ export default function CardsManagementPage() {
             {/* SELECTOR DE FORMATO DE HARDWARE */}
             <div className="space-y-1.5 pb-1">
               <label className="font-bold text-slate-700 block">Formato de Dispositivo / Prefijo Serial *</label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
                   onClick={() => handleSelectHardwareType('stand')}
@@ -556,6 +563,19 @@ export default function CardsManagementPage() {
                 >
                   <span className="font-black">Tarjeta Bolsillo</span>
                   <span className="text-[10px] font-mono opacity-80 font-bold">(STTT-XXXX)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSelectHardwareType('demo')}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition flex flex-col items-center gap-1 ${
+                    newHardwareType === 'demo'
+                      ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span className="font-black">🎁 Demo / Regalo</span>
+                  <span className="text-[10px] font-mono opacity-80 font-bold">(STTD-XXXX)</span>
                 </button>
               </div>
             </div>
@@ -812,6 +832,7 @@ export default function CardsManagementPage() {
                 <option value="stand">🪧 Stands NFC (STTS-)</option>
                 <option value="plate">🏷️ Placas Mostrador (STT-)</option>
                 <option value="card">💳 Tarjetas Bolsillo (STTT-)</option>
+                <option value="demo">🎁 Demos / Regalos (STTD-)</option>
               </select>
 
               <select
@@ -1332,7 +1353,7 @@ export default function CardsManagementPage() {
         isOpen={isBulkModalOpen}
         onClose={() => setIsBulkModalOpen(false)}
         onSuccess={loadData}
-        initialHardwareType={newHardwareType}
+        initialHardwareType={newHardwareType === 'demo' ? 'stand' : newHardwareType}
       />
 
     </div>
