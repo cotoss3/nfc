@@ -327,25 +327,17 @@ De código solo toca esto:
 Lo demás (buscar la copia y, si existe, presentar la retirada por derechos de
 autor ante Google) lo hace Fernando. No lo ejecutes tú.
 
-### 9.4 · Señales de entidad de marca
+### 9.4 · Señales de entidad de marca — RESUELTO (7 oct 2026)
 
-Hoy `startap.com.pa` aparece en **posición 13** por la consulta "startap", su
-propia marca, y en posición 49 por "skin tap en panama", que no es su marca ni su
-rubro. Google no tiene claro qué entidad es el sitio.
+Fernando pasó la URL oficial de Google Business Profile:
+`https://maps.app.goo.gl/MG3YyRykfUTvL4B79` (5.0 ⭐, 5 reseñas).
 
-En `src/components/StructuredData.tsx` el `sameAs` aparece dos veces (líneas 24 y
-101) y en ambas solo trae dos entradas:
-
-```ts
-sameAs: [
-  'https://www.datakorex.com',
-  'https://www.facebook.com/profile.php?id=61594455868652',
-],
-```
-
-Añadir en los dos bloques el perfil de Google Business de starTAP y el Instagram
-cuando Fernando pase las URLs. Falta el perfil de Google, que es el que más pesa
-para una marca local.
+Se integró en:
+1. `src/components/StructuredData.tsx`: `sameAs` de `organizationSchema` y `storeSchema`.
+2. `src/components/StructuredData.tsx`: propiedad `hasMap` en `serviceSchema` y `storeSchema`.
+3. `src/components/StructuredData.tsx`: `aggregateRating` real de 5.0 con 5 reseñas en `storeSchema`.
+4. `src/lib/blog.ts`: `sameAs` del autor Fernando Contreras.
+5. `src/components/Footer.tsx`: badge visible "★ 5.0 Google Maps (5 reseñas)" con enlace recíproco al perfil.
 
 ### 9.5 · Lo que NO es de código (lo hace Fernando)
 
