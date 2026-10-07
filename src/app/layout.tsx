@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     'stand nfc reseñas panama',
     'nfc google reviews panama',
   ],
+  authors: [{ name: 'DataKorex', url: 'https://www.datakorex.com' }],
+  creator: 'DataKorex',
+  publisher: 'starTAP Panamá',
   verification: {
     google: '1igPIkAizA33F2BubkJ8H7lEqWOh9QHVFAOkvAXdgBc',
     // Verificacion del dominio en el portfolio comercial de Meta.
