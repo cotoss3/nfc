@@ -1353,7 +1353,7 @@ export default function CardsManagementPage() {
         isOpen={isBulkModalOpen}
         onClose={() => setIsBulkModalOpen(false)}
         onSuccess={loadData}
-        initialHardwareType={newHardwareType === 'demo' ? 'stand' : newHardwareType}
+        initialHardwareType={newHardwareType}
       />
 
     </div>

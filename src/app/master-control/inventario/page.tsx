@@ -141,7 +141,7 @@ export default function InventarioPage() {
 
   // Bulk Add Modal & Stock Audit State
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
-  const [bulkHardwareType, setBulkHardwareType] = useState<'stand' | 'plate' | 'card'>('stand');
+  const [bulkHardwareType, setBulkHardwareType] = useState<'stand' | 'plate' | 'card' | 'demo'>('stand');
   const [auditItems, setAuditItems] = useState<StockAuditItem[]>([]);
   const [reconcileSuccessMsg, setReconcileSuccessMsg] = useState('');
 
@@ -358,7 +358,7 @@ export default function InventarioPage() {
     setLoading(false);
   };
 
-  const handleOpenBulkModal = (type: 'stand' | 'plate' | 'card' = 'stand') => {
+  const handleOpenBulkModal = (type: 'stand' | 'plate' | 'card' | 'demo' = 'stand') => {
     setBulkHardwareType(type);
     setIsBulkModalOpen(true);
   };

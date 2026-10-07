@@ -25,7 +25,7 @@ interface BulkAddBatchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  initialHardwareType?: 'stand' | 'plate' | 'card';
+  initialHardwareType?: 'stand' | 'plate' | 'card' | 'demo';
 }
 
 export default function BulkAddBatchModal({
@@ -34,7 +34,7 @@ export default function BulkAddBatchModal({
   onSuccess,
   initialHardwareType = 'stand'
 }: BulkAddBatchModalProps) {
-  const [hardwareType, setHardwareType] = useState<'stand' | 'plate' | 'card'>(initialHardwareType);
+  const [hardwareType, setHardwareType] = useState<'stand' | 'plate' | 'card' | 'demo'>(initialHardwareType);
   const [quantity, setQuantity] = useState<number>(50);
   const [customStartCode, setCustomStartCode] = useState<string>('');
   const [batchId, setBatchId] = useState<string>('');
@@ -64,9 +64,9 @@ export default function BulkAddBatchModal({
     }
   }, [isOpen, initialHardwareType]);
 
-  const updateDefaults = (type: 'stand' | 'plate' | 'card', qty: number) => {
-    const defaultCost = type === 'stand' ? 2.00 : type === 'card' ? 1.50 : 2.25;
-    const defaultSupplier = type === 'card' ? 'SmartCard Global Panama' : 'Shenzhen Micro-NFC Tech';
+  const updateDefaults = (type: 'stand' | 'plate' | 'card' | 'demo', qty: number) => {
+    const defaultCost = type === 'demo' ? 0.30 : type === 'stand' ? 2.00 : type === 'card' ? 1.50 : 2.25;
+    const defaultSupplier = type === 'demo' ? 'Producción Muestras Internas' : type === 'card' ? 'SmartCard Global Panama' : 'Shenzhen Micro-NFC Tech';
     setUnitCost(defaultCost);
     setSupplier(defaultSupplier);
     
@@ -82,7 +82,7 @@ export default function BulkAddBatchModal({
     }
   };
 
-  const handleSelectType = (type: 'stand' | 'plate' | 'card') => {
+  const handleSelectType = (type: 'stand' | 'plate' | 'card' | 'demo') => {
     setHardwareType(type);
     updateDefaults(type, quantity);
   };
@@ -103,12 +103,13 @@ export default function BulkAddBatchModal({
     try {
       return dbLocal.getNextSequentialRange(hardwareType, quantity, customStartCode);
     } catch {
+      const prefix = hardwareType === 'demo' ? 'STTD' : hardwareType === 'stand' ? 'STTS' : hardwareType === 'card' ? 'STTT' : 'STT';
       return {
-        prefix: hardwareType === 'stand' ? 'STTS' : hardwareType === 'card' ? 'STTT' : 'STT',
+        prefix,
         startNum: 1001,
         endNum: 1000 + quantity,
-        startCode: `${hardwareType === 'stand' ? 'STTS' : hardwareType === 'card' ? 'STTT' : 'STT'}-1001`,
-        endCode: `${hardwareType === 'stand' ? 'STTS' : hardwareType === 'card' ? 'STTT' : 'STT'}-${1000 + quantity}`,
+        startCode: `${prefix}-1001`,
+        endCode: `${prefix}-${1000 + quantity}`,
         codes: []
       };
     }
@@ -153,7 +154,7 @@ export default function BulkAddBatchModal({
     const rows = result.createdCards.map(c => [
       c.card_id,
       c.activation_code || c.card_id,
-      hardwareType === 'stand' ? 'Stand NFC de Mesa' : hardwareType === 'card' ? 'Tarjeta NFC' : 'Placa Mostrador',
+      hardwareType === 'demo' ? 'Muestra Demo / Regalo' : hardwareType === 'stand' ? 'Stand NFC de Mesa' : hardwareType === 'card' ? 'Tarjeta NFC' : 'Placa Mostrador',
       'En Stock (Disponible)',
       `https://startap.com.pa/r/${c.card_id}`,
       result.batch.id,
@@ -192,7 +193,7 @@ export default function BulkAddBatchModal({
             ${c.card_id}
           </div>
           <div style="font-size: 8px; font-weight: 700; color: #64748b; text-transform: uppercase;">
-            ${hardwareType === 'stand' ? 'Stand NFC Mesa' : hardwareType === 'card' ? 'Tarjeta NFC' : 'Placa Mostrador'} · ${result.batch.id}
+            ${hardwareType === 'demo' ? 'Muestra Demo' : hardwareType === 'stand' ? 'Stand NFC Mesa' : hardwareType === 'card' ? 'Tarjeta NFC' : 'Placa Mostrador'} · ${result.batch.id}
           </div>
         </div>
       </div>
@@ -349,7 +350,7 @@ export default function BulkAddBatchModal({
                 <label className="font-bold text-slate-700 block text-xs">
                   1. Formato de Hardware a Ingresar *
                 </label>
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
                   <button
                     type="button"
                     onClick={() => handleSelectType('stand')}
@@ -387,6 +388,19 @@ export default function BulkAddBatchModal({
                   >
                     <span className="font-black text-xs">Tarjeta Bolsillo</span>
                     <span className="text-[10px] font-mono font-bold opacity-80">Prefijo (STTT-XXXX)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectType('demo')}
+                    className={`p-3 rounded-2xl border text-center transition flex flex-col items-center gap-1 ${
+                      hardwareType === 'demo'
+                        ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-sm ring-2 ring-amber-400/30'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    <span className="font-black text-xs">🎁 Muestras Demo</span>
+                    <span className="text-[10px] font-mono font-bold opacity-80">Prefijo (STTD-XXXX)</span>
                   </button>
                 </div>
               </div>

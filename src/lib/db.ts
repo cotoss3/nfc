@@ -1845,7 +1845,7 @@ class LocalDbService {
   }
 
   createBatchTagIngestion(params: {
-    hardwareType: 'stand' | 'plate' | 'card';
+    hardwareType: 'stand' | 'plate' | 'card' | 'demo';
     quantity: number;
     customStartCode?: string;
     batchId?: string;
@@ -1873,16 +1873,19 @@ class LocalDbService {
 
     // Configuración por tipo de hardware
     const productId =
+      hardwareType === 'demo' ? 'muestra-demo-regalo' :
       hardwareType === 'stand' ? 'stand-nfc-mesa' :
       hardwareType === 'card' ? 'tarjeta-nfc-bolsillo' :
       'placa-nfc-mostrador';
 
     const productName =
+      hardwareType === 'demo' ? 'Etiqueta Muestra Demo / Regalo (STTD)' :
       hardwareType === 'stand' ? 'Stand NFC para Reseñas de Google' :
       hardwareType === 'card' ? 'Tarjeta NFC de Bolsillo' :
       'Placa NFC para Reseñas de Google';
 
     const defaultUnitCost =
+      hardwareType === 'demo' ? 0.30 :
       hardwareType === 'stand' ? 2.00 :
       hardwareType === 'card' ? 1.50 :
       2.25;
@@ -1890,6 +1893,7 @@ class LocalDbService {
     const cost = typeof unitCost === 'number' && unitCost > 0 ? unitCost : defaultUnitCost;
 
     const labelBase =
+      hardwareType === 'demo' ? 'Muestra Demo starTAP' :
       hardwareType === 'stand' ? 'Stand NFC de Mesa' :
       hardwareType === 'card' ? 'Tarjeta NFC de Bolsillo' :
       'Placa NFC de Mostrador';
@@ -1901,15 +1905,17 @@ class LocalDbService {
       const cardObj: NfcCard = {
         card_id: code,
         activation_code: code,
-        owner_id: 'unassigned',
-        owner_name: 'Sin Asignar (Stock)',
-        owner_email: 'admin@startap.com.pa',
+        owner_id: hardwareType === 'demo' ? 'demo-sample' : 'unassigned',
+        owner_name: hardwareType === 'demo' ? 'Muestra Demo / Prospecto' : 'Sin Asignar (Stock)',
+        owner_email: hardwareType === 'demo' ? 'demo@startap.com.pa' : 'admin@startap.com.pa',
         label: `${labelBase} (${code})`,
-        target_url: defaultTargetUrl || 'https://google.com',
-        nfc_target_url: defaultTargetUrl || 'https://google.com',
-        is_active: false,
+        target_url: defaultTargetUrl || '',
+        nfc_target_url: defaultTargetUrl || '',
+        is_active: true,
         claimed: false,
-        estado: 'en_stock',
+        estado: hardwareType === 'demo' ? 'asignado' : 'en_stock',
+        tipo_activacion: hardwareType === 'demo' ? 'prueba' : undefined,
+        precio_venta: hardwareType === 'demo' ? 0 : undefined,
         type: 'google',
         channels: 'both',
         created_at: new Date().toISOString()
@@ -1942,13 +1948,13 @@ class LocalDbService {
     if (!productStocks[productId]) {
       productStocks[productId] = {
         product_id: productId,
-        sku: `STP-${hardwareType === 'stand' ? '0103' : hardwareType === 'card' ? '0102' : '0101'}`,
+        sku: `STP-${hardwareType === 'demo' ? '0104' : hardwareType === 'stand' ? '0103' : hardwareType === 'card' ? '0102' : '0101'}`,
         name: productName,
         category: hardwareType === 'card' ? 'cards' : 'plates',
         current_stock: 0,
         min_alert_stock: 10,
         unit_cost: cost,
-        selling_price: hardwareType === 'stand' ? 30 : hardwareType === 'card' ? 20 : 35
+        selling_price: hardwareType === 'demo' ? 0 : hardwareType === 'stand' ? 30 : hardwareType === 'card' ? 20 : 35
       };
     }
 
@@ -1963,6 +1969,7 @@ class LocalDbService {
     }
 
     this.setStorageItem('inventory_product_stocks', productStocks);
+    const calculatedStock = productStocks[productId].current_stock;
 
     // 4. Registrar en Lotes de Inventario (inventory_batches)
     const batches = this.getStorageItem<InventoryBatch[]>('inventory_batches', []);

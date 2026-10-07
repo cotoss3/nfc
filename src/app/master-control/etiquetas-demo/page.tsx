@@ -51,6 +51,9 @@ export default function EtiquetasDemoPage() {
   const [newIsActive, setNewIsActive] = useState(true);
   const [createSuccessMsg, setCreateSuccessMsg] = useState('');
 
+  // Tabs de creación: Individual o En Lote
+  const [createTab, setCreateTab] = useState<'single' | 'bulk'>('single');
+
   // Modal de edición rápida
   const [editingCard, setEditingCard] = useState<NfcCard | null>(null);
   const [editLabel, setEditLabel] = useState('');
@@ -65,7 +68,7 @@ export default function EtiquetasDemoPage() {
   const [inlineEditingId, setInlineEditingId] = useState<string | null>(null);
   const [inlineUrlVal, setInlineUrlVal] = useState('');
 
-  // Modal de creación en lote
+  // Configuración de creación en lote
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkQuantity, setBulkQuantity] = useState(10);
   const [bulkStartPrefix, setBulkStartPrefix] = useState('STTD-');
@@ -174,6 +177,24 @@ export default function EtiquetasDemoPage() {
 
     return { total, active, inactive, configured, unconfigured, demoScansCount };
   }, [demoCards, scans]);
+
+  // Previsualización de correlativo en lote
+  const bulkPreviewRange = useMemo(() => {
+    let maxNum = 1000;
+    cards.forEach(c => {
+      const codeId = (c.activation_code || c.card_id || '').toUpperCase();
+      const match = codeId.match(/^STTD-(\d+)/i);
+      if (match && match[1]) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num) && num > maxNum) maxNum = num;
+      }
+    });
+    const qty = Math.max(1, bulkQuantity);
+    return {
+      startCode: `STTD-${maxNum + 1}`,
+      endCode: `STTD-${maxNum + qty}`,
+    };
+  }, [cards, bulkQuantity]);
 
   // Copiar al portapapeles
   const copyToClipboard = (text: string, id: string) => {
@@ -522,120 +543,222 @@ export default function EtiquetasDemoPage() {
       {/* TWO-COLUMN: CREAR NUEVA DEMO (IZQ) & LISTADO CON EDICIÓN RÁPIDA (DER) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* LEFT: CREAR NUEVA DEMO INDIVIDUAL */}
+        {/* LEFT: CREAR NUEVA DEMO (INDIVIDUAL O EN LOTE) */}
         <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
-          <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
-            <div>
-              <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                <Plus className="w-4 h-4 text-amber-500" />
-                Registrar Etiqueta Demo
-              </h2>
-              <p className="text-xs text-slate-500">Crea una muestra para regalar a un prospecto o cliente.</p>
+          <div className="border-b border-slate-100 pb-3">
+            <h2 className="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+              <Gift className="w-4 h-4 text-amber-500" />
+              Crear Muestras Demo
+            </h2>
+            <p className="text-xs text-slate-500">Crea etiquetas para regalar a prospectos y clientes.</p>
+
+            {/* TABS SELECTOR */}
+            <div className="grid grid-cols-2 gap-1.5 mt-3 bg-slate-100 p-1 rounded-2xl">
+              <button
+                type="button"
+                onClick={() => setCreateTab('single')}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                  createTab === 'single'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Plus className="w-3.5 h-3.5 text-amber-500" />
+                <span>Individual</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCreateTab('bulk')}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                  createTab === 'bulk'
+                    ? 'bg-amber-500 text-slate-950 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Boxes className="w-3.5 h-3.5" />
+                <span>En Lote (Tanda)</span>
+              </button>
             </div>
           </div>
 
-          <form onSubmit={handleCreateDemoCard} className="space-y-4 text-xs">
-            <div className="space-y-1">
-              <label className="font-bold text-slate-700">Serial Demo *</label>
-              <input
-                type="text"
-                required
-                value={newCardId}
-                onChange={e => setNewCardId(e.target.value)}
-                placeholder="Ej. STTD-1001"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="font-bold text-slate-700">Nombre del Local / Prospecto *</label>
-              <input
-                type="text"
-                required
-                value={newLabel}
-                onChange={e => setNewLabel(e.target.value)}
-                placeholder="Ej. Café Bella Vista (Muestra)"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="font-bold text-slate-700">URL de Redirección (Destino Final)</label>
-              <input
-                type="url"
-                value={newTargetUrl}
-                onChange={e => setNewTargetUrl(e.target.value)}
-                placeholder="https://search.google.com/local/writereview?placeid=..."
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
-              />
-              <span className="text-[10px] text-slate-400 block mt-0.5">Puedes dejarlo en blanco y editarlo luego en 1 clic.</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+          {createTab === 'single' ? (
+            <form onSubmit={handleCreateDemoCard} className="space-y-4 text-xs">
               <div className="space-y-1">
-                <label className="font-bold text-slate-700">Tipo de Red</label>
+                <label className="font-bold text-slate-700">Serial Demo *</label>
+                <input
+                  type="text"
+                  required
+                  value={newCardId}
+                  onChange={e => setNewCardId(e.target.value)}
+                  placeholder="Ej. STTD-1001"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Nombre del Local / Prospecto *</label>
+                <input
+                  type="text"
+                  required
+                  value={newLabel}
+                  onChange={e => setNewLabel(e.target.value)}
+                  placeholder="Ej. Café Bella Vista (Muestra)"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">URL de Redirección (Destino Final)</label>
+                <input
+                  type="url"
+                  value={newTargetUrl}
+                  onChange={e => setNewTargetUrl(e.target.value)}
+                  placeholder="https://search.google.com/local/writereview?placeid=..."
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"
+                />
+                <span className="text-[10px] text-slate-400 block mt-0.5">Puedes dejarlo en blanco y editarlo luego en 1 clic.</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Tipo de Red</label>
+                  <select
+                    value={newType}
+                    onChange={e => setNewType(e.target.value)}
+                    className="w-full px-2.5 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none cursor-pointer"
+                  >
+                    <option value="google">Google Reviews ⭐</option>
+                    <option value="instagram">Instagram 📸</option>
+                    <option value="tiktok">TikTok 🎵</option>
+                    <option value="whatsapp">WhatsApp 💬</option>
+                    <option value="facebook">Facebook 👍</option>
+                    <option value="tripadvisor">TripAdvisor 🦉</option>
+                    <option value="vcard">vCard / Contacto 👤</option>
+                    <option value="custom">Personalizado 🔗</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Canales</label>
+                  <select
+                    value={newChannels}
+                    onChange={e => setNewChannels(e.target.value as any)}
+                    className="w-full px-2.5 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none cursor-pointer"
+                  >
+                    <option value="both">NFC + QR (Ambos)</option>
+                    <option value="nfc">Solo NFC</option>
+                    <option value="qr">Solo QR</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Contacto / Negocio</label>
+                  <input
+                    type="text"
+                    value={newOwnerName}
+                    onChange={e => setNewOwnerName(e.target.value)}
+                    placeholder="Persona de contacto"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Email o Celular</label>
+                  <input
+                    type="text"
+                    value={newOwnerEmail}
+                    onChange={e => setNewOwnerEmail(e.target.value)}
+                    placeholder="email@local.com"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Guardar Etiqueta Demo</span>
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleGenerateBulk} className="space-y-4 text-xs">
+              <div className="p-3.5 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-amber-950 text-xs">Cantidad en Lote *</span>
+                  <div className="flex gap-1">
+                    {[10, 20, 50].map(qty => (
+                      <button
+                        key={qty}
+                        type="button"
+                        onClick={() => setBulkQuantity(qty)}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition ${
+                          bulkQuantity === qty
+                            ? 'bg-slate-950 text-amber-400 border-slate-950'
+                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        +{qty}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  required
+                  value={bulkQuantity}
+                  onChange={e => setBulkQuantity(parseInt(e.target.value) || 1)}
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 text-sm outline-none focus:ring-2 focus:ring-amber-500"
+                />
+
+                <div className="pt-1 flex items-center justify-between text-[11px] text-amber-900">
+                  <span className="font-medium">Rango Correlativo:</span>
+                  <span className="font-mono font-black">{bulkPreviewRange.startCode} → {bulkPreviewRange.endCode}</span>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Tipo de Destino Inicial</label>
                 <select
-                  value={newType}
-                  onChange={e => setNewType(e.target.value)}
+                  value={bulkType}
+                  onChange={e => setBulkType(e.target.value)}
                   className="w-full px-2.5 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none cursor-pointer"
                 >
                   <option value="google">Google Reviews ⭐</option>
                   <option value="instagram">Instagram 📸</option>
-                  <option value="tiktok">TikTok 🎵</option>
                   <option value="whatsapp">WhatsApp 💬</option>
-                  <option value="facebook">Facebook 👍</option>
-                  <option value="tripadvisor">TripAdvisor 🦉</option>
                   <option value="vcard">vCard / Contacto 👤</option>
                   <option value="custom">Personalizado 🔗</option>
                 </select>
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-slate-700">Canales</label>
-                <select
-                  value={newChannels}
-                  onChange={e => setNewChannels(e.target.value as any)}
-                  className="w-full px-2.5 py-2 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-800 outline-none cursor-pointer"
-                >
-                  <option value="both">NFC + QR (Ambos)</option>
-                  <option value="nfc">Solo NFC</option>
-                  <option value="qr">Solo QR</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Contacto / Negocio</label>
+                <label className="font-bold text-slate-700">URL por Defecto (Opcional)</label>
                 <input
-                  type="text"
-                  value={newOwnerName}
-                  onChange={e => setNewOwnerName(e.target.value)}
-                  placeholder="Persona de contacto"
+                  type="url"
+                  value={bulkDefaultUrl}
+                  onChange={e => setBulkDefaultUrl(e.target.value)}
+                  placeholder="Dejar en blanco para asignar después en 1 clic"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Email o Celular</label>
-                <input
-                  type="text"
-                  value={newOwnerEmail}
-                  onChange={e => setNewOwnerEmail(e.target.value)}
-                  placeholder="email@local.com"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 outline-none"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
-            >
-              <Gift className="w-4 h-4" />
-              <span>Guardar Etiqueta Demo</span>
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]"
+              >
+                <Boxes className="w-4 h-4" />
+                <span>Generar Lote de {bulkQuantity} Demos ({bulkPreviewRange.startCode} a {bulkPreviewRange.endCode})</span>
+              </button>
+            </form>
+          )}
         </div>
 
         {/* RIGHT: TABLA DE GESTIÓN Y EDICIÓN RÁPIDA */}
