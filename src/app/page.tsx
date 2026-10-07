@@ -50,13 +50,6 @@ export default async function Page() {
         'sku': 'STP-NFC-CARD-01',
         'mpn': 'STP-CRD-01',
         'gtin13': '0745301294801',
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.9',
-          'reviewCount': '128',
-          'bestRating': '5',
-          'worstRating': '1'
-        },
         'offers': {
           '@type': 'Offer',
           'price': tarjetaPrice.toFixed(2),
@@ -111,13 +104,6 @@ export default async function Page() {
         'sku': 'STP-NFC-PLACA-01',
         'mpn': 'STP-PLC-01',
         'gtin13': '0745301294818',
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '5.0',
-          'reviewCount': '184',
-          'bestRating': '5',
-          'worstRating': '1'
-        },
         'offers': {
           '@type': 'Offer',
           'price': placaPrice.toFixed(2),
@@ -172,13 +158,6 @@ export default async function Page() {
         'sku': 'STP-NFC-STAND-01',
         'mpn': 'STP-STD-01',
         'gtin13': '0745301294825',
-        'aggregateRating': {
-          '@type': 'AggregateRating',
-          'ratingValue': '4.9',
-          'reviewCount': '96',
-          'bestRating': '5',
-          'worstRating': '1'
-        },
         'offers': {
           '@type': 'Offer',
           'price': standPrice.toFixed(2),

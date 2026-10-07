@@ -21,8 +21,6 @@ export interface ProductConfig {
   sku?: string;
   mpn?: string;
   gtin13?: string;
-  ratingValue?: string;
-  reviewCount?: string;
 }
 
 export const PRODUCTS: ProductConfig[] = [
@@ -32,8 +30,6 @@ export const PRODUCTS: ProductConfig[] = [
     sku: 'STP-NFC-CARD-01',
     mpn: 'STP-CRD-01',
     gtin13: '0745301294801',
-    ratingValue: '4.9',
-    reviewCount: '128',
     name: 'Tarjeta NFC de Bolsillo',
     category: 'cards',
     categoryLabel: 'TARJETA DE BOLSILLO',
@@ -59,8 +55,6 @@ export const PRODUCTS: ProductConfig[] = [
     sku: 'STP-NFC-PLACA-01',
     mpn: 'STP-PLC-01',
     gtin13: '0745301294818',
-    ratingValue: '5.0',
-    reviewCount: '184',
     name: 'Placa NFC para Reseñas de Google',
     category: 'plates',
     categoryLabel: 'PLACA DE MOSTRADOR Y PARED',
@@ -84,8 +78,6 @@ export const PRODUCTS: ProductConfig[] = [
     sku: 'STP-NFC-STAND-01',
     mpn: 'STP-STD-01',
     gtin13: '0745301294825',
-    ratingValue: '4.9',
-    reviewCount: '96',
     name: 'Stand NFC para Reseñas de Google',
     category: 'stands',
     categoryLabel: 'STAND DE MESA Y RECEPCIÓN',
@@ -113,8 +105,6 @@ export const PRODUCTS: ProductConfig[] = [
     sku: 'STP-NFC-TRIO-01',
     mpn: 'STP-TRIO-01',
     gtin13: '0745301294832',
-    ratingValue: '5.0',
-    reviewCount: '210',
     name: 'Pack Trío Comercial (1 Placa Mostrador + 2 Tarjetas de Bolsillo)',
     category: 'packs',
     categoryLabel: 'PAQUETE EMPRESARIAL',

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Compass, Star } from 'lucide-react';
+import { ArrowRight, Compass } from 'lucide-react';
 import { PRODUCTS } from '@/config/products';
 import type { Metadata } from 'next';
 
@@ -100,14 +100,9 @@ export default function NotFound() {
                   {product.description}
                 </p>
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-auto">
-                  <div className="flex items-center gap-0.5 text-amber-400">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-3 h-3 fill-current" />
-                    ))}
-                    <span className="text-[10px] text-slate-400 ml-1 font-medium">
-                      ({product.reviewCount})
-                    </span>
-                  </div>
+                  <span className="text-[11px] font-semibold text-[#01A6D2]">
+                    NFC + Código QR
+                  </span>
                   <span className="text-sm font-black text-slate-950 font-mono">
                     {product.priceFormatted}
                   </span>

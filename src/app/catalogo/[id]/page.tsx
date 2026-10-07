@@ -73,13 +73,6 @@ export default function Page({ params }: { params: { id: string } }) {
         sku: product.sku || `STP-${product.id.toUpperCase()}`,
         mpn: product.mpn || `STP-${product.id.toUpperCase()}`,
         gtin13: product.gtin13 || '0745301294801',
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: product.ratingValue || '5.0',
-          reviewCount: product.reviewCount || '100',
-          bestRating: '5',
-          worstRating: '1',
-        },
         offers: {
           '@type': 'Offer',
           url: `${BASE_URL}/catalogo/${product.id}`,
