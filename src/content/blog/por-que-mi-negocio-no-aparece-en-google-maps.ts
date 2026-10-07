@@ -69,10 +69,9 @@ problema y se resuelve en la sección siguiente.
 
 Ahora busca la categoría: "taller de mecánica en Arraiján", "clínica dental
 Costa del Este", lo que sea tuyo. Si tu negocio no sale en el bloque de tres
-locales que Google pone arriba, ese es el problema real. No es que no existas.
-Es que Google no te está eligiendo.
+locales que Google pone arriba, ese es el problema real. Existes. Google no te está eligiendo.
 
-En nuestra prospección diaria en zonas como San Francisco, Bella Vista o Panamá Oeste, cerca del 40% de los negocios que visitamos creen que no tienen ficha en Google Maps cuando en realidad ya existe una generada automáticamente sin reclamar.
+En la prospección diaria por La Chorrera y Arraiján nos pasa seguido: el dueño está seguro de que no tiene ficha en Google Maps y ya existe una, generada sola y sin reclamar.
 
 ## Si no apareces ni buscándote por el nombre
 
@@ -107,7 +106,7 @@ Se resuelve pidiendo la fusión desde el perfil.
 
 ## Si apareces por tu nombre pero no en las búsquedas de categoría
 
-Aquí es donde está el 90% de los casos, y aquí es donde hay trabajo de verdad.
+Aquí cae la mayoría de los casos que me escriben, y aquí es donde hay trabajo de verdad.
 
 Google explica en su documentación de ayuda que para ordenar los resultados
 locales mira tres cosas: **relevancia** (qué tanto le calzas a lo que la persona
@@ -124,6 +123,10 @@ pusiste "salón de belleza", no vas a salir cuando busquen barbería.
 La categoría principal es una sola y define tus búsquedas. Las secundarias
 suman, pero no reemplazan. Vale la pena mirar qué categoría principal usan los
 tres que sí están saliendo arriba en tu zona.
+
+Si tienes [barbería o salón de belleza](/resenas-google/barberias-y-salones) o
+[taller y mecánica](/resenas-google/talleres-y-mecanicas), en esas páginas dejé
+las categorías que suelen estar mal puestas en cada rubro.
 
 ### Relevancia: los servicios y la descripción
 

@@ -198,7 +198,8 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 
 > Una fila por negocio. **Añadir, nunca reescribir.**
 > Estado: `pendiente` (listo para enviar) · `enviado` · `respondió` · `vendido` · `no`
-> Canal: `WhatsApp` · `Instagram` · `llamada`. Un negocio se contacta por un solo canal.
+> Canal: `WhatsApp` · `Instagram` · `llamada` · `visita` (pasamos por el local; el empleado paso el contacto del encargado) · `correo`.
+> Un negocio se contacta por un solo canal.
 
 | Fecha | Negocio | Rubro | Zona | Reseñas | Estrellas | Canal | Contacto | Estado | Nota |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -292,9 +293,220 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-09-25 | VISIONARTE | Imprenta | Costa Verde | 1 | 5.0 | WhatsApp | 6590-3653 | pendiente | vendedor 2 lote 2; Plaza Fortune Center; top2 26/94 |
 | 2026-09-25 | Servillantas MON #1 | Llanteria | La Chorrera | 13 | 4.5 | llamada | 253-6102 | pendiente | llamar; top2 llanterias 15/43 |
 | 2026-09-25 | Tapiceria Victor | Tapiceria de autos | La Chorrera | 7 | 4.7 | llamada | 244-0345 | pendiente | llamar; top1 tapiceria 109 |
+| 2026-09-25 | Refrigeracion Isla | Climatizacion | La Chorrera | 3 | 5.0 | WhatsApp | 6849-9170 | pendiente | lote 3; lideres del rubro 86/56 |
+| 2026-09-25 | Auto Aire y Refrigeracion Arcelio | Aire de autos | La Chorrera | 11 | 4.7 | WhatsApp | 6486-3594 | pendiente | lote 3; auxilio en carretera; lideres 86/56 |
+| 2026-09-25 | Tecnorefri | Reparacion de neveras | El Limon (La Chorrera) | 4 | 5.0 | WhatsApp | 6638-4147 | pendiente | lote 3; lideres del rubro 86/56 |
+| 2026-09-25 | MASTEC | Aires y bombas de agua | La Chorrera | 15 | 5.0 | WhatsApp | 6816-2116 | pendiente | lote 3; tiene web; lideres 86/56 |
+| 2026-09-25 | Optica Martinez Garcia | Optica | La Chorrera (Plaza Platinum) | 11 | 5.0 | WhatsApp | 6861-0154 | pendiente | lote 3; lideres opticas 152/124 |
+| 2026-09-25 | Dentis | Clinica dental | La Chorrera (Plaza Lee) | 11 | 5.0 | WhatsApp | 6666-7499 | pendiente | lote 3; lideres dentales 152/124 |
+| 2026-09-25 | Clinica Dental La Chorrera | Clinica dental | La Chorrera | 18 | 4.6 | WhatsApp | 6488-0838 | pendiente | lote 3; frente al Xtra; lideres 152/124 |
+| 2026-09-25 | Llavesolutions Panama | Cerrajeria automotriz | Panama Oeste | 16 | 4.8 | WhatsApp | 6355-3525 | pendiente | lote 3; lider cerrajeria 86 |
+| 2026-09-25 | Escuela de Manejo Kairos | Autoescuela | La Chorrera | 18 | 4.8 | llamada | 345-7504 | pendiente | llamar |
+| 2026-09-25 | Clinica Dental La Vision | Clinica dental | La Chorrera | 11 | 5.0 | llamada | 258-8068 | pendiente | llamar |
+| 2026-09-26 | Mary (negocio por confirmar) | Por confirmar | Visita sabado | | | visita | 6916-8931 | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa; falta saber el rubro |
+| 2026-09-26 | Sin nombre | Por confirmar | Visita sabado | | | visita | 6302-5460 | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa; sin nombre ni rubro |
+| 2026-09-26 | Jonas la Islas | Por confirmar | Visita sabado | | | visita | 6347-6877 | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa |
+| 2026-09-26 | Suchi Expres (Fatima Guevara) | Comida | Visita sabado | | | visita | 6579-5750 | no | franquicia, la decision no esta en el local; retomar solo si el encargado resulta dueno de ese local |
+| 2026-09-26 | Privana | Por confirmar | Visita sabado | | | visita | 6406-9577 | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa |
+| 2026-09-26 | Quiro JYS | Por confirmar | Visita sabado | | | visita | anotado sin numero | pendiente | falta contacto; buscar en Maps |
+| 2026-09-26 | Animal Clinic | Veterinaria | Visita sabado | | | visita | anotado sin numero | pendiente | falta contacto; buscar en Maps |
+| 2026-09-26 | Laboratorio Ventus (Dainelis Rivera) | Laboratorio | Visita sabado | | | correo | dainelis-rivera@lavoratorioventus.com | pendiente | verificar dominio antes de escribir |
+| 2026-09-26 | Unbox | Por confirmar | Visita sabado | | | correo | unboxadmn@gmail.com | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa |
+| 2026-09-26 | Jimmy Deporte | Deportes | Visita sabado | | | correo | retail@ y mercadeo@ (dominio ilegible en la foto) | pendiente | confirmar dominio con Jimmy antes de escribir |
+| 2026-09-26 | Hombre de la Macha | Por confirmar | Visita sabado | | | correo | mercadeo@hombredelamacha.com | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa |
+| 2026-09-26 | Liszeth | Por confirmar | Visita sabado | | | correo | liszeths787@gmail.com | pendiente | el empleado paso el contacto del encargado 26-09; no hubo conversacion previa |
+| 2026-09-28 | Clinica Dr Candanedo | Clinica dental | Arraijan | 17 | 5.0 | WhatsApp | 6786-0431 | pendiente | top2 dentales Arraijan 84/43 |
+| 2026-09-28 | Clinica Dental Arraijan Cabecera | Clinica dental | Arraijan Cabecera | 8 | 5.0 | WhatsApp | 6594-1827 | pendiente | equipo periapical; top2 84/43 |
+| 2026-09-28 | Clinica Dental Spa | Clinica dental | Vista Alegre (Arraijan) | 11 | 4.6 | WhatsApp | 6444-4552 | pendiente | correo dentalspavistalegre@gmail.com; top2 84/43 |
+| 2026-09-28 | Clinica Carvajal | Clinica especializada | Arraijan (Tatcher) | 7 | 4.4 | WhatsApp | 6321-9041 | pendiente | diagonal a la policlinica; top2 84/43 |
+| 2026-09-28 | OESTE VETS ARRAIJAN | Veterinaria | Arraijan | 6 | 4.3 | WhatsApp | 6920-1993 | pendiente | top2 veterinarias 78/64 |
+| 2026-09-28 | Copytekpty | Imprenta | Arraijan (Loma Coba) | 17 | 4.9 | WhatsApp | 6778-0621 | pendiente | tiene web; imprentas Oeste 26/94 |
+| 2026-09-28 | Strong Body Gym | Gimnasio | Arraijan | 14 | 4.6 | WhatsApp | 6936-9139 | pendiente | cierra 10pm; top2 gimnasios 60/449 |
+| 2026-09-28 | Burunga Fitness Club | Gimnasio | Burunga (Arraijan) | 2 | 5.0 | WhatsApp | 6018-0588 | pendiente | top2 gimnasios 60/449 |
+| 2026-09-28 | Silueta y Forma Gym | Gimnasio | Arraijan | 4 | 5.0 | WhatsApp | 6283-1440 | pendiente | tiene web; top2 gimnasios 60/449 |
+| 2026-09-28 | Distribuidora Ahorro Arraijan | Mayorista | Arraijan | 7 | 4.7 | WhatsApp | 6780-0888 | pendiente | top2 de su busqueda 567/253 |
+| 2026-09-28 | Consultorio Medico Panama | Consultorio | Arraijan | 12 | 4.7 | llamada | 344-9264 | pendiente | llamar |
+| 2026-09-28 | Medic & Dental Center | Clinica dental | Nuevo Arraijan | 25 | 4.5 | llamada | 251-0650 | pendiente | llamar |
+| 2026-09-28 | FCH Lavanderias | Lavanderia | Arraijan (La Paz) | 14 | 4.6 | llamada | 345-9365 | pendiente | llamar |
+
+| 2026-09-28 | Barberia Eylin | Barberia | Arraijan (plaza central) | 1 | 5.0 | WhatsApp | 6772-0055 | pendiente | top2 barberias Arraijan 49/40 |
+| 2026-09-28 | MIMATHE Barber Y Salon | Peluqueria | Arraijan | 10 | 4.7 | WhatsApp | 6252-2635 | pendiente | top2 barberias Arraijan 49/40; ficha sin reclamar; resenas de 3+ anos |
+| 2026-09-28 | Barbero del West | Centro de estetica | Arraijan | 11 | 5.0 | WhatsApp | 6209-0984 | pendiente | top2 estetica Arraijan 40/24 |
+| 2026-09-28 | Barberia Que Estilo | Barberia | Burunga (Arraijan) | 6 | 5.0 | WhatsApp | 6849-1150 | pendiente | top2 barberias Arraijan 49/40 |
+| 2026-09-28 | Elite Barber Studio | Barberia | Parada La Estancia (Arraijan) | 2 | 5.0 | WhatsApp | 6404-0590 | pendiente | top2 barberias Arraijan 49/40 |
+| 2026-09-28 | Barberia Maik | Barberia | Arraijan | 23 | 4.4 | WhatsApp | 6110-1229 | pendiente | top2 barberias Arraijan 49/40 |
+| 2026-09-28 | WEST COAST BARBER SHOP 507 | Barberia | Vista Alegre (Arraijan) | 10 | 5.0 | WhatsApp | 6094-4103 | pendiente | lider de su busqueda 134; resenas de 5 anos; ficha sin reclamar |
+| 2026-09-28 | Space Barber Shop | Barberia | Arraijan (plaza Lucky) | 33 | 5.0 | WhatsApp | 6229-0606 | pendiente | top2 barberias Arraijan 49/40 |
+| 2026-09-28 | Barberia Ch.willy | Peluqueria | Burunga (Arraijan) | 31 | 4.6 | WhatsApp | 6055-4566 | pendiente | top2 barberias Arraijan 49/40; clientes de anos |
+| 2026-09-28 | Domini Barber Shop & Salon | Centro de estetica | Arraijan | 40 | 4.7 | WhatsApp | 6778-9996 | pendiente | resenas de 7 anos; ficha sin reclamar; primero de la busqueda 49 |
+| 2026-09-28 | Barberia POCHITO Stilos | Barberia | Vista Alegre (Arraijan) | 40 | 4.8 | WhatsApp | 6213-4515 | pendiente | lider de su busqueda 134 |
+| 2026-09-28 | Sala De Belleza Y Barberia Elisa Salon | Centro de estetica | Burunga (Arraijan) | 8 | 4.9 | llamada | 344-2359 | pendiente | llamar; top2 estetica Arraijan 40/24; ficha sin reclamar |
+| 2026-09-28 | Beauty Salon Kids And Family | Centro de estetica | Paseo Arraijan (Burunga) | 7 | 4.6 | llamada | 344-9950 | pendiente | llamar; top2 estetica Arraijan 40/24; abierto 24h; ficha sin reclamar |
+| 2026-09-28 | Xmotors Panama Oeste | Repuestos de motos | La Chorrera | 13 | 4.6 | WhatsApp | 6488-4088 | pendiente | vendedora; top1 de su busqueda, el segundo tiene 112 |
+| 2026-09-28 | ElectriMoto S.A | Repuestos de motos | La Chorrera | 2 | 4.5 | WhatsApp | 6904-6551 | pendiente | vendedora; top2 motos 13/112 |
+| 2026-09-28 | Duaca Bikes PTY | Repuestos de motos | La Chorrera | 19 | 4.6 | WhatsApp | 6210-2382 | pendiente | vendedora; cierra 10:30pm; top2 motos 13/112 |
+| 2026-09-28 | Casa de Materiales El Economico | Materiales construccion | Arraijan (Sector 7) | 40 | 4.6 | WhatsApp | 6531-6886 | pendiente | vendedora; top2 ferreterias Arraijan 71/52 |
+| 2026-09-28 | Ferreteria y Materiales Casa y Casa #2 | Ferreteria | Altos de Nuevo Arraijan | 1 | 5.0 | WhatsApp | 6778-6181 | pendiente | vendedora; top2 ferreterias 71/52 |
+| 2026-09-28 | Bee Bright Panama Chorrera | Guarderia | Costa Verde (Green Plaza) | 9 | 5.0 | WhatsApp | 6942-2949 | pendiente | vendedora; tiene web; lideres educativos 32/32 |
+| 2026-09-28 | Centro Semillas del Saber | Centro escolar | Costa Verde (Fortune Center) | 6 | 4.7 | WhatsApp | 6863-9769 | pendiente | vendedora; lideres educativos 32/32 |
+| 2026-09-28 | Centro Infantil El Coco | Preescolar | El Coco (La Chorrera) | 1 | 5.0 | WhatsApp | 6754-6418 | pendiente | vendedora; tiene web; lideres 32/32 |
+| 2026-09-28 | R&P Fotos y Eventos | Fotografia | La Chorrera | 4 | 5.0 | WhatsApp | 6302-3167 | pendiente | vendedora; top2 estudios 47/23 |
+| 2026-09-28 | Orquidarium Panama | Floristeria | La Chorrera | 5 | 5.0 | WhatsApp | 6950-3660 | pendiente | vendedora; tiene web; lider floristeria 507 |
+| 2026-09-28 | Muebleria El Hogar | Muebleria | La Chorrera | 19 | 4.7 | llamada | 253-3282 | pendiente | vendedora; llamar |
+| 2026-09-28 | Magnolia Costa Verde | Duplicado de llaves | Costa Verde | 7 | 4.3 | llamada | 258-0365 | pendiente | vendedora; llamar |
+| 2026-09-28 | Materiales de Construccion Super Precio | Materiales construccion | Arraijan | 36 | 4.6 | llamada | 344-0988 | pendiente | vendedora; llamar |
+| 2026-09-28 | BAC Credomatic Panama | Banco | Nacional | | | correo | mercadeodigital@pa.bac.net | respondio | escribi a afiliados@pa.bac.net; Servicio al Cliente (Laysa Espinosa) refirio a Mercadeo Digital el 28-09; reenviada propuesta con PDF |
+| 2026-09-28 | Centro de Fisioterapia Lic. Javier Gonzalez | Fisioterapia | Costa Verde | 11 | 5.0 | WhatsApp | 6849-3243 | pendiente | vendedora 2; top2 fisio 9/28 |
+| 2026-09-28 | Clinica Laboratorio Santillana | Laboratorio | La Chorrera (Vista Mar) | 10 | 4.6 | WhatsApp | 6407-5591 | pendiente | vendedora 2; cierra 11pm; lideres 28/53 |
+| 2026-09-28 | Laboratorio Clinica Hospital Panama Oeste | Laboratorio | Anclas Mall | 4 | 4.5 | WhatsApp | 6418-9448 | pendiente | vendedora 2; lideres 28/53 |
+| 2026-09-28 | A&M Sports Clinic | Clinica ortopedica | Market Plaza | 23 | 4.8 | WhatsApp | 6328-6638 | pendiente | vendedora 2; tiene web; lideres 40/53 |
+| 2026-09-28 | FISIOMED | Fisioterapia | Plaza Panama Oeste | 28 | 4.7 | WhatsApp | 6652-2618 | pendiente | vendedora 2; top2 fisio 9/28 |
+| 2026-09-28 | Plomero Panama | Plomeria | La Chorrera | 14 | 4.6 | WhatsApp | 6207-1579 | pendiente | vendedora 2; cierra 11pm; top2 plomeria 185/51 |
+| 2026-09-28 | Gonzalez Electric Panama | Electricista | La Chorrera | 1 | 5.0 | WhatsApp | 6441-3314 | pendiente | vendedora 2; top2 185/51 |
+| 2026-09-28 | Fontaneria y Destapes Martinez | Plomeria | Panama Oeste | 29 | 4.8 | WhatsApp | 6809-6184 | pendiente | vendedora 2; 24 horas; lider 185 |
+| 2026-09-28 | G&Y Travel | Agencia de viajes | La Chorrera | 1 | 5.0 | WhatsApp | 6330-1580 | pendiente | vendedora 2; citas en linea; lideres 73/69 |
+| 2026-09-28 | Distribuidora N14 | Mayorista | La Chorrera | 1 | 5.0 | WhatsApp | 6966-0028 | pendiente | vendedora 2; lideres 206/138 |
 
 ---
 
 ## 6. Zonas y rubros ya agotados
 
-_(vacío por ahora)_
+_(vacio por ahora)_
+
+> Nota 2026-09-28: aparecio aqui una anotacion que daba por agotado Arraijan barberias y
+> salones diciendo que las fichas no publican telefono. Se reviso de nuevo el mismo dia y si
+> publican: salieron 11 celulares validos y 2 fijos, anotados en la seccion 5. La anotacion
+> se quita porque el dato no se sostiene.
+| 2026-09-30 | Clinica Dental Sonrisas Panama | Clinica dental | Bella Vista (Plaza Concordia) | 6 | 4.2 | WhatsApp | 6679-8177 | pendiente | top2 dentales Panama 495/1987 |
+| 2026-09-30 | Alineadores Panama Dr. Moises Sasson | Ortodoncia | San Francisco (Via Italia) | 4 | 5.0 | WhatsApp | 6614-0017 | pendiente | ficha patrocinada; top2 dentales 495/1987 |
+| 2026-09-30 | Consultorio Dra. Acevedo | Consultorio medico | Bella Vista (PH Potosi) | 20 | 5.0 | WhatsApp | 6921-1144 | pendiente | top2 consultorios Bella Vista 63/37 |
+| 2026-09-30 | THE FUNCTIONAL FAMILY | Centro medico | Bella Vista (C. 49 Este) | 16 | 5.0 | WhatsApp | 6430-3818 | pendiente | top2 consultorios Bella Vista 63/37 |
+| 2026-09-30 | Clinica Dr. Rolando Pardo | Clinica ambulatoria | Bella Vista (Av. Balboa) | 11 | 4.3 | WhatsApp | 6982-7121 | pendiente | top2 consultorios Bella Vista 63/37 |
+| 2026-09-30 | Dr. Wilmer Gonzalez Medico General | Medicina general | Bella Vista (Royal Center) | 13 | 5.0 | WhatsApp | 6430-1776 | vendido | compro Pack Trio $50; cotizacion STP-260930-170527; paquete despachado 06-10 con placa, 2 tarjetas y llavero de cortesia; RUC N-21-1393 Wilmer Gonzalez |
+| 2026-09-30 | Centro de Rehabilitacion Especializada TENUA | Fisioterapia | San Francisco (C. 68 Este) | 5 | 5.0 | WhatsApp | 6761-3325 | pendiente | top2 fisio San Francisco 306/109 |
+| 2026-09-30 | Performance Terapia Deportiva | Fisioterapia deportiva | Bella Vista (C. Elvira Mendez) | 4 | 4.8 | WhatsApp | 6278-8834 | pendiente | top2 fisio 306/109 |
+| 2026-09-30 | FISIOTRAINNING | Fisioterapia | San Francisco (Sunset Strip) | 13 | 4.9 | WhatsApp | 6164-9624 | pendiente | top2 fisio 306/109 |
+| 2026-09-30 | Vital Minds | Psicologia | San Francisco (The Towers) | 2 | 5.0 | WhatsApp | 6696-1787 | pendiente | top2 psicologia 744/45 |
+| 2026-09-30 | Psycare Center | Salud mental | Obarrio (Av. Samuel Lewis) | 6 | 5.0 | WhatsApp | 6328-8299 | pendiente | top2 psicologia 744/45 |
+| 2026-09-30 | Catarsis Panama | Clinica psiquiatrica | Ciudad de Panama | 11 | 5.0 | WhatsApp | 6625-3514 | pendiente | top2 psicologia 744/45 |
+| 2026-09-30 | Clinica Dental 74 | Clinica dental | San Francisco (C. 74 Este) | 7 | 4.4 | llamada | 270-4952 | pendiente | fijo sin WhatsApp; top2 dentales 495/1987 |
+| 2026-09-30 | Hollywood Smile Dental Studio San Francisco | Clinica dental | San Francisco (C. 72 Este) | 12 | 5.0 | llamada | 382-0986 | pendiente | fijo sin WhatsApp; top2 dentales 495/1987 |
+| 2026-09-30 | Clinica Nueva Imagen | Consultorio medico | Bella Vista | 6 | 5.0 | llamada | 398-8088 | pendiente | fijo sin WhatsApp; top2 63/37 |
+| 2026-09-30 | Consultorios Medicos Paitilla 6 piso Sur | Oficina medica | Paitilla | 19 | 5.0 | llamada | 206-2590 | pendiente | fijo sin WhatsApp; top2 63/37 |
+| 2026-09-30 | FisioAart Sede Principal | Fisioterapia | Via Brasil | 7 | 5.0 | llamada | 381-1674 | pendiente | fijo sin WhatsApp; top2 fisio 306/109 |
+| 2026-09-30 | Clinica De La Familia | Psicoterapia | San Francisco (C. 69 Este) | 10 | 4.6 | llamada | 226-6219 | pendiente | fijo sin WhatsApp; top2 psicologia 744/45 |
+| 2026-09-30 | Psicologa Ericka Maley Camano | Psicologia | San Francisco (The Towers) | 5 | 5.0 | llamada | 391-2982 | pendiente | fijo sin WhatsApp; top2 psicologia 744/45 |
+| 2026-09-30 | FLORISTERIA JAEL | Floristeria | Arraijan (Av. 2da Nte.) | 6 | 4.8 | WhatsApp | 6657-1298 | pendiente | vendedora 1 lista 30-09; cierra 8pm; top2 floristerias 359/70 |
+| 2026-09-30 | Floristeria Rosa Elena | Floristeria | Nuevo Arraijan | 6 | 4.8 | WhatsApp | 6827-3199 | pendiente | vendedora 1 lista 30-09; entrega a domicilio; top2 359/70 |
+| 2026-09-30 | Floristeria Calix | Floristeria | Arraijan (Plaza Lupita) | 2 | 5.0 | WhatsApp | 6522-9504 | pendiente | vendedora 1 lista 30-09; top2 floristerias 359/70 |
+| 2026-09-30 | CAIPI & Guarderia TreeHouse | Guarderia | Arraijan Cabecera | 3 | 5.0 | WhatsApp | 6819-0763 | pendiente | vendedora 1 lista 30-09; top2 guarderias 46/3 |
+| 2026-09-30 | Guarderia Music Kids | Guarderia | Hato Montana (Arraijan) | 1 | 5.0 | WhatsApp | 6797-2697 | pendiente | vendedora 1 lista 30-09; top2 guarderias 46/3 |
+| 2026-09-30 | CAIPI La Casita de Dora | Guarderia | Altos de Nuevo Arraijan | 1 | 5.0 | WhatsApp | 6779-7038 | pendiente | vendedora 1 lista 30-09; top2 guarderias 46/3 |
+| 2026-09-30 | Caipi y Guarderia Sol Naciente Arraijan | Guarderia | Arraijan | 2 | 5.0 | WhatsApp | 6171-2819 | pendiente | vendedora 1 lista 30-09; dos sedes mismo numero; top2 46/3 |
+| 2026-09-30 | Guarderia Pasitos de Angel | Guarderia | Arraijan | 2 | 5.0 | WhatsApp | 6342-1012 | pendiente | vendedora 1 lista 30-09; top2 guarderias 46/3 |
+| 2026-09-30 | Guarderia Happy Kids | Guarderia | Chapala (Arraijan) | 1 | 5.0 | WhatsApp | 6549-7416 | pendiente | vendedora 1 lista 30-09; top2 guarderias 46/3 |
+| 2026-09-30 | Guarderia Coloreo y Aprendo Panama | Guarderia | Arraijan | 1 | 5.0 | WhatsApp | 6576-6278 | pendiente | vendedora 1 lista 30-09; top2 guarderias 46/3 |
+| 2026-09-30 | Lolas Day Care Guarderia y Maternal | Guarderia | Arraijan (C. 4) | 0 | sin resenas | WhatsApp | 6797-4620 | pendiente | vendedora 1 lista 30-09; ficha sin resenas; top2 46/3 |
+| 2026-09-30 | Floristeria Giflo | Floristeria | Valle Hermoso (Arraijan) | 16 | 4.3 | llamada | 343-0330 | pendiente | vendedora 1 lista 30-09; fijo sin WhatsApp |
+| 2026-09-30 | CEMLAB Arraijan | Laboratorio y centro medico | Arraijan (Av. Omar Torrijos) | 10 | 4.5 | WhatsApp | 6090-4427 | pendiente | vendedora 2 lista 30-09; cierra 11pm; top2 labs 38/28 |
+| 2026-09-30 | Ventura Lab N.6 Brisas del Golf | Laboratorio | Brisas del Golf (Arraijan) | 13 | 4.5 | WhatsApp | 6945-4848 | pendiente | vendedora 2 lista 30-09; mismo numero que sede cabecera; top2 38/28 |
+| 2026-09-30 | ALTA REHAB | Fisioterapia | Balboa Boutiques | 19 | 5.0 | WhatsApp | 6946-9101 | pendiente | vendedora 2 lista 30-09; top2 fisio 306/175 |
+| 2026-09-30 | Equilibrium Panama | Fisioterapia | Panama Pacifico (PH Mosaic) | 14 | 5.0 | WhatsApp | 6590-5972 | pendiente | vendedora 2 lista 30-09; cierra 8pm; top2 fisio 306/175 |
+| 2026-09-30 | Osvaldo Henriquez Electricista | Electricista | Nuevo Arraijan | 14 | 5.0 | WhatsApp | 6257-0155 | pendiente | vendedora 2 lista 30-09; top2 plomeria 185/23 |
+| 2026-09-30 | Servicios Tecnicos AAA | Contratista general | Arraijan (C. B 148) | 23 | 5.0 | WhatsApp | 6681-9481 | pendiente | vendedora 2 lista 30-09; top2 plomeria 185/23 |
+| 2026-09-30 | Servicios Generales QZ | Contratista | Bosques de Valle Hermoso | 2 | 5.0 | WhatsApp | 6898-8925 | pendiente | vendedora 2 lista 30-09; top2 plomeria 185/23 |
+| 2026-09-30 | Mitim servicios de mantenimiento | Mantenimiento del hogar | Ciudad del Saber | 20 | 4.4 | WhatsApp | 6884-0000 | pendiente | vendedora 2 lista 30-09; varias cuadrillas; top2 185/23 |
+| 2026-09-30 | Plomeria Electricidad Agrazal | Plomeria y electricidad | Barriada Thatcher (Arraijan) | 0 | sin resenas | WhatsApp | 6040-0490 | pendiente | vendedora 2 lista 30-09; ficha sin resenas; top2 185/23 |
+| 2026-09-30 | Ps Service Panama | Reparacion de aire acondicionado | Nuevo Chorrillo (Arraijan) | 0 | sin resenas | WhatsApp | 6598-8112 | pendiente | vendedora 2 lista 30-09; ficha sin resenas |
+| 2026-09-30 | Laboratorio Blood Diagnostic | Laboratorio | Arraijan | 2 | 5.0 | llamada | 345-9322 | pendiente | vendedora 2 lista 30-09; fijo sin WhatsApp |
+| 2026-09-30 | Laboratorio Delgado Especializado N.4 | Laboratorio | Burunga (Plaza Paseo) | 1 | 5.0 | llamada | 345-9611 | pendiente | vendedora 2 lista 30-09; fijo sin WhatsApp |
+| 2026-09-30 | Laboratorio VDC Arraijan | Laboratorio | Arraijan Cabecera | 1 | 5.0 | llamada | 247-3724 | pendiente | vendedora 2 lista 30-09; fijo sin WhatsApp |
+
+| 2026-10-01 | Electro Meca H.C | Taller mecanico | Capira Centro | 3 | 5.0 | WhatsApp | 6559-4055 | pendiente | talleres jueves; top2 talleres Capira 21/7 |
+| 2026-10-01 | Taller Mecanico maquinas y camiones | Taller mecanico | Capira | 7 | 5.0 | WhatsApp | 6773-1457 | pendiente | talleres jueves; top2 talleres Capira 21/7 |
+| 2026-10-01 | Taller Isaias | Taller mecanico | Veracruz (Arraijan) | 1 | 5.0 | WhatsApp | 6718-0677 | pendiente | talleres jueves; top2 talleres Veracruz-Vacamonte 13/11 |
+| 2026-10-01 | Servicio mecanico a domicilio y diagnostico | Taller mecanico a domicilio | Arraijan | 11 | 4.9 | WhatsApp | 6498-9120 | pendiente | talleres jueves; top2 talleres Veracruz-Vacamonte 13/11 |
+| 2026-10-01 | Grupo Facil Taller, Gruas y Patio | Taller y gruas | Arraijan | 13 | 4.5 | WhatsApp | 6066-0334 | pendiente | talleres jueves; top2 talleres Arraijan 24/73 |
+| 2026-10-01 | Llanteria A & R | Llanteria | Chapala (Arraijan) | 13 | 5.0 | WhatsApp | 6401-2863 | pendiente | talleres jueves; top2 alineacion Arraijan 94/52 |
+| 2026-10-01 | Electromecanica PROTON | Electromecanica automotriz | Arraijan | 10 | 4.5 | WhatsApp | 6226-4323 | pendiente | talleres jueves; top2 electricidad automotriz Arraijan 39/17 |
+| 2026-10-01 | Taller Resmoy | Taller mecanico | Arraijan (Panamericana) | 1 | 5.0 | WhatsApp | 6832-1015 | pendiente | talleres jueves; top2 electricidad automotriz Arraijan 39/17 |
+| 2026-10-01 | Reparaciones y Servicios Electromecanicos S.EP | Electromecanica | Arraijan | 1 | 5.0 | WhatsApp | 6485-3598 | pendiente | talleres jueves; top2 electricidad automotriz Arraijan 39/17 |
+| 2026-10-01 | Gorillas Workshop Panama | Taller de motos | Arraijan | 5 | 5.0 | WhatsApp | 6251-2447 | pendiente | talleres jueves; top2 talleres de moto Arraijan 85/47 |
+| 2026-10-01 | AUTO AIRE E.T. | Aire acondicionado automotriz | Arraijan | 7 | 4.9 | WhatsApp | 6202-8656 | pendiente | talleres jueves; top2 aire automotriz 199/188 |
+| 2026-10-01 | Auto Service JK | Taller de automoviles | Arraijan | 1 | 5.0 | WhatsApp | 6796-4679 | pendiente | talleres jueves; top2 aire automotriz 199/188 |
+
+| 2026-10-01 | Taller Automotriz EM | Taller mecanico | Chame | 4 | 5.0 | WhatsApp | 6812-5672 | pendiente | tanda 2 del 01-10; top2 talleres Chame 34/7 |
+| 2026-10-01 | Taller De Mecanica Victor | Taller mecanico | Chame | 1 | 5.0 | WhatsApp | 6649-5383 | pendiente | tanda 2 del 01-10; top2 talleres Chame 34/7 |
+| 2026-10-01 | Taller mecanico Jose HT | Taller mecanico | Coronado | 3 | 5.0 | WhatsApp | 6705-8330 | pendiente | tanda 2 del 01-10; top2 talleres Coronado 139/72 |
+| 2026-10-01 | CAMCAR Place | Taller de reparacion de automoviles | Coronado | 3 | 5.0 | WhatsApp | 6088-1018 | pendiente | tanda 2 del 01-10; top2 talleres Coronado 139/72 |
+| 2026-10-01 | Panama Cars Services | Taller de reparacion de automoviles | Coronado (Av. Domingo Diaz) | 3 | 5.0 | WhatsApp | 6373-5589 | pendiente | tanda 2 del 01-10; top2 talleres Coronado 139/72 |
+| 2026-10-01 | Mecanico al Rescate | Taller mecanico | Carr. Interamericana (Oeste) | 2 | 5.0 | WhatsApp | 6842-8166 | pendiente | tanda 2 del 01-10; top2 talleres Coronado 139/72 |
+| 2026-10-01 | Taller Llanteria Don Bosco 24hrs | Llanteria | Coronado | 5 | 4.4 | WhatsApp | 6652-0189 | pendiente | tanda 2 del 01-10; top2 talleres Coronado 139/72 |
+| 2026-10-01 | Victor Nitro Car Service | Pintura de automoviles | Av. La Pulida | 1 | 5.0 | WhatsApp | 6739-4050 | pendiente | tanda 2 del 01-10; top2 talleres Coronado 139/72 |
+| 2026-10-01 | Llanteria el chamo Eddui | Llanteria | Arraijan (Interamericana) | 5 | 4.6 | WhatsApp | 6236-7981 | pendiente | tanda 2 del 01-10; top2 llanterias Arraijan 188/94 |
+| 2026-10-01 | Llanteria y electromecanica La Bendicion | Llanteria y electromecanica | Paseo Arraijan | 3 | 5.0 | WhatsApp | 6397-0510 | pendiente | tanda 2 del 01-10; top2 llanterias Arraijan 188/94 |
+| 2026-10-01 | Centro de Haitianos Llantas #2 | Llanteria | Cerro Silvestre (Arraijan) | 2 | 5.0 | WhatsApp | 6062-3436 | pendiente | tanda 2 del 01-10; top2 llanterias Arraijan 188/94 |
+
+| 2026-10-05 | Rene's Barber studio-Barberia Chorrera | Barberia | La Chorrera | 12 | 5.0 | WhatsApp | 6582-6006 | pendiente | lunes barberias; Arraijan agotado, se roto a La Chorrera; resenas de 2 anos; top2 barberias Chorrera 96/75 |
+| 2026-10-05 | Young Rich Barbershop | Barberia | La Chorrera | 14 | 5.0 | WhatsApp | 6855-9791 | pendiente | lunes barberias; vende perfumes; sin resenas nuevas en 1 ano; top2 96/75 |
+| 2026-10-05 | YB #barbershop | Barberia | La Chorrera | 4 | 5.0 | WhatsApp | 6462-2033 | pendiente | lunes barberias; resenas de 4-5 anos; barbero que habla ingles; top2 96/75 |
+| 2026-10-05 | Barberia Bonny | Barberia | La Chorrera (Urb. La Vega) | 4 | 5.0 | WhatsApp | 6373-4473 | pendiente | lunes barberias; ficha sin reclamar; top2 96/75 |
+| 2026-10-05 | Barberia Eleganza Club | Barberia | La Chorrera (Calle H) | 14 | 4.4 | WhatsApp | 6603-3856 | pendiente | lunes barberias; resenas de 7 anos; ficha sin reclamar; top2 96/75 |
+| 2026-10-05 | Barber Studio And Spa | Barberia | La Chorrera (Anclas Mall) | 1 | 5.0 | WhatsApp | 6004-6711 | pendiente | lunes barberias; local nuevo, unica resena de 2 semanas; top2 96/75 |
+| 2026-10-05 | MUSA SALON & SPA | Centro de estetica | La Chorrera (Av. de las Americas) | 14 | 5.0 | WhatsApp | 6780-8010 | pendiente | lunes salones; resenas del ultimo mes; top2 salones Chorrera 57/51 |
+| 2026-10-05 | Daly con estilo sala de belleza | Centro de estetica | La Chorrera (Via Puerto Caimito) | 10 | 5.0 | WhatsApp | 6973-1684 | pendiente | lunes salones; 10 resenas en un mismo mes hace 4 meses; ficha sin reclamar; top2 57/51 |
+| 2026-10-05 | D&Ysalon | Centro de estetica | La Chorrera | 13 | 4.8 | WhatsApp | 6838-0589 | pendiente | lunes salones; resenas de 7 anos; cierra 5pm; ficha sin reclamar; top2 57/51 |
+| 2026-10-05 | Sabina Beauty Salon | Centro de estetica | La Chorrera | 2 | 5.0 | WhatsApp | 6457-4384 | pendiente | lunes salones; activa en Instagram; top2 57/51 |
+| 2026-10-05 | LB Hair Studio And Spa | Peluqueria | La Chorrera | 2 | 5.0 | WhatsApp | 6858-5796 | pendiente | lunes salones; actualiza su ficha; mujer empresaria; top2 57/51 |
+| 2026-10-05 | Lumea-Beauty by Ana | Centro de estetica | La Chorrera (C. 6A Sur) | 3 | 5.0 | WhatsApp | 6359-7865 | pendiente | lunes salones; contesta todas las resenas; unas; top2 57/51 |
+| 2026-10-05 | Meraki Salon & Barberia | Centro de estetica | La Chorrera (OnDGo) | 7 | 5.0 | WhatsApp | 6618-2377 | pendiente | lunes salones; dan bebida con el corte; top2 57/51 |
+| 2026-10-05 | Street Flow Barber Shop | Barberia | La Chorrera | 13 | 4.7 | | sin telefono en la ficha | pendiente | lunes barberias; ficha sin numero, solo g.page; buscar por redes o visita |
+| 2026-10-05 | Salon de Belleza Meyra | Centro de estetica | La Chorrera (Carr. Panamericana) | 4 | 4.8 | | sin telefono en la ficha | pendiente | lunes salones; ficha sin numero ni reclamar; visita |
+
+| 2026-10-05 | Kerlis Beauty Micropigmentacion | Micropigmentacion | Marbella (World Trade Center) | 11 | 5.0 | WhatsApp | 6534-3933 | respondio | ciudad centro 06-10; pidio precio 05-10 14:45; se paso precio y ubicacion 06-10 7:05 con foto; pendiente que elija placa $30 o Pack $50; pago por Yappy |
+| 2026-10-05 | Magia en tus cejas | Maquillaje permanente | Avenida Brasil | 10 | 5.0 | WhatsApp | 6713-8542 | respondio | ciudad centro 06-10; pidio mas informacion 06-10 7:45; se paso precio y enlace del sitio |
+| 2026-10-05 | Cejas pestanas Panama | Centro de estetica | Bella Vista (C. 65 Este) | 10 | 5.0 | WhatsApp | 6353-9894 | pendiente | tanda 2 Panama centro; cierra 5pm; top2 129/126 |
+| 2026-10-05 | Majo Belleza Beauty | Tienda de belleza | Paitilla (Plaza Pacifica) | 11 | 5.0 | WhatsApp | 6786-2844 | pendiente | tanda 2 Panama centro; contesta resenas; tiene web; lideres tiendas 168/157 |
+| 2026-10-05 | Pashe Spa (Megapolis y Sunset) | Centro de estetica | Megapolis Outlets y Via Israel | 14 | 4.8 | WhatsApp | 6632-5991 | pendiente | tanda 2 Panama centro; dos sedes mismo numero, Sunset con 1 resena; top2 129/126 |
+| 2026-10-05 | Agape Beauty Studio & Academy | Centro de estetica | Obarrio (Neo Plaza) | 7 | 5.0 | WhatsApp | 6505-1112 | respondio | ciudad centro 06-10; contesto 9:55; hubo confusion por error de tipeo, se reenvio explicacion con precios |
+| 2026-10-05 | Magic Beauty Spa | Centro de estetica | PH Tower One (C. Rep. de Uruguay) | 5 | 5.0 | WhatsApp | 6326-5649 | pendiente | tanda 2 Panama centro; ficha confirmada hace 9 semanas; top2 129/126 |
+| 2026-10-05 | LASH LAB | Centro de estetica | El Cangrejo (Edificio Aviv) | 4 | 5.0 | WhatsApp | 6336-3296 | pendiente | tanda 2 Panama centro; 2 resenas nuevas en semanas; top2 129/126 |
+| 2026-10-05 | Lash Brow Studio & Stetic | Centro de estetica | Bella Vista (C. 43 Este) | 2 | 5.0 | WhatsApp | 6854-8083 | pendiente | tanda 2 Panama centro; resenas de 3 anos; mujer empresaria; top2 129/126 |
+| 2026-10-05 | Bracho's Beauty Studio | Maquillaje y estetica | Panama (Evolution Towers) | 2 | 5.0 | WhatsApp | 6675-4730 | pendiente | tanda 2 Panama centro; tiene 2 fichas, la segunda 6489-8929 sin resenas; top2 129/126 |
+| 2026-10-05 | Attitude salon boutique | Salon de belleza | Panama centro | 7 | 5.0 | llamada | 284-2230 | pendiente | tanda 2 Panama centro; fijo sin WhatsApp |
+
+| 2026-10-05 | Fonda Quiquin | Fonda | Vista Alegre (Arraijan) | 8 | 4.9 | WhatsApp | 6731-1280 | pendiente | vendedora 1 lista 05-10; contesta resenas; abre 4:30am; Vista Alegre Grill cerca con 125 |
+| 2026-10-05 | Fonda El Sabor Ocueno SA | Fonda | Burunga (La Omar) | 11 | 4.5 | WhatsApp | 6737-2610 | pendiente | vendedora 1 lista 05-10; dentro de Ferreteria El Diamante (100 resenas); ficha sin reclamar |
+| 2026-10-05 | FONDA LOS JUANOS | Fonda | Nuevo Arraijan | 7 | 4.7 | WhatsApp | 6400-3881 | pendiente | vendedora 1 lista 05-10; mujer empresaria; contesta resenas; top2 fondas Arraijan 17/17 |
+| 2026-10-05 | Fonda aguila Dule | Fonda | Valle del Sol (Arraijan) | 7 | 5.0 | WhatsApp | 6118-0080 | pendiente | vendedora 1 lista 05-10; resenas de 3 anos; ficha sin reclamar; pollo asado |
+| 2026-10-05 | Fonda Edwin | Fonda | Vacamonte | 3 | 5.0 | WhatsApp | 6592-8165 | pendiente | vendedora 1 lista 05-10; resenas de 5 anos; ficha sin reclamar |
+| 2026-10-05 | Fonda Riquito | Fonda | Burunga | 3 | 4.3 | WhatsApp | 6734-4923 | pendiente | vendedora 1 lista 05-10; resenas de 6-8 anos; horario dudoso; ficha sin reclamar |
+| 2026-10-05 | pasteleria Candy | Pasteleria | Nuevo Arraijan | 3 | 5.0 | WhatsApp | 6148-8194 | pendiente | vendedora 1 lista 05-10; abierto 24h; pasteles por encargo; top2 pastelerias 23/17 |
+| 2026-10-05 | Thaiez bakery | Reposteria | Arraijan | 5 | 5.0 | WhatsApp | 6920-2363 | pendiente | vendedora 1 lista 05-10; Instagram; resenas de 2 anos; top2 pastelerias 23/17 |
+| 2026-10-05 | Dulce Jangaby | Pasteleria | Nuevo Arraijan | 5 | 4.4 | WhatsApp | 6742-6614 | pendiente | vendedora 1 lista 05-10; tiene web; contesta resenas; top2 pastelerias 23/17 |
+| 2026-10-05 | Lavamatico Rafael | Lavanderia | Arraijan (Blvd. Simon Ruiz Diaz) | 1 | 5.0 | WhatsApp | 6525-8399 | pendiente | vendedora 1 lista 05-10; top2 lavanderias Arraijan 18/14 |
+| 2026-10-05 | Fonda Como en casa | Fonda | Nuevo Chorrillo (Arraijan) | 4 | 5.0 | llamada | 344-9011 | pendiente | vendedora 1 lista 05-10; fijo sin WhatsApp; vende por PedidosYa |
+| 2026-10-05 | Lavanderia Chung | Lavanderia | Arraijan | 4 | 4.8 | llamada | 251-8535 | pendiente | vendedora 1 lista 05-10; fijo sin WhatsApp |
+
+| 2026-10-06 | Optica Todo Lentes | Optica | Plaza Aventura (C. 74 Oeste) | 12 | 4.6 | WhatsApp | 6898-8005 | pendiente | ciudad centro 06-10; contesta todas las resenas; Dr. Chamorro; mujer empresaria; lideres opticas 464/235 |
+| 2026-10-06 | Kirei Studio | Optica y belleza | Ciudad de Panama | 7 | 5.0 | WhatsApp | 6623-9000 | respondio | pidio precio 10:31, se paso lista y fotos; 11:26 dijo que lo presenta a su jefe; se ofrecio cotizacion |
+| 2026-10-06 | Optica Hito | Optica | Panama (Super Xtra) | 2 | 5.0 | WhatsApp | 6878-2112 | pendiente | ciudad centro 06-10; resenas de 5 y 8 anos; entrega a domicilio |
+| 2026-10-06 | Jy impresiones y bordados | Imprenta | Av. Central Espana | 11 | 5.0 | WhatsApp | 6094-2661 | pendiente | ciudad centro 06-10; lideres imprentas 231/92 |
+| 2026-10-06 | JECE SOLUCIONES | Imprenta | Obarrio (Oceania Business Plaza) | 6 | 5.0 | WhatsApp | 6213-2930 | respondio | autorespuesta 10:16; 10:33 dijo 'reviso y les comento'; seguimiento con dato nuevo a las 24-48h |
+| 2026-10-06 | Sweet blossom | Floristeria | Obarrio (Newberry Plaza) | 6 | 5.0 | WhatsApp | 6331-0418 | pendiente | ciudad centro 06-10; mayorista; lideres floristerias 749/361 |
+| 2026-10-06 | Floristeria Florea | Floristeria | Plaza la Riviera (C. 54 Este) | 1 | 5.0 | WhatsApp | 6878-8947 | no | solo delivery y pick up, no recibe clientes en el local; descartado por criterio 4; contesto 06-10 10:24 |
+| 2026-10-06 | Retate Costura / Tu Modista Panama | Modista y sastreria | Av. Samuel Lewis y Obarrio | 5 | 5.0 | WhatsApp | 6128-7621 | pendiente | ciudad centro 06-10; dos fichas mismo numero (5 y 6 resenas); contesta resenas; mujer empresaria; lideres sastrerias 155/69 |
+| 2026-10-06 | De Souza Atelier | Sastreria | Plaza Paitilla Mall | 2 | 5.0 | WhatsApp | 6396-1164 | respondio | ciudad centro 06-10; autorespuesta de empresa; contesto 'estamos bien', rechazo suave; si no responde al cierre pasa a no |
+| 2026-10-06 | Modisteria y Boutique Leiva | Modista y boutique | Plaza Paitilla (local 12) | 7 | 5.0 | WhatsApp | 6450-3685 | no | audio 06-10: no guarda el numero, no tiene modista que le ayude, escribira mas adelante; cerrado por falta de personal, no por el producto |
+| 2026-10-06 | Optica Sosa & Arango Marbella | Optica | Marbella (Galerias Marbella) | 3 | 5.0 | llamada | 223-2034 | pendiente | ciudad centro 06-10; fijo sin WhatsApp |
+| 2026-10-06 | OPTICAS VISTOSO | Optica | Plaza Pacifica | 3 | 5.0 | llamada | 215-3438 | pendiente | ciudad centro 06-10; fijo sin WhatsApp; tiene web; contesta resenas |
+| 2026-10-06 | La Printeria | Imprenta | C. 52 Este | 2 | 5.0 | llamada | 388-3256 | pendiente | ciudad centro 06-10; fijo sin WhatsApp |
+
+| 2026-10-06 | Panita Gourmet | Venezolana | San Francisco (Plaza Fundadores) | 14 | 4.9 | WhatsApp | 6589-9235 | pendiente | vendedora restaurantes centro 06-10; contesta todas las resenas; empanadas; top2 venezolana 1626/1341 |
+| 2026-10-06 | Sabor&alma cafe restaurant | Restaurante | Bella Vista (C. Aquilino de la Guardia) | 12 | 4.7 | WhatsApp | 6980-2539 | pendiente | vendedora restaurantes centro 06-10; estilo food truck frente al LG; contesta resenas; top2 1626/1341 |
+| 2026-10-06 | Tequenos Panama San Francisco | Venezolana | San Francisco (C. 70) | 10 | 4.8 | WhatsApp | 6314-7437 | pendiente | vendedora restaurantes centro 06-10; cierra 11pm; resenas de hasta 3 anos; top2 1626/1341 |
+| 2026-10-06 | Que Arepas | Venezolana | Panama (C. Eric del Valle) | 10 | 4.6 | WhatsApp | 6164-9044 | pendiente | vendedora restaurantes centro 06-10; una resena mala pesa mucho con solo 10; mujer empresaria; top2 1626/1341 |
+| 2026-10-06 | Guayoyo | Venezolana | Panama (C. Tercera) | 13 | 4.3 | WhatsApp | 6429-7583 | pendiente | vendedora restaurantes centro 06-10; resenas recientes, buen ritmo; cierra 5pm; top2 1626/1341 |
+| 2026-10-06 | Ovillo's Real Protein | Comida saludable | San Francisco (Via Cincuentenario) | 1 | 5.0 | WhatsApp | 6383-1983 | pendiente | vendedora restaurantes centro 06-10; local nuevo; contesta resenas; lideres saludable 376/229 |
+| 2026-10-06 | Mi Mona Fea food truck | Food truck | Bella Vista (frente al LG) | 2 | 5.0 | WhatsApp | 6958-7675 | pendiente | vendedora restaurantes centro 06-10; resenas de 3-4 anos; ficha sin reclamar; patio vecino 58 |
+| 2026-10-06 | The Fat Truck Panama | Food truck | Panama (Av. B) | 5 | 5.0 | WhatsApp | 6204-2886 | pendiente | vendedora restaurantes centro 06-10; resenas de 4 anos; ficha sin reclamar; verificar si sigue operando |

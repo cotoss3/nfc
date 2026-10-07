@@ -85,6 +85,8 @@ No lo digo como burla. Lo digo porque es lo más común que me encuentro, y porq
 
 Tu negocio probablemente ya aparece en Google Maps aunque tú nunca lo hayas puesto. Google arma fichas solo, con lo que encuentra. Cuando alguien busca "restaurante cerca de mí" o "taller en La Chorrera", Google le muestra tres negocios arriba de todo. Ese bloque de tres es donde se decide quién recibe la llamada.
 
+La forma de pedir la reseña cambia según el rubro, y la tengo separada por tipo de negocio: [más reseñas para restaurantes](/resenas-google/restaurantes), [más reseñas para barberías y salones](/resenas-google/barberias-y-salones), [más reseñas para talleres y mecánicas](/resenas-google/talleres-y-mecanicas) y [más reseñas para clínicas y consultorios](/resenas-google/clinicas).
+
 Y para elegir esos tres, Google mira tres cosas: qué tan cerca estás de quien busca, qué tan bien le calzas a lo que buscó, y qué tan conocido eres. Las reseñas pesan en las últimas dos.
 
 ## Lo que Google sí permite

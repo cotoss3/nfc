@@ -104,6 +104,8 @@ cuenta para Google, así que empieza por las negativas y por las recientes.
 
 De los 66 negocios que revisamos en septiembre entre La Chorrera y Arraiján, solo 3 tenían respuestas del dueño en sus reseñas: dos fondas y un restaurante de mariscos. Los otros 63 dejaron todas las opiniones sin contestar, incluidas las quejas de una estrella.
 
+Qué conviene responder y con qué tono cambia según el rubro. Lo tengo desglosado para [restaurantes](/resenas-google/restaurantes), [tiendas y comercios](/resenas-google/tiendas-y-comercios) y [hoteles y hospedajes](/resenas-google/hoteles-y-hospedajes).
+
 ## Qué se puede reportar y qué no
 
 Acá es donde la mayoría pierde el tiempo.

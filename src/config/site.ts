@@ -17,4 +17,7 @@ export const Config = {
     facebook: process.env.NEXT_PUBLIC_FB_PIXEL_ID || '1591597945771251',
     tiktok: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || 'DAKQIS3C77U8PGIBH830',
   },
+  social: {
+    tiktok: 'https://www.tiktok.com/@startap507',
+  },
 };

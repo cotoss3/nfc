@@ -208,3 +208,59 @@ dólares que cierra. Anota en una libreta de dónde viene cada venta.
 
 Pautar hacia una página vacía o un checkout que falla es tirar la plata. Son
 horas de trabajo, no semanas.
+
+---
+
+# Títulos y descripciones de los anuncios
+**25 de septiembre de 2026**
+
+El `texto principal` de cada creativo está más arriba. Faltaban los otros dos
+campos que pide el Administrador de anuncios.
+
+| # | Título (máx. 40) | Descripción (máx. 30) |
+| --- | --- | --- |
+| 1 · Demostración cruda | Un toque y deja su reseña | Envío gratis desde $50 |
+| 2 · El problema | ¿Por qué salen ellos y no tú? | Te decimos qué le falta |
+| 3 · La objeción | Esto no es comprar reseñas | Lo que Google sí permite |
+| 4 · El caso real | De 1 reseña a 10 en dos semanas | Te contamos qué se hizo |
+| 5 · El momento incómodo | Sin tener que pedir el favor | El cliente lo hace solo |
+
+La descripción solo se ve en algunas ubicaciones. El título se ve siempre, así
+que es el campo que hay que cuidar.
+
+El título 4 depende de que confirmes las cifras de RUF PIXEL. Si el dato cambia,
+cambia el título.
+
+---
+
+# Estado de la campaña · 25 sep 2026
+
+Cuenta 3382566721898189, campaña `starTAP | Fase 1 - Test de publicos | WhatsApp`,
+en **borrador**.
+
+**Hecho en esta sesión:**
+- El presupuesto había vuelto a **presupuesto de campaña (CBO)** a $60 diarios.
+  Devuelto a **presupuesto por conjunto**, que es lo que hace limpio el test de
+  públicos. Con CBO Meta reparte a su criterio y no se sabe qué público ganó.
+- **WhatsApp puesto como destino en los cuatro conjuntos**, con el
+  **+507 6483-9004**, y Messenger desmarcado. Un solo canal: con dos, las
+  conversaciones se reparten entre dos bandejas.
+
+**Pendiente, hay que hacerlo a mano:**
+- Presupuesto por conjunto. Quedó A $5, **B $20, C $12, D $12**. Tienen que ser
+  $5 los cuatro. El campo del editor no acepta el valor por automatización: se
+  cambia entrando a cada conjunto, sección "Presupuesto y calendario".
+
+**Problema de fondo detectado:** el conjunto **C (Belleza)** tiene un público de
+solo **12.400 a 14.600 personas**. Es muy poco: con $5 diarios la frecuencia
+sube rápido, el público se quema en días y el dato no sirve para comparar contra
+los otros tres, que andan entre 565 mil y 1,9 millones.
+
+Opciones para C, antes de publicar:
+1. Añadirle intereses de belleza y estética además del comportamiento de
+   administradores de páginas de salud y belleza.
+2. Cambiar el comportamiento por "Administradores de páginas de Facebook" y
+   acotar con intereses del rubro.
+3. Sacar C de la Fase 1 y correr el test con tres conjuntos.
+
+La 3 es la más limpia si no se quiere tocar la segmentación.
