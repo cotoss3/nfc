@@ -1,0 +1,12 @@
+/* TEAM */
+Developer & Digital Strategy: DataKorex
+Website: https://www.datakorex.com
+Contact: info@datakorex.com
+Location: Panama
+
+/* SITE */
+Project: starTAP Panamá
+Domain: https://startap.com.pa
+Standards: HTML5, CSS3, Schema.org (JSON-LD), Next.js 14, React 18, Tailwind CSS
+Technology: NFC & QR Contactless Review Solutions
+Components: Next.js App Router, Supabase, Lucide Icons

@@ -993,3 +993,8 @@ Plan completo con rutas de archivo y reparto Antigravity/Fernando en el punto 9 
    - Centralizado en `Config.social.tiktok` en `src/config/site.ts`.
    - Incorporado en las matrices `sameAs` de `src/components/StructuredData.tsx` (Organization y Store) para potenciar la vinculación de entidades y autoridad de marca en Google Knowledge Graph.
 
+2. **Atribución Técnica y SEO para DataKorex:**
+   - Creado `public/humans.txt` bajo el estándar internacional de atribución de autoría web.
+   - Metadatos `authors`, `creator` y `publisher` registrados en `src/app/layout.tsx`.
+
+
