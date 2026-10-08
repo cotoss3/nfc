@@ -118,22 +118,23 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block w-full max-w-[240px]">
+            <Link href="/" className="inline-block w-full max-w-[200px]">
               <img
                 src="/logos/negativo.webp"
                 alt="starTAP Logo"
-                width="240"
-                height="80"
+                width="200"
+                height="67"
                 loading="lazy"
                 decoding="async"
-                className="w-[calc(100%-5px)] h-auto object-contain invert mix-blend-screen opacity-95 block"
+                className="w-full h-auto object-contain invert mix-blend-screen opacity-95 block"
               />
             </Link>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Placas y tarjetas NFC contactless en Panamá. Multiplica tus reseñas de 5 estrellas en Google Maps y TripAdvisor directamente en tu mostrador.
+              Dispositivos NFC y QR inteligentes en Panamá. Multiplica tus reseñas de 5 estrellas en Google Maps sin suscripciones ni mensualidades.
             </p>
-            {/* Social Media & Google Maps Links */}
-            <div className="pt-1 flex flex-wrap gap-2">
+
+            {/* Google Maps Review Badge */}
+            <div>
               <a
                 href="https://maps.app.goo.gl/MG3YyRykfUTvL4B79"
                 target="_blank"
@@ -142,84 +143,127 @@ export default function Footer() {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-amber-400/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
               >
                 <span className="text-amber-400">★ 5.0</span>
-                <span>Google Maps (5 reseñas)</span>
+                <span>Google Maps (6 reseñas)</span>
               </a>
-              <a
-                href="https://www.tiktok.com/@startap507"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Seguir a starTAP en TikTok @startap507"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-amber-400/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
-              >
-                <svg className="w-4 h-4 fill-current text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
-                </svg>
-                <span>TikTok: @startap507</span>
-              </a>
-              <a
-                href="https://www.instagram.com/startap507"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Seguir a starTAP en Instagram @startap507"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-pink-500/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
-              >
-                <Instagram className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform flex-shrink-0" />
-                <span>Instagram: @startap507</span>
-              </a>
-              <a
-                href="https://www.facebook.com/startap507"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Seguir a starTAP en Facebook @startap507"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-blue-500/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
-              >
-                <Facebook className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform flex-shrink-0" />
-                <span>Facebook: @startap507</span>
-              </a>
+            </div>
+
+            {/* Social Icons Row */}
+            <div className="pt-1">
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Síguenos en Redes</p>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://www.instagram.com/startap507"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram @startap507"
+                  className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-pink-400 hover:border-pink-500/50 hover:bg-gray-850 transition-all group"
+                >
+                  <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@startap507"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok @startap507"
+                  className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:border-amber-400/50 hover:bg-gray-850 transition-all group"
+                >
+                  <svg className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.facebook.com/startap507"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook @startap507"
+                  className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-blue-400 hover:border-blue-500/50 hover:bg-gray-850 transition-all group"
+                >
+                  <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                </a>
+                <a
+                  href="https://wa.me/50764839004"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp starTAP Panamá"
+                  className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-gray-850 transition-all group"
+                >
+                  <Phone className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                </a>
+              </div>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links / Dispositivos NFC */}
           <div className="space-y-3">
-            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Productos & Legales</h3>
+            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Dispositivos NFC</h3>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/catalogo/placa-nfc-mostrador" className="hover:text-white transition-colors">Placas NFC para Mostrador</Link></li>
+              <li><Link href="/catalogo/placa-nfc-mostrador" className="hover:text-white transition-colors">Placas para Mostrador</Link></li>
               <li><Link href="/catalogo/stand-nfc-mesa" className="hover:text-white transition-colors">Stands NFC de Mesa</Link></li>
-              <li><Link href="/catalogo/tarjeta-nfc-bolsillo" className="hover:text-white transition-colors">Tarjetas NFC de Bolsillo</Link></li>
+              <li><Link href="/catalogo/tarjeta-nfc-bolsillo" className="hover:text-white transition-colors">Tarjetas de Bolsillo</Link></li>
               <li><Link href="/catalogo/pack-trio-comercial" className="hover:text-white transition-colors">Pack Comercio (3 en 1)</Link></li>
-              <li><Link href="/corporativo" className="text-amber-400 font-bold hover:text-white transition-colors">Pedidos Corporativos B2B</Link></li>
-              <li><Link href="/blog" className="hover:text-white transition-colors text-gray-300">Blog y Guías Google Maps</Link></li>
+              <li>
+                <Link href="/corporativo" className="text-amber-400 font-bold hover:text-amber-300 transition-colors inline-flex items-center gap-1.5">
+                  <span>Pedidos B2B al Mayor</span>
+                </Link>
+              </li>
+              <li><Link href="/shop" className="hover:text-white transition-colors text-gray-400">Ver Catálogo Completo →</Link></li>
             </ul>
           </div>
 
           {/* Industries Links (SEO Internal Linking) */}
           <div className="space-y-3">
-            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Reseñas por Industria</h3>
+            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Por Industria</h3>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/resenas-google" className="text-amber-300 font-semibold hover:text-white transition-colors">Guía General de Reseñas</Link></li>
               <li><Link href="/resenas-google/restaurantes" className="hover:text-white transition-colors">Restaurantes y Cafés</Link></li>
               <li><Link href="/resenas-google/clinicas" className="hover:text-white transition-colors">Clínicas y Consultorios</Link></li>
               <li><Link href="/resenas-google/barberias-y-salones" className="hover:text-white transition-colors">Barberías y Salones</Link></li>
               <li><Link href="/resenas-google/talleres-y-mecanicas" className="hover:text-white transition-colors">Talleres y Mecánicas</Link></li>
               <li><Link href="/resenas-google/hoteles-y-hospedajes" className="hover:text-white transition-colors">Hoteles y Hospedajes</Link></li>
               <li><Link href="/resenas-google/tiendas-y-comercios" className="hover:text-white transition-colors">Tiendas y Comercios</Link></li>
+              <li><Link href="/resenas-google" className="text-amber-300 font-semibold hover:text-white transition-colors">Guía General de Reseñas →</Link></li>
             </ul>
           </div>
 
-          {/* Panama Shipping & Payments */}
+          {/* Information & Guides */}
           <div className="space-y-3">
-            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Envíos en Panamá</h3>
-            <ul className="space-y-2 text-xs text-gray-400">
-              <li className="flex items-center space-x-2 text-white font-semibold">
-                <span>🇵🇦 Envíos a todo el país</span>
+            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Información</h3>
+            <ul className="space-y-2 text-xs">
+              <li><Link href="/blog" className="hover:text-white transition-colors">Blog y Guías Google Maps</Link></li>
+              <li><Link href="/app" className="hover:text-white transition-colors">Plataforma & Funciones</Link></li>
+              <li><Link href="/envios" className="hover:text-white transition-colors">Cobertura de Envíos</Link></li>
+              <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-400">Términos del Servicio</Link></li>
+              <li><Link href="/privacidad" className="hover:text-white transition-colors text-gray-400">Política de Privacidad</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact & Payments */}
+          <div className="space-y-3">
+            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Atención & Pagos</h3>
+            <ul className="space-y-2 text-xs">
+              <li className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-amber-400 flex-shrink-0" />
+                <span>Ciudad de Panamá, Panamá</span>
               </li>
-              <li>• Entregas en 24-48h en Ciudad de Panamá</li>
-              <li>• Envíos al interior por Uno Express y Servientrega</li>
+              <li className="flex items-center space-x-2">
+                <Phone className="h-4 w-4 text-amber-400 flex-shrink-0" />
+                <a href="https://wa.me/50764839004" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  +507 6483-9004
+                </a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Mail className="h-4 w-4 text-amber-400 flex-shrink-0" />
+                <a href="mailto:info@startap.com.pa" className="hover:text-white transition-colors">
+                  info@startap.com.pa
+                </a>
+              </li>
+              <li className="text-[11px] text-gray-400 pt-1 border-t border-gray-850">
+                🇵🇦 Envíos 24-48h a todo Panamá (Uno Express y Servientrega).
+              </li>
             </ul>
 
-            {/* Legible Payment Logos (Visa, Mastercard, Yappy) */}
+            {/* Payment Logos */}
             <div className="pt-2">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5">Métodos de Pago Aceptados</p>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Métodos de Pago</p>
               <div className="flex items-center gap-2">
                 <div className="bg-white px-2 py-1 rounded-md flex items-center justify-center h-7 shadow-xs">
                   <Image
@@ -251,64 +295,11 @@ export default function Footer() {
               </div>
             </div>
           </div>
-
-          {/* Contact */}
-          <div className="space-y-3">
-            <h3 className="text-white font-bold text-xs uppercase tracking-wider">Contacto Directo</h3>
-            <ul className="space-y-2 text-xs">
-              <li className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>Ciudad de Panamá, Panamá</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>+507 6483-9004</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                <span>info@startap.com.pa</span>
-              </li>
-              <li className="pt-1 flex flex-col gap-1.5">
-                <a
-                  href="https://www.instagram.com/startap507"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram @startap507"
-                  className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group"
-                >
-                  <Instagram className="h-4 w-4 text-pink-400 group-hover:scale-110 transition-transform flex-shrink-0" />
-                  <span className="group-hover:underline">Instagram @startap507</span>
-                </a>
-                <a
-                  href="https://www.tiktok.com/@startap507"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="TikTok @startap507"
-                  className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group"
-                >
-                  <svg className="h-4 w-4 fill-current text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
-                  </svg>
-                  <span className="group-hover:underline">TikTok @startap507</span>
-                </a>
-                <a
-                  href="https://www.facebook.com/startap507"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook @startap507"
-                  className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group"
-                >
-                  <Facebook className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform flex-shrink-0" />
-                  <span className="group-hover:underline">Facebook @startap507</span>
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-gray-800 text-center text-xs text-gray-400 flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+        <div className="mt-12 pt-6 border-t border-gray-800 text-center text-xs text-gray-400 flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
           <div className="space-y-1 text-center md:text-left">
-            <p>© {new Date().getFullYear()} StarTAP Panamá. Todos los derechos reservados.</p>
+            <p>© {new Date().getFullYear()} starTAP Panamá. Todos los derechos reservados.</p>
             <p className="text-[11px] text-gray-400">
               Desarrollo Web por{' '}
               <a
@@ -321,42 +312,22 @@ export default function Footer() {
               </a>
             </p>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 text-xs">
+            <Link href="/envios" className="hover:text-gray-200 transition-colors">Envíos</Link>
+            <Link href="/terminos" className="hover:text-gray-200 transition-colors">Términos</Link>
+            <Link href="/privacidad" className="hover:text-gray-200 transition-colors">Privacidad</Link>
             <a
-              href="https://www.instagram.com/startap507"
+              href="https://maps.app.goo.gl/MG3YyRykfUTvL4B79"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-pink-400 hover:text-white transition-colors font-medium flex items-center gap-1"
+              className="text-amber-400 hover:text-amber-300 transition-colors"
             >
-              <Instagram className="w-3.5 h-3.5" />
-              Instagram
+              Google Maps
             </a>
-            <a
-              href="https://www.tiktok.com/@startap507"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-amber-400 hover:text-white transition-colors font-medium flex items-center gap-1"
-            >
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
-              </svg>
-              TikTok
-            </a>
-            <a
-              href="https://www.facebook.com/startap507"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-white transition-colors font-medium flex items-center gap-1"
-            >
-              <Facebook className="w-3.5 h-3.5" />
-              Facebook
-            </a>
-            <Link href="/envios" className="hover:text-gray-200 underline">Envíos</Link>
-            <Link href="/terminos" className="hover:text-gray-200 underline">Términos</Link>
-            <Link href="/privacidad" className="hover:text-gray-200 underline">Privacidad</Link>
           </div>
         </div>
       </div>
     </footer>
   );
 }
+
