@@ -117,18 +117,10 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-8">
           {/* Brand Column */}
-          <div className="space-y-4">
-            <Link href="/" className="inline-block w-full max-w-[200px]">
-              <img
-                src="/logos/negativo.webp"
-                alt="starTAP Logo"
-                width="200"
-                height="67"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-auto object-contain invert mix-blend-screen opacity-95 block"
-              />
-            </Link>
+          <div className="space-y-3">
+            <h3 className="text-white font-black text-xs uppercase tracking-wider">
+              star<span className="text-amber-400">TAP</span> Panamá
+            </h3>
             <p className="text-xs text-gray-400 leading-relaxed">
               Dispositivos NFC y QR inteligentes en Panamá. Multiplica tus reseñas de 5 estrellas en Google Maps sin suscripciones ni mensualidades.
             </p>

@@ -1044,9 +1044,12 @@ Verificación del plan del punto 9 contra el repo y contra la inspección de URL
      4. *Información:* Blog, plataforma/funciones, cobertura de envíos y políticas legales.
      5. *Atención & Pagos:* Canales de atención directa (WhatsApp, email, ubicación) y métodos de pago (Visa, Mastercard, Yappy) en una disposición equilibrada.
 
+   - **Cabecera de Marca Limpia:** Se eliminó la imagen del logo blanco invertido del footer, sustituyéndola por el nombre de marca en texto con estilo (`starTAP Panamá`) alineado al mismo nivel y tamaño que los títulos de las otras 4 columnas.
+
 2. **Actualización de Reseñas de Google Maps (6 reseñas / 5.0 ⭐):**
    - Actualizado a `Google Maps (6 reseñas)` en `Footer.tsx`.
    - Actualizado `reviewCount: '6'` en el Schema.org `aggregateRating` de `StructuredData.tsx` para coincidir con la métrica real del perfil de Google Maps.
+
 
 
 
