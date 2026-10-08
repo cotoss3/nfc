@@ -1022,3 +1022,15 @@ Verificación del plan del punto 9 contra el repo y contra la inspección de URL
 5. **Verificación:**
    - `npx tsc --noEmit` completado con **0 errores**.
 
+## 8 oct 2026 (cont.) · Configuración de TAP de Reseñas Oficial y Dispositivo Demo STT-1003
+
+1. **Rutas Alias de Reseña en `/r/[id]`:**
+   - Se habilitaron redirecciones canónicas normalizadas en `/r/resena`, `/r/reseña`, `/r/resenas`, `/r/startap` y `/r/opiniones` apuntando directamente al enlace oficial de calificación en Google Maps de starTAP (`https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U`).
+   - El microservicio `/r/[id]/route.ts` incluye decodificación de URI (`decodeURIComponent`) para soporte transparente de caracteres con tilde/ñ en navegadores móviles.
+
+2. **Configuración de Dispositivo STT-1003 para Demostración:**
+   - La placa/tarjeta física `STT-1003` fue actualizada en la base de datos de producción Supabase (`nfc_cards`) y en `db_store.json`.
+   - Parámetros: `is_active: true`, `claimed: true`, `target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U'`, `tipo_activacion: 'prueba'`, `group_name: 'Demo Oficial'`, `precio_venta: 0`.
+   - Al escanear el chip físico `STT-1003` o ingresar a `startap.com.pa/r/STT-1003`, abre de inmediato la ventana de reseña de 5 estrellas en Google para demostración ante clientes.
+
+
