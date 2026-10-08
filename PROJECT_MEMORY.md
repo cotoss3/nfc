@@ -1033,4 +1033,15 @@ Verificación del plan del punto 9 contra el repo y contra la inspección de URL
    - Parámetros: `is_active: true`, `claimed: true`, `target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U'`, `tipo_activacion: 'prueba'`, `group_name: 'Demo Oficial'`, `precio_venta: 0`.
    - Al escanear el chip físico `STT-1003` o ingresar a `startap.com.pa/r/STT-1003`, abre de inmediato la ventana de reseña de 5 estrellas en Google para demostración ante clientes.
 
+## 8 oct 2026 (cont.) · Integración de Facebook Oficial (`@startap507`)
+
+1. **Enlace oficial de Facebook (`https://www.facebook.com/startap507`):**
+   - Agregado en `src/components/Footer.tsx` en tres secciones clave:
+     - Columna de marca (botón interactivo con icono oficial de Lucide).
+     - Columna de «Contacto Directo».
+     - Barra inferior de enlaces y redes sociales.
+   - Centralizado en `Config.social.facebook` en `src/config/site.ts`.
+   - Actualizado en los arrays `sameAs` de `src/components/StructuredData.tsx` (para Organization y Store) y en `src/lib/blog.ts` (autor Fernando Contreras) reemplazando la URL genérica por el slug oficial de marca para fortalecer la entidad en Google Knowledge Graph.
+
+
 

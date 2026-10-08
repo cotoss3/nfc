@@ -24,7 +24,7 @@ const organizationSchema = {
   sameAs: [
     'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
     'https://www.datakorex.com',
-    'https://www.facebook.com/profile.php?id=61594455868652',
+    'https://www.facebook.com/startap507',
     'https://www.tiktok.com/@startap507',
     'https://www.instagram.com/startap507',
   ],
@@ -113,7 +113,7 @@ const storeSchema = {
   sameAs: [
     'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
     'https://www.datakorex.com',
-    'https://www.facebook.com/profile.php?id=61594455868652',
+    'https://www.facebook.com/startap507',
     'https://www.tiktok.com/@startap507',
     'https://www.instagram.com/startap507',
   ],

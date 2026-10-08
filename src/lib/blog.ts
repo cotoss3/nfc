@@ -60,7 +60,7 @@ export const AUTORES: Record<string, Autor> = {
     sameAs: [
       'https://maps.app.goo.gl/MG3YyRykfUTvL4B79',
       'https://www.datakorex.com',
-      'https://www.facebook.com/profile.php?id=61594455868652',
+      'https://www.facebook.com/startap507',
       // Añadir LinkedIn y perfiles reales cuando estén. Cada uno suma a la entidad.
     ],
   },

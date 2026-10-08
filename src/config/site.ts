@@ -19,5 +19,8 @@ export const Config = {
   },
   social: {
     tiktok: 'https://www.tiktok.com/@startap507',
+    instagram: 'https://www.instagram.com/startap507',
+    facebook: 'https://www.facebook.com/startap507',
   },
 };
+

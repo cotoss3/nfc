@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { CreditCard, Heart, MapPin, Phone, Mail, Send, CheckCircle2, Loader2, Instagram } from 'lucide-react';
+import { CreditCard, Heart, MapPin, Phone, Mail, Send, CheckCircle2, Loader2, Instagram, Facebook } from 'lucide-react';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -166,6 +166,16 @@ export default function Footer() {
                 <Instagram className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform flex-shrink-0" />
                 <span>Instagram: @startap507</span>
               </a>
+              <a
+                href="https://www.facebook.com/startap507"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Seguir a starTAP en Facebook @startap507"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:border-blue-500/60 hover:bg-gray-850 text-gray-300 hover:text-white transition-all text-xs font-semibold group shadow-xs"
+              >
+                <Facebook className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+                <span>Facebook: @startap507</span>
+              </a>
             </div>
           </div>
 
@@ -281,6 +291,16 @@ export default function Footer() {
                   </svg>
                   <span className="group-hover:underline">TikTok @startap507</span>
                 </a>
+                <a
+                  href="https://www.facebook.com/startap507"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook @startap507"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors group"
+                >
+                  <Facebook className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+                  <span className="group-hover:underline">Facebook @startap507</span>
+                </a>
               </li>
             </ul>
           </div>
@@ -321,6 +341,15 @@ export default function Footer() {
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.46A6.29 6.29 0 0 0 15.82 16V8.5a8.28 8.28 0 0 0 4.84 1.56V6.69h-.07z" />
               </svg>
               TikTok
+            </a>
+            <a
+              href="https://www.facebook.com/startap507"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-white transition-colors font-medium flex items-center gap-1"
+            >
+              <Facebook className="w-3.5 h-3.5" />
+              Facebook
             </a>
             <Link href="/envios" className="hover:text-gray-200 underline">Envíos</Link>
             <Link href="/terminos" className="hover:text-gray-200 underline">Términos</Link>
