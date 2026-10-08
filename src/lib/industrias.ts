@@ -169,39 +169,51 @@ export const INDUSTRIAS: Industria[] = [
     slug: 'clinicas',
     nombre: 'clínicas y consultorios',
     nombreSingular: 'clínica',
-    h1: 'Más reseñas de Google para clínicas y consultorios en Panamá',
-    title: 'Más Reseñas de Google para Clínicas en Panamá',
+    h1: 'Más reseñas y comentarios de Google para clínicas y consultorios en Panamá',
+    title: 'Comentarios y Reseñas de Google para Clínicas en Panamá',
     description:
-      'Consigue más reseñas de Google para tu clínica o consultorio en Panamá. Placa NFC en recepción: el paciente acerca el celular y deja su reseña al salir.',
+      'Consigue más comentarios, opiniones y reseñas de 5 estrellas para tu clínica o consultorio en Panamá. Placa NFC en recepción: el paciente acerca el celular y deja su opinión al salir.',
     intro:
-      'Cuando alguien busca un especialista en Panamá, compara fichas de Google antes de llamar. La cantidad de reseñas y la calificación pesan más que la ubicación.',
+      'Cuando alguien busca un especialista médico o dental en Panamá, compara los comentarios y opiniones en Google Maps antes de llamar. La cantidad de comentarios positivos y la calificación pesan más que la cercanía física.',
     dolor:
-      'Un paciente satisfecho lo comenta con su familia, pero rara vez lo escribe. Y las reseñas que llegan solas suelen ser de los pocos que tuvieron un mal día.',
+      'Un paciente satisfecho con la atención médica lo comenta con su familia, pero rara vez escribe una opinión en internet. En cambio, los comentarios negativos suelen llegar solos de quienes tuvieron algún reclamo puntual.',
     momento:
-      'Al salir de la consulta, mientras espera la próxima cita o paga en recepción. Una placa NFC visible en el mostrador es todo lo que hace falta.',
+      'Al salir de la consulta, mientras espera la próxima cita o paga en recepción. Una placa NFC visible en el mostrador convierte la satisfacción del paciente en una opinión positiva.',
     beneficios: [
-      'Apareces más arriba cuando buscan tu especialidad en tu zona',
-      'Balanceas las reseñas negativas con la opinión de la mayoría, que sí quedó conforme',
+      'Apareces más arriba cuando los pacientes buscan tu especialidad médica en tu zona',
+      'Balanceas los comentarios negativos con la opinión real de la mayoría de pacientes conformes',
       'La recepcionista solo señala la placa, sin pedir datos ni explicar pasos',
-      'No se registra información del paciente: el dispositivo solo abre un enlace',
+      'No se registra información del paciente: el dispositivo solo abre el formulario de opiniones',
     ],
     producto: 'placa-acrilica-nfc',
     productoRazon:
       'La placa acrílica adhesiva es la mejor opción para recepción: se pega al mostrador, se ve siempre y no ocupa espacio.',
     imagen: '/images/resenas-google/resenas-google-clinicas-consultorios-panama-startap.webp',
-    imagenAlt: 'Placa acrílica NFC starTAP para reseñas de Google en recepción de clínica en Panamá',
+    imagenAlt: 'Placa acrílica NFC starTAP para reseñas y comentarios de Google en recepción de clínica en Panamá',
+    keywords: [
+      'google comentarios clinicas',
+      'comentarios de Google para clínicas y consultorios',
+      'opiniones de Google dentistas Panamá',
+      'reseñas de Google para clínicas médicas Panamá',
+      'cómo conseguir opiniones en Google para consultorio',
+      'placa NFC para clínicas Panamá',
+    ],
     faqs: [
       {
+        q: '¿Los comentarios y opiniones en Google son lo mismo que las reseñas?',
+        a: 'Sí. Los pacientes en Panamá suelen buscar "comentarios del doctor" u "opiniones de la clínica", mientras que Google Maps muestra "opiniones" y el panel técnico habla de "reseñas". Capturar opiniones frecuentes en tu mostrador posiciona tu clínica en los tres términos.',
+      },
+      {
         q: '¿Esto maneja datos de mis pacientes?',
-        a: 'No. El dispositivo únicamente abre la página de reseñas de tu clínica en el navegador del paciente. No captura nombres, correos ni información médica.',
+        a: 'No. El dispositivo únicamente abre la página de opiniones de tu clínica en el navegador del paciente. No captura nombres, correos ni información médica.',
       },
       {
         q: '¿Puedo usar uno por doctor?',
         a: 'Sí. Cada dispositivo tiene su propio enlace configurable, así que puedes tener uno por especialista si cada uno maneja su propia ficha de Google.',
       },
       {
-        q: '¿Qué hago si me llega una reseña negativa?',
-        a: 'Respóndela con calma y sin dar detalles clínicos. Una respuesta profesional a una queja suele generar mejor impresión que no tener quejas.',
+        q: '¿Qué hago si me llega una reseña o comentario negativo?',
+        a: 'Respóndela con calma y sin dar detalles clínicos. Una respuesta profesional a una queja demuestra compromiso y genera mayor confianza que no tener opiniones.',
       },
     ],
   },
@@ -209,16 +221,16 @@ export const INDUSTRIAS: Industria[] = [
     slug: 'barberias-y-salones',
     nombre: 'barberías y salones de belleza',
     nombreSingular: 'barbería',
-    h1: 'Más reseñas de Google para barberías y salones en Panamá',
-    title: 'Más Reseñas de Google para Barberías y Salones en Panamá',
+    h1: 'Más reseñas y comentarios de Google para barberías y salones en Panamá',
+    title: 'Comentarios y Reseñas de Google para Barberías y Salones en Panamá',
     description:
-      'Consigue más reseñas de Google para tu barbería o salón en Panamá. Tarjeta o stand NFC: el cliente deja su reseña con un toque antes de irse.',
+      'Consigue más comentarios, opiniones y reseñas de Google para tu barbería o salón en Panamá. Tarjeta o stand NFC: el cliente deja su opinión con un toque antes de irse.',
     intro:
-      'En barbería y belleza casi todo el negocio nuevo llega por búsqueda local y recomendación. Aparecer primero en el Google Maps de tu barrio es la diferencia entre una silla llena y una vacía.',
+      'En barbería, estética y belleza casi todo el cliente nuevo busca opiniones y fotos en Google Maps. El negocio con más comentarios positivos y mejores calificaciones en su corregimiento llena su agenda todos los días.',
     dolor:
-      'Tus clientes son fieles y vuelven cada dos semanas, pero eso no se ve en Google. Un local nuevo con 60 reseñas te pasa por encima aunque tú lleves cinco años.',
+      'Tus clientes salen felices con su corte cada quince días, pero esos buenos comentarios no quedan registrados en tu perfil de Google. Un local nuevo con 50 opiniones te pasa por encima aunque tú lleves años de experiencia.',
     momento:
-      'Justo después del corte, cuando el cliente se está mirando en el espejo y va a pagar. Ese es el pico de satisfacción del día.',
+      'Justo después del corte, cuando el cliente se está mirando en el espejo y va a pagar. Ese es el momento de mayor satisfacción para captar una opinión de 5 estrellas.',
     momentoDetalle: {
       titulo: 'La Dinámica de Barbería: El Clímax del Espejo',
       subtitulo: 'En barbería y estilismo no existe la sobremesa. El punto más alto de satisfacción dura apenas 60 segundos:',
@@ -287,28 +299,36 @@ export const INDUSTRIAS: Industria[] = [
       mensajeWhatsapp: 'Hola, tengo una barbería/salón de belleza en Panamá y quiero equipar a mis estilistas con tarjetas NFC para reseñas de Google.'
     },
     beneficios: [
-      'Sales primero cuando buscan "barbería cerca de mí" en tu corregimiento',
-      'Las fotos de tus cortes rinden más cuando la ficha tiene reseñas que las respalden',
-      'Cada barbero puede tener su propia tarjeta y ver cuántas reseñas genera',
-      'Cuesta una vez, sin mensualidad',
+      'Sales primero cuando buscan "barbería cerca de mí" o "salón de belleza" en tu corregimiento',
+      'Las fotos de tus cortes rinden más cuando la ficha tiene comentarios y opiniones que las respalden',
+      'Cada barbero o estilista puede tener su propia tarjeta y registrar opiniones directas',
+      'Un solo pago de por vida, sin mensualidad',
     ],
     producto: 'tarjeta-nfc',
     productoRazon:
       'La tarjeta NFC es ideal aquí: cabe en el bolsillo del barbero y se la pasa al cliente en la silla, sin moverse del puesto.',
     imagen: '/images/resenas-google/resenas-google-barberias-salones-panama-startap.webp',
-    imagenAlt: 'Tarjeta NFC de bolsillo starTAP para reseñas de Google en barbería o salón de belleza en Panamá',
+    imagenAlt: 'Tarjeta NFC de bolsillo starTAP para reseñas y comentarios de Google en barbería o salón de belleza en Panamá',
+    keywords: [
+      'google comentarios barberias',
+      'comentarios de Google para salones de belleza',
+      'opiniones de Google barberías Panamá',
+      'reseñas de Google para estéticas y salones Panamá',
+      'cómo conseguir opiniones en Google para barbería',
+      'tarjeta NFC para barberos Panamá',
+    ],
     faqs: [
       {
-        q: '¿Puedo ver cuántas reseñas trajo cada barbero?',
-        a: 'Puedes ver cuántos escaneos tuvo cada dispositivo desde el panel. Con una tarjeta por barbero sabes quién está activando más clientes.',
+        q: '¿Puedo ver cuántas opiniones y reseñas trajo cada barbero?',
+        a: 'Sí. Puedes ver cuántos escaneos tuvo cada dispositivo desde el panel de control. Con una tarjeta por barbero sabes quién genera más opiniones de clientes.',
       },
       {
-        q: '¿Y si el cliente no tiene cuenta de Google?',
-        a: 'Casi todo teléfono Android ya viene con una, y en iPhone basta con estar conectado a Gmail. Si no la tiene, Google le pide iniciar sesión y sigue desde ahí.',
+        q: '¿Y si el cliente no tiene cuenta de Google activa?',
+        a: 'Casi todo teléfono Android ya viene con una, y en iPhone basta con estar conectado a Gmail. Si no la tiene, Google le pide iniciar sesión y continúa al formulario de comentarios.',
       },
       {
-        q: '¿Se despega o se daña con el uso?',
-        a: 'Las tarjetas son de PVC y el chip va sellado adentro. Aguantan el uso diario de un local; no se borran con el roce ni con la humedad.',
+        q: '¿Se despega o se daña con el uso constante?',
+        a: 'Las tarjetas son de PVC de alta durabilidad y el chip va sellado adentro. Aguantan el uso diario en el salón; no se borran con el roce ni con productos capilares.',
       },
     ],
   },
@@ -316,28 +336,40 @@ export const INDUSTRIAS: Industria[] = [
     slug: 'talleres-y-mecanicas',
     nombre: 'talleres y mecánicas',
     nombreSingular: 'taller',
-    h1: 'Más reseñas de Google para talleres y mecánicas en Panamá',
-    title: 'Más Reseñas de Google para Talleres en Panamá',
+    h1: 'Más reseñas y comentarios de Google para talleres y mecánicas en Panamá',
+    title: 'Comentarios y Reseñas de Google para Talleres en Panamá',
     description:
-      'Consigue más reseñas de Google para tu taller o mecánica en Panamá. Placa NFC en el mostrador: el cliente deja su reseña al recoger el carro.',
+      'Consigue más comentarios y opiniones de confianza en Google para tu taller o mecánica en Panamá. Placa NFC en mostrador: el cliente deja su valoración al retirar su auto.',
     intro:
-      'Nadie deja su carro con un mecánico desconocido sin buscarlo antes en Google. Las reseñas son literalmente la prueba de que se puede confiar en ti.',
+      'Nadie confía su vehículo a un taller desconocido sin revisar antes los comentarios y opiniones en Google Maps. Las buenas valoraciones son la prueba directa de que el trabajo es honesto y profesional.',
     dolor:
-      'La confianza que construyes reparando bien un carro se queda en el taller. En Google, un taller sin reseñas se ve igual de riesgoso que uno malo.',
+      'La confianza que construyes reparando bien un motor se queda en el local si el cliente no publica su opinión. En Google, un taller sin comentarios recientes genera dudas frente a competidores con decenas de valoraciones.',
     momento:
-      'Cuando el cliente recoge el carro y lo ve funcionando. Es el momento de mayor alivio y el mejor para pedir la reseña.',
+      'Cuando el cliente recoge el auto reparado y confirma que todo quedó perfecto. Es el momento de mayor satisfacción para solicitar su reseña.',
     beneficios: [
-      'Apareces cuando buscan "taller mecánico cerca de mí" o tu especialidad',
-      'Las reseñas dan la confianza que una foto del local no puede dar',
-      'Sirve igual para mecánica, latonería, aire acondicionado o llantas',
-      'Aguanta el ambiente del taller: se limpia y no se daña',
+      'Apareces en primeras posiciones cuando buscan "taller mecánico cerca de mí" o tu especialidad automotriz',
+      'Los comentarios y opiniones de clientes dan la confianza que una foto del taller no puede transmitir',
+      'Sirve igual para mecánica general, electromecánica, chapistería, aire acondicionado o llantas',
+      'Material resistente al ambiente de taller: se limpia fácilmente y no se deteriora',
     ],
     producto: 'placa-acrilica-nfc',
     productoRazon:
       'La placa acrílica se pega al mostrador o al vidrio de la oficina y aguanta el polvo y el uso diario del taller.',
     imagen: '/images/resenas-google/resenas-google-talleres-mecanicas-panama-startap.webp',
-    imagenAlt: 'Stand NFC starTAP para valoraciones de Google en mostrador de taller mecánico en Panamá',
+    imagenAlt: 'Placa NFC starTAP para valoraciones, opiniones y comentarios de Google en taller mecánico en Panamá',
+    keywords: [
+      'google comentarios talleres mecanicos',
+      'comentarios de Google para talleres mecánicos',
+      'opiniones de Google mecánicas Panamá',
+      'reseñas de Google para talleres automotrices Panamá',
+      'opiniones de talleres electromecánica Panamá',
+      'placa NFC para talleres Panamá',
+    ],
     faqs: [
+      {
+        q: '¿Cómo ayudan los comentarios y opiniones al posicionamiento de mi taller?',
+        a: 'Google premia a los talleres que reciben comentarios continuos con palabras clave reales como "frenos", "mantenimiento" o "diagnóstico". Cuando un cliente deja su opinión positiva tras retirar el auto, tu taller sube en los resultados de Google Maps.',
+      },
       {
         q: '¿Funciona si mi taller no tiene ficha de Google todavía?',
         a: 'Primero hay que crear la ficha de Google Business de tu taller, que es gratis. Después configuras el dispositivo para que apunte a ella.',
@@ -347,8 +379,8 @@ export const INDUSTRIAS: Industria[] = [
         a: 'Sí, cuando quieras desde el panel. El dispositivo físico no se toca; solo cambias a dónde apunta.',
       },
       {
-        q: '¿Puedo poner uno en recepción y otro en la caja?',
-        a: 'Sí, y es lo recomendable. Mientras más puntos de contacto, más reseñas; todos pueden apuntar a la misma ficha.',
+        q: '¿Puedo poner uno en recepción y otro en la caja de cobro?',
+        a: 'Sí, y es lo recomendable. Mientras más puntos de contacto, más comentarios y reseñas; todos pueden apuntar a la misma ficha.',
       },
     ],
   },
@@ -356,28 +388,40 @@ export const INDUSTRIAS: Industria[] = [
     slug: 'hoteles-y-hospedajes',
     nombre: 'hoteles y hospedajes',
     nombreSingular: 'hotel',
-    h1: 'Más reseñas de Google para hoteles y hospedajes en Panamá',
-    title: 'Más Reseñas de Google para Hoteles en Panamá',
+    h1: 'Más reseñas y comentarios de Google para hoteles y hospedajes en Panamá',
+    title: 'Comentarios y Reseñas de Google para Hoteles en Panamá',
     description:
-      'Consigue más reseñas de Google para tu hotel, hostal o alquiler en Panamá. Stand NFC en recepción o en la habitación, con un toque y sin apps.',
+      'Consigue más comentarios, opiniones y reseñas de 5 estrellas para tu hotel, hostal o alquiler en Panamá. Stand NFC en recepción o habitación con un toque sin apps.',
     intro:
-      'El huésped que busca dónde quedarse en Panamá compara calificaciones antes que precios. Una diferencia de tres décimas en Google cambia cuál hotel abre primero.',
+      'El turista o huésped que busca hospedaje en Panamá compara comentarios y calificaciones de Google antes que las tarifas. Una buena reputación de opiniones atrae reservas directas sin pagar comisiones extras.',
     dolor:
-      'Los huéspedes contentos se van y siguen su viaje. Los que tuvieron un problema son los que se sientan a escribir. Por eso las fichas sin estrategia terminan con un promedio más bajo del que merecen.',
+      'Los huéspedes que disfrutaron su estadía siguen su viaje sin dejar una opinión escrita. En cambio, quien tuvo una queja corre a publicar su molestia, dejando un promedio de comentarios distorsionado.',
     momento:
-      'Al hacer el check-out, o dejando el dispositivo en la habitación con una tarjeta de cortesía. Ambos funcionan.',
+      'Al hacer el check-out en el mostrador principal, o dejando el dispositivo en la habitación junto a la tarjeta de bienvenida.',
     beneficios: [
-      'Subes en Google Maps y en las búsquedas de hospedaje de tu zona',
-      'Compensas las reseñas de queja con la voz de la mayoría',
-      'Funciona para hoteles, hostales, cabañas y alquileres cortos',
-      'Puedes tener uno por habitación, cada uno con su propio enlace',
+      'Subes en el mapa de hoteles de Google y en las búsquedas turísticas de tu zona en Panamá',
+      'Compensas quejas aisladas con el volumen real de comentarios de huéspedes satisfechos',
+      'Funciona para hoteles de ciudad, hostales, cabañas de playa, resorts y alquileres vacacionales',
+      'Permite colocar un dispositivo por habitación o piso, monitoreando escaneos individuales',
     ],
     producto: 'stand-nfc',
     productoRazon:
       'El stand de mostrador funciona en recepción y también en la mesa de noche de la habitación, sin necesidad de instalación.',
     imagen: '/images/resenas-google/resenas-google-hoteles-hospedajes-panama-startap.webp',
-    imagenAlt: 'Stand NFC starTAP en recepción de hotel para conseguir reseñas de Google en Panamá',
+    imagenAlt: 'Stand NFC starTAP en recepción de hotel para conseguir reseñas y comentarios de Google en Panamá',
+    keywords: [
+      'google comentarios hoteles',
+      'comentarios de Google para hospedajes y hostales',
+      'opiniones de Google hoteles Panamá',
+      'reseñas de Google para alquileres y cabañas Panamá',
+      'opiniones de hostales en Panamá',
+      'stand NFC para hoteles Panamá',
+    ],
     faqs: [
+      {
+        q: '¿Los comentarios de Google ayudan a recibir más reservas directas?',
+        a: 'Totalmente. Los viajeros comparan las opiniones recientes en Google Maps antes de reservar en plataformas intermediarias. Un hotel con comentarios positivos constantes genera confianza inmediata para reservas por teléfono o web.',
+      },
       {
         q: '¿Sirve también para TripAdvisor o Airbnb?',
         a: 'Sí. El dispositivo abre el enlace que tú configures, así que puede apuntar a Google, TripAdvisor, tu perfil de Airbnb o donde quieras.',
@@ -396,39 +440,51 @@ export const INDUSTRIAS: Industria[] = [
     slug: 'tiendas-y-comercios',
     nombre: 'tiendas y comercios',
     nombreSingular: 'tienda',
-    h1: 'Más reseñas de Google para tiendas y comercios en Panamá',
-    title: 'Más Reseñas de Google para Tiendas en Panamá',
+    h1: 'Más reseñas y comentarios de Google para tiendas y comercios en Panamá',
+    title: 'Comentarios y Reseñas de Google para Tiendas y Comercios en Panamá',
     description:
-      'Consigue más reseñas de Google para tu tienda, minisúper o comercio en Panamá. Dispositivo NFC en la caja, con un toque y sin descargar apps.',
+      'Consigue más comentarios y reseñas en Google para tu tienda, minisúper o comercio en Panamá. Dispositivo NFC en caja registradora: opiniones al instante sin apps.',
     intro:
-      'El comercio local vive de la gente que busca "cerca de mí". Google decide a quién le muestra primero, y las reseñas son una de las señales que más pesan en esa decisión.',
+      'El comercio local en Panamá depende de clientes que buscan tiendas "cerca de mí" en Google Maps. Los negocios con mayor volumen de comentarios recientes y buenas opiniones aparecen en los primeros lugares de búsqueda.',
     dolor:
-      'Vendes todos los días y atiendes bien, pero tu ficha de Google sigue con cuatro reseñas de hace dos años. Para Google, eso parece un negocio inactivo.',
+      'Atiendes a decenas de personas al día en tu mostrador, pero tu ficha de Google Maps se queda sin opiniones nuevas. Para Google, la falta de comentarios recientes hace que tu comercio pierda posiciones locales.',
     momento:
-      'En la caja, mientras el cliente espera el vuelto o empaca. Son los diez segundos que se necesitan.',
+      'En la caja de cobro, mientras el cliente recibe su comprobante o empaca su compra. Son los diez segundos ideales para capturar su opinión.',
     beneficios: [
-      'Apareces en las búsquedas "cerca de mí" de tu barrio o centro comercial',
-      'Reseñas recientes le indican a Google que el negocio está activo',
-      'Sirve para minisúper, boutiques, ferreterías, farmacias y cualquier comercio',
-      'Un solo pago, sin mensualidad ni contrato',
+      'Apareces en las búsquedas "cerca de mí" de tu corregimiento, centro comercial o avenida',
+      'Comentarios y opiniones continuas le confirman a Google que tu comercio está activo y es popular',
+      'Sirve para minisúper, boutiques, ferreterías, farmacias, tiendas de tecnología y retail',
+      'Un solo pago de por vida, sin mensualidades ni comisiones por escaneo',
     ],
     producto: 'stand-nfc',
     productoRazon:
       'El stand de mostrador se pone junto a la caja registradora, donde todo cliente pasa antes de salir.',
     imagen: '/images/resenas-google/resenas-google-tiendas-comercios-panama-startap.webp',
-    imagenAlt: 'Dispositivo NFC starTAP junto a la caja registradora de tienda comercial en Panamá',
+    imagenAlt: 'Dispositivo NFC starTAP junto a la caja registradora para reseñas y comentarios de tiendas en Panamá',
+    keywords: [
+      'google comentarios tiendas',
+      'comentarios de Google para comercios locales',
+      'opiniones de Google tiendas Panamá',
+      'reseñas de Google para minisúper y retail Panamá',
+      'opiniones de ferreterías y boutiques Panamá',
+      'dispositivo NFC para caja de cobro',
+    ],
     faqs: [
       {
-        q: '¿Cuántas reseñas puedo esperar al mes?',
-        a: 'Depende de tu tráfico y de si tu equipo lo ofrece. Un comercio que atiende 40 clientes al día y menciona el dispositivo suele ver decenas de reseñas al mes; sin mencionarlo, bastantes menos.',
+        q: '¿Por qué son importantes los comentarios recientes en el comercio local?',
+        a: 'Google Maps evalúa la frescura de las opiniones. Un comercio con opiniones dejadas esta misma semana supera a negocios con más reseñas acumuladas pero inactivas hace meses.',
+      },
+      {
+        q: '¿Cuántas opiniones puedo esperar al mes en mi tienda?',
+        a: 'Depende del flujo diario en caja. Un comercio que atiende 40 clientes al día e invita a acercar el teléfono suele sumar entre 30 y 60 opiniones mensuales con facilidad.',
       },
       {
         q: '¿Puedo regalarle algo al cliente por dejar la reseña?',
-        a: 'No. Google prohíbe incentivar reseñas y puede eliminarlas o penalizar tu ficha. Ofrécelo sin condiciones.',
+        a: 'No. Google prohíbe incentivar reseñas con descuentos o regalos y puede eliminar las opiniones. Ofrécelo como un apoyo al comercio local.',
       },
       {
-        q: '¿Cuánto tarda en llegar el dispositivo?',
-        a: 'Enviamos a todo Panamá. Escríbenos por WhatsApp y te confirmamos el tiempo según tu provincia.',
+        q: '¿Cuánto tarda en llegar el dispositivo a mi comercio?',
+        a: 'Enviamos a todo Panamá en 24 a 48 horas en la capital y Panamá Oeste, y de 2 a 4 días al interior del país.',
       },
     ],
   },

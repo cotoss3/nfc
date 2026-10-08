@@ -198,11 +198,15 @@ function DashboardContent() {
     }
 
     try {
-      const allCards = dbLocal.getCards();
-      await fetch('/api/cards', {
+      await fetch('/api/tarjetas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+        body: JSON.stringify({
+          action: 'bulk_group',
+          user_email: userEmail,
+          card_ids: rawCodes,
+          data: { group_name: claimGroupInput }
+        })
       });
     } catch (err) {
       console.error('Error sincronizando lote al reclamar:', err);
@@ -245,11 +249,15 @@ function DashboardContent() {
 
     dbLocal.bulkUpdateCardsGroup(selectedCardIds, bulkGroupTarget, userEmail);
     try {
-      const allCards = dbLocal.getCards();
-      await fetch('/api/cards', {
+      await fetch('/api/tarjetas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+        body: JSON.stringify({
+          action: 'bulk_group',
+          user_email: userEmail,
+          card_ids: selectedCardIds,
+          data: { group_name: bulkGroupTarget }
+        })
       });
     } catch (err) {
       console.error('Error en asignación masiva de grupo:', err);
@@ -266,11 +274,15 @@ function DashboardContent() {
 
     dbLocal.bulkUpdateCardsActiveStatus(selectedCardIds, isActive, userEmail);
     try {
-      const allCards = dbLocal.getCards();
-      await fetch('/api/cards', {
+      await fetch('/api/tarjetas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+        body: JSON.stringify({
+          action: 'bulk_active',
+          user_email: userEmail,
+          card_ids: selectedCardIds,
+          data: { is_active: isActive }
+        })
       });
     } catch (err) {
       console.error('Error en cambio masivo de estado:', err);
@@ -542,14 +554,22 @@ function DashboardContent() {
     
     // Sync with backend API
     try {
-      const allCards = dbLocal.getCards();
-      await fetch('/api/cards', {
+      await fetch('/api/tarjetas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+        body: JSON.stringify({
+          action: 'update',
+          user_email: userEmail,
+          card_id: selectedCard.card_id,
+          data: {
+            title: editLabel,
+            target_url: cleanNfc || cleanQr || selectedCard.target_url,
+            group_name: editGroup
+          }
+        })
       });
     } catch (err) {
-      console.error('Error sincronizando tarjetas:', err);
+      console.error('Error sincronizando tarjeta:', err);
     }
 
     setUpdateSuccess(true);
@@ -594,11 +614,15 @@ function DashboardContent() {
     const res = dbLocal.deleteCard(cardId, userEmail);
     if (res.success) {
       try {
-        const allCards = dbLocal.getCards();
-        await fetch('/api/cards', {
+        await fetch('/api/tarjetas', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+          body: JSON.stringify({
+            action: 'update',
+            user_email: userEmail,
+            card_id: cardId,
+            data: { is_active: false, group_name: '' }
+          })
         });
       } catch (err) {
         console.error('Error sincronizando al desvincular:', err);
@@ -614,11 +638,15 @@ function DashboardContent() {
     dbLocal.toggleCardActive(cardId, newStatus);
     
     try {
-      const allCards = dbLocal.getCards();
-      await fetch('/api/cards', {
+      await fetch('/api/tarjetas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'nfc_cards', value: allCards })
+        body: JSON.stringify({
+          action: 'update',
+          user_email: userEmail,
+          card_id: cardId,
+          data: { is_active: newStatus }
+        })
       });
     } catch (err) {
       console.error('Error sincronizando estado activo:', err);

@@ -998,3 +998,27 @@ Plan completo con rutas de archivo y reparto Antigravity/Fernando en el punto 9 
    - Metadatos `authors`, `creator` y `publisher` registrados en `src/app/layout.tsx`.
 
 
+
+## 8 oct 2026 · Auditoría de seguimiento y plan de sprint
+
+Verificación del plan del punto 9 contra el repo y contra la inspección de URL de Search Console. **Cerrados:** la canónica ajena del artículo de pedir reseñas (indexado el 7 oct con canónica propia), los ratings inventados de producto, el `sameAs` ampliado con Maps/TikTok/Instagram, `/resenas-google/hoteles-y-hospedajes` indexada, el rate limit de `/api/email/subscribe`, los cinco artículos publicados sin `TODO_EXPERIENCIA` y `/api/catalogo`.
+
+## 8 oct 2026 (cont.) · Ejecución Completa del Sprint: Bloques A y B
+
+1. **A1. Seguridad y Creación de `/api/tarjetas` (CERRADO):**
+   - Creado `src/app/api/tarjetas/route.ts` con autenticación/gestión vía `SUPABASE_SERVICE_ROLE_KEY` del lado del servidor.
+   - Manejo seguro de acciones: `claim`, `update`, `bulk_group`, `bulk_active` y consulta filtrada por `user_email` / `card_id`.
+   - `src/app/dashboard/page.tsx` migrado a `/api/tarjetas` para vinculación y edición de dispositivos eliminando escrituras directas de cliente sin validación.
+
+2. **A2. Rotulación de Demostración en `/app` (CERRADO):**
+   - Rótulos visibles de `[Datos de ejemplo]` y `[Vista previa de ejemplo]` aplicados a las tarjetas y mockups de métricas en `src/app/app/AppProClient.tsx`, cumpliendo con `REGLAS_CONTENIDO.md`.
+
+3. **B1. Enlazado Interno desde la Portada (CERRADO):**
+   - Sección interactiva en `src/app/HomeClient.tsx` que enlaza con anchor exacto a los 6 hubs de industrias (`/resenas-google/[industria]`) y a las guías fundamentales del Blog (`/blog/[slug]`), transfiriendo la autoridad de la Home a páginas pendientes de indexación (ej. barberías y salones).
+
+4. **B2. Refuerzo de Vocabulario Local («comentarios» y «opiniones») en las 5 Industrias (CERRADO):**
+   - En `src/lib/industrias.ts`, se añadieron los campos `keywords` específicos y menciones naturales de «comentarios» y «opiniones» en Clínicas, Barberías y salones, Talleres y mecánicas, Hoteles y hospedajes, y Tiendas y comercios, replicando el patrón exitoso de Restaurantes.
+
+5. **Verificación:**
+   - `npx tsc --noEmit` completado con **0 errores**.
+

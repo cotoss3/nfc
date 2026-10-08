@@ -226,9 +226,9 @@ export default function AppProClient() {
           benefit: 'Entiende la salud real de tu negocio con gráficos claros en lugar de leer 200 comentarios.',
           mockup: (
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                 <span className="text-xs font-bold text-gray-900">Distribución de Sentimiento</span>
-                <span className="text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded">Últimos 30 días</span>
+                <span className="text-[10px] bg-gray-100 text-gray-500 font-bold px-2 py-0.5 rounded">Datos de ejemplo</span>
               </div>
 
               <div className="space-y-2.5">
@@ -319,7 +319,10 @@ export default function AppProClient() {
           benefit: 'Indicador transparente de la lealtad real de tu clientela.',
           mockup: (
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg text-center space-y-3">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Net Promoter Score (NPS)</span>
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Net Promoter Score (NPS)</span>
+                <span className="text-[10px] bg-gray-100 text-gray-500 font-bold px-2 py-0.5 rounded">Ejemplo ilustrativo</span>
+              </div>
               <div className="text-4xl font-extrabold text-brand-950 flex items-center justify-center space-x-1">
                 <span>+68</span>
                 <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Excelente</span>
@@ -395,7 +398,10 @@ export default function AppProClient() {
           benefit: 'Comprueba cómo las nuevas opiniones aumentan las llamadas y visitas físicas.',
           mockup: (
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-lg space-y-3">
-              <span className="text-xs font-bold text-gray-900 block border-b border-gray-100 pb-2">Rendimiento en Google Maps (Últimos 30 días)</span>
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                <span className="text-xs font-bold text-gray-900">Rendimiento en Google Maps</span>
+                <span className="text-[10px] bg-gray-100 text-gray-500 font-bold px-2 py-0.5 rounded">Vista previa de ejemplo</span>
+              </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-blue-50/60 p-3 rounded-xl border border-blue-100">

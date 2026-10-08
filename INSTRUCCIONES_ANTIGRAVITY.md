@@ -363,6 +363,136 @@ sitio.
 - Indexación: 5 de 8 URLs inspeccionadas están indexadas. Meta, 8 de 8.
 - Clics: 8 en el trimestre, todos de Panamá.
 
+## 10 · PLAN DE TRABAJO — sprint del 8 al 22 de octubre de 2026
+
+Sale de la auditoría de seguimiento del 7 oct. El punto 9 queda como diagnóstico;
+este punto 10 es lo que hay que ejecutar y en qué orden. Lo que ya está cerrado
+del punto 9 no se repite aquí.
+
+Regla del sprint: **nada del bloque B se toca antes de cerrar el bloque A.**
+
+---
+
+### BLOQUE A · Bloqueante (esta semana, antes que cualquier otra cosa)
+
+**A1. Cerrar la escritura pública de `nfc_cards`.** Antigravity.
+
+Es la vulnerabilidad más grave abierta y lleva desde septiembre. Hoy cualquiera
+con la clave anónima, que viaja en el navegador, puede escribir en la tabla de
+dispositivos.
+
+1. Crear `src/app/api/tarjetas/route.ts` usando `SUPABASE_SERVICE_ROLE_KEY`,
+   con las operaciones de lectura y escritura que hoy hace el cliente contra
+   `nfc_cards` (mirar cómo quedó `src/app/api/pedidos/route.ts`, que ya sigue ese
+   patrón).
+2. Apuntar la app a esa ruta y quitar el acceso directo a `nfc_cards` desde el
+   cliente. Verificar con `grep -rn "nfc_cards" src/` que no quede ninguno fuera
+   del servidor.
+3. Correr la PARTE B de `migracion_20260920_seguridad.sql`.
+4. Probar el flujo completo de activación de un TAP antes de dar por cerrado.
+
+**A2. `/app` indexado con cifras que no son de nadie.** Antigravity.
+
+`https://startap.com.pa/app` está indexado desde el 6 oct. Muestra 84% con 240
+reseñas, 76%, y «↑ +18% este mes» en cuatro tarjetas, todo inventado. Está en
+`src/app/app/AppProClient.tsx`.
+
+Elegir una de las dos y aplicarla completa:
+
+- **Opción rápida:** `export const metadata = { robots: { index: false, follow: false } }`
+  en `src/app/app/page.tsx` y quitar la línea de `/app` de `src/app/sitemap.ts`.
+- **Opción buena:** dejarla indexable y rotular visible «Datos de ejemplo» en cada
+  bloque de números, con los valores claramente redondos.
+
+Si hay duda, aplicar la rápida. Una demo con números falsos indexada contradice
+`REGLAS_CONTENIDO.md` y es lo mismo que acabamos de limpiar del catálogo.
+
+---
+
+### BLOQUE B · SEO (una vez cerrado el bloque A)
+
+**B1. Enlaces internos desde la portada.** Antigravity.
+
+`src/app/HomeClient.tsx` no tiene ni un enlace en el cuerpo hacia
+`/resenas-google/` ni hacia `/blog/`. Los del pie existen y sirven para que
+Google descubra las páginas, pero reparten poca autoridad.
+
+Añadir una sección con:
+- Los seis enlaces de industria, con anchor exacto del tipo «Más reseñas para
+  barberías y salones».
+- Los cinco artículos del blog, con el título real de cada uno como anchor.
+
+Es la palanca directa para `/resenas-google/barberias-y-salones`, que el 7 oct
+quedó en «Crawled - currently not indexed».
+
+**B2. Vocabulario de las tres palabras en las cinco industrias que faltan.**
+Antigravity.
+
+En Panamá se dice «comentarios», la ficha de Google muestra «opiniones» y la
+documentación dice «reseñas». Google las trata como consultas distintas. En
+`src/lib/industrias.ts` el conteo actual es:
+
+| Industria | «comentarios» | «opiniones» | campo `keywords` |
+| --- | --- | --- | --- |
+| restaurantes | 13 | 4 | sí |
+| clínicas | 0 | 1 | no |
+| barberías y salones | 0 | 0 | no |
+| talleres y mecánicas | 0 | 0 | no |
+| hoteles y hospedajes | 0 | 0 | no |
+| tiendas y comercios | 0 | 0 | no |
+
+Restaurantes es la única reforzada y es la única que aparece por esas consultas:
+posición 7 en «google comentarios restaurantes» y 6 en «comentarios de
+restaurantes». Replicar el patrón en las cinco restantes: campo `keywords` y
+menciones naturales en el cuerpo, sin forzar la lectura.
+
+Es lo que más rinde por hora de trabajo de todo el plan, porque hay evidencia
+propia de que funciona.
+
+**B3. Enlazado entre hubs.** Antigravity.
+
+Cada página de industria debe enlazar a las otras cinco. Hoy el enlazado entre
+hubs es parcial.
+
+---
+
+### BLOQUE C · Contenido (próxima semana)
+
+**C1.** Los próximos artículos llevan Panamá en el `titulo`, en el `tituloSeo` y
+en el H1. Las dos páginas de blog con datos están en posiciones 26 y 29 por
+consultas generales en español donde compiten contra todo el mundo hispano, y no
+han traído un solo clic. Las 23 impresiones de España del trimestre son de ahí.
+
+**C2.** Antes de escribir, verificar que la keyword no esté ya reclamada por un
+artículo publicado. Ya pasó una vez con la guía de Maps y hubo que replantearla.
+
+---
+
+### BLOQUE D · Lo que NO es de código (Fernando)
+
+1. **Recategorización del dominio** en Cisco Talos y en Symantec/Bluecoat. Pesa
+   en que Google todavía no reconozca la marca.
+2. **Tilopay:** confirmar en el panel si manda webhook servidor a servidor. Si no
+   lo manda y el cliente cierra la pestaña tras el 3DS, el pago queda cobrado y
+   el pedido sin confirmar. Esto es plata, no SEO, y lleva abierto desde
+   septiembre.
+3. **Dos o tres menciones con enlace** desde sitios panameños.
+4. **Barrido de porcentajes** en el resto del sitio, que quedó a medias.
+
+---
+
+### Revisión el 29 de octubre
+
+Volver a medir estos cinco:
+
+| Indicador | 7 oct 2026 | Meta |
+| --- | --- | --- |
+| Clics en 28 días | 8 | primer clic al blog |
+| Posición por «startap» | 13 | entre 1 y 3 |
+| URLs indexadas de las inspeccionadas | 7 de 8 | 8 de 8 |
+| Industrias con refuerzo de vocabulario | 1 de 6 | 6 de 6 |
+| `nfc_cards` con escritura pública | sí | no |
+
 ## 8 · Deuda menor, para cuando haya tiempo
 
 - `/api/email/*` es un relay abierto: sin auth, sin rate limit, sin verificar que

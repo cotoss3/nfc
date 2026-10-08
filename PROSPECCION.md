@@ -369,6 +369,33 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 
 ---
 
+| 2026-10-07 | Dermatologia Panama | Dermatologo | Punta Pacifica (Consultorios Pacifica Salud) | 4 | 5.0 | WhatsApp | 6909-9486 | pendiente | clinicas ciudad 07-10; top2 dermatologo 127/34 |
+| 2026-10-07 | Clinica de Piel y Cosmetologia | Dermatologo | Marbella (PH Royal Center) | 1 | 5.0 | WhatsApp | 6523-3331 | respondio | clinicas ciudad 07-10; top2 dermatologo 127/34; autorespuesta 13:23; pidio precio 15:33, se paso lista y enlace; 15:56 pregunto si se venden individuales |
+| 2026-10-07 | Dra. Susie De Gracia Uroginecologa | Ginecologia | Paitilla (The Panama Clinic Torre A) | 9 | 5.0 | WhatsApp | 6756-4803 | pendiente | clinicas ciudad 07-10; top2 ginecologo 30/42 |
+| 2026-10-07 | Dr. Rolando Pinilla | Ginecologia alto riesgo | Paitilla (The Panama Clinic Torre B) | 13 | 5.0 | WhatsApp | 6216-8113 | pendiente | clinicas ciudad 07-10; top2 ginecologo 30/42 |
+| 2026-10-07 | Dra. Paola Correa Oftalmologa | Oftalmologia | Bella Vista (Clinica Boyd, C. 46 Este) | 14 | 5.0 | WhatsApp | 6281-8451 | pendiente | clinicas ciudad 07-10; a 1 resena de los 15; top2 oftalmologo 98/177 |
+| 2026-10-07 | Aditi Centro Integral Quiropractico | Quiropraxia | San Francisco (C. 64 Este) | 14 | 4.9 | WhatsApp | 6998-8673 | pendiente | clinicas ciudad 07-10; top2 quiropractica 145/146 |
+| 2026-10-07 | Conciencia Centro Dental Holistico | Clinica dental | Bella Vista (Habitats Plaza, C. 51 Este) | 14 | 5.0 | WhatsApp | 6295-2362 | pendiente | clinicas ciudad 07-10; lideres dentales Bella Vista 121/73 |
+| 2026-10-07 | Licenciada en Fonoaudiologia | Fonoaudiologia | Via Espana (Edificio Domino) | 8 | 5.0 | WhatsApp | 6299-8797 | pendiente | clinicas ciudad 07-10; top2 terapia de lenguaje 26/19 |
+| 2026-10-07 | Centro FOPA The Panama Clinic | Audiologia y terapia de lenguaje | Paitilla (The Panama Clinic) | 2 | 5.0 | WhatsApp | 6318-5488 | pendiente | clinicas ciudad 07-10; top2 terapia de lenguaje 26/19 |
+| 2026-10-07 | Professional Foot Care | Podologia | Bella Vista (C. 45 Este, PH Blue Park) | 11 | 4.6 | WhatsApp | 6458-4950 | pendiente | clinicas ciudad 07-10; top2 podologo 182/174 |
+| 2026-10-07 | Quiropedia PTY | Podologia | Marbella (Consultorios Royal Center) | 8 | 4.8 | WhatsApp | 6619-9739 | pendiente | clinicas ciudad 07-10; mismo edificio que los lideres; top2 182/174 |
+| 2026-10-07 | New Feet Podologo | Podologia | Ciudad de Panama | 1 | 5.0 | WhatsApp | 6357-7715 | pendiente | clinicas ciudad 07-10; abre hasta 8pm; top2 podologo 182/174 |
+| 2026-10-07 | Centro De Dermatologia Clinica De Panama | Clinica dermatologica | Bella Vista (Scotia Plaza, Av. Federico Boyd) | 8 | 5.0 | llamada | 202-5278 | pendiente | clinicas ciudad 07-10; fijo sin WhatsApp |
+| 2026-10-07 | Clinique Femme | Ginecologia y obstetricia | Marbella (Royal Center piso 3) | 3 | 5.0 | llamada | 387-7788 | pendiente | clinicas ciudad 07-10; fijo sin WhatsApp; mismo numero que Dra. Gladys Olmos |
+| 2026-10-07 | Dr. Augusto Arosemena | Oftalmologia | Paitilla (Consultorios Medicos Paitilla piso 1) | 9 | 4.6 | llamada | 206-2424 | pendiente | clinicas ciudad 07-10; fijo sin WhatsApp |
+| 2026-10-07 | CliniMas Clinica Integral y Laboratorio | Laboratorio y clinica | Bella Vista (Plaza Bella Metro, C. 38) | 6 | 4.3 | llamada | 225-1989 | pendiente | clinicas ciudad 07-10; fijo sin WhatsApp; top2 laboratorios 164/172 |
+| 2026-10-07 | Oftalmo Salud Oftalmologia y Optica | Oftalmologia | Hospital Pacifica Salud piso 3 | 1 | 5.0 | llamada | 393-6564 | pendiente | clinicas ciudad 07-10; fijo sin WhatsApp |
+| 2026-10-07 | Centro Nacional de Terapia Integral CENTIR | Terapia y rehabilitacion | Centro Medico Nacional (Av. Justo Arosemena) | 4 | 5.0 | llamada | 387-9012 | pendiente | clinicas ciudad 07-10; fijo sin WhatsApp |
+
+| 2026-10-07 | Almacen de Curiosidades Angie | Articulos de fiesta | La Chorrera (Carr. Panamericana) | 4 | 4.3 | WhatsApp | 6806-1388 | pendiente | vendedora 1 lista 07-10; entrega a domicilio; lideres fiesta 160/123 |
+| 2026-10-07 | Mimanada | Peluqueria canina | La Chorrera (Mystic City) | 7 | 5.0 | WhatsApp | 6023-9801 | pendiente | vendedora 1 lista 07-10; lideres mascotas oeste 224/63 |
+| 2026-10-07 | Viral Pets Chorrera | Peluqueria canina | La Chorrera (Plaza Libertadores) | 1 | 5.0 | WhatsApp | 6298-4901 | pendiente | vendedora 1 lista 07-10; lideres mascotas oeste 224/63 |
+| 2026-10-07 | PeluPets | Peluqueria canina | Arraijan (antes de escuela Moises Castillo) | 4 | 4.8 | WhatsApp | 6775-3550 | pendiente | vendedora 1 lista 07-10; lideres mascotas oeste 224/63 |
+| 2026-10-07 | JM Studio Carwash | Lavado de autos | Arraijan | 5 | 5.0 | WhatsApp | 6011-0294 | pendiente | vendedora 1 lista 07-10; cierra 10pm; top2 car wash 48/48 |
+| 2026-10-07 | Vip Detailing Services | Detailing automotriz | Arraijan | 8 | 5.0 | WhatsApp | 6555-3066 | pendiente | vendedora 1 lista 07-10; top2 car wash 48/48 |
+| 2026-10-07 | PcCell L&Y | Tienda de celulares y servicio tecnico | Via Juan Demostenes Arosemena | 4 | 5.0 | llamada | 250-3619 | pendiente | vendedora 1 lista 07-10; fijo sin WhatsApp |
+
 ## 6. Zonas y rubros ya agotados
 
 _(vacio por ahora)_
@@ -464,7 +491,7 @@ _(vacio por ahora)_
 | 2026-10-05 | Salon de Belleza Meyra | Centro de estetica | La Chorrera (Carr. Panamericana) | 4 | 4.8 | | sin telefono en la ficha | pendiente | lunes salones; ficha sin numero ni reclamar; visita |
 
 | 2026-10-05 | Kerlis Beauty Micropigmentacion | Micropigmentacion | Marbella (World Trade Center) | 11 | 5.0 | WhatsApp | 6534-3933 | respondio | ciudad centro 06-10; pidio precio 05-10 14:45; se paso precio y ubicacion 06-10 7:05 con foto; pendiente que elija placa $30 o Pack $50; pago por Yappy |
-| 2026-10-05 | Magia en tus cejas | Maquillaje permanente | Avenida Brasil | 10 | 5.0 | WhatsApp | 6713-8542 | respondio | ciudad centro 06-10; pidio mas informacion 06-10 7:45; se paso precio y enlace del sitio |
+| 2026-10-05 | Magia en tus cejas | Maquillaje permanente | Avenida Brasil | 10 | 5.0 | WhatsApp | 6713-8542 | vendido | ciudad centro 06-10; pidio mas informacion 06-10 7:45; compro stand de mesa $30 el 07-10 1:36pm por Yappy (Nicolas Zapata, confirmacion TMSHK-91189558); entrega Avenida Brasil, P.H. Brazil 405 Oficina 7G; enlace de resena generado con placeid ChIJrapIRPyprI8RGx90AcgoUHg |
 | 2026-10-05 | Cejas pestanas Panama | Centro de estetica | Bella Vista (C. 65 Este) | 10 | 5.0 | WhatsApp | 6353-9894 | pendiente | tanda 2 Panama centro; cierra 5pm; top2 129/126 |
 | 2026-10-05 | Majo Belleza Beauty | Tienda de belleza | Paitilla (Plaza Pacifica) | 11 | 5.0 | WhatsApp | 6786-2844 | pendiente | tanda 2 Panama centro; contesta resenas; tiene web; lideres tiendas 168/157 |
 | 2026-10-05 | Pashe Spa (Megapolis y Sunset) | Centro de estetica | Megapolis Outlets y Via Israel | 14 | 4.8 | WhatsApp | 6632-5991 | pendiente | tanda 2 Panama centro; dos sedes mismo numero, Sunset con 1 resena; top2 129/126 |

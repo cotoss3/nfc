@@ -724,6 +724,194 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
         </div>
       </section>
 
+      {/* 5.1 GUÍAS POR INDUSTRIA Y ARTÍCULOS DE BLOG (SEO INTERNAL LINKING) */}
+      <section className="py-12 sm:py-16 bg-white border-t border-slate-200">
+        <div className="shopify-container max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
+          
+          {/* Hubs por Industria */}
+          <div className="space-y-6">
+            <div className="text-center sm:text-left space-y-1">
+              <span className="text-xs font-black uppercase tracking-wider text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+                Estrategia Local por Sector
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                Estrategias de Reseñas y Comentarios en Google para tu Tipo de Negocio
+              </h2>
+              <p className="text-slate-600 text-xs sm:text-sm">
+                Descubre cómo capturar opiniones positivas en el punto de cobro según la dinámica de tu rubro en Panamá:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link
+                href="/resenas-google/restaurantes"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-amber-400 bg-slate-50/50 hover:bg-amber-50/30 transition group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition flex items-center justify-between">
+                    <span>Restaurantes, Cafés y Bares</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Más comentarios y opiniones en Google para mesas y cuentas en restaurantes.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700">Más reseñas para restaurantes y cafés →</span>
+              </Link>
+
+              <Link
+                href="/resenas-google/barberias-y-salones"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-amber-400 bg-slate-50/50 hover:bg-amber-50/30 transition group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition flex items-center justify-between">
+                    <span>Barberías, Salones y Spas</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Fideliza clientes al terminar el corte o tratamiento con placas NFC en los espejos.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700">Más reseñas para barberías y salones →</span>
+              </Link>
+
+              <Link
+                href="/resenas-google/talleres-y-mecanicas"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-amber-400 bg-slate-50/50 hover:bg-amber-50/30 transition group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition flex items-center justify-between">
+                    <span>Talleres y Mecánicas Automotrices</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Multiplica valoraciones de confianza al entregar el auto reparado en recepción.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700">Más reseñas para talleres y mecánicas →</span>
+              </Link>
+
+              <Link
+                href="/resenas-google/clinicas"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-amber-400 bg-slate-50/50 hover:bg-amber-50/30 transition group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition flex items-center justify-between">
+                    <span>Clínicas, Consultorios y Dentistas</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Genera reputación médica de 5 estrellas al salir de consulta en recepción.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700">Más reseñas para clínicas y consultorios →</span>
+              </Link>
+
+              <Link
+                href="/resenas-google/hoteles-y-hospedajes"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-amber-400 bg-slate-50/50 hover:bg-amber-50/30 transition group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition flex items-center justify-between">
+                    <span>Hoteles, Hostales y Hospedajes</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Asegura opiniones durante el check-out en el mostrador principal de recepción.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700">Más reseñas para hoteles y hospedajes →</span>
+              </Link>
+
+              <Link
+                href="/resenas-google/tiendas-y-comercios"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-amber-400 bg-slate-50/50 hover:bg-amber-50/30 transition group flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <div className="text-sm font-bold text-slate-900 group-hover:text-amber-700 transition flex items-center justify-between">
+                    <span>Tiendas Físicas y Retail</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Coloca placas NFC en la caja de cobro para captar reseñas antes de que el cliente salga.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-amber-700">Más reseñas para tiendas y comercios →</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Artículos de Blog Guías de Maps */}
+          <div className="pt-6 border-t border-slate-200 space-y-6">
+            <div className="text-center sm:text-left space-y-1">
+              <span className="text-xs font-black uppercase tracking-wider text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                Guías Prácticas
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+                Aprende a Gestionar tu Perfil de Google Maps en Panamá
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link
+                href="/blog/como-pedir-resenas-google-sin-penalizacion"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-brand-500 bg-slate-50/40 hover:bg-brand-50/20 transition group flex flex-col justify-between space-y-2"
+              >
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase text-brand-700">Guía Fundamental</span>
+                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-brand-700 transition">
+                    Cómo pedir reseñas en Google sin que te las borren ni te penalicen
+                  </h3>
+                  <p className="text-xs text-slate-600">
+                    Las políticas oficiales de Google explicadas para negocios en Panamá.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-brand-700 inline-flex items-center gap-1 pt-2">
+                  Leer artículo <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+              </Link>
+
+              <Link
+                href="/blog/por-que-mi-negocio-no-aparece-en-google-maps"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-brand-500 bg-slate-50/40 hover:bg-brand-50/20 transition group flex flex-col justify-between space-y-2"
+              >
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase text-brand-700">Diagnóstico Local</span>
+                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-brand-700 transition">
+                    Por qué mi negocio no aparece en Google Maps (y cómo arreglarlo en Panamá)
+                  </h3>
+                  <p className="text-xs text-slate-600">
+                    Verificación de ficha, categorías principales y consistencia NAP.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-brand-700 inline-flex items-center gap-1 pt-2">
+                  Leer artículo <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+              </Link>
+
+              <Link
+                href="/blog/ver-y-responder-resenas-de-tu-negocio-en-google"
+                className="p-5 rounded-2xl border border-slate-200 hover:border-brand-500 bg-slate-50/40 hover:bg-brand-50/20 transition group flex flex-col justify-between space-y-2"
+              >
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase text-brand-700">Gestión de Reputación</span>
+                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-brand-700 transition">
+                    Cómo ver y responder reseñas de tu negocio en Google Maps
+                  </h3>
+                  <p className="text-xs text-slate-600">
+                    Estrategias para responder opiniones positivas y neutralizar quejas.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-brand-700 inline-flex items-center gap-1 pt-2">
+                  Leer artículo <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+              </Link>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* 6. FINAL BOTTOM CTA */}
       <section className="bg-slate-950 py-12 sm:py-16 text-center px-4">
         <div className="max-w-2xl mx-auto space-y-5">
