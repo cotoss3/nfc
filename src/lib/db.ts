@@ -221,6 +221,42 @@ export const supabase = isRealSupabaseConfigured
 
 export const DEFAULT_SEED_CARDS: NfcCard[] = [
   {
+    card_id: 'RESENA',
+    activation_code: 'RESENA',
+    owner_id: 'admin',
+    owner_name: 'starTAP Panamá',
+    owner_email: 'info@startap.com.pa',
+    group_name: 'Oficial',
+    label: 'starTAP Panamá Reseñas Oficiales',
+    target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U',
+    nfc_target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U',
+    qr_target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U',
+    is_active: true,
+    claimed: true,
+    estado: 'configurado',
+    type: 'google',
+    channels: 'both',
+    created_at: new Date().toISOString()
+  },
+  {
+    card_id: 'RESEÑA',
+    activation_code: 'RESEÑA',
+    owner_id: 'admin',
+    owner_name: 'starTAP Panamá',
+    owner_email: 'info@startap.com.pa',
+    group_name: 'Oficial',
+    label: 'starTAP Panamá Reseñas Oficiales',
+    target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U',
+    nfc_target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U',
+    qr_target_url: 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U',
+    is_active: true,
+    claimed: true,
+    estado: 'configurado',
+    type: 'google',
+    channels: 'both',
+    created_at: new Date().toISOString()
+  },
+  {
     card_id: 'STT-1001',
     activation_code: 'STT-1001',
     owner_id: 'unassigned',

@@ -21,7 +21,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const cardId = params.id;
+  let cardId = params.id;
+  try {
+    cardId = decodeURIComponent(params.id);
+  } catch {
+    cardId = params.id;
+  }
+
   const urlObj = new URL(request.url);
   const medium = (urlObj.searchParams.get('m') || 'nfc').toLowerCase(); 
   const isQr = medium === 'qr';
@@ -38,8 +44,33 @@ export async function GET(
   let cardType = 'google';
   let cardFoundInSupabase = false;
 
+  const normalizedSlug = cardId.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // Alias oficial directo para reseñas starTAP
+  if (
+    normalizedSlug === 'resena' ||
+    normalizedSlug === 'resenas' ||
+    normalizedSlug === 'resena-startap' ||
+    normalizedSlug === 'startap' ||
+    normalizedSlug === 'opiniones' ||
+    cardId.toLowerCase() === 'reseña' ||
+    cardId.toLowerCase() === 'reseñas'
+  ) {
+    const OFFICIAL_REVIEW_URL = 'https://search.google.com/local/writereview?placeid=ChIJGzPZelRLTC4R6_oogm4Fa8U';
+    nfcTargetUrl = OFFICIAL_REVIEW_URL;
+    qrTargetUrl = OFFICIAL_REVIEW_URL;
+    legacyTargetUrl = OFFICIAL_REVIEW_URL;
+    groupName = 'Oficial';
+    cardLabel = 'starTAP Panamá (Reseñas Oficiales)';
+    resolvedCardId = 'RESENA';
+    isActive = true;
+    allowedChannels = 'both';
+    cardType = 'google';
+    cardFoundInSupabase = true;
+  }
+
   // 1. Intentar consulta en tiempo real desde Supabase si está configurado
-  if (supabase) {
+  if (!cardFoundInSupabase && supabase) {
     try {
       let clean = cardId.trim().toLowerCase();
       let searchCode = clean;
@@ -60,7 +91,7 @@ export async function GET(
       const { data, error } = await supabase
         .from('nfc_cards')
         .select('card_id, target_url, nfc_target_url, qr_target_url, group_name, label, is_active, channels, type')
-        .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode},card_id.ilike.${clean}`)
+        .or(`card_id.ilike.${searchCode},activation_code.ilike.${searchCode},card_id.ilike.${clean},card_id.ilike.${normalizedSlug}`)
         .maybeSingle();
 
       if (!error && data) {
@@ -82,7 +113,7 @@ export async function GET(
 
   // 2. Si no se encontró en Supabase o no está configurado, usar motor local
   if (!cardFoundInSupabase) {
-    const card = dbLocal.findCardById(cardId);
+    const card = dbLocal.findCardById(cardId) || dbLocal.findCardById(normalizedSlug);
     if (card) {
       nfcTargetUrl = card.nfc_target_url ? card.nfc_target_url.trim() : '';
       qrTargetUrl = card.qr_target_url ? card.qr_target_url.trim() : '';
