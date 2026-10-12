@@ -23,8 +23,8 @@ export const post: BlogPost = {
   ],
   /** Imagen de portada y OpenGraph. Prompts en herramientas/prompts/imagenes-reclamar-ficha.md */
   imagen: {
-    src: '/blog/reclamar-ficha-google-negocio-panama.webp',
-    alt: 'Dueño de un negocio en Panamá reclamando la ficha de Google Maps de su local desde el celular',
+    src: 'placeholder:/blog/reclamar-ficha-google-negocio-panama.webp',
+    alt: 'Dueño de un negocio en Panamá revisando la ficha de Google Maps en el celular detrás de su mostrador (Foto horizontal de estilo documental)',
     ancho: 1200,
     alto: 630,
   },
@@ -63,7 +63,7 @@ export const post: BlogPost = {
   ],
   cuerpo: `Google crea fichas de negocios por su cuenta. Las arma con lo que encuentra en internet, en mapas viejos y en lo que reportan los usuarios, y las publica sin avisarle a nadie. Si nunca entraste a Google Business Profile y tu negocio igual aparece en Maps, esa ficha existe y no es tuya todavía.
 
-![Dueño de una barbería en Panamá revisando en su celular la ficha de Google de su propio negocio](/blog/revisar-ficha-google-sin-reclamar-panama.webp)
+![Foto documental en una barbería o local de Panamá: manos de un hombre sosteniendo su celular mirando la ficha sin caras visibles](placeholder:/blog/revisar-ficha-google-sin-reclamar-panama.webp)
 
 ## Qué significa que esté sin reclamar
 
@@ -85,7 +85,7 @@ Busca tu negocio en Google Maps desde el celular, tal como lo buscaría un clien
 2. No ves el panel de propietario con las opciones de editar, publicar y ver estadísticas.
 3. Dice **«Pendiente de verificación»** o te manda a un proceso cuando intentas editar. Ahí la ficha ya está reclamada, puede que por alguien que trabajó contigo antes.
 
-![Captura de la ficha de Google Maps de un negocio mostrando el enlace para reclamar el negocio](/blog/enlace-reclamar-negocio-google-maps.webp)
+![Captura real de pantalla en Google Maps mostrando el botón «Reclamar este negocio» (con datos sensibles y nombre de local tapados con bloque sólido)](placeholder:/blog/enlace-reclamar-negocio-google-maps.webp)
 
 De los 228 negocios que llevamos anotados en nuestra lista de prospección entre La Chorrera y Arraiján, 8 tenían la ficha sin reclamar. Son fondas, barberías y salones que ya salían en Maps con reseñas de clientes reales (algunas de hace más de tres años) y sin nadie del otro lado administrándolas ni leyendo los comentarios.
 
@@ -116,7 +116,7 @@ Lo primero que recuperas es la conversación. Puedes responder todas las reseña
 
 Después puedes arreglar lo básico: la categoría principal, que es el campo que más pesa para que salgas en las búsquedas de tu rubro, el horario, el teléfono y las fotos. También quedas habilitado para publicar novedades y ver cuánta gente te buscó y cómo llegó.
 
-![Panel de Google Business Profile ya reclamado mostrando las opciones de responder reseñas y editar la información del negocio](/blog/panel-google-business-profile-reclamado.webp)
+![Captura real del panel de Google Business Profile (usar la ficha de starTAP) mostrando las opciones de responder reseñas y editar la información](placeholder:/blog/panel-google-business-profile-reclamado.webp)
 
 Lo que no cambia: reclamar la ficha no te sube en el mapa por sí solo. Te da las herramientas para competir y la posición se gana aparte. Si tu problema es que no sales en las búsquedas de categoría, eso se diagnostica distinto y lo expliqué en [por qué tu negocio no aparece en Google Maps](/blog/por-que-mi-negocio-no-aparece-en-google-maps).
 
@@ -136,7 +136,7 @@ Con el perfil en la mano, lo que mueve la aguja es el flujo de reseñas nuevas. 
 
 La forma de pedirlas sin arriesgar la ficha está en [cómo pedir reseñas de Google sin que te penalicen](/blog/como-pedir-resenas-google-sin-penalizacion), y si quieres el lado práctico, en [cómo conseguir 100 reseñas reales](/blog/como-conseguir-100-resenas-google-maps) está el guion que usamos.
 
-![Placa NFC de starTAP en el mostrador de un negocio en Panamá para que el cliente deje su reseña de Google con un toque](/blog/placa-nfc-mostrador-despues-de-reclamar-ficha.webp)
+![Fotografía o render de Placa NFC starTAP instalada en mostrador de cobro con cliente acercando su teléfono para calificar](placeholder:/blog/placa-nfc-mostrador-despues-de-reclamar-ficha.webp)
 
 Nosotros vendemos dispositivos que acortan ese paso, y los tienes en [el catálogo](/catalogo). Nada de lo que está arriba sobre reclamar la ficha necesita que nos compres algo: el trámite es gratis y lo haces tú en una tarde.`,
   cierre: `Escrito por Fernando Contreras, fundador de starTAP Panamá. Los datos de fichas sin reclamar salen de nuestra propia lista de prospección en La Chorrera y Arraiján.
