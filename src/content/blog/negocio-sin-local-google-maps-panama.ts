@@ -16,10 +16,10 @@ export const post: BlogPost = {
   keywords: [
     'negocio sin local en Google Maps',
     'tienda online en Google Maps Panamá',
-    'negocio de zona de servicio Google',
-    'poner mi negocio desde casa en Google Maps',
-    'verificación por video Google Business Profile',
-    'Google Maps Panamá',
+    'negocio de zona de servicio Google Panamá',
+    'poner mi negocio desde casa en Google Maps Panamá',
+    'verificación por video Google Business Profile Panamá',
+    'registrar negocio en Google Maps Panamá',
   ],
   /** Imagen de portada y OpenGraph. Ver la lista en FOTOS_BLOG.md */
   imagen: {

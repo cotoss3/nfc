@@ -130,6 +130,20 @@ export default function IndustriaPage({
     `Hola, leí la guía de reseñas para ${ind.nombre} y me interesa adquirir el ${recommendedProduct?.name || ind.producto}.`
   )}`;
 
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: ind.title,
+    description: ind.description,
+    provider: { '@id': `${BASE_URL}/#organization` },
+    areaServed: {
+      '@type': 'Country',
+      name: 'Panamá',
+    },
+    serviceType: `Reseñas de Google y SEO Local para ${ind.nombre}`,
+    url: `${BASE_URL}/resenas-google/${ind.slug}`,
+  };
+
   return (
     <>
       <script
@@ -139,6 +153,10 @@ export default function IndustriaPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
       />
 
       <div className="bg-slate-50 min-h-screen text-slate-900 font-sans pb-24">
