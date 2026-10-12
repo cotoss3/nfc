@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { dbLocal, Order, NfcCard, Product, AbandonedCheckout, supabase, StockAuditItem } from '@/lib/db';
+import { authService } from '@/lib/auth';
 import BulkAddBatchModal from '@/components/admin/BulkAddBatchModal';
 import {
   ArrowLeft,
@@ -157,9 +158,15 @@ export default function InventarioPage() {
 
     if (supabase) {
       try {
-        const [resOrders, resCards, resProducts, resAbandoned, resStocks, resBatches, resKardex] = await Promise.all([
+        const session = await authService.getSession();
+        const token = session?.access_token;
+        const [resOrders, resCardsApi, resProducts, resAbandoned, resStocks, resBatches, resKardex] = await Promise.all([
           supabase.from('orders').select('*').order('created_at', { ascending: false }),
-          supabase.from('nfc_cards').select('*').order('card_id', { ascending: true }),
+          fetch('/api/admin/cards', {
+            headers: {
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            }
+          }).then(r => r.json()).catch(() => ({ success: false, cards: [] })),
           supabase.from('products').select('*'),
           supabase.from('abandoned_checkouts').select('*').order('created_at', { ascending: false }),
           supabase.from('inventory_stocks').select('*'),
@@ -168,8 +175,8 @@ export default function InventarioPage() {
         ]);
 
         if (!resOrders.error && resOrders.data && resOrders.data.length > 0) dbOrders = resOrders.data as Order[];
-        if (!resCards.error && resCards.data && resCards.data.length > 0) {
-          dbCards = resCards.data as NfcCard[];
+        if (resCardsApi?.success && Array.isArray(resCardsApi.cards) && resCardsApi.cards.length > 0) {
+          dbCards = resCardsApi.cards as NfcCard[];
           dbLocal.setStorageItem('nfc_cards', dbCards);
         }
         if (!resProducts.error && resProducts.data && resProducts.data.length > 0) dbProducts = resProducts.data as Product[];
@@ -770,11 +777,17 @@ export default function InventarioPage() {
     setCards(updated);
     dbLocal.setStorageItem('nfc_cards', updated);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert([newCardObj]).then(({ error }) => {
-        if (error) console.error('Error insertando tarjeta en Supabase:', error);
-      });
-    }
+    authService.getSession().then(session => {
+      const token = session?.access_token;
+      fetch('/api/admin/cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ action: 'upsert', card: newCardObj })
+      }).catch(err => console.error('Error insertando tarjeta en API admin:', err));
+    });
 
     // Registrar orden presencial en OMS / Inventario y disparar Analítica GA4
     if (tagTipoActivacion === 'venta' && numericPrice > 0) {

@@ -1124,20 +1124,6 @@ class LocalDbService {
   }
 
   async getCardsAsync(): Promise<NfcCard[]> {
-    if (supabase) {
-      try {
-        const { data, error } = await supabase.from('nfc_cards').select('*').order('created_at', { ascending: false });
-        if (!error && data && data.length > 0) {
-          // Se guarda la lista COMPLETA: antes se recortaba por un techo de
-          // numeracion y eso borraba del storage los tags de lotes nuevos.
-          const todas = data as NfcCard[];
-          this.setStorageItem('nfc_cards', todas);
-          return todas;
-        }
-      } catch (err) {
-        console.error('Error cargando tarjetas desde Supabase:', err);
-      }
-    }
     return this.getCards();
   }
 
@@ -1155,61 +1141,6 @@ class LocalDbService {
   }
 
   async getCardsByOwnerAsync(emailOrId: string): Promise<NfcCard[]> {
-    const cleanEmail = emailOrId.trim().toLowerCase();
-    const isAdminAccount = cleanEmail === 'admin@startap.com.pa' || cleanEmail === 'info@startap.com.pa';
-
-    if (supabase) {
-      try {
-        const { data, error } = await supabase
-          .from('nfc_cards')
-          .select('*')
-          .or(`owner_email.ilike.${cleanEmail},owner_id.eq.${emailOrId}`);
-
-        if (!error && data) {
-          const userCards = (data as NfcCard[]).filter(c => {
-            const cardEmail = (c.owner_email || '').trim().toLowerCase();
-            if (cardEmail === cleanEmail) {
-              return isAdminAccount ? true : (cardEmail !== 'admin@startap.com.pa' && cardEmail !== 'info@startap.com.pa');
-            }
-            return Boolean(c.claimed) && c.owner_id === emailOrId && c.owner_id !== 'admin' && c.owner_id !== 'unassigned';
-          });
-
-          // Auto-vinculación: Si el cliente inicia sesión y tiene tarjetas pre-asignadas a su correo
-          // que aún no estaban marcadas como claimed o con su owner_id, vincularlas de inmediato
-          if (!isAdminAccount && userCards.length > 0) {
-            const toUpdate = userCards.filter(c => !c.claimed || c.owner_id !== emailOrId);
-            if (toUpdate.length > 0) {
-              const idsToUpdate = toUpdate.map(c => c.card_id);
-              supabase
-                .from('nfc_cards')
-                .update({ claimed: true, owner_id: emailOrId })
-                .in('card_id', idsToUpdate)
-                .then(({ error: errUpd }) => {
-                  if (errUpd) console.error('Error auto-vinculando tarjetas a usuario:', errUpd);
-                });
-              toUpdate.forEach(c => {
-                c.claimed = true;
-                c.owner_id = emailOrId;
-              });
-            }
-          }
-
-          const currentCards = this.getCards();
-          userCards.forEach(remoteCard => {
-            const idx = currentCards.findIndex(c => c.card_id === remoteCard.card_id);
-            if (idx !== -1) {
-              currentCards[idx] = remoteCard;
-            } else {
-              currentCards.unshift(remoteCard);
-            }
-          });
-          this.setStorageItem('nfc_cards', currentCards);
-          return userCards;
-        }
-      } catch (err) {
-        console.error('Error cargando tarjetas por usuario desde Supabase:', err);
-      }
-    }
     return this.getCardsByOwner(emailOrId);
   }
 
@@ -1301,9 +1232,6 @@ class LocalDbService {
     if (index !== -1) {
       cards[index].is_active = isActive;
       this.setStorageItem('nfc_cards', cards);
-      if (supabase) {
-        supabase.from('nfc_cards').update({ is_active: isActive }).eq('card_id', cards[index].card_id).then();
-      }
       return true;
     }
     return false;
@@ -1317,9 +1245,6 @@ class LocalDbService {
     if (index !== -1) {
       cards[index].channels = channels;
       this.setStorageItem('nfc_cards', cards);
-      if (supabase) {
-        supabase.from('nfc_cards').update({ channels }).eq('card_id', cards[index].card_id).then();
-      }
       return true;
     }
     return false;
@@ -1355,11 +1280,6 @@ class LocalDbService {
 
     cards.push(newCard);
     this.setStorageItem('nfc_cards', cards);
-
-    if (supabase) {
-      supabase.from('nfc_cards').upsert(newCard).then();
-    }
-
     return newCard;
   }
 
@@ -1392,15 +1312,6 @@ class LocalDbService {
     cards[index].is_active = true;
     cards[index].target_url = targetUrl.trim();
     this.setStorageItem('nfc_cards', cards);
-
-    if (supabase) {
-      supabase.from('nfc_cards')
-        .update({ estado: 'configurado', claimed: true, is_active: true, target_url: targetUrl.trim() })
-        .eq('card_id', cards[index].card_id)
-        .then(({ error }) => {
-          if (error) console.error('Error marcando tag como configurado en Supabase:', error);
-        });
-    }
     return { success: true, message: 'Tag configurado y activo.' };
   }
 
@@ -1459,32 +1370,6 @@ class LocalDbService {
     }
 
     this.setStorageItem('nfc_cards', cards);
-
-    if (supabase) {
-      const cleanCode = resolvedId.toUpperCase();
-      const cardObj = cards.find(c => c.card_id === cleanCode || c.card_id === resolvedId);
-      if (cardObj) {
-        supabase.from('nfc_cards').upsert({
-          card_id: cardObj.card_id,
-          activation_code: cardObj.activation_code,
-          owner_id: cardObj.owner_id,
-          owner_name: cardObj.owner_name,
-          owner_email: cardObj.owner_email,
-          label: cardObj.label,
-          target_url: primaryUrl,
-          nfc_target_url: cleanNfcUrl,
-          qr_target_url: cleanQrUrl,
-          group_name: groupName || 'General',
-          is_active: cardObj.is_active,
-          claimed: cardObj.claimed,
-          estado: derivarEstado(cardObj),
-          type: cardObj.type || 'google'
-        }).then(({ error }) => {
-          if (error) console.error('Error guardando tarjeta en Supabase:', error);
-        });
-      }
-    }
-
     return { success: true, message: '¡Configuración guardada exitosamente!' };
   }
 
@@ -1513,12 +1398,6 @@ class LocalDbService {
 
     cards.splice(cardIndex, 1);
     this.setStorageItem('nfc_cards', cards);
-
-    if (supabase) {
-      supabase.from('nfc_cards').delete().eq('card_id', card.card_id).then(({ error }) => {
-        if (error) console.error('Error eliminando tarjeta en Supabase:', error);
-      });
-    }
 
     return { success: true, message: 'Dispositivo desvinculado exitosamente de tu cuenta.' };
   }
@@ -1549,15 +1428,6 @@ class LocalDbService {
       };
       this.setStorageItem('nfc_cards', cards);
 
-      if (supabase) {
-        supabase.from('nfc_cards').update({
-          owner_email: cleanEmail,
-          owner_name: ownerName || cleanEmail.split('@')[0],
-          group_name: cleanGroup,
-          claimed: true
-        }).eq('card_id', card.card_id).then();
-      }
-
       return { success: true, message: '¡Dispositivo TAP vinculado exitosamente a tu negocio!', card: cards[cardIndex] };
     }
 
@@ -1583,10 +1453,6 @@ class LocalDbService {
     cards.unshift(newCard);
     this.setStorageItem('nfc_cards', cards);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert(newCard).then();
-    }
-
     return { success: true, message: '¡Dispositivo vinculado a tu negocio!', card: newCard };
   }
 
@@ -1611,10 +1477,6 @@ class LocalDbService {
     });
 
     this.setStorageItem('nfc_cards', updated);
-    if (supabase && count > 0) {
-      supabase.from('nfc_cards').update({ group_name: cleanGroup }).in('card_id', cardIds).then();
-    }
-
     return { success: true, updatedCount: count };
   }
 
@@ -1636,10 +1498,6 @@ class LocalDbService {
     });
 
     this.setStorageItem('nfc_cards', updated);
-    if (supabase && count > 0) {
-      supabase.from('nfc_cards').update({ is_active: isActive }).in('card_id', cardIds).then();
-    }
-
     return { success: true, updatedCount: count };
   }
 
@@ -1972,12 +1830,6 @@ class LocalDbService {
     });
 
     this.setStorageItem('nfc_cards', updatedCards);
-
-    if (supabase) {
-      supabase.from('nfc_cards').upsert(createdCards).then(({ error }) => {
-        if (error) console.error('Error sincronizando lote de tags en Supabase:', error);
-      });
-    }
 
     // 3. Cuadrar / Sumar existencias en inventory_product_stocks
     const productStocks = this.getStorageItem<{ [id: string]: ProductStockInfo }>('inventory_product_stocks', {});
@@ -2486,21 +2338,6 @@ class LocalDbService {
         cards[cIdx].qr_target_url = params.targetUrl;
       }
       this.setStorageItem('nfc_cards', cards);
-
-      if (supabase) {
-        supabase.from('nfc_cards').update({
-          claimed: true,
-          estado: 'configurado',
-          is_active: true,
-          order_id: orderId,
-          tipo_activacion: tipo,
-          precio_venta: precio,
-          label: params.label || cards[cIdx].label,
-          target_url: params.targetUrl || cards[cIdx].target_url,
-          nfc_target_url: params.targetUrl || cards[cIdx].nfc_target_url,
-          qr_target_url: params.targetUrl || cards[cIdx].qr_target_url,
-        }).eq('card_id', cleanId).then();
-      }
     }
 
     return {
@@ -2644,19 +2481,6 @@ class LocalDbService {
 
     if (liberatedTags.length > 0) {
       this.setStorageItem('nfc_cards', cards);
-      if (supabase) {
-        supabase.from('nfc_cards').update({
-          claimed: false,
-          estado: 'en_stock',
-          order_id: null,
-          is_active: false,
-          owner_id: 'unassigned',
-          owner_name: 'Sin Asignar (Stock)',
-          owner_email: 'admin@startap.com.pa'
-        }).in('card_id', liberatedTags).then(({ error }) => {
-          if (error) console.error('Error liberando tags en Supabase:', error);
-        });
-      }
     }
 
     return { success: true, liberatedTags };
@@ -2666,23 +2490,6 @@ class LocalDbService {
     let count = 0;
     let cards = this.getCards();
     const existingOrderIds = new Set(this.getOrders().map(o => o.id));
-
-    if (supabase) {
-      try {
-        const [resCards, resOrders] = await Promise.all([
-          supabase.from('nfc_cards').select('*').or('tipo_activacion.eq.venta,tipo_activacion.eq.prueba,precio_venta.gt.0'),
-          supabase.from('orders').select('id')
-        ]);
-        if (!resCards.error && resCards.data && resCards.data.length > 0) {
-          cards = resCards.data as NfcCard[];
-        }
-        if (!resOrders.error && resOrders.data) {
-          resOrders.data.forEach(o => existingOrderIds.add(o.id));
-        }
-      } catch (e) {
-        console.error('Error cargando tarjetas para sincronización retroactiva:', e);
-      }
-    }
 
     for (const card of cards) {
       const isVenta = (card.tipo_activacion === 'venta' && typeof card.precio_venta === 'number' && card.precio_venta > 0) || (typeof card.precio_venta === 'number' && card.precio_venta > 0);

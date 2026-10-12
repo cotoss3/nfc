@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   CreditCard, Package, Users, Tag, BarChart2, QrCode, 
-  LogOut, ShoppingCart, Layers, Menu, X, ChevronRight, Activity, Gift 
+  LogOut, ShoppingCart, Layers, Menu, X, ChevronRight, Activity, Gift, Briefcase 
 } from 'lucide-react';
 import AdminAuthGuard from '@/components/AdminAuthGuard';
 import { authService } from '@/lib/auth';
@@ -16,6 +16,7 @@ const navItems = [
   { id: 'comportamiento', label: 'Comportamiento', shortLabel: 'Comport.', icon: Activity, href: '/master-control/comportamiento' },
   { id: 'inventario', label: 'Inventario & Lotes', shortLabel: 'Inventario', icon: Layers, href: '/master-control/inventario' },
   { id: 'tag-scanner', label: 'Scanner & APK NFC', shortLabel: 'NFC APK', icon: QrCode, href: '/master-control/tag-scanner' },
+  { id: 'distribuidores', label: 'Distribuidores', shortLabel: 'Distrib.', icon: Briefcase, href: '/master-control/distribuidores' },
   { id: 'pedidos', label: 'Pedidos (OMS)', shortLabel: 'Pedidos', icon: ShoppingCart, href: '/master-control/pedidos' },
   { id: 'productos', label: 'Productos', shortLabel: 'Productos', icon: Package, href: '/master-control/productos' },
   { id: 'clientes', label: 'Clientes & CRM', shortLabel: 'Clientes', icon: Users, href: '/master-control/clientes' },

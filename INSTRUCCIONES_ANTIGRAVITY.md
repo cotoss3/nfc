@@ -493,6 +493,195 @@ Volver a medir estos cinco:
 | Industrias con refuerzo de vocabulario | 1 de 6 | 6 de 6 |
 | `nfc_cards` con escritura pública | sí | no |
 
+## 11 · Programa de distribuidores y correcciones de confianza — 12 oct 2026
+
+Fernando decidió abrir venta al por mayor sin afectar el detal. La regla de
+fondo: **los precios de distribuidor nunca se publican en la web.** El detal
+(`/catalogo`) y el corporativo (`/corporativo`, uso propio) siguen con precios
+públicos; el distribuidor (revende) solo ve sus precios en un PDF privado.
+
+Material ya listo, en `Claude outputs/distribuidores/`:
+- `starTAP_Lista_Distribuidores.pdf`: lista privada (se entrega por correo, NO se sube a `public/`).
+- `generar_lista_mayorista.py`: regenera el PDF; los precios viven en `PRODUCTOS` y `NIVELES`.
+- Acuerdo de distribución: borrador en Claude Docs (Fernando lo tiene; pendiente revisión de abogado).
+
+Precios acordados (USD por unidad, pedido mínimo 25, pago 100% adelantado):
+
+| Producto | Detal = mínimo de reventa | Distribuidor 25 a 99 | Mayorista 100+ |
+| --- | --- | --- | --- |
+| Tarjeta | $20.00 | $10.00 | $9.00 |
+| Stand | $30.00 | $15.00 | $13.50 |
+| Placa | $35.00 | $17.50 | $16.00 |
+
+Orden: **11.0 primero** (sigue siendo el bloque A del punto 10). Con
+distribuidores habrá tarjetas en la calle que Fernando no controla.
+
+---
+
+### 11.0 · Lo que encontré revisando A1 (sigue abierto)
+
+`src/app/api/tarjetas/route.ts` ya existe, pero A1 **no está cerrado**:
+
+1. **La ruta cae a la clave anónima.** `serviceKey` usa `SUPABASE_ANON_KEY` o
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` si falta la service role. Quitar ese respaldo:
+   si no hay `SUPABASE_SERVICE_ROLE_KEY`, responder 500 y no seguir.
+2. **`GET ?user_email=` no pide sesión.** Cualquiera que sepa un correo lee las
+   tarjetas de ese cliente. Validar que el correo pedido sea el de la sesión.
+3. **`master-control` sigue escribiendo directo a `nfc_cards` desde el navegador**
+   (`master-control/cards/page.tsx` líneas ~97, 204, 253, 368, 384 y
+   `master-control/etiquetas-demo/page.tsx` ~93, 216, 264, 300, 350). Pasar todo
+   a `/api/admin` con verificación de admin en el servidor.
+4. Recién con eso: correr la PARTE B de `migracion_20260920_seguridad.sql` y
+   probar activación de un TAP de punta a punta.
+
+Verificación: `grep -rn "from('nfc_cards')" src | grep -v "src/app/api"` debe salir vacío.
+
+---
+
+### 11.1 · Página nueva `/distribuidores`
+
+Archivos: `src/app/distribuidores/page.tsx` (metadata + schema) y
+`DistribuidoresClient.tsx` (UI), mismo patrón que `/corporativo`.
+
+- **Indexable, sin precios.** Title: «Distribuidores de Tarjetas NFC para Reseñas
+  en Panamá | starTAP». Description sin cifras.
+- **Para quién:** agencias de marketing, imprentas, diseñadores, vendedores de
+  POS y consultores de restaurantes que venden a negocios.
+- **Qué reciben:** precio de distribuidor (sin números), productos con diseño
+  neutro o con su marca, soporte técnico del panel por parte de starTAP.
+- **Requisitos visibles:** pedido mínimo de 25 unidades, pago por adelantado,
+  acuerdo firmado, precio mínimo de reventa, sin marketplaces.
+- **Formulario:** empresa, RUC, contacto, WhatsApp, correo, a qué se dedica,
+  cuántos clientes atiende, unidades estimadas al mes. Un checkbox obligatorio:
+  «Acepto que starTAP me contacte por este medio» (Ley 81).
+- Al enviar: mensaje «Revisamos tu solicitud y te escribimos en 2 días hábiles».
+  **No** mostrar precios ni descargar el PDF.
+
+### 11.2 · Guardado de solicitudes
+
+Archivo nuevo `migracion_20261012_distribuidores.sql`:
+
+```sql
+create table if not exists public.distribuidores_solicitudes (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  empresa text not null,
+  ruc text,
+  contacto text not null,
+  whatsapp text not null,
+  correo text not null,
+  giro text,
+  clientes_aprox int,
+  unidades_mes int,
+  acepta_contacto boolean not null default false,
+  estado text not null default 'nueva' check (estado in ('nueva','aprobada','rechazada'))
+);
+alter table public.distribuidores_solicitudes enable row level security;
+-- Sin políticas para anon/authenticated: solo escribe la API con service role.
+```
+
+- Ruta `src/app/api/distribuidores/route.ts` (POST), con service role, mismo
+  patrón que `api/pedidos`. Validar campos en servidor, limitar largo de textos,
+  y un honeypot contra spam.
+- Aviso a Fernando por correo (reusar `api/email`) a info@startap.com.pa.
+- En `master-control`, una vista simple para listar y cambiar `estado`.
+
+### 11.3 · Proteger el corporativo
+
+- En `src/app/terminos/` agregar: «Los precios corporativos y por volumen son
+  para uso propio de la empresa compradora. La reventa requiere el programa de
+  distribuidores y un acuerdo firmado.»
+- En `/corporativo`, un enlace «¿Revendes a otros negocios? Programa de
+  distribuidores →» hacia `/distribuidores`.
+- Footer, columna Dispositivos: añadir «Programa de distribuidores».
+- `src/app/sitemap.ts`: añadir `/distribuidores` (priority 0.7).
+
+### 11.4 · Cifras que no son reales — URGENTE, va con 11.0
+
+Antes de buscar distribuidores o cerrar con BAC, que van a revisar la web:
+
+- `src/app/HomeClient.tsx:162`: «4.9/5 · Más de 500 comercios activos en
+  Panamá». Lo real hoy: 5.0 con 6 reseñas en Google. Cambiar a
+  «5.0 en Google Maps (6 reseñas)» o quitar la línea.
+- `src/components/Footer.tsx:67`: «Únete a más de 500 negocios». Cambiar a
+  «Recibe guías de SEO local y lanzamientos de productos NFC».
+- Buscar el resto: `grep -rn "500\|4.9\|\+[0-9]\+%" src --include=*.tsx`. Mismo
+  criterio de `REGLAS_CONTENIDO.md`: nada de cifras sin fuente.
+
+### 11.5 · Verificar después del deploy (lo vio Fernando en vivo el 12 oct)
+
+La versión publicada de `/corporativo` muestra cosas que **ya no están** en el
+código local, así que el sitio en vivo va atrasado. Tras desplegar, confirmar en
+`startap.com.pa/corporativo` que:
+- el WhatsApp sea +507 6483-9004 (no el personal 6713-4341),
+- el correo sea info@startap.com.pa (no info@datakorex.com),
+- no diga «Oficinas Principales San Francisco» (no hay oficina física),
+- el título sea el nuevo de `corporativo/page.tsx`.
+
+### 11.6 · Ojo con «pago único de por vida»
+
+`src/app/terminos/` (línea ~86) y la home prometen panel gratis de por vida y
+cero suscripciones. **No tocar ahora**, pero cualquier plan mensual futuro
+tendrá que cobrar por funciones nuevas (recordatorios por WhatsApp, reportes),
+nunca por el panel ya prometido. Dejarlo así en los textos del plan Pro.
+
+### Cierre del punto 11
+
+- [x] 11.0 A1 cerrado de verdad en el código (sin respaldo anon, GET con sesión Bearer, master-control por API `/api/admin/cards` con service role, eliminadas llamadas directas a nfc_cards en cliente. Pendiente correr SQL PARTE B en Supabase tras deploy)
+- [x] 11.4 cifras falsas fuera de home y footer (actualizado a 5.0 con 6 reseñas y texto honesto)
+- [x] 11.1 `/distribuidores` en línea, sin precios (con SEO, schema y condiciones claras)
+- [x] 11.2 tabla `distribuidores_solicitudes` + API `/api/distribuidores` + aviso por correo + panel admin en `/master-control/distribuidores`
+- [x] 11.3 términos actualizados (cláusula corporativo vs reventa), enlace desde corporativo, footer y sitemap
+- [ ] 11.5 verificar en vivo en producción (tras deploy de Fernando)
+- [x] `npx tsc --noEmit` en 0 y registro en la BITÁCORA de `PROJECT_MEMORY.md`
+
+---
+
+## 7e · Blog: SEXTO artículo escrito y SIN PUBLICAR
+
+**Archivo:** `src/content/blog/reclamar-ficha-google-mi-negocio-panama.ts`
+**Slug:** `/blog/reclamar-ficha-google-mi-negocio-panama`
+**NO está en `POSTS`.** Compila limpio (`npx tsc --noEmit` sin errores) y pasa el
+script de reglas sin hallazgos de contenido.
+
+**Por qué este tema.** Sale del mapa de territorio del 12 oct en
+`ANALISIS_KEYWORDS.md`. Es el único hueco con intención de dueño de negocio que
+ningún artículo reclamaba: el de visibilidad cubre la verificación, no la
+reclamación de una ficha que Google generó sola. Además es el gancho de venta que
+más conversaciones abre en la prospección.
+
+**Qué falta para publicarlo:**
+
+1. `TODO_EXPERIENCIA_2` dentro del `cuerpo`, justo después del dato de los 228
+   negocios. Hace falta un caso concreto con permiso: un negocio al que le dijimos
+   que tenía la ficha sin reclamar y qué pasó después. Si no hay caso cerrado,
+   sirve un dato sostenible de la prospección.
+2. Las cinco imágenes. Los prompts y las instrucciones de captura están en
+   `herramientas/prompts/imagenes-reclamar-ficha.md`. **Dos de las cinco son
+   capturas de pantalla y no se generan.** La del enlace «Reclamar este negocio»
+   va con el nombre y la dirección del negocio tapados: no podemos publicar la
+   ficha de un tercero señalándola como abandonada.
+3. Registrarlo en `src/lib/blog.ts`:
+   ```ts
+   import { post as articulo6 } from '@/content/blog/reclamar-ficha-google-mi-negocio-panama';
+   export const POSTS: BlogPost[] = [articulo6, articulo5, articulo4, articulo1, articulo2, articulo3];
+   ```
+4. Pasar la checklist de la PARTE 3 de `REGLAS_CONTENIDO.md`.
+
+## 7f · Dos arreglos de canibalización en artículos YA PUBLICADOS
+
+Salen del mismo análisis del 12 oct. Son de edición, no de reescritura.
+
+1. **`como-conseguir-100-resenas-google-maps`:** quitar `'pedir reseñas a clientes'`
+   del array `keywords`. Esa consulta es territorio de
+   `como-pedir-resenas-google-sin-penalizacion` y hoy las dos páginas la reclaman.
+2. **`ver-y-responder-resenas-de-tu-negocio-en-google`:** está atrayendo
+   consumidores, no dueños de negocio. Sus consultas reales incluyen «como ver las
+   reseñas de google de una persona» y «como ver mis reseñas de google». Cambiar
+   `titulo` y `tituloSeo` para dejar explícito de quién son las reseñas, del tipo
+   «Cómo ver y responder las reseñas que le dejan a tu negocio», y ajustar el
+   primer párrafo en la misma línea.
+
 ## 8 · Deuda menor, para cuando haya tiempo
 
 - `/api/email/*` es un relay abierto: sin auth, sin rate limit, sin verificar que

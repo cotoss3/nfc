@@ -64,7 +64,7 @@ export default function Footer() {
                 Suscríbete y Recibe Guías para Aumentar tus Reseñas
               </h3>
               <p className="text-xs sm:text-sm text-gray-300">
-                Únete a más de 500 negocios en Panamá. Recibirás trucos de SEO local y lanzamientos de nuevos productos NFC.
+                Recibe guías de SEO local y lanzamientos de productos NFC en Panamá.
               </p>
             </div>
 
@@ -196,6 +196,11 @@ export default function Footer() {
               <li>
                 <Link href="/corporativo" className="text-amber-400 font-bold hover:text-amber-300 transition-colors inline-flex items-center gap-1.5">
                   <span>Pedidos B2B al Mayor</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/distribuidores" className="hover:text-white transition-colors">
+                  Programa de Distribuidores
                 </Link>
               </li>
               <li><Link href="/shop" className="hover:text-white transition-colors text-gray-400">Ver Catálogo Completo →</Link></li>

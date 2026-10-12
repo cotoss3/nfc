@@ -175,6 +175,25 @@ function DashboardContent() {
   const [behaviorSortBy, setBehaviorSortBy] = useState<'reads' | 'cta' | 'time' | 'ad' | 'code'>('reads');
   const [nowMs, setNowMs] = useState<number>(Date.now());
 
+  const fetchTarjetasApi = async (body: any) => {
+    try {
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/tarjetas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(body)
+      });
+      return res;
+    } catch (err) {
+      console.error('Error llamando /api/tarjetas:', err);
+      return null;
+    }
+  };
+
   const handleClaimTap = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!claimInput || !userEmail) return;
@@ -194,22 +213,14 @@ function DashboardContent() {
       if (res.success) {
         successCount++;
         lastMsg = res.message;
-      }
-    }
-
-    try {
-      await fetch('/api/tarjetas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'bulk_group',
+        // Sincronizar reclamo en el servidor con service role
+        await fetchTarjetasApi({
+          action: 'claim',
           user_email: userEmail,
-          card_ids: rawCodes,
-          data: { group_name: claimGroupInput }
-        })
-      });
-    } catch (err) {
-      console.error('Error sincronizando lote al reclamar:', err);
+          card_id: code,
+          data: { group_name: claimGroupInput, title: userName }
+        });
+      }
     }
 
     if (successCount > 0) {
@@ -248,20 +259,12 @@ function DashboardContent() {
     if (selectedCardIds.length === 0 || !userEmail) return;
 
     dbLocal.bulkUpdateCardsGroup(selectedCardIds, bulkGroupTarget, userEmail);
-    try {
-      await fetch('/api/tarjetas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'bulk_group',
-          user_email: userEmail,
-          card_ids: selectedCardIds,
-          data: { group_name: bulkGroupTarget }
-        })
-      });
-    } catch (err) {
-      console.error('Error en asignación masiva de grupo:', err);
-    }
+    await fetchTarjetasApi({
+      action: 'bulk_group',
+      user_email: userEmail,
+      card_ids: selectedCardIds,
+      data: { group_name: bulkGroupTarget }
+    });
 
     setBulkSuccessMsg(`¡Se asignaron ${selectedCardIds.length} tarjeta(s) al grupo "${bulkGroupTarget}"!`);
     loadUserData(userEmail);
@@ -273,20 +276,12 @@ function DashboardContent() {
     if (selectedCardIds.length === 0 || !userEmail) return;
 
     dbLocal.bulkUpdateCardsActiveStatus(selectedCardIds, isActive, userEmail);
-    try {
-      await fetch('/api/tarjetas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'bulk_active',
-          user_email: userEmail,
-          card_ids: selectedCardIds,
-          data: { is_active: isActive }
-        })
-      });
-    } catch (err) {
-      console.error('Error en cambio masivo de estado:', err);
-    }
+    await fetchTarjetasApi({
+      action: 'bulk_active',
+      user_email: userEmail,
+      card_ids: selectedCardIds,
+      data: { is_active: isActive }
+    });
 
     setBulkSuccessMsg(`¡Se ${isActive ? 'activaron' : 'desactivaron'} ${selectedCardIds.length} tarjeta(s)!`);
     loadUserData(userEmail);
@@ -389,15 +384,27 @@ function DashboardContent() {
 
     fetchClientBehavior(email, true);
 
-    // Sincronización en tiempo real desde Supabase
+    // Sincronización en tiempo real desde Supabase vía API segura con sesión
     try {
-      const remoteCards = await dbLocal.getCardsByOwnerAsync(email);
-      setCards(remoteCards);
-      if (remoteCards.length > 0) {
-        handleSelectCard(remoteCards[0]);
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      const res = await fetch(`/api/tarjetas?user_email=${encodeURIComponent(email.trim().toLowerCase())}`, {
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        cache: 'no-store'
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.cards)) {
+          setCards(json.cards);
+          if (json.cards.length > 0) {
+            handleSelectCard(json.cards[0]);
+          }
+        }
       }
     } catch (e) {
-      console.error('Error sincronizando tarjetas de usuario:', e);
+      console.error('Error sincronizando tarjetas de usuario desde API:', e);
     }
   };
 
@@ -553,24 +560,16 @@ function DashboardContent() {
     }
     
     // Sync with backend API
-    try {
-      await fetch('/api/tarjetas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'update',
-          user_email: userEmail,
-          card_id: selectedCard.card_id,
-          data: {
-            title: editLabel,
-            target_url: cleanNfc || cleanQr || selectedCard.target_url,
-            group_name: editGroup
-          }
-        })
-      });
-    } catch (err) {
-      console.error('Error sincronizando tarjeta:', err);
-    }
+    await fetchTarjetasApi({
+      action: 'update',
+      user_email: userEmail,
+      card_id: selectedCard.card_id,
+      data: {
+        title: editLabel,
+        target_url: cleanNfc || cleanQr || selectedCard.target_url,
+        group_name: editGroup
+      }
+    });
 
     setUpdateSuccess(true);
     setEditNfcUrl(cleanNfc);
@@ -613,20 +612,12 @@ function DashboardContent() {
 
     const res = dbLocal.deleteCard(cardId, userEmail);
     if (res.success) {
-      try {
-        await fetch('/api/tarjetas', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'update',
-            user_email: userEmail,
-            card_id: cardId,
-            data: { is_active: false, group_name: '' }
-          })
-        });
-      } catch (err) {
-        console.error('Error sincronizando al desvincular:', err);
-      }
+      await fetchTarjetasApi({
+        action: 'update',
+        user_email: userEmail,
+        card_id: cardId,
+        data: { is_active: false, group_name: '' }
+      });
       loadUserData(userEmail);
     } else {
       alert(res.message);
@@ -637,20 +628,12 @@ function DashboardContent() {
     const newStatus = !currentActiveStatus;
     dbLocal.toggleCardActive(cardId, newStatus);
     
-    try {
-      await fetch('/api/tarjetas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'update',
-          user_email: userEmail,
-          card_id: cardId,
-          data: { is_active: newStatus }
-        })
-      });
-    } catch (err) {
-      console.error('Error sincronizando estado activo:', err);
-    }
+    await fetchTarjetasApi({
+      action: 'update',
+      user_email: userEmail,
+      card_id: cardId,
+      data: { is_active: newStatus }
+    });
 
     const updatedCards = cards.map(c => 
       c.card_id === cardId ? { ...c, is_active: newStatus } : c

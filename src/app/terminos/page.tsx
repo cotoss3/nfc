@@ -156,9 +156,22 @@ export default function TerminosPage() {
           </section>
 
           {/* Sección 7 */}
+          <section className="space-y-3 border-b border-slate-100 pb-6">
+            <h2 className="text-lg font-bold text-slate-950 uppercase tracking-wide">
+              7. Precios Corporativos, Descuentos por Volumen y Reventa
+            </h2>
+            <p>
+              Los precios corporativos y descuentos por escala cotizados a través de nuestra sección <Link href="/corporativo" className="text-amber-700 font-semibold underline">Corporativo</Link> aplican exclusivamente para empresas que adquieren dispositivos destinados a su <strong>propio uso interno, sedes, sucursales o franquicias</strong>.
+            </p>
+            <p>
+              Queda expresamente prohibida la reventa no autorizada de hardware o servicios StarTAP sin suscripción previa al <Link href="/distribuidores" className="text-amber-700 font-semibold underline">Programa Oficial de Distribuidores</Link>. Toda persona natural o jurídica interesada en revender o comercializar dispositivos a terceros debe postular a través de dicho programa, cumplir los requisitos de volumen mínimo (25 unidades) y firmar el acuerdo de distribución correspondiente.
+            </p>
+          </section>
+
+          {/* Sección 8 */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-slate-950 uppercase tracking-wide">
-              7. Ley Aplicable y Jurisdicción
+              8. Ley Aplicable y Jurisdicción
             </h2>
             <p>
               Estos Términos y Condiciones se rigen bajo las leyes vigentes de la <strong className="text-slate-900">República de Panamá</strong>, en especial por la <strong className="text-slate-900">Ley 51 de 22 de julio de 2008</strong> sobre Comercio Electrónico y la <strong className="text-slate-900">Ley 45 de 31 de octubre de 2007</strong> de Protección al Consumidor. Cualquier controversia será sometida a los tribunales competentes de la Ciudad de Panamá.

@@ -16,7 +16,6 @@ export const post: BlogPost = {
   keywords: [
     'conseguir 100 reseñas Google Maps',
     'cómo conseguir reseñas en Google sin rogar',
-    'pedir reseñas a clientes',
     'reseñas Google Maps Panamá',
     'estrategia reseñas Google local',
     'aumentar reseñas negocio local',

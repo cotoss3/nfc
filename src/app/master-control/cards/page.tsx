@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { dbLocal, NfcCard, ScanRecord, supabase } from '@/lib/db';
+import { dbLocal, NfcCard, ScanRecord } from '@/lib/db';
+import { authService } from '@/lib/auth';
 import BulkAddBatchModal from '@/components/admin/BulkAddBatchModal';
 import {
   CreditCard,
@@ -85,34 +86,56 @@ export default function CardsManagementPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(15);
 
+  const callAdminCardsApi = async (body: any) => {
+    try {
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error('Error en API admin cards:', err);
+      }
+    } catch (e) {
+      console.error('Error de red al llamar API admin cards:', e);
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     let dbCards = dbLocal.getCards();
     let dbScans = dbLocal.getStorageItem<ScanRecord[]>('nfc_scans', []);
     let totalScansRemoto: number | null = null;
 
-    if (supabase) {
-      try {
-        const [resCards, resScans] = await Promise.all([
-          supabase.from('nfc_cards').select('*').order('created_at', { ascending: false }),
-          // La tabla se llama 'scans' (antes se leia 'nfc_scans', que no existe).
-          // Solo hace falta el total, asi que se pide el conteo sin traer las filas.
-          supabase.from('scans').select('*', { count: 'exact', head: true }),
-        ]);
-
-        if (!resCards.error && resCards.data && resCards.data.length > 0) {
-          dbCards = (resCards.data as NfcCard[]).map(c => ({
+    try {
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/cards', {
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.cards) && json.cards.length > 0) {
+          dbCards = (json.cards as NfcCard[]).map(c => ({
             ...c,
             label: (c.label || '').replace(/\s*\((?:Tarjeta|Regal[íi]a)\s+Paquete\)/gi, '').trim()
           }));
           dbLocal.setStorageItem('nfc_cards', dbCards);
         }
-        if (!resScans.error && typeof resScans.count === 'number') {
-          totalScansRemoto = resScans.count;
+        if (typeof json.totalScans === 'number') {
+          totalScansRemoto = json.totalScans;
         }
-      } catch (err) {
-        console.error('Error cargando tarjetas desde Supabase:', err);
       }
+    } catch (err) {
+      console.error('Error cargando tarjetas desde API admin cards:', err);
     }
 
     setCards(dbCards);
@@ -200,11 +223,7 @@ export default function CardsManagementPage() {
     setCards(updated);
     dbLocal.setStorageItem('nfc_cards', updated);
 
-    if (supabase) {
-      supabase.from('nfc_cards').update({ is_active: nextStatus }).eq('card_id', cardId).then(({ error }) => {
-        if (error) console.error('Error actualizando estado en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'toggle_active', card_id: cardId, is_active: nextStatus });
   };
 
   // Create New TAG Handler
@@ -249,11 +268,7 @@ export default function CardsManagementPage() {
     setCards(updated);
     dbLocal.setStorageItem('nfc_cards', updated);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert([newCardObj]).then(({ error }) => {
-        if (error) console.error('Error guardando tarjeta en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'upsert', card: newCardObj });
 
     // Si está activo, sincronizar orden presencial en OMS e Inventario + Disparar Analítica GA4
     if (newIsActive) {
@@ -364,11 +379,7 @@ export default function CardsManagementPage() {
     setCards(updatedList);
     dbLocal.setStorageItem('nfc_cards', updatedList);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert([updatedCard]).then(({ error }) => {
-        if (error) console.error('Error actualizando TAG en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'upsert', card: updatedCard });
 
     setEditingCard(null);
   };
@@ -380,11 +391,7 @@ export default function CardsManagementPage() {
       setCards(updated);
       dbLocal.setStorageItem('nfc_cards', updated);
 
-      if (supabase) {
-        supabase.from('nfc_cards').delete().eq('card_id', cardId).then(({ error }) => {
-          if (error) console.error('Error eliminando TAG en Supabase:', error);
-        });
-      }
+      callAdminCardsApi({ action: 'delete', card_id: cardId });
     }
   };
 

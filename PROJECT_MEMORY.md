@@ -1054,3 +1054,35 @@ Verificación del plan del punto 9 contra el repo y contra la inspección de URL
 
 
 
+
+## 12 oct 2026 · Programa de distribuidores (mayoreo) definido y ejecutado
+
+1. **Decisión de Fernando:** abrir venta al por mayor sin afectar el detal. Los precios de distribuidor NO se publican en la web; el detal y el corporativo siguen públicos.
+2. **Precios acordados** (pedido mínimo 25, pago 100% adelantado, precio de detal = mínimo de reventa): tarjeta $20 → $10 / $9; stand $30 → $15 / $13.50; placa $35 → $17.50 / $16 (niveles 25 a 99 y 100+).
+3. **Entregables** en `Claude outputs/distribuidores/`: `starTAP_Lista_Distribuidores.pdf` (privado, no va a `public/`) y `generar_lista_mayorista.py` (lo regenera; precios en `PRODUCTOS` y `NIVELES`). Acuerdo de distribución en borrador en Claude Docs, pendiente de abogado.
+4. **Implementación de Código y Seguridad Realizada:**
+   - **11.4 Cifras Reales:** Eliminadas métricas no fundadas ("4.9 / más de 500 comercios") de `HomeClient.tsx` y `Footer.tsx`. Ajustado a "5.0 en Google Maps (6 reseñas)".
+   - **11.0 A1 & Aislamiento de `nfc_cards`:**
+     - Creado endpoint administrativo seguro `/api/admin/cards/route.ts` con `SUPABASE_SERVICE_ROLE_KEY` y autenticación de `ADMIN_EMAILS`.
+     - Eliminado fallback a clave anónima en `/api/tarjetas/route.ts` (retorna 500 si falta service role) y blindada la consulta `GET ?user_email=` exigiendo token de sesión Bearer que coincida con el email o sea admin.
+     - Migradas todas las escrituras y lecturas de `master-control` (`cards`, `etiquetas-demo`, `inventario`) para operar vía `/api/admin/cards`.
+     - Limpiadas llamadas directas a `supabase.from('nfc_cards')` en `src/lib/db.ts` y componentes de cliente (0 ocurrencias de escritura/lectura directa fuera de `src/app/api`). Listo para aplicar la PARTE B de RLS en Supabase.
+   - **11.1 Landing `/distribuidores`:** Creadas `src/app/distribuidores/page.tsx` y `DistribuidoresClient.tsx` indexables, con metadatos y schemas JSON-LD, propuesta de valor B2B y condiciones claras (pedido mínimo 25 uds) sin revelar precios.
+   - **11.2 Solicitudes & API:**
+     - Creado script SQL `migracion_20261012_distribuidores.sql` para la tabla `distribuidores_solicitudes`.
+     - Creado endpoint `/api/distribuidores/route.ts` con honeypot antispam, inserción server-side con service role, notificación automática vía correo con Resend a `info@startap.com.pa` y métodos admin `GET` / `PATCH`.
+     - Creada vista administrativa `/master-control/distribuidores/page.tsx` y añadida a la barra de navegación de `layout.tsx`.
+   - **11.3 Términos Legales, Enlaces y Sitemap:**
+     - Añadida cláusula específica en `src/app/terminos/page.tsx` aclarando que precios corporativos son para uso propio y que la reventa requiere aprobación en el programa de distribuidores.
+     - Añadido banner y enlace en `src/app/corporativo/CorporativoClient.tsx` derivando a revendedores hacia `/distribuidores`.
+     - Añadido enlace a "Programa de Distribuidores" en el footer de navegación (`src/components/Footer.tsx`).
+     - Registrada la ruta canónica `/distribuidores` en `src/app/sitemap.ts`.
+5. **Verificación:** `npx tsc --noEmit` completado con éxito (**0 errores**). Listo para commit y despliegue por parte de Fernando.
+
+## 12 oct 2026 · Mapa de territorio del blog y sexto artículo
+
+1. **Análisis de canibalización de los cinco artículos publicados** contra las consultas reales de Search Console (14 sep – 11 oct). Anexo nuevo en `ANALISIS_KEYWORDS.md` con el mapa de qué reclama cada artículo, dos problemas detectados y cuatro candidatos de hueco ordenados.
+2. **Artículo nuevo, escrito y SIN publicar:** `src/content/blog/reclamar-ficha-google-mi-negocio-panama.ts` (1.047 palabras). Ataca «reclamar ficha de Google», el único hueco con intención de dueño de negocio que ningún artículo reclamaba. Falta `TODO_EXPERIENCIA_2` y las cinco imágenes. Procedimiento en el punto 7e de `INSTRUCCIONES_ANTIGRAVITY.md`.
+3. **Prompts de imagen** en `herramientas/prompts/imagenes-reclamar-ficha.md`. Dos de las cinco son capturas de pantalla y no se generan; la del enlace «Reclamar este negocio» va con los datos del negocio tapados.
+4. **Dos arreglos pendientes en artículos ya publicados** (punto 7f): quitar `'pedir reseñas a clientes'` de las keywords del artículo de las 100 reseñas, y reorientar el título del de ver y responder, que está atrayendo consumidores en vez de dueños de negocio.
+5. **Señal del periodo:** la consulta de marca «startap» subió de posición 13 a 9,4 y trajo los primeros 3 clics de marca, con 33% de CTR. Por esa misma consulta compiten la portada, `/catalogo`, `/app` y `/privacidad`.

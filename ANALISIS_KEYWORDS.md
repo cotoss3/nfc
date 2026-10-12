@@ -271,3 +271,114 @@ Las consultas que dan dinero siguen siendo las de los grupos A y B del análisis
 original: "cómo conseguir más reseñas en Google", "por qué mi negocio no aparece
 en Google Maps", "tarjeta NFC reseñas Google Panamá". Tienen menos volumen y
 cierran ventas.
+
+---
+
+# Anexo · Mapa de territorio del blog y hueco por atacar (12 oct 2026)
+
+Hecho sobre los cinco artículos publicados y las consultas reales de Search
+Console del 14 sep al 11 oct.
+
+## Qué reclama cada artículo hoy
+
+| Artículo | Intención que sirve | Dueño legítimo de |
+| --- | --- | --- |
+| `como-conseguir-100-resenas-google-maps` | Táctica: cómo lograr que el cliente la deje | conseguir reseñas, aumentar reseñas, sin rogar, el guion |
+| `como-pedir-resenas-google-sin-penalizacion` | Riesgo: qué permite y qué castiga Google | políticas de reseñas, penalización, review gating, comprar reseñas |
+| `negocio-sin-local-google-maps-panama` | Negocio sin vitrina | zona de servicio, negocio desde casa, tienda online en Maps |
+| `por-que-mi-negocio-no-aparece-en-google-maps` | Diagnóstico de visibilidad | no aparezco, no salgo en la categoría, posicionar en Maps |
+| `ver-y-responder-resenas-de-tu-negocio-en-google` | Gestión de lo que ya existe | ver mis reseñas, responder, reportar, borrar |
+
+## Dos problemas antes de escribir nada nuevo
+
+**1. Canibalización entre el artículo 1 y el 2.** El de las 100 reseñas lleva en
+sus `keywords` «pedir reseñas a clientes», que es territorio del de
+penalización. Los cuerpos sí son distintos, uno es táctica y el otro es política
+de Google, así que no hay que fusionar, hay que separar las keywords:
+
+- `como-conseguir-100-resenas-google-maps`: quitar «pedir reseñas a clientes».
+  Se queda con conseguir, aumentar, cuántas necesito, el guion.
+- `como-pedir-resenas-google-sin-penalizacion`: se queda con pedir, políticas,
+  penalización, comprar reseñas, filtrar reseñas.
+
+**2. El artículo 5 está atrayendo al público equivocado.** Sus consultas reales
+son «como ver las reseñas de google de una persona», «como ver mis reseñas de
+google», «como ver las respuestas a mis reseñas». Eso es un consumidor buscando
+las reseñas que él mismo escribió, no un dueño de negocio. Son 15 impresiones
+que nunca van a comprar nada.
+
+Arreglo: en title, H1 y primer párrafo dejar explícito que es para el dueño del
+negocio, del tipo «Cómo ver y responder las reseñas que le dejan a tu negocio».
+La palabra «te dejan» filtra la intención.
+
+## El hueco: cuatro candidatos, ordenados
+
+### 1. Reclamar una ficha de Google que ya existe · RECOMENDADO
+
+Consultas: reclamar ficha de Google, mi negocio aparece pero no es mío, ficha sin
+reclamar, alguien más administra mi ficha de Google, recuperar acceso a mi
+negocio en Google.
+
+Por qué este primero:
+
+- **Nadie lo reclama.** El artículo 4 toca verificación, no reclamación de una
+  ficha generada sola. Son dos cosas distintas y Google las trata distinto.
+- **Es literalmente el argumento de venta de Fernando.** En la prospección el
+  gancho que más abre conversación es «su ficha aparece sin reclamar». Hay
+  evidencia propia en `PROSPECCION.md`, que es lo que exige `REGLAS_CONTENIDO.md`.
+- **Intención de dueño de negocio pura.** Nadie busca esto por curiosidad.
+- Lleva natural al dispositivo: primero reclamas, después consigues reseñas.
+
+Riesgo de canibalización: bajo. Hay que cuidar que el cuerpo no repita el
+diagnóstico del artículo 4; este empieza donde aquel termina.
+
+### 2. Qué hacer con una reseña negativa
+
+Consultas: cómo responder una reseña negativa, me dejaron una mala reseña, reseña
+de una estrella, responder a un cliente molesto en Google.
+
+Volumen alto y la intención emocional es distinta a la del artículo 5, que es
+operativa. Riesgo medio: el artículo 5 ya tiene una sección de responder. Para
+que no choquen, el 5 se queda con «ver, responder, reportar» en general y el
+nuevo con «negativa, mala reseña, una estrella, cliente molesto», y el 5 enlaza
+al nuevo en esa sección en vez de desarrollarla.
+
+### 3. QR o NFC para reseñas, cuál conviene
+
+Consultas: código QR para reseñas de Google, QR o NFC reseñas, placa QR reseñas
+Google.
+
+Intención comercial de comparación, que es la que más cerca está de la compra.
+Nadie en el blog la cubre y las fichas de producto no la responden. Además es una
+pregunta que los prospectos hacen de verdad. Ojo: hay que decir cuándo el QR es
+mejor, porque starTAP vende NFC y un texto que solo barre para casa se nota.
+
+### 4. Cuántas reseñas necesito para salir en el mapa
+
+Es el cálculo que Fernando hace en cada mensaje de prospección: mirar los tres de
+arriba y contar sus reseñas. Riesgo medio contra el artículo 4, que ya cubre
+«cómo salir primero». Se acota a la intención numérica, no a la de mecánica, y se
+apoya en datos propios de `PROSPECCION.md` por rubro y zona.
+
+## Lo que NO hay que escribir
+
+- Nada con «posicionar en Google Maps» en el title. Lo tiene el artículo 4.
+- Nada sobre qué es NFC y cómo funciona. Es informacional puro, atrae a
+  estudiantes y curiosos, no a dueños de negocio.
+- Nada sobre eliminar reseñas falsas. Lo tiene el artículo 5 y pelearlo parte la
+  autoridad de la única página que hoy recibe impresiones constantes.
+
+## Nota de territorio de producto
+
+Las consultas transaccionales ya están ganadas por las fichas de catálogo:
+«placas nfc» posición 1 y 2, «tarjeta de bolsillo» posición 1, «placas
+inteligentes» posición 8. No crear artículos de blog que compitan con ellas. Lo
+que falta ahí es volumen de búsqueda, no posición, y eso no lo arregla el
+contenido.
+
+## Señal buena del periodo
+
+La consulta de marca «startap» pasó de posición 13 a 9,4 y trajo 3 clics con 33%
+de CTR, los primeros clics de marca del sitio. El trabajo de entidad del `sameAs`
+está moviendo la aguja. Falta que la portada deje de competir consigo misma: por
+«startap» aparecen también `/catalogo`, `/app` y `/privacidad`.

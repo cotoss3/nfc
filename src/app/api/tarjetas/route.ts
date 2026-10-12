@@ -6,13 +6,40 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xnepnlaoiflngtikozqd.supabase.co';
-const serviceKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  '';
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-const supabaseAdmin = url && serviceKey ? createClient(url, serviceKey) : null;
+const ADMINS_FROM_ENV = (process.env.ADMIN_EMAILS || '')
+  .split(',')
+  .map(c => c.trim().toLowerCase())
+  .filter(Boolean);
+
+const SUPER_ADMINS_DEFAULT = [
+  'cotoss3@gmail.com',
+  'fbcontrerras@gmail.com',
+  'fcontreras@grupotova.com',
+  'admin@startap.com.pa',
+  'info@startap.com.pa'
+];
+
+const ALLOWED_ADMINS = Array.from(new Set([...SUPER_ADMINS_DEFAULT, ...ADMINS_FROM_ENV]));
+
+const supabaseAdmin = url && serviceKey ? createClient(url, serviceKey, {
+  auth: { persistSession: false, autoRefreshToken: false }
+}) : null;
+
+async function getAuthenticatedEmail(request: NextRequest): Promise<string | null> {
+  const token = request.headers.get('authorization')?.replace(/^bearer\s+/i, '');
+  if (!token || !url || !anonKey) return null;
+  try {
+    const publicClient = createClient(url, anonKey);
+    const { data: userData, error } = await publicClient.auth.getUser(token);
+    if (error || !userData?.user?.email) return null;
+    return userData.user.email.trim().toLowerCase();
+  } catch {
+    return null;
+  }
+}
 
 /**
  * GET /api/tarjetas?user_email=cliente@empresa.com
@@ -20,20 +47,25 @@ const supabaseAdmin = url && serviceKey ? createClient(url, serviceKey) : null;
  */
 export async function GET(request: NextRequest) {
   try {
+    if (!serviceKey || !supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Configuración del servidor incompleta (falta SUPABASE_SERVICE_ROLE_KEY)' },
+        { status: 500 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const userEmail = searchParams.get('user_email')?.trim().toLowerCase();
     const cardId = searchParams.get('card_id')?.trim().toUpperCase();
 
     if (cardId) {
-      if (supabaseAdmin) {
-        const { data, error } = await supabaseAdmin
-          .from('nfc_cards')
-          .select('*')
-          .ilike('card_id', cardId)
-          .maybeSingle();
-        if (!error && data) {
-          return NextResponse.json({ success: true, card: data });
-        }
+      const { data, error } = await supabaseAdmin
+        .from('nfc_cards')
+        .select('*')
+        .ilike('card_id', cardId)
+        .maybeSingle();
+      if (!error && data) {
+        return NextResponse.json({ success: true, card: data });
       }
       const localCard = dbLocal.getCardById(cardId);
       if (localCard) {
@@ -49,16 +81,31 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (supabaseAdmin) {
-      const { data, error } = await supabaseAdmin
-        .from('nfc_cards')
-        .select('*')
-        .ilike('user_email', userEmail)
-        .order('created_at', { ascending: false });
+    // Validación de sesión: Solo el propio usuario autenticado o un administrador puede consultar
+    const authEmail = await getAuthenticatedEmail(request);
+    if (!authEmail) {
+      return NextResponse.json(
+        { error: 'Se requiere una sesión activa para consultar las tarjetas del usuario' },
+        { status: 401 }
+      );
+    }
 
-      if (!error && data) {
-        return NextResponse.json({ success: true, cards: data });
-      }
+    const isAdmin = ALLOWED_ADMINS.includes(authEmail);
+    if (authEmail !== userEmail && !isAdmin) {
+      return NextResponse.json(
+        { error: 'No autorizado para consultar tarjetas de otro usuario' },
+        { status: 403 }
+      );
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('nfc_cards')
+      .select('*')
+      .ilike('user_email', userEmail)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      return NextResponse.json({ success: true, cards: data });
     }
 
     const localCards = dbLocal.getCardsByOwner(userEmail);
@@ -75,10 +122,34 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    if (!serviceKey || !supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Configuración del servidor incompleta (falta SUPABASE_SERVICE_ROLE_KEY)' },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const { action, user_email, card_id, card_ids, data: updateData } = body;
 
     const cleanEmail = user_email?.trim().toLowerCase();
+
+    // Validación de sesión en acciones de modificación
+    const authEmail = await getAuthenticatedEmail(request);
+    if (!authEmail) {
+      return NextResponse.json(
+        { error: 'Se requiere una sesión activa para realizar esta acción' },
+        { status: 401 }
+      );
+    }
+
+    const isAdmin = ALLOWED_ADMINS.includes(authEmail);
+    if (cleanEmail && authEmail !== cleanEmail && !isAdmin) {
+      return NextResponse.json(
+        { error: 'No autorizado para modificar dispositivos de otro usuario' },
+        { status: 403 }
+      );
+    }
 
     // 1. RECLAMAR / VINCULAR DISPOSITIVO
     if (action === 'claim') {

@@ -159,7 +159,7 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
                 <Star className="fill-current w-3.5 h-3.5" />
                 <Star className="fill-current w-3.5 h-3.5" />
               </div>
-              <span className="font-bold">4.9/5 · Más de 500 comercios activos en Panamá</span>
+              <span className="font-bold">5.0 en Google Maps (6 reseñas)</span>
             </div>
 
             {/* High-Impact Benefit Headline */}

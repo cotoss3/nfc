@@ -2,8 +2,8 @@ import type { BlogPost } from '@/lib/blog';
 
 export const post: BlogPost = {
   slug: 'ver-y-responder-resenas-de-tu-negocio-en-google',
-  titulo: 'Cómo ver y responder las reseñas de tu negocio en Google',
-  tituloSeo: 'Cómo Ver y Responder Reseñas de Google en tu Negocio',
+  titulo: 'Cómo ver y responder las reseñas que le dejan a tu negocio en Google',
+  tituloSeo: 'Ver y Responder las Reseñas de tu Negocio en Google Maps',
   descripcion:
     'Dónde se ven las reseñas de tu negocio en Google, cómo responderlas, qué se puede reportar y qué hacer cuando Google rechaza una denuncia. Con plazos reales.',
   resumen:

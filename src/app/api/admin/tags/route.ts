@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbLocal, supabase } from '@/lib/db';
+import { createClient } from '@supabase/supabase-js';
+import { dbLocal } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://xnepnlaoiflngtikozqd.supabase.co';
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabase = url && serviceKey ? createClient(url, serviceKey, {
+  auth: { persistSession: false, autoRefreshToken: false }
+}) : null;
 
 function sanitizeTagLabel(rawLabel?: string | null): string {
   if (!rawLabel) return '';

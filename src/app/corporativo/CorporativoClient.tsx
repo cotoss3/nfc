@@ -282,6 +282,28 @@ export default function CorporativoClient() {
           <div className="pt-8">
             <CorporativoCalculator />
           </div>
+
+          {/* Banner Distribución vs Uso Propio */}
+          <div className="mt-8 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-300/60 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="space-y-1.5 text-center sm:text-left">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full inline-block">
+                Canal Mayorista & Reventa
+              </span>
+              <h3 className="text-lg sm:text-xl font-black text-slate-900">
+                ¿Buscas revender dispositivos NFC a tus propios clientes?
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-xl">
+                Los precios corporativos aplican para uso propio de tu empresa o sucursales. Si eres agencia de marketing, imprenta o consultor comercial y deseas comercializar hardware StarTAP bajo margen mayorista, solicita tu ingreso como distribuidor.
+              </p>
+            </div>
+            <Link
+              href="/distribuidores"
+              className="shrink-0 inline-flex items-center gap-2 bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition shadow-sm hover:shadow"
+            >
+              <span>Ver Programa de Distribuidores</span>
+              <ArrowRight className="w-4 h-4 text-amber-400" />
+            </Link>
+          </div>
         </div>
       </section>
 

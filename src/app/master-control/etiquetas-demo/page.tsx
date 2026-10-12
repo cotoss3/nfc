@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { dbLocal, NfcCard, supabase } from '@/lib/db';
+import { dbLocal, NfcCard } from '@/lib/db';
+import { authService } from '@/lib/auth';
 import {
   Gift,
   QrCode,
@@ -82,28 +83,49 @@ export default function EtiquetasDemoPage() {
   // Feedback de copiado
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
+  const callAdminCardsApi = async (body: any) => {
+    try {
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/cards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error('Error en API admin cards:', err);
+      }
+    } catch (e) {
+      console.error('Error de red al llamar API admin cards:', e);
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     let dbCards = dbLocal.getCards();
     let dbScans = dbLocal.getStorageItem<any[]>('nfc_scans', []);
 
-    if (supabase) {
-      try {
-        const [resCards, resScans] = await Promise.all([
-          supabase.from('nfc_cards').select('*').order('created_at', { ascending: false }),
-          supabase.from('scans').select('*').order('created_at', { ascending: false }).limit(200),
-        ]);
-
-        if (!resCards.error && resCards.data && resCards.data.length > 0) {
-          dbCards = resCards.data as NfcCard[];
+    try {
+      const session = await authService.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/cards', {
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.cards) && json.cards.length > 0) {
+          dbCards = json.cards as NfcCard[];
           dbLocal.setStorageItem('nfc_cards', dbCards);
         }
-        if (!resScans.error && resScans.data && resScans.data.length > 0) {
-          dbScans = resScans.data as any[];
-        }
-      } catch (err) {
-        console.error('Error cargando demos desde Supabase:', err);
       }
+    } catch (err) {
+      console.error('Error cargando demos desde API admin cards:', err);
     }
 
     setCards(dbCards);
@@ -212,11 +234,7 @@ export default function EtiquetasDemoPage() {
     setCards(updated);
     dbLocal.setStorageItem('nfc_cards', updated);
 
-    if (supabase) {
-      supabase.from('nfc_cards').update({ is_active: nextStatus }).eq('card_id', cardId).then(({ error }) => {
-        if (error) console.error('Error actualizando estado en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'toggle_active', card_id: cardId, is_active: nextStatus });
   };
 
   // Crear nueva demo individual
@@ -260,11 +278,7 @@ export default function EtiquetasDemoPage() {
     setCards(updated);
     dbLocal.setStorageItem('nfc_cards', updated);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert([newCardObj]).then(({ error }) => {
-        if (error) console.error('Error guardando etiqueta demo en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'upsert', card: newCardObj });
 
     setCreateSuccessMsg(`¡Etiqueta Demo "${cleanCode}" creada con éxito!`);
     const nextCode = dbLocal.getNextStickerCode('demo');
@@ -296,15 +310,7 @@ export default function EtiquetasDemoPage() {
     setCards(updatedList);
     dbLocal.setStorageItem('nfc_cards', updatedList);
 
-    if (supabase) {
-      supabase.from('nfc_cards').update({
-        target_url: cleanUrl,
-        nfc_target_url: cleanUrl,
-        qr_target_url: cleanUrl,
-      }).eq('card_id', cardId).then(({ error }) => {
-        if (error) console.error('Error actualizando URL inline en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'upsert', card: updatedCard });
 
     setInlineEditingId(null);
     setInlineUrlVal('');
@@ -346,11 +352,7 @@ export default function EtiquetasDemoPage() {
     setCards(updatedList);
     dbLocal.setStorageItem('nfc_cards', updatedList);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert([updatedCard]).then(({ error }) => {
-        if (error) console.error('Error guardando cambios en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'upsert', card: updatedCard });
 
     setEditingCard(null);
   };
@@ -402,11 +404,7 @@ export default function EtiquetasDemoPage() {
     setCards(merged);
     dbLocal.setStorageItem('nfc_cards', merged);
 
-    if (supabase) {
-      supabase.from('nfc_cards').upsert(newDemoList).then(({ error }) => {
-        if (error) console.error('Error insertando lote en Supabase:', error);
-      });
-    }
+    callAdminCardsApi({ action: 'bulk_upsert', cards: newDemoList });
 
     setBulkSuccessMsg(`¡Lote de ${qty} etiquetas Demo creadas exitosamente (${newDemoList[0]?.card_id} a ${newDemoList[newDemoList.length - 1]?.card_id})!`);
     const nextCode = dbLocal.getNextStickerCode('demo');
