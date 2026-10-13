@@ -114,16 +114,14 @@ Google **solo retira reseñas que incumplen sus políticas**. No retira reseñas
 por ser injustas, ni por ser falsas si no se puede demostrar, ni por bajarte el
 promedio.
 
-Motivos que sí proceden:
-
-- Spam o contenido repetido
-- Palabras malsonantes
-- Problemas legales
-- Problemas de privacidad, como datos personales de alguien
-
-Motivos que no proceden, aunque duelan: que no estés de acuerdo, que el cliente
-exagere, que te parezca de la competencia sin prueba, o que sea de alguien que
-nunca entró a tu local pero escribió algo genérico que no viola ninguna política.
+| Motivo de reporte | ¿Google la retira? | Fundamento de la política |
+| --- | --- | --- |
+| Contenido repetido o spam masivo | Sí | Infringe la política de contenido engañoso |
+| Lenguaje con palabras malsonantes | Sí | Violación directa de política de contenido ofensivo |
+| Datos privados o información sensible | Sí | Infracción grave de privacidad (teléfonos o nombres) |
+| Queja que te parece injusta o exagerada | No | Google no actúa como juez de calidad del servicio |
+| Sospecha de que es la competencia | No | Se rechaza sin pruebas técnicas irrefutables |
+| Cliente que califica sin dejar texto | No | Las calificaciones numéricas sin texto están permitidas |
 
 ### Cómo se reporta
 

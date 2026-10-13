@@ -63,6 +63,28 @@ function inline(texto: string, keyBase: string): React.ReactNode[] {
   return partes;
 }
 
+function renderTableCell(cell: string, keyBase: string): React.ReactNode {
+  const c = cell.trim();
+  const cleanWord = c.replace(/\*/g, '').trim().toLowerCase();
+  if (cleanWord === 'sí' || cleanWord === 'si') {
+    return (
+      <span key={keyBase} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        Sí
+      </span>
+    );
+  }
+  if (cleanWord === 'no') {
+    return (
+      <span key={keyBase} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+        No
+      </span>
+    );
+  }
+  return inline(cell, keyBase);
+}
+
 /** Convierte un encabezado en un id estable para anclas y tabla de contenidos */
 export function slugificar(texto: string): string {
   return texto
@@ -89,6 +111,7 @@ export default function Markdown({ children }: { children: string }) {
   const salida: React.ReactNode[] = [];
   let lista: string[] = [];
   let listaOrdenada = false;
+  let tablaLineas: string[] = [];
   let k = 0;
 
   const cerrarLista = () => {
@@ -112,13 +135,106 @@ export default function Markdown({ children }: { children: string }) {
     lista = [];
   };
 
+  const parseFilaTabla = (linea: string): string[] => {
+    let clean = linea.trim();
+    if (clean.startsWith('|')) clean = clean.slice(1);
+    if (clean.endsWith('|')) clean = clean.slice(0, -1);
+    return clean.split('|').map((c) => c.trim());
+  };
+
+  const esSeparadorTabla = (celdas: string[]): boolean => {
+    return celdas.length > 0 && celdas.every((c) => /^:?-+:?$/.test(c));
+  };
+
+  const cerrarTabla = () => {
+    if (!tablaLineas.length) return;
+
+    const filasRaw = tablaLineas.map(parseFilaTabla);
+    if (!filasRaw.length) {
+      tablaLineas = [];
+      return;
+    }
+
+    const headers = filasRaw[0];
+    let bodyRows = filasRaw.slice(1);
+
+    if (bodyRows.length && esSeparadorTabla(bodyRows[0])) {
+      bodyRows = bodyRows.slice(1);
+    }
+
+    salida.push(
+      <div
+        key={`table-wrapper-${k++}`}
+        className="not-prose my-8 rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden"
+      >
+        {/* Barra superior de acento con gradiente de marca starTAP */}
+        <div className="h-1.5 bg-gradient-to-r from-[#01A6D2] via-[#0194bc] to-[#01A6D2]" />
+
+        <div className="overflow-x-auto scrollbar-thin">
+          <table className="min-w-[480px] sm:min-w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr className="bg-slate-950 text-white divide-x divide-slate-800">
+                {headers.map((h, i) => (
+                  <th
+                    key={`th-${k}-${i}`}
+                    className="px-4 py-3 sm:px-6 sm:py-3.5 font-black uppercase tracking-wider text-xs sm:text-sm text-white"
+                  >
+                    {inline(h || 'Característica', `th-${k}-${i}`)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {bodyRows.map((row, rIdx) => (
+                <tr
+                  key={`tr-${k}-${rIdx}`}
+                  className="odd:bg-white even:bg-slate-50/50 hover:bg-[#01A6D2]/5 transition-colors divide-x divide-slate-100"
+                >
+                  {row.map((cell, cIdx) => (
+                    <td
+                      key={`td-${k}-${rIdx}-${cIdx}`}
+                      className={`px-4 py-3 sm:px-6 sm:py-3.5 align-middle ${
+                        cIdx === 0
+                          ? 'font-bold text-slate-950 bg-slate-50/40'
+                          : 'text-slate-600'
+                      }`}
+                    >
+                      {renderTableCell(cell, `td-${k}-${rIdx}-${cIdx}`)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Indicador móvil interactivo con branding starTAP */}
+        <div className="sm:hidden px-4 py-2 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+          <span>← Desliza para comparar →</span>
+          <span className="font-bold text-[#01A6D2]">starTAP Panamá</span>
+        </div>
+      </div>
+    );
+
+    tablaLineas = [];
+  };
+
   for (const linea of lineas) {
     const l = linea.trim();
 
     if (!l) {
       cerrarLista();
+      cerrarTabla();
       continue;
     }
+
+    if (l.startsWith('|') && l.endsWith('|')) {
+      cerrarLista();
+      tablaLineas.push(l);
+      continue;
+    }
+
+    cerrarTabla();
 
     const imgMatch = l.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (imgMatch) {
@@ -212,5 +328,6 @@ export default function Markdown({ children }: { children: string }) {
   }
 
   cerrarLista();
+  cerrarTabla();
   return <>{salida}</>;
 }

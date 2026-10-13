@@ -79,6 +79,12 @@ Si eres tú quien entrega, cambia. La entrega en mano es contacto presencial, y 
 
 Cuando de verdad no hay contacto presencial en ningún punto, lo que te queda es trabajar la web y las redes, no Maps. Forzar el registro con una dirección de casa y esperar que no se note termina en ficha suspendida, y recuperarla toma semanas.
 
+| Modelo de negocio | ¿Dirección visible en Maps? | ¿Califica para Google Maps? | Requisito principal de verificación |
+| --- | --- | --- | --- |
+| Local comercial con fachada | Sí | Sí | Letrero visible exterior y mostrador de atención |
+| Negocio de zona de servicio | No | Sí | Entrega en mano presencial, inventario y aviso de operación |
+| Tienda 100% online (solo courier) | No | No | No califica para Maps; requiere tienda web y redes |
+
 ## Cómo se configura
 
 1. Entra a business.google.com y crea el perfil con el nombre exacto con el que operas, sin ciudad ni palabras clave pegadas atrás.

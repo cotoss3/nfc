@@ -96,11 +96,13 @@ El secreto no es insistir muchas veces, sino pedirlo en el **segundo exacto** en
 
 En psicología del consumidor esto se llama el *Peak-End Rule* (la regla del pico y final). Hay un momento cumbre en cada tipo de negocio donde la predisposición del cliente es del 100%:
 
-- **En un restaurante o cafetería:** Justo después de retirar los platos vacíos y entregar la cuenta, o cuando el comensal dice *"estaba delicioso"*. No al entrar, ni por mensaje al día siguiente.
-- **En una barbería o salón de belleza:** Cuando le pasas el espejo de mano para que vea la parte de atrás del corte y dice *"quedó nítido"*.
-- **En un taller mecánico o car wash:** Al momento de entregarle las llaves con el auto limpio y encendido, antes de que se suba.
-- **En una clínica o consultorio:** En recepción al pagar, cuando el paciente ya salió de la consulta aliviado y con su receta en la mano.
-- **En una tienda física o boutique:** Mientras la dependienta guarda el producto en la bolsa y la entrega con la factura.
+| Rubro comercial | Momento cumbre (Pico de satisfacción) | Frase sugerida en mostrador |
+| --- | --- | --- |
+| Restaurante o cafetería | Al retirar los platos o entregar la cuenta con el ticket | «¿Todo bien con el plato? Si nos dejas 5 segundos aquí, nos ayudas un montón.» |
+| Barbería o salón | Al mostrar el espejo de mano con el corte terminado | «¿Quedó nítido el corte? Toca aquí con tu cel para calificar al barbero.» |
+| Taller o car wash | Al entregar las llaves con el auto listo y encendido | «Listo su auto. Si le gustó el servicio, apoya al taller tocando aquí.» |
+| Clínica o consultorio | En recepción al pagar y entregar la receta médica | «Nos alegra que se sienta mejor. Apóyenos con su calificación aquí.» |
+| Tienda física o boutique | Al empacar la compra y entregar la bolsa en caja | «Gracias por tu compra. Regálanos tu opinión tocando la tarjeta en caja.» |
 
 Si pides la reseña 10 minutos antes, es prematuro. Si la pides por WhatsApp 4 horas después, la emoción ya se enfrió.
 

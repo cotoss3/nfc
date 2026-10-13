@@ -93,6 +93,12 @@ Mira el bloque de información y busca una de estas señales:
 2. No ves el panel de propietario con las opciones de editar, publicar y ver estadísticas.
 3. Dice **«Pendiente de verificación»** o te manda a un proceso cuando intentas editar. Ahí la ficha ya está reclamada, puede que por alguien que trabajó contigo antes.
 
+| Estado del perfil | Lo que ves en Google Maps | ¿Puedes responder reseñas? | Acción recomendada |
+| --- | --- | --- | --- |
+| Sin reclamar | Enlace «¿Es tu empresa?» o «Reclamar este negocio» | No | Reclamarla gratis con tu correo de negocio |
+| Reclamada por un tercero | Aviso con correo oculto (ej: k***@gmail.com) | No | Solicitar acceso de propiedad en Google Business |
+| Verificada bajo tu control | Panel con botones «Editar perfil» y «Ver reseñas» | Sí | Optimizar horarios, fotos y activar chip NFC |
+
 ![Captura de pantalla de la ficha de Google Maps mostrando el enlace para reclamar la empresa](/blog/enlace-reclamar-negocio-google-maps.webp)
 
 De los 228 negocios que llevamos anotados en nuestra lista de prospección entre La Chorrera y Arraiján, 8 tenían la ficha sin reclamar. Son fondas, barberías y salones que ya salían en Maps con reseñas de clientes reales (algunas de hace más de tres años) y sin nadie del otro lado administrándolas ni leyendo los comentarios.

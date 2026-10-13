@@ -115,6 +115,12 @@ buscó), **distancia** (qué tan cerca estás de donde busca) y **prominencia**
 
 La distancia no la controlas. Las otras dos sí.
 
+| Factor del algoritmo | ¿Qué evalúa Google? | ¿Lo controlas tú? | Acción directa para optimizar |
+| --- | --- | --- | --- |
+| Relevancia | Coincidencia entre la búsqueda y tu negocio | Sí | Elegir la categoría principal exacta y listar tus servicios reales |
+| Distancia | Cercanía física entre el usuario y tu dirección | No | Mantener dirección precisa sin inventar ubicaciones lejanas |
+| Prominencia | Notoriedad, menciones en web y volumen de reseñas | Sí | Conseguir reseñas recientes constantes y responderlas todas |
+
 ### Relevancia: la categoría principal
 
 Es el campo que más pesa y el que más gente pone mal. Si eres una barbería y

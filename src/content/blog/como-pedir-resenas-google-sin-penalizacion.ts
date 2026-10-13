@@ -127,6 +127,17 @@ Las consecuencias suben por escalones: primero te borran las reseñas afectadas,
 
 Hay un escalón intermedio que asusta más que la suspensión: Google puede poner un **aviso público en tu ficha** advirtiendo que detectó reseñas sospechosas. Lo ve cualquiera que te busque. Es el peor de los dos mundos, porque sigues visible pero con un cartel que dice que hiciste trampa.
 
+| Práctica de reseñas | ¿Permitida por Google? | Consecuencia en tu ficha |
+| --- | --- | --- |
+| Pedirla de palabra al cobrar | Sí | Ninguna (recomendado) |
+| Mandar enlace directo por WhatsApp | Sí | Ninguna (recomendado) |
+| Dispositivo NFC o QR en mostrador | Sí | Ninguna (seguro y directo) |
+| Filtrar clientes antes de calificar | No | Eliminación masiva de reseñas |
+| Ofrecer descuentos o regalos a cambio | No | Advertencia pública visible en la ficha |
+| Comprar opiniones o reseñas falsas | No | Suspensión inmediata del perfil |
+| Poner tablet fija en el local para todos | No | Bloqueo por coincidencia de dirección IP |
+| Bonos o metas a empleados por reseñas | No | Sanción bajo la política de abril 2026 |
+
 ## Entonces, ¿cómo se hace bien?
 
 Después de instalar dispositivos en varios negocios, lo que veo es que casi todo se juega en dos cosas: cuándo la pides y cuánto esfuerzo le cuesta al cliente.

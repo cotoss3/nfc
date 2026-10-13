@@ -77,12 +77,14 @@ El **QR** es un cuadro impreso. El cliente abre la cámara, apunta, espera a que
 
 Veámoslo en pasos reales, que es donde se nota:
 
-| | NFC | QR |
+| Característica | Chip NFC starTAP | Código QR |
 | --- | --- | --- |
-| Pasos del cliente | 1: acercar | 3: abrir cámara, apuntar, tocar el aviso |
-| Necesita luz | No | Sí, y el cuadro limpio |
-| Funciona en todos los celulares | No | Casi siempre |
-| Se puede fotografiar y usar en casa | No | Sí |
+| Pasos del cliente | 1: Acercar el celular | 3: Abrir cámara, apuntar y tocar aviso |
+| Velocidad en mostrador | 4 segundos | 15 a 20 segundos |
+| Necesita buena luz | No | Sí, y el cuadro limpio |
+| Funciona en todos los celulares | No (gama media y alta) | Casi siempre (cualquier cámara) |
+| Se puede usar fuera del local | No (el chip se queda allí) | Sí (en facturas, bolsas o empaques) |
+| Costo de uso | Pago único | Pago único |
 
 ## El primer criterio es dónde queda tu local
 

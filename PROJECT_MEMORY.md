@@ -1176,3 +1176,36 @@ Se completó y publicó en `POSTS` (`src/lib/blog.ts`) el 7mo artículo del blog
 3. **SEO y Metadatos:** Título SEO a 55 caracteres (`¿QR o NFC para Reseñas de Google? Guía Panamá | starTAP`) y meta description a 147 caracteres. Enlazado al Pack Trío Comercial, Placa y Tarjeta.
 4. **Verificación:** `npx tsc --noEmit` completado con 0 errores.
 
+## 13 oct 2026 (cont. 6) · Renderizador de tablas Markdown responsive con branding starTAP
+
+Se solucionó la falta de soporte de tablas en `src/components/Markdown.tsx` (que anteriormente mostraba el texto crudo con pipes `|`) y se desplegó un diseño de alta jerarquía visual:
+
+1. **Parser nativo de tablas (`Markdown.tsx`):**
+   - Detección de líneas con formato tabla `| col1 | col2 |` y acumulación en bloque.
+   - Descarte del delimitador de cabecera (`| --- | --- |`).
+   - Cierre y renderizado automático al encontrar líneas vacías, texto estándar o fin de documento.
+   - Normalización de celdas y badges interactivos automáticos para respuestas «Sí» (pastilla verde esmeralda con punto activo) y «No» (pastilla gris pizarra neutral).
+
+2. **Diseño Mobile-First con Branding starTAP:**
+   - Wrapper con clase `not-prose` para prevenir interferencias de estilos de `@tailwindcss/typography`.
+   - Borde superior distintivo con degradado cyan starTAP (`#01A6D2` a `#0194bc`).
+   - Cabecera oscura (`bg-slate-950`) con títulos en negrita mayúscula (`font-black uppercase tracking-wider text-white`).
+   - Títulos de fila (primera columna) con negrita destacada (`font-bold text-slate-950 bg-slate-50/40`) para lectura rápida.
+   - Efecto hover sutil con tinte cyan (`hover:bg-[#01A6D2]/5`).
+   - Contenedor con scroll horizontal optimizado (`overflow-x-auto min-w-[480px] sm:min-w-full`).
+   - Indicador táctil inferior visible únicamente en móviles: `← Desliza para comparar → starTAP Panamá`.
+
+3. **Despliegue de tablas en los artículos del blog:**
+   - `qr-o-nfc-resenas-google-panama.ts`: Comparativa de 6 criterios entre chip NFC y código QR.
+   - `como-pedir-resenas-google-sin-penalizacion.ts`: 8 prácticas permitidas vs penalizadas con consecuencias en la ficha.
+   - `reclamar-ficha-google-mi-negocio-panama.ts`: Diagnóstico de estado del perfil (Sin reclamar, En manos de terceros, Verificada).
+   - `por-que-mi-negocio-no-aparece-en-google-maps.ts`: Factores del algoritmo (Relevancia, Distancia, Prominencia) y acciones directas.
+   - `ver-y-responder-resenas-de-tu-negocio-en-google.ts`: Motivos de reporte procedentes vs improcedentes ante Google.
+   - `como-conseguir-100-resenas-google-maps.ts`: Momento cumbre (Peak-End) y frase sugerida en mostrador por rubro comercial.
+   - `negocio-sin-local-google-maps-panama.ts`: Comparativa de modelos de negocio (Local físico, Zona de servicio, Tienda online).
+
+4. **Validación técnica:**
+   - `npx tsc --noEmit` completado con 0 errores.
+   - `npm run build` ejecutado exitosamente con 61 páginas estáticas generadas sin fallos.
+
+
