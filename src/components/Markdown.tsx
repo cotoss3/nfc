@@ -163,55 +163,100 @@ export default function Markdown({ children }: { children: string }) {
     }
 
     salida.push(
-      <div
-        key={`table-wrapper-${k++}`}
-        className="not-prose my-8 rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden"
-      >
-        {/* Barra superior de acento con gradiente de marca starTAP */}
-        <div className="h-1.5 bg-gradient-to-r from-[#01A6D2] via-[#0194bc] to-[#01A6D2]" />
+      <div key={`table-wrapper-${k++}`} className="not-prose my-8">
+        {/* VISTA MÓVIL (< sm): Tarjetas nativas apiladas, cómodas y sin scroll horizontal */}
+        <div className="sm:hidden space-y-3.5">
+          {/* Barra superior de contexto móvil con branding starTAP */}
+          <div className="flex items-center justify-between px-1 text-xs">
+            <span className="flex items-center gap-1.5 font-bold text-slate-900">
+              <span className="w-2 h-2 rounded-full bg-[#01A6D2]" />
+              {headers[0] || 'Comparativa'}
+            </span>
+            <span className="text-[11px] font-black uppercase tracking-wider text-[#01A6D2]">
+              starTAP Panamá
+            </span>
+          </div>
 
-        <div className="overflow-x-auto scrollbar-thin">
-          <table className="min-w-[480px] sm:min-w-full text-left border-collapse text-xs sm:text-sm">
-            <thead>
-              <tr className="bg-slate-950 text-white divide-x divide-slate-800">
-                {headers.map((h, i) => (
-                  <th
-                    key={`th-${k}-${i}`}
-                    className="px-4 py-3 sm:px-6 sm:py-3.5 font-black uppercase tracking-wider text-xs sm:text-sm text-white"
-                  >
-                    {inline(h || 'Característica', `th-${k}-${i}`)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {bodyRows.map((row, rIdx) => (
-                <tr
-                  key={`tr-${k}-${rIdx}`}
-                  className="odd:bg-white even:bg-slate-50/50 hover:bg-[#01A6D2]/5 transition-colors divide-x divide-slate-100"
-                >
-                  {row.map((cell, cIdx) => (
-                    <td
-                      key={`td-${k}-${rIdx}-${cIdx}`}
-                      className={`px-4 py-3 sm:px-6 sm:py-3.5 align-middle ${
-                        cIdx === 0
-                          ? 'font-bold text-slate-950 bg-slate-50/40'
-                          : 'text-slate-600'
-                      }`}
-                    >
-                      {renderTableCell(cell, `td-${k}-${rIdx}-${cIdx}`)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* Tarjetas individuales por fila */}
+          {bodyRows.map((row, rIdx) => (
+            <div
+              key={`card-${k}-${rIdx}`}
+              className="rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden"
+            >
+              {/* Barra superior de acento con gradiente de marca starTAP */}
+              <div className="h-1 bg-gradient-to-r from-[#01A6D2] via-[#0194bc] to-[#01A6D2]" />
+
+              <div className="p-4 space-y-3">
+                {/* Título de la fila / Criterio (Negrita destacada) */}
+                <div className="pb-2.5 border-b border-slate-100">
+                  <h4 className="font-bold text-slate-950 text-sm leading-snug">
+                    {inline(row[0] || '', `card-title-${k}-${rIdx}`)}
+                  </h4>
+                </div>
+
+                {/* Columnas siguientes como pares etiqueta-valor legibles */}
+                <div className="space-y-2.5">
+                  {row.slice(1).map((cell, cIdx) => {
+                    const colHeader = headers[cIdx + 1] || '';
+                    return (
+                      <div key={`card-cell-${k}-${rIdx}-${cIdx}`} className="text-xs">
+                        <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-0.5">
+                          {colHeader}
+                        </span>
+                        <div className="text-slate-700 leading-relaxed font-medium">
+                          {renderTableCell(cell, `card-val-${k}-${rIdx}-${cIdx}`)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Indicador móvil interactivo con branding starTAP */}
-        <div className="sm:hidden px-4 py-2 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-          <span>← Desliza para comparar →</span>
-          <span className="font-bold text-[#01A6D2]">starTAP Panamá</span>
+        {/* VISTA ESCRITORIO (>= sm): Tabla completa con cabecera oscura y negritas */}
+        <div className="hidden sm:block rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden">
+          {/* Barra superior de acento con gradiente de marca starTAP */}
+          <div className="h-1.5 bg-gradient-to-r from-[#01A6D2] via-[#0194bc] to-[#01A6D2]" />
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr className="bg-slate-950 text-white divide-x divide-slate-800">
+                  {headers.map((h, i) => (
+                    <th
+                      key={`th-${k}-${i}`}
+                      className="px-5 py-3.5 sm:px-6 font-black uppercase tracking-wider text-xs sm:text-sm text-white"
+                    >
+                      {inline(h || 'Característica', `th-${k}-${i}`)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {bodyRows.map((row, rIdx) => (
+                  <tr
+                    key={`tr-${k}-${rIdx}`}
+                    className="odd:bg-white even:bg-slate-50/50 hover:bg-[#01A6D2]/5 transition-colors divide-x divide-slate-100"
+                  >
+                    {row.map((cell, cIdx) => (
+                      <td
+                        key={`td-${k}-${rIdx}-${cIdx}`}
+                        className={`px-5 py-3.5 sm:px-6 align-middle ${
+                          cIdx === 0
+                            ? 'font-bold text-slate-950 bg-slate-50/40'
+                            : 'text-slate-600'
+                        }`}
+                      >
+                        {renderTableCell(cell, `td-${k}-${rIdx}-${cIdx}`)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );

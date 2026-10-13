@@ -1186,14 +1186,10 @@ Se solucionó la falta de soporte de tablas en `src/components/Markdown.tsx` (qu
    - Cierre y renderizado automático al encontrar líneas vacías, texto estándar o fin de documento.
    - Normalización de celdas y badges interactivos automáticos para respuestas «Sí» (pastilla verde esmeralda con punto activo) y «No» (pastilla gris pizarra neutral).
 
-2. **Diseño Mobile-First con Branding starTAP:**
-   - Wrapper con clase `not-prose` para prevenir interferencias de estilos de `@tailwindcss/typography`.
-   - Borde superior distintivo con degradado cyan starTAP (`#01A6D2` a `#0194bc`).
-   - Cabecera oscura (`bg-slate-950`) con títulos en negrita mayúscula (`font-black uppercase tracking-wider text-white`).
-   - Títulos de fila (primera columna) con negrita destacada (`font-bold text-slate-950 bg-slate-50/40`) para lectura rápida.
-   - Efecto hover sutil con tinte cyan (`hover:bg-[#01A6D2]/5`).
-   - Contenedor con scroll horizontal optimizado (`overflow-x-auto min-w-[480px] sm:min-w-full`).
-   - Indicador táctil inferior visible únicamente en móviles: `← Desliza para comparar → starTAP Panamá`.
+2. **Diseño Mobile-First con Arquitectura Dual (Tarjetas en móvil + Tabla en escritorio):**
+   - **Vista Móvil (`sm:hidden`):** Cada fila se transforma automáticamente en una **tarjeta nativa apilada** (`card stack`) con acento cyan superior, título de criterio en negrita (`font-bold text-slate-950`) y pares etiqueta-valor legibles. Elimina al 100% el scroll horizontal en celulares (360px-414px), logrando lectura vertical continua y cómoda sin gestos incómodos.
+   - **Vista Escritorio (`hidden sm:block`):** Tabla tradicional de alta presencia visual con barra degradada cyan starTAP (`#01A6D2` a `#0194bc`), cabecera oscura (`bg-slate-950 text-white font-black uppercase`), primera columna destacada en negrita (`font-bold text-slate-950 bg-slate-50/40`) y alternancia de filas.
+   - Aislamiento total con `not-prose` para prevenir interferencias de Tailwind Typography.
 
 3. **Despliegue de tablas en los artículos del blog:**
    - `qr-o-nfc-resenas-google-panama.ts`: Comparativa de 6 criterios entre chip NFC y código QR.
