@@ -1244,3 +1244,17 @@ Por solicitud de Fernando se asignaron las notas numéricas reales de los testim
 2. **UI Visual en la Web (`Testimonios.tsx`):** Se añadió el renderizado de estrellas doradas (`lucide-react/Star`) en las tarjetas de testimonio para la portada, catálogo y fichas de producto.
 3. **Verificación:** `npx tsc --noEmit` y `npm run build` completados con éxito (61 páginas estáticas generadas).
 
+## 13 oct 2026 (cont. 8) · Imágenes oficiales del 7mo artículo (QR vs NFC)
+
+Fernando subió las 3 fotografías definitivas para el artículo `¿Código QR o NFC para pedir reseñas de Google en tu negocio?` (`/blog/qr-o-nfc-resenas-google-panama`):
+
+1. `public/blog/qr-o-nfc-resenas-google-panama.webp` (77.9 KB, 1024×571 px): Portada y OpenGraph. Mostrador de cafetería en Panamá con soporte starTAP, Café de Chiriquí, bandera y cliente acercando teléfono.
+2. `public/blog/celular-funda-gruesa-escaneo-qr-panama.webp` (60.4 KB, 1024×571 px): Cuerpo del post. Primer plano de celular con funda gruesa escaneando el QR de starTAP en un salón de belleza.
+3. `public/blog/placa-nfc-qr-mostrador-cobro-panama.webp` (54.9 KB, 1024×571 px): Cuerpo del post. Mostrador de cobro con terminal de cobro y cliente junto a la placa starTAP.
+
+**Hecho en código:**
+- Eliminados todos los `placeholder:` en `src/content/blog/qr-o-nfc-resenas-google-panama.ts`.
+- Alt texts y dimensiones (1024×571) ajustados con precisión.
+- `npx tsc --noEmit` completado en 0 errores.
+- `npm run build` completado exitosamente con 61 páginas estáticas generadas.
+

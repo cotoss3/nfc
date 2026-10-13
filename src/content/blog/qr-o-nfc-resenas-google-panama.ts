@@ -23,10 +23,10 @@ export const post: BlogPost = {
   ],
   /** Imagen de portada y OpenGraph. Prompts en herramientas/prompts/imagenes-qr-o-nfc.md */
   imagen: {
-    src: 'placeholder:/blog/qr-o-nfc-resenas-google-panama.webp',
-    alt: 'Fotografía documental sobre mostrador de madera en Panamá: placa pequeña con chip NFC y código QR visible, mano de cliente acercando su celular a dos centímetros (1200x630 px)',
-    ancho: 1200,
-    alto: 630,
+    src: '/blog/qr-o-nfc-resenas-google-panama.webp',
+    alt: 'Soporte starTAP con chip NFC y código QR para reseñas de Google en el mostrador de una cafetería en Panamá',
+    ancho: 1024,
+    alto: 571,
   },
   /** Productos y páginas propias que este artículo enlaza */
   relacionados: [
@@ -67,7 +67,7 @@ Esa es la pregunta real: cuál de las dos lo deja dejando la reseña antes de da
 
 Aquí está cómo decidir cuál va al frente en tu negocio.
 
-![Fotografía documental sobre mostrador de madera en Panamá: placa pequeña con chip NFC y código QR visible, mano de cliente acercando su celular a dos centímetros](placeholder:/blog/qr-o-nfc-resenas-google-panama.webp)
+![Mano de cliente acercando su celular al soporte starTAP con chip NFC y código QR en el mostrador de una cafetería en Panamá](/blog/qr-o-nfc-resenas-google-panama.webp)
 
 ## La diferencia en una frase
 
@@ -114,7 +114,7 @@ En esos casos el cliente acerca el teléfono, no ocurre nada, y la cara que pone
 
 Por eso el QR impreso al lado deja de ser un adorno. Es el plan B que convierte un momento incómodo en una reseña.
 
-![Foto en primer plano mostrando un celular con funda gruesa acercado a la placa y el escaneo alternativo del código QR con la cámara](placeholder:/blog/celular-funda-gruesa-escaneo-qr-panama.webp)
+![Foto en primer plano mostrando un celular con funda gruesa escaneando el código QR de un soporte starTAP en un salón de belleza en Panamá](/blog/celular-funda-gruesa-escaneo-qr-panama.webp)
 
 ## Por qué los nuestros llevan los dos
 
@@ -136,7 +136,7 @@ Si atiendes en la ciudad y el cliente está a un brazo, la placa en el mostrador
 
 Si entregas a domicilio, el QR va impreso en la factura o en la bolsa, y la tarjeta de bolsillo va con quien entrega.
 
-![Placa de mostrador starTAP con chip NFC y código QR instalada junto al punto de cobro en un comercio de Panamá](placeholder:/blog/placa-nfc-qr-mostrador-cobro-panama.webp)
+![Cliente con teléfono junto a la placa de mostrador starTAP con chip NFC y código QR en un comercio de Panamá](/blog/placa-nfc-qr-mostrador-cobro-panama.webp)
 
 ## Lo que ninguno de los dos arregla
 
