@@ -72,3 +72,17 @@ respeta lo prometido.
 $20, stand $30, placa $35, Pack Trío $50. El ahorro de $25 del pack calza
 (35 + 20 + 20 = 75). La plantilla de correo y los textos de ahorro están
 correctos. El volante en PDF ya lo corrigió Fernando.
+
+### Corrección del 13 oct 2026, misma tarde
+
+Fernando revirtió la política: **vuelve el envío gratis en todo pedido sobre
+$49.99**, no solo con el Pack. Él mismo dejó el código consistente
+(`shipping.ts`, carrito, checkout, schema y meta descriptions), y de paso mejoró
+el `shippingRate` del JSON-LD a `(price >= 50 || isPack)` conservando la tarifa
+base corregida de $3.75.
+
+Los tres manuales de escritura quedaron alineados a esta regla. La frase única
+vuelve a ser «Envío gratis desde $50 a todo Panamá».
+
+Lección para la bitácora: la política de envío cambió dos veces en el mismo día.
+Ningún texto debe repetir la regla sin mirar antes `src/config/shipping.ts`.

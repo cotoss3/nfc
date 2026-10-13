@@ -189,10 +189,11 @@ mano cada vez que un precio cambie:
 
 ## Una sola promesa de envío
 
-Hoy el sitio dice tres cosas distintas sobre el envío: «envío gratis a todo
-Panamá» sin condición en la portada y en el catálogo, «envío gratis en Ciudad de
-Panamá» en las landings, y en el carrito y el checkout un mínimo de $50. El
-cliente se encuentra la condición en el peor momento, que es cuando va a pagar.
+El 13 de octubre de 2026 el sitio llegó a decir tres cosas distintas sobre el
+envío a la vez, y la política cambió dos veces en un mismo día. Por eso esta
+sección existe: antes de escribir la regla en cualquier lado, se mira
+`src/config/shipping.ts`, que es la fuente de verdad. Lo que diga este manual es
+una copia que puede quedar vieja.
 
 **Regla confirmada el 13 oct 2026 por Fernando: todo carrito mayor a $49.99 ($50.00 o más) tiene envío gratis a todo Panamá.**
 Los pedidos de $49.99 o menos pagan envío según el método elegido ($3.75 Panamá Centro / $6.50 Uno Express / $7.50 Servientrega). El Pack Trío Comercial ($50.00) incluye envío gratis por superar el umbral.

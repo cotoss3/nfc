@@ -3,6 +3,8 @@
 Este manual complementa a `REGLAS_CONTENIDO.md` (Pilar Anti-IA) y `REGLAS_ESCRITURA_SEO.md` (Pilar de Google).
 Mientras aquellos definen **qué evitar** y **qué exige el buscador**, este manual define **el oficio y la técnica de los mejores redactores del mundo** adaptados a la voz de Fernando Contreras y starTAP en Panamá.
 
+**Orden de precedencia cuando dos reglas chocan:** manda `REGLAS_CONTENIDO.md`, después `REGLAS_ESCRITURA_SEO.md`, y de último este manual. Si una técnica de retención obliga a romper una regla anti IA, se cae la técnica. Y los datos operativos (precios, envío, teléfonos) viven en un solo lugar: `src/config/products.ts` y `src/config/shipping.ts`. Si este manual los repite y el código cambia, manda el código.
+
 ---
 
 # PARTE 1 · Los Referentes Investigados y Sus Superpoderes
@@ -41,7 +43,7 @@ Los primeros 5 segundos deciden si el dueño del negocio se queda o rebota a Goo
 ---
 
 ## 2. Ritmo Visual 1-3-1 y Lectura en Celular
-El 85% del tráfico en Panamá lee desde un celular mientras atiende su negocio. Un bloque de 6 líneas de texto se ve como un muro impenetrable.
+En nuestro propio Search Console, del 15 de julio al 12 de octubre de 2026, el celular trajo 95 de las 206 impresiones del sitio, casi la mitad. Y rankea mejor en celular que en computadora: posición media 12,3 contra 17,3. Un bloque de 6 líneas se ve como un muro en esa pantalla.
 
 * **Tope por párrafo:** Máximo 2 a 3 líneas en pantalla.
 * **Cadencia 1-3-1:**
@@ -82,6 +84,7 @@ La vaguedad destruye la autoridad. Un redactor pro usa números concretos y ubic
 
 * ❌ *"Muchos comercios en la ciudad pierden clientes."*
 * ✅ *"De 66 negocios que visitamos en septiembre entre Arraiján y La Chorrera, 58 tenían la ficha sin fotos del menú y sin responder opiniones."*
+  > El 66 es real y sale de `PROSPECCION.md`. El 58 es ilustrativo: muestra la **forma** de la frase, no un dato verificado. Nunca copies este ejemplo a un artículo sin contar primero en el archivo.
 * ❌ *"Nuestros dispositivos son muy rápidos."*
 * ✅ *"Toma 4 segundos: acercar el chip NFC y pulsar las estrellas. Sin buscar el nombre en Maps ni escribir el link."*
 
@@ -95,7 +98,7 @@ El redactor pro enseña primero cómo hacerlo gratis, demuestra dónde está la 
 1. **Explicar el camino manual:** Cómo sacar el enlace corto oficial en Google Business Profile y cómo mandarlo por WhatsApp.
 2. **Identificar la fricción:** El cliente en la caja tiene prisa, no quiere abrir WhatsApp, escribir una URL ni buscar el local en el buscador.
 3. **Presentar starTAP como la herramienta física:** El chip NFC y el QR eliminan los 6 pasos manuales y lo dejan en un solo toque físico.
-4. **Condiciones transparentes:** Precio fijo ($20, $30, $35 o Pack de $50), sin mensualidades y con envío gratis sobre $49.99 ($50 o más).
+4. **Condiciones transparentes:** Precio fijo (tarjeta $20, stand $30, placa $35, Pack Trío $50), sin mensualidades, y **envío gratis en pedidos sobre $49.99**. Los precios se verifican en `src/config/products.ts` y la regla de envío en `src/config/shipping.ts` antes de escribirlos.
 
 ---
 
@@ -122,8 +125,8 @@ Antes de pasar un borrador a revisión final, debe cumplir los tres filtros:
 
 ### Filtro 2: Google & E-E-A-T (Relevancia)
 - [ ] Resuelve la duda principal en las primeras 60 palabras (BLUF).
-- [ ] Título $\le 60$ caracteres con «Panamá» y marca al final.
-- [ ] Meta description $\le 155$ caracteres con precio desde ($20) y envío gratis desde $50.
+- [ ] Título de 60 caracteres o menos, con «Panamá» y la marca al final.
+- [ ] Meta description de 155 caracteres o menos, con un dato concreto dentro («desde $20», «pago único», «envío gratis desde $50»).
 - [ ] Al menos dos datos de experiencia de calle propios y demostrables.
 - [ ] Enlace hacia documentación oficial de Google y enlaces internos a industrias/catálogo con anchor text descriptivo.
 

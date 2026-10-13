@@ -61,13 +61,19 @@ export const post: BlogPost = {
       a: `Quédate con la que tenga más reseñas y reporta la otra como duplicada desde Maps. No borres ni abandones la fuerte, que es el error más caro: las reseñas no se transfieren solas.`,
     },
   ],
-  cuerpo: `Google crea fichas de negocios por su cuenta. Las arma con lo que encuentra en internet, en mapas viejos y en lo que reportan los usuarios, y las publica sin avisarle a nadie. Si nunca entraste a Google Business Profile y tu negocio igual aparece en Maps, esa ficha existe y no es tuya todavía.
+  cuerpo: `Buscas tu negocio en Google Maps, ahí aparece, y abajo dice «¿Es tu empresa?».
+
+Esa ficha la creó Google solo y todavía no es tuya. Hasta que la reclames no puedes responder reseñas ni corregir tu horario, y cualquiera puede sugerir cambios en tu información. El trámite es gratis y lo haces en una tarde.
+
+Aquí está cómo saber en cuál de los dos casos estás, cómo reclamarla, y qué hacer cuando alguien más la tiene.
 
 ![Dueño de una barbería en Panamá revisando en su celular la ficha de Google de su propio negocio](/blog/revisar-ficha-google-sin-reclamar-panama.webp)
 
 ## Qué significa que esté sin reclamar
 
-Reclamar es el trámite por el que Google confirma que tú eres el dueño y te entrega el control. Mientras no lo hagas, la ficha vive sola: muestra el horario que alguien supuso, la categoría que Google adivinó y las fotos que subieron los clientes.
+Reclamar es el trámite por el que Google confirma que tú eres el dueño y te entrega el control.
+
+Mientras no lo hagas, la ficha vive sola. Muestra el horario que alguien supuso, la categoría que Google adivinó y las fotos que subieron los clientes.
 
 Hay tres cosas que no puedes hacer con una ficha sin reclamar, y las tres cuestan plata:
 
@@ -79,7 +85,9 @@ Hay algo más, y es la razón por la que esto importa para posicionarte: una fic
 
 ## Cómo saber si la tuya está así
 
-Busca tu negocio en Google Maps desde el celular, tal como lo buscaría un cliente. Mira el bloque de información y busca una de estas señales:
+Hagamos la prueba. Busca tu negocio en Google Maps desde el celular, igual que lo buscaría un cliente.
+
+Mira el bloque de información y busca una de estas señales:
 
 1. Aparece el enlace **«¿Es tu empresa?»** o **«Reclamar este negocio»**. Esa es la señal clara: nadie la ha reclamado.
 2. No ves el panel de propietario con las opciones de editar, publicar y ver estadísticas.
@@ -89,7 +97,9 @@ Busca tu negocio en Google Maps desde el celular, tal como lo buscaría un clien
 
 De los 228 negocios que llevamos anotados en nuestra lista de prospección entre La Chorrera y Arraiján, 8 tenían la ficha sin reclamar. Son fondas, barberías y salones que ya salían en Maps con reseñas de clientes reales (algunas de hace más de tres años) y sin nadie del otro lado administrándolas ni leyendo los comentarios.
 
-En varios de estos casos, al conversar con el propietario o encargado, nos encontramos con la misma situación: asumían que para tener el control de esa ficha necesitaban pagar una mensualidad a un intermediario o que era un trámite engorroso con Google. Cuando les mostramos que su local ya acumulaba opiniones y que el proceso de reclamación es 100% gratuito y directo, pudieron verificar su número de WhatsApp comercial y empezar a contestar las dudas que los clientes dejaban en Maps sin gastar un centavo.
+En varios de esos casos, al conversar con el dueño o el encargado, salió la misma idea: que para tener el control de la ficha había que pagarle una mensualidad a un intermediario, o que era un trámite engorroso con Google.
+
+Cuando les mostramos que su local ya acumulaba opiniones y que reclamarla no cuesta nada, verificaron su WhatsApp comercial y empezaron a contestar las dudas que los clientes dejaban en Maps.
 
 ## Reclamarla cuando nadie más la tiene
 
@@ -102,7 +112,9 @@ Es el caso fácil y toma menos de lo que parece.
 
 ## Cuando alguien más ya la administra
 
-Pasa más de lo que uno cree. La agencia que te hizo la web, el sobrino que ayudó con el Instagram, el proveedor de un sistema de pedidos. Alguien la reclamó y ya nadie se acuerda con qué correo.
+Pasa más de lo que uno cree.
+
+La agencia que te hizo la web, el sobrino que ayudó con el Instagram, el proveedor de un sistema de pedidos. Alguien la reclamó y ya nadie se acuerda con qué correo.
 
 Google tiene un proceso para esto y se llama solicitud de acceso. Cuando intentas reclamar una ficha que ya tiene dueño, te muestra el correo con parte de los caracteres tapados, del tipo \`j••••@gmail.com\`, que suele bastar para reconocer quién es. Si lo reconoces, lo más rápido es llamar a esa persona y pedirle que te transfiera la propiedad desde el panel.
 
@@ -138,7 +150,9 @@ La forma de pedirlas sin arriesgar la ficha está en [cómo pedir reseñas de Go
 
 ![Placa NFC de starTAP en el mostrador de un salón en Panamá para que el cliente deje su reseña de Google con un toque](/blog/placa-nfc-mostrador-despues-de-reclamar-ficha.webp)
 
-Nosotros vendemos dispositivos que acortan ese paso, y los tienes en [el catálogo](/catalogo). Nada de lo que está arriba sobre reclamar la ficha necesita que nos compres algo: el trámite es gratis y lo haces tú en una tarde.`,
+Nosotros vendemos dispositivos que acortan ese paso, y los tienes en [el catálogo](/catalogo). Nada de lo que está arriba sobre reclamar la ficha necesita que nos compres algo: el trámite es gratis y lo haces tú en una tarde.
+
+**Lo que puedes hacer en los próximos diez minutos:** busca tu negocio en Maps desde el celular y fíjate si sale «¿Es tu empresa?». Con eso ya sabes en cuál de los dos casos estás, y es el único paso que no puede hacer nadie por ti.`,
   cierre: `Escrito por Fernando Contreras, fundador de starTAP Panamá. Los datos de fichas sin reclamar salen de nuestra propia lista de prospección en La Chorrera y Arraiján.
 
 Nota de transparencia: vendemos dispositivos NFC para reseñas de Google. Reclamar tu ficha es gratis y no requiere comprarnos nada.

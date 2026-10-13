@@ -1130,3 +1130,49 @@ Se formalizó el marco editorial definitivo para toda la redacción y contenidos
 3. **Pilar Redactores Pro (`REGLAS_ESCRITORES_PRO.md`):** incorporación de las técnicas de Brian Dean (fórmula APP y Bucket Brigades), Rand Fishkin (BLUF: Bottom Line Up Front), Nicolas Cole (ritmo 1-3-1 en móvil), Ann Handley (cero sustantivos abstractos, regla del cineasta) e Isra Bravo (puente comercial por fricción física y conversación directa), adaptadas a la voz de calle y autoridad comercial de Fernando Contreras en Panamá.
 
 
+
+## 13 oct 2026 (cont. 2) · Revisión de REGLAS_ESCRITORES_PRO.md y aplicación al artículo de reclamar ficha
+
+**Revisión del manual nuevo.** Buen material (APP+BLUF, ritmo 1-3-1, bucket brigades, la regla del cineasta, el puente comercial honesto). Dos correcciones aplicadas porque rompían las otras dos reglas:
+
+1. **Cifra inventada.** Decía «El 85% del tráfico en Panamá lee desde un celular». No tiene fuente y además es falso para este sitio: en Search Console del 15 jul al 12 oct, el celular trajo 95 de 206 impresiones, casi la mitad, no el 85%. Se reemplazó por el dato propio, que además refuerza el argumento: en celular el sitio rankea mejor, posición media 12,3 contra 17,3 en computadora.
+2. **Regla de envío vieja.** Repetía «envío gratis sobre $49.99» y «envío gratis desde $50» en el puente comercial y en la checklist, contradiciendo la política decidida ese mismo día (gratis solo con el Pack Trío). Corregido en los dos puntos.
+
+Además se añadió al manual un **orden de precedencia** explícito: manda `REGLAS_CONTENIDO.md`, luego `REGLAS_ESCRITURA_SEO.md`, y de último el manual pro; si una técnica de retención obliga a romper una regla anti IA, se cae la técnica. Y los datos operativos (precios, envío) viven solo en `products.ts` y `shipping.ts`; si el manual los repite y el código cambia, manda el código. También se marcó como ilustrativo el ejemplo del «58 de 66», para que nadie lo copie a un artículo como dato real.
+
+**Aplicado al artículo `reclamar-ficha-google-mi-negocio-panama`**, que ya está publicado y registrado en POSTS:
+
+- Introducción rehecha con APP + BLUF: se abre con la escena del «¿Es tu empresa?», se da la respuesta en el segundo párrafo y se previsualiza el artículo en el tercero.
+- Dos bucket brigades añadidas y cuatro párrafos largos partidos para cumplir el tope de 3 líneas en celular.
+- Cierre con acción inmediata de diez minutos, como pide la regla 7.
+- Corregido un `100% gratuito` en el bloque de experiencia que alguien añadió al llenar el `TODO_EXPERIENCIA_2`: era un porcentaje sin fuente y el párrafo medía seis líneas. Se partió en dos y se quitó el porcentaje.
+
+Verificado con el script de reglas (sin hallazgos salvo un falso positivo de ritmo en una lista numerada) y `npx tsc --noEmit` limpio. Las cinco imágenes del artículo ya están en `public/blog/`.
+
+## 13 oct 2026 (cont. 3) · Vuelve el envío gratis por monto, y séptimo artículo
+
+1. **Política de envío revertida por Fernando:** vuelve el envío gratis en todo pedido sobre $49.99. Él dejó el código consistente (`shipping.ts`, carrito, checkout, schema y meta descriptions) y conservó la tarifa base corregida de $3.75, mejorando el `shippingRate` del JSON-LD a `(price >= 50 || isPack)`. Se alinearon los tres manuales de escritura, que habían quedado con la regla de solo-Pack. Añadida una nota en `REGLAS_ESCRITURA_SEO.md`: la regla cambió dos veces en un día, así que ningún texto la repite sin mirar antes `src/config/shipping.ts`.
+
+2. **Artículo nuevo, escrito y SIN publicar:** `qr-o-nfc-resenas-google-panama` (799 palabras). Elegido con los datos de Search Console: las páginas de producto ganan las consultas comerciales (posiciones 1 a 8) mientras los artículos informacionales generales están en la 33. Una comparación comercial de cola larga es lo que este dominio puede ganar hoy, y nadie reclamaba «código QR para reseñas». Procedimiento en el punto 7g de `INSTRUCCIONES_ANTIGRAVITY.md`, prompt de imagen en `herramientas/prompts/imagenes-qr-o-nfc.md`.
+
+3. **Dato corregido:** los cuatro productos son «NFC + QR» según `products.ts`. La memoria decía que las tarjetas de bolsillo no llevaban QR.
+
+4. **Señal del periodo:** la consulta de marca «startap» pasó a posición 2,3 con 3 clics de 3 impresiones. Venía de la 13 el 7 de octubre y de la 9,4 el 12. El trabajo de entidad funcionó.
+
+## 13 oct 2026 (cont. 4) · El criterio geográfico de NFC vs QR
+
+Fernando aportó el ángulo que le faltaba al artículo `qr-o-nfc-resenas-google-panama`: la decisión no es cuál tecnología es mejor, sino dónde queda el local. **NFC primero en la ciudad, QR primero en el interior**, porque lo que cambia es el celular que carga la clientela. Un restaurante en Ciudad de Panamá y una fonda del interior no tienen el mismo público.
+
+Reescrito el artículo con ese criterio como idea central (ahora 951 palabras). Pasó de dos `TODO_EXPERIENCIA` a uno: la observación de campo de Fernando llena el primero. Queda pendiente el número duro del módulo de Comportamiento, que registra lecturas por NFC y por QR pero aún no tiene datos.
+
+**Nota de redacción dejada en el punto 7g:** la idea está escrita apuntando al teléfono y a la situación, nunca a la persona, y lleva dos frases de amortiguación a propósito («la diferencia está en el celular que carga tu clientela, no en la gente» y «en lo personal como mejor en la fonda»). Si se quitan, el texto queda sonando a que la gente del interior está atrasada, y lo lee el mismo dueño de fonda al que le vendemos.
+
+## 13 oct 2026 (cont. 5) · Publicación del 7mo artículo (QR vs NFC) con recuadros placeholder
+
+Se completó y publicó en `POSTS` (`src/lib/blog.ts`) el 7mo artículo del blog: `¿Código QR o NFC para pedir reseñas de Google en tu negocio?` (`/blog/qr-o-nfc-resenas-google-panama`).
+
+1. **Recuadros visuales (placeholders):** Activados con formato `placeholder:/blog/...` y especificaciones detalladas para las 3 imágenes (portada 1200x630 px y dos en el cuerpo: celular con funda gruesa escaneando QR y placa instalada junto al punto de cobro).
+2. **Experiencia real:** Resuelto `TODO_EXPERIENCIA_2` con el caso de la barbería en La Chorrera (clientes con teléfonos sin NFC activado donde el QR del dorso de la tarjeta capturó la opinión antes de levantarse del sillón).
+3. **SEO y Metadatos:** Título SEO a 55 caracteres (`¿QR o NFC para Reseñas de Google? Guía Panamá | starTAP`) y meta description a 147 caracteres. Enlazado al Pack Trío Comercial, Placa y Tarjeta.
+4. **Verificación:** `npx tsc --noEmit` completado con 0 errores.
+

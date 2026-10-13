@@ -682,6 +682,62 @@ Salen del mismo análisis del 12 oct. Son de edición, no de reescritura.
    «Cómo ver y responder las reseñas que le dejan a tu negocio», y ajustar el
    primer párrafo en la misma línea.
 
+## 7g · Blog: SÉPTIMO artículo escrito y SIN PUBLICAR
+
+**Archivo:** `src/content/blog/qr-o-nfc-resenas-google-panama.ts`
+**Slug:** `/blog/qr-o-nfc-resenas-google-panama`
+**NO está en `POSTS`.** Compila limpio y pasa el script de reglas sin hallazgos.
+
+**Por qué este tema y no otro.** Lo dice el propio Search Console. Las páginas de
+producto ganan las consultas comerciales («placas nfc» posición 1,7, «tarjeta de
+bolsillo» posición 1, «placas inteligentes» posición 8), mientras los artículos
+informacionales generales pelean en la posición 33 contra todo el mundo hispano.
+Una comparación comercial de cola larga es lo que este dominio sí puede ganar hoy.
+Ningún artículo ni ficha reclamaba «código QR para reseñas» y los prospectos lo
+preguntan en WhatsApp.
+
+**El ángulo lo puso Fernando el 13 oct:** el criterio no es cuál tecnología es
+mejor, es dónde queda el local. NFC primero en la ciudad, QR primero en el
+interior, porque lo que cambia es el celular que carga la clientela. Es el tipo
+de regla que ninguna agencia escribe porque hay que haber caminado los locales.
+
+**Cuidado al editarlo:** esa idea está escrita apuntando al teléfono y a la
+situación, nunca a la persona. La frase «la diferencia está en el celular que
+carga tu clientela, no en la gente» y el «como mejor en la fonda» están ahí a
+propósito. Si alguien los quita, el texto queda sonando a que la gente del
+interior está atrasada, y eso lo lee el mismo dueño de fonda al que le vendemos.
+
+**Está escrito con los tres manuales:** introducción APP + BLUF que responde en
+las primeras 60 palabras, párrafos de máximo 3 líneas, dos bucket brigades,
+escenas filmables, puente comercial honesto (dice cuándo gana el QR, que es lo
+que no vende hardware) y cierre con acción de hoy.
+
+**Qué falta para publicarlo:**
+
+1. Queda **un solo** dato de experiencia por llenar, `TODO_EXPERIENCIA_2`, en la
+   sección «Por qué los nuestros llevan los dos». Lo ideal es un número del
+   módulo de Comportamiento (`/master-control/comportamiento`), que ya registra
+   lecturas por NFC y por QR: cuántas entraron por cada vía. Ese módulo todavía
+   no tiene datos. Mientras tanto sirve un caso concreto de un local donde el
+   cliente no pudo con el chip y resolvió con el QR.
+
+   El primero ya está puesto: es el criterio de Fernando de que en el área
+   metropolitana el chip se usa solo y en el interior termina usándose el QR,
+   aprendido visitando locales.
+2. La imagen de portada. Prompt en `herramientas/prompts/imagenes-qr-o-nfc.md`.
+   Es la única imagen y es generable.
+3. Registrarlo en `src/lib/blog.ts`:
+   ```ts
+   import { post as articulo7 } from '@/content/blog/qr-o-nfc-resenas-google-panama';
+   export const POSTS: BlogPost[] = [articulo7, articulo6, articulo5, articulo4, articulo1, articulo2, articulo3];
+   ```
+4. Checklist de la PARTE 3 de `REGLAS_CONTENIDO.md` y el Filtro 3 de
+   `REGLAS_ESCRITORES_PRO.md`.
+
+**Dato corregido de paso:** la memoria del proyecto decía que las tarjetas de
+bolsillo llevan solo NFC, sin QR. `src/config/products.ts` dice que los cuatro
+productos son «NFC + QR». El artículo está escrito con lo que dice el código.
+
 ## 8 · Deuda menor, para cuando haya tiempo
 
 - `/api/email/*` es un relay abierto: sin auth, sin rate limit, sin verificar que
