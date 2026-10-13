@@ -30,9 +30,9 @@ import { INDUSTRIAS } from '@/lib/industrias';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Servicio de SEO Local, Posicionamiento Móvil y Reseñas en Panamá | starTAP',
+  title: 'Reseñas de Google por Industria en Panamá | starTAP',
   description:
-    'Estrategia de SEO Local y posicionamiento móvil en Panamá para convertir tu negocio en un Top Local Business en Google Maps y potenciar tu tienda online o local comercial con tecnología NFC + QR.',
+    'Guías por rubro para conseguir más reseñas y comentarios en Google Maps: restaurantes, clínicas, barberías, talleres, hoteles y tiendas en Panamá.',
   keywords: [
     'reseñas google maps',
     'reseñas en google maps',

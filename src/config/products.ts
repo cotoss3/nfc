@@ -122,7 +122,7 @@ export const PRODUCTS: ProductConfig[] = [
     ],
     isPack: true,
     savingsText: 'Ahorro de $25.00 (33% OFF) vs compra individual',
-    shippingNote: 'Envío gratis en Ciudad de Panamá',
+    shippingNote: 'Envío gratis a todo Panamá',
     spec: 'Solución Completa de Captación Local',
     type: 'google'
   }

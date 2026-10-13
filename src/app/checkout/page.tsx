@@ -32,7 +32,6 @@ import {
   SHIPPING_METHODS,
   calculateShippingCost,
   qualifiesForFreeShipping,
-  amountMissingForFreeShipping,
   FREE_SHIPPING_THRESHOLD,
   YAPPY,
   applyShippingCoupon,
@@ -926,7 +925,9 @@ export default function CheckoutPage() {
                         <span className="font-semibold">
                           {isPackInCart
                             ? '¡Envío gratis a todo Panamá incluido con tu pedido!'
-                            : `¡Envío gratis aplicado! Tu orden supera los $${FREE_SHIPPING_THRESHOLD}.`}
+                            : qualifiesForFreeShipping(getCartTotal())
+                            ? `¡Envío gratis aplicado! Tu orden supera los $${FREE_SHIPPING_THRESHOLD}.`
+                            : '¡Envío gratis aplicado con tu cupón!'}
                         </span>
                       </div>
                     )}
@@ -1335,7 +1336,7 @@ export default function CheckoutPage() {
                         {isPackInCart
                           ? ' (incluido)'
                           : appliedCoupon?.type === 'free_shipping'
-                          ? ' (envío gratis)'
+                          ? ' (gratis con tu cupón)'
                           : qualifiesForFreeShipping(getCartTotal())
                           ? ` (gratis sobre $${FREE_SHIPPING_THRESHOLD})`
                           : ''}

@@ -3,7 +3,7 @@
  * El carrito, el checkout y el cálculo del servidor leen de aquí.
  */
 
-/** Envío gratis a partir de este subtotal (USD) */
+/** Envío gratis a partir de este subtotal (USD) - Carrito mayor a $49.99 / $50 o más */
 export const FREE_SHIPPING_THRESHOLD = 50;
 
 export type ShippingMethodId = 'local' | 'uno' | 'servi';
@@ -40,7 +40,7 @@ export function getShippingMethod(id: string): ShippingMethod | undefined {
   return SHIPPING_METHODS.find((m) => m.id === id);
 }
 
-/** True cuando el subtotal ya califica para envío gratis */
+/** True cuando el subtotal califica para envío gratis (mayor a $49.99 / $50 o más) */
 export function qualifiesForFreeShipping(subtotal: number): boolean {
   return subtotal >= FREE_SHIPPING_THRESHOLD;
 }
@@ -52,7 +52,7 @@ export function amountMissingForFreeShipping(subtotal: number): number {
 
 /**
  * Costo de envío final.
- * Gratis si el subtotal alcanza el umbral o si el pedido incluye un pack.
+ * Gratis si el subtotal supera $49.99 ($50 o más) o si incluye el Pack Trío Comercial.
  */
 export function calculateShippingCost(
   subtotal: number,

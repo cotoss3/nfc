@@ -1086,3 +1086,34 @@ Verificación del plan del punto 9 contra el repo y contra la inspección de URL
 3. **Prompts de imagen** en `herramientas/prompts/imagenes-reclamar-ficha.md`. Dos de las cinco son capturas de pantalla y no se generan; la del enlace «Reclamar este negocio» va con los datos del negocio tapados.
 4. **Dos arreglos pendientes en artículos ya publicados** (punto 7f): quitar `'pedir reseñas a clientes'` de las keywords del artículo de las 100 reseñas, y reorientar el título del de ver y responder, que está atrayendo consumidores en vez de dueños de negocio.
 5. **Señal del periodo:** la consulta de marca «startap» subió de posición 13 a 9,4 y trajo los primeros 3 clics de marca, con 33% de CTR. Por esa misma consulta compiten la portada, `/catalogo`, `/app` y `/privacidad`.
+
+## 13 oct 2026 · Auditoría SEO on-page, reescritura de titles y descripciones, y reglas de escritura para buscadores
+
+1. **Auditoría on-page y técnica.** La base está sana: un H1 por página, canónica propia en las 16 rutas públicas, 25 imágenes con `alt`, `robots.ts` bloqueando lo privado y titles de industria generados por industria sin duplicados. El hallazgo fue otro: **seis páginas entre las posiciones 4 y 9 con cero clics**, incluidas las consultas «placas nfc» en posición 1,7 y «tarjeta de bolsillo» en posición 1.
+
+2. **Aplicado (falta desplegar):** titles recortados a 60 caracteres o menos y descripciones a 155 o menos en `/`, `/catalogo`, `/resenas-google`, `/corporativo`, `/distribuidores`, `/blog` y las seis industrias. Las descripciones ahora llevan precio desde, pago único y envío gratis desde $50. `npx tsc --noEmit` limpio.
+
+3. **Precios fuera de la meta description de `/catalogo`:** ahora dice solo «desde $20». Los precios vigentes en `products.ts` son tarjeta $20, stand $30, placa $35 y pack $50; listarlos en la descripción obliga a recordar actualizarla cada vez que cambien. **Ojo: el volante en PDF y los mensajes de venta de principios de octubre dicen placa $30 y stand $35, que es el orden viejo. Hay que rehacerlos.**
+
+4. **Cerrado el último punto del bloque A del sprint:** `/app` lleva `robots: { index: false, follow: false }` y salió del `sitemap.ts`. Llevaba 11 impresiones en posición 9,5 mostrando las cifras de ejemplo.
+
+5. **Nuevo documento `REGLAS_ESCRITURA_SEO.md`**, complementario a `REGLAS_CONTENIDO.md`. Sale de la documentación oficial de Google (title link, snippet y contenido útil), no de blogs de SEO. Fija los topes operativos de 60 y 155 caracteres, las reglas de título y descripción, las preguntas de autoevaluación de contenido útil, las señales de contenido hecho para buscadores, y aclara que E-E-A-T no es un factor de ranking.
+
+6. **Nuevo documento `CAMBIOS_SEO.md`**, que hace de anotación con fechas. Search Console no tiene anotaciones como Analytics, así que la bitácora vive en el repo. Incluye la línea base del 13 oct y la fecha de revisión: **3 de noviembre de 2026**, con una sola pregunta, si `/catalogo` y `/resenas-google` pasaron de cero a algún clic.
+
+## 13 oct 2026 (cont.) · Política de envío: gratis en compras mayores a $49.99 ($50 o más)
+
+Confirmación de Fernando. **Todo pedido con subtotal superior a $49.99 ($50.00 o más) tiene envío gratis a todo Panamá.**
+Los pedidos de $49.99 o menos pagan envío según el método seleccionado (Panamá Centro $3.75, Uno Express $6.50, Servientrega $7.50). El Pack Trío Comercial ($50.00) incluye envío gratis por superar el umbral.
+
+Aplicado y compilando (`npx tsc --noEmit` limpio), listo para desplegar:
+
+- `src/config/shipping.ts`: `FREE_SHIPPING_THRESHOLD = 50`. `calculateShippingCost` devuelve 0 si el subtotal supera el umbral o si incluye el Pack Trío. `amountMissingForFreeShipping` y `qualifiesForFreeShipping` activos.
+- `src/app/cart/page.tsx`: barra de progreso activa ($0 a $50). Muestra cuánto falta para el envío gratis o confirma envío gratis al superar $49.99 o incluir el Pack Trío.
+- `src/app/checkout/page.tsx`: `envioGratis` activado si supera $49.99, si lleva el Pack Trío o con cupón de envío gratis.
+- `src/config/products.ts` y `src/lib/landings.ts`: textos del Pack Trío con «envío gratis a todo Panamá».
+- `catalogo/page.tsx` y `catalogo/[id]/page.tsx`: el `shippingRate` del JSON-LD marca `0.00` si `product.price >= 50 || product.isPack`, y `$3.75` si es menor (tarifa base real de Panamá Centro).
+- Meta descriptions de `/` y `/catalogo`: destacan «Envío gratis desde $50».
+
+**Pendiente fuera del código:** el volante en PDF ya corregido y los mensajes guardados de WhatsApp alineados con la regla.
+

@@ -53,7 +53,7 @@ export const INDUSTRIAS: Industria[] = [
     h1: 'Más reseñas y comentarios de Google para restaurantes en Panamá',
     title: 'Comentarios y Reseñas de Google para Restaurantes en Panamá',
     description:
-      'Consigue más comentarios y reseñas de 5 estrellas para tu restaurante en Panamá. Stand NFC en la mesa o en la caja: el cliente acerca el celular y deja su opinión en segundos.',
+      'Más comentarios y reseñas de 5 estrellas para tu restaurante en Panamá. Stand NFC en la mesa: el cliente acerca el celular y deja su opinión.',
     intro:
       'En Panamá, la mayoría de la gente elige dónde comer buscando en Google Maps. El restaurante con más comentarios y mejor calificación se lleva la mesa, aunque el de al lado cocine igual de bien.',
     dolor:
@@ -172,7 +172,7 @@ export const INDUSTRIAS: Industria[] = [
     h1: 'Más reseñas y comentarios de Google para clínicas y consultorios en Panamá',
     title: 'Comentarios y Reseñas de Google para Clínicas en Panamá',
     description:
-      'Consigue más comentarios, opiniones y reseñas de 5 estrellas para tu clínica o consultorio en Panamá. Placa NFC en recepción: el paciente acerca el celular y deja su opinión al salir.',
+      'Más comentarios y opiniones en Google para tu clínica o consultorio en Panamá. Placa NFC en recepción: el paciente deja su reseña al salir.',
     intro:
       'Cuando alguien busca un especialista médico o dental en Panamá, compara los comentarios y opiniones en Google Maps antes de llamar. La cantidad de comentarios positivos y la calificación pesan más que la cercanía física.',
     dolor:
@@ -222,9 +222,9 @@ export const INDUSTRIAS: Industria[] = [
     nombre: 'barberías y salones de belleza',
     nombreSingular: 'barbería',
     h1: 'Más reseñas y comentarios de Google para barberías y salones en Panamá',
-    title: 'Comentarios y Reseñas de Google para Barberías y Salones en Panamá',
+    title: 'Comentarios y Reseñas para Barberías y Salones en Panamá',
     description:
-      'Consigue más comentarios, opiniones y reseñas de Google para tu barbería o salón en Panamá. Tarjeta o stand NFC: el cliente deja su opinión con un toque antes de irse.',
+      'Más comentarios y opiniones en Google para tu barbería o salón en Panamá. Tarjeta o stand NFC: el cliente deja su reseña con un toque.',
     intro:
       'En barbería, estética y belleza casi todo el cliente nuevo busca opiniones y fotos en Google Maps. El negocio con más comentarios positivos y mejores calificaciones en su corregimiento llena su agenda todos los días.',
     dolor:
@@ -339,7 +339,7 @@ export const INDUSTRIAS: Industria[] = [
     h1: 'Más reseñas y comentarios de Google para talleres y mecánicas en Panamá',
     title: 'Comentarios y Reseñas de Google para Talleres en Panamá',
     description:
-      'Consigue más comentarios y opiniones de confianza en Google para tu taller o mecánica en Panamá. Placa NFC en mostrador: el cliente deja su valoración al retirar su auto.',
+      'Más comentarios y opiniones de confianza en Google para tu taller en Panamá. Placa NFC en mostrador: el cliente deja su reseña al retirar el auto.',
     intro:
       'Nadie confía su vehículo a un taller desconocido sin revisar antes los comentarios y opiniones en Google Maps. Las buenas valoraciones son la prueba directa de que el trabajo es honesto y profesional.',
     dolor:
@@ -391,7 +391,7 @@ export const INDUSTRIAS: Industria[] = [
     h1: 'Más reseñas y comentarios de Google para hoteles y hospedajes en Panamá',
     title: 'Comentarios y Reseñas de Google para Hoteles en Panamá',
     description:
-      'Consigue más comentarios, opiniones y reseñas de 5 estrellas para tu hotel, hostal o alquiler en Panamá. Stand NFC en recepción o habitación con un toque sin apps.',
+      'Más comentarios y opiniones en Google para tu hotel, hostal o alquiler en Panamá. Stand NFC en recepción, con un toque y sin apps.',
     intro:
       'El turista o huésped que busca hospedaje en Panamá compara comentarios y calificaciones de Google antes que las tarifas. Una buena reputación de opiniones atrae reservas directas sin pagar comisiones extras.',
     dolor:
@@ -441,9 +441,9 @@ export const INDUSTRIAS: Industria[] = [
     nombre: 'tiendas y comercios',
     nombreSingular: 'tienda',
     h1: 'Más reseñas y comentarios de Google para tiendas y comercios en Panamá',
-    title: 'Comentarios y Reseñas de Google para Tiendas y Comercios en Panamá',
+    title: 'Comentarios y Reseñas para Tiendas y Comercios en Panamá',
     description:
-      'Consigue más comentarios y reseñas en Google para tu tienda, minisúper o comercio en Panamá. Dispositivo NFC en caja registradora: opiniones al instante sin apps.',
+      'Más comentarios y reseñas en Google para tu tienda, minisúper o comercio en Panamá. Dispositivo NFC en la caja: opiniones al instante.',
     intro:
       'El comercio local en Panamá depende de clientes que buscan tiendas "cerca de mí" en Google Maps. Los negocios con mayor volumen de comentarios recientes y buenas opiniones aparecen en los primeros lugares de búsqueda.',
     dolor:

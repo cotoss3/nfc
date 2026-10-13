@@ -36,3 +36,6 @@ graphify-out/.graphify_ast.json
 # Llave de Veo (generacion de video). Nunca subir.
 .env.veo
 herramientas/videos/
+
+# Backup files
+*.bak

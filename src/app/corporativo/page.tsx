@@ -4,9 +4,9 @@ import CorporativoClient from './CorporativoClient';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Servicio de SEO Local & Planes Corporativos en Panamá | starTAP',
+  title: 'Planes Corporativos y Multi-Sucursal en Panamá | starTAP',
   description:
-    'Servicio de SEO Local, posicionamiento móvil y soluciones B2B multi-sucursal en Panamá. Convierte tus locales en Top Local Business en Google Maps y potencia tu tienda online.',
+    'Dispositivos NFC para reseñas de Google en varias sucursales, con precio por volumen y cada equipo configurado con la ficha de su local.',
   keywords: [
     'servicio seo local panama',
     'top local business panama',

@@ -94,7 +94,7 @@ export default function Page({ params }: { params: { id: string } }) {
             '@type': 'OfferShippingDetails',
             shippingRate: {
               '@type': 'MonetaryAmount',
-              value: product.price >= 50 ? '0.00' : '3.50',
+              value: (product.price >= 50 || product.isPack) ? '0.00' : '3.75',
               currency: 'USD',
             },
             shippingDestination: {

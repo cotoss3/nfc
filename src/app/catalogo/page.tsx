@@ -6,8 +6,8 @@ import CatalogoClient from './CatalogoClient';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Catálogo de Placas y Tarjetas NFC para Reseñas en Panamá | StarTAP',
-  description: 'Dispositivos NFC y QR contactless para capturar valoraciones en Google Maps. Tarjetas desde $20.00, stands desde $30.00, placas desde $35.00 y Pack Trío Comercial. Sin mensualidades ni suscripciones.',
+  title: 'Placas y Tarjetas NFC para Reseñas de Google | starTAP',
+  description: 'Placas, stands y tarjetas NFC para que tu cliente deje su reseña de Google con un toque. Desde $20, pago único. Envío gratis en pedidos desde $50.',
   alternates: {
     canonical: `${BASE_URL}/catalogo`,
   },
@@ -66,7 +66,7 @@ export default async function CatalogoPage() {
           '@type': 'OfferShippingDetails',
           shippingRate: {
             '@type': 'MonetaryAmount',
-            value: product.price >= 50 ? '0.00' : '3.50',
+            value: (product.price >= 50 || product.isPack) ? '0.00' : '3.75',
             currency: 'USD',
           },
           shippingDestination: {
@@ -132,7 +132,7 @@ export default async function CatalogoPage() {
             '@type': 'OfferShippingDetails',
             shippingRate: {
               '@type': 'MonetaryAmount',
-              value: product.price >= 50 ? '0.00' : '3.50',
+              value: (product.price >= 50 || product.isPack) ? '0.00' : '3.75',
               currency: 'USD',
             },
             shippingDestination: {

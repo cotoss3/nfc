@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import AppProClient from './AppProClient';
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: false },
   title: 'Plataforma de Gestión de Reseñas con IA',
   description:
     'Responde reseñas con IA, detecta comentarios negativos al instante y mide tu reputación en Google Maps. Panel de control starTAP para negocios en Panamá.',

@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { PRODUCTS } from '@/config/products';
+import { PRODUCTS, getProductById } from '@/config/products';
 import {
   FREE_SHIPPING_THRESHOLD,
   amountMissingForFreeShipping,
+  qualifiesForFreeShipping,
 } from '@/config/shipping';
 import { 
   Trash2, 
@@ -42,9 +43,11 @@ function YappyBadge() {
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getItemCount } = useCart();
-
-  const faltaParaGratis = amountMissingForFreeShipping(getCartTotal());
-  const progresoGratis = Math.min(100, (getCartTotal() / FREE_SHIPPING_THRESHOLD) * 100);
+  const cartTotal = getCartTotal();
+  const tienePack = cart.some((item) => getProductById(item.product_id)?.isPack === true);
+  const calificaGratis = tienePack || qualifiesForFreeShipping(cartTotal);
+  const faltaParaGratis = amountMissingForFreeShipping(cartTotal);
+  const progresoGratis = Math.min(100, (cartTotal / FREE_SHIPPING_THRESHOLD) * 100);
   const [mounted, setMounted] = useState(false);
   const [orderNotes, setOrderNotes] = useState('');
   const [showNotes, setShowNotes] = useState(false);
@@ -63,7 +66,7 @@ export default function CartPage() {
       return `- ${item.quantity}x ${item.product_name}${extrasText} : $${(item.price * item.quantity).toFixed(2)}`;
     }).join('\n');
 
-    const envio = faltaParaGratis > 0 ? 'Por coordinar' : 'GRATIS (pedido mayor a $50)';
+    const envio = calificaGratis ? 'GRATIS (pedido mayor a $49.99)' : 'Por coordinar';
 
     const lines = [
       'Hola starTAP Panamá, quiero realizar mi pedido por Yappy / WhatsApp.',
@@ -165,23 +168,23 @@ export default function CartPage() {
         <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-              faltaParaGratis <= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-50 text-blue-600'
+              calificaGratis ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-50 text-blue-600'
             }`}>
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              {faltaParaGratis > 0 ? (
-                <p className="text-xs sm:text-sm font-semibold text-slate-800">
-                  Estás a solo <strong className="text-blue-600 font-extrabold">${faltaParaGratis.toFixed(2)}</strong> de tener <strong className="text-slate-950 font-bold">Envío Gratis</strong> en todo Panamá.
-                </p>
-              ) : (
+              {calificaGratis ? (
                 <p className="text-xs sm:text-sm font-bold text-emerald-800 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" />
                   <span>¡Felicidades! Calificas para <strong>Envío Gratis</strong> a todo Panamá.</span>
                 </p>
+              ) : (
+                <p className="text-xs sm:text-sm font-semibold text-slate-800">
+                  Estás a solo <strong className="text-blue-600 font-extrabold">${faltaParaGratis.toFixed(2)}</strong> de tener <strong className="text-slate-950 font-bold">Envío Gratis</strong> en todo Panamá.
+                </p>
               )}
               <p className="text-[11px] text-slate-400 mt-0.5">
-                Envío gratuito aplicable en compras de ${FREE_SHIPPING_THRESHOLD}.00 o más.
+                Envío gratuito aplicable en compras mayores a $49.99 ($50.00 o más).
               </p>
             </div>
           </div>
@@ -194,7 +197,7 @@ export default function CartPage() {
             <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
-                  faltaParaGratis <= 0 ? 'bg-emerald-500' : 'bg-blue-600'
+                  calificaGratis ? 'bg-emerald-500' : 'bg-blue-600'
                 }`}
                 style={{ width: `${progresoGratis}%` }}
               />
@@ -422,7 +425,7 @@ export default function CartPage() {
                 <div className="flex justify-between items-center">
                   <span>Envío a Panamá</span>
                   <span>
-                    {faltaParaGratis <= 0 ? (
+                    {calificaGratis ? (
                       <span className="text-emerald-600 font-extrabold uppercase">Gratis</span>
                     ) : (
                       <span className="text-slate-500 font-medium">Calculado al pagar</span>
@@ -449,9 +452,9 @@ export default function CartPage() {
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-400">
-                  {faltaParaGratis <= 0 
-                    ? '¡Envío gratis aplicado! No hay cargos sorpresa.' 
-                    : 'Tarifa de envío ($3.50 en Ciudad / $6.50 Provincias) se selecciona en el siguiente paso.'}
+                  {calificaGratis
+                    ? '¡Envío gratis aplicado! No hay cargos sorpresa.'
+                    : 'La tarifa de envío se elige en el siguiente paso, desde $3.75 en la ciudad.'}
                 </p>
               </div>
 

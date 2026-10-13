@@ -4,9 +4,9 @@ import DistribuidoresClient from './DistribuidoresClient';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Distribuidores de Tarjetas NFC para Reseñas en Panamá | starTAP',
+  title: 'Distribuidores de Dispositivos NFC en Panamá | starTAP',
   description:
-    'Programa de distribuidores y mayoristas de dispositivos NFC para reseñas en Google Maps. Diseñado para agencias de marketing, imprentas, consultores y empresas de POS en Panamá.',
+    'Programa de distribuidores de dispositivos NFC para reseñas de Google. Para agencias, imprentas, consultores y empresas de punto de venta en Panamá.',
   keywords: [
     'distribuidores tarjetas nfc panama',
     'mayorista nfc panama',

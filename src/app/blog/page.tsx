@@ -6,7 +6,7 @@ import { BASE_URL, getPostsOrdenados, getAutor, formatearFecha } from '@/lib/blo
 export const metadata: Metadata = {
   title: 'Blog de SEO Local y Reseñas de Google en Panamá',
   description:
-    'Guías prácticas para que tu negocio en Panamá salga primero en Google Maps: cómo pedir reseñas sin que te penalicen, qué mira Google y qué hacer cada semana.',
+    'Guías para que tu negocio en Panamá salga en Google Maps: cómo pedir reseñas sin que te penalicen, por qué no apareces y cómo reclamar tu ficha.',
   alternates: { canonical: '/blog' },
   openGraph: {
     type: 'website',
