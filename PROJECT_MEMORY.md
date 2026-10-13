@@ -498,6 +498,10 @@ Todo se armó desde la documentación oficial de Tilopay.
 
 ## 📎 11. Documentos hermanos
 * `CLAUDE.md` — reglas de trabajo para sesiones de IA (ahorro de tokens). Leerlo primero.
+* `REGLAS_CONTENIDO.md` — Pilar Anti-IA y requisitos de experiencia real (E-E-A-T).
+* `REGLAS_ESCRITURA_SEO.md` — Pilar Google (snippets, <title> a 60 chars, descriptions a 155 chars, intención de búsqueda).
+* `REGLAS_ESCRITORES_PRO.md` — Pilar Redactores Pro (fórmula APP, BLUF, ritmo 1-3-1, Bucket Brigades, venta por fricción).
+* `CAMBIOS_SEO.md` — Bitácora de medición y anotación de cambios SEO para Search Console.
 * `AUDIT.md` — auditoría de seguridad y deuda técnica (2026-09-08).
 * `AUDITORIA_CHECKOUT.md` — auditoría del checkout y pagos (2026-09-14).
 * `SEO_PLAN.md` — plan de posicionamiento.
@@ -1116,4 +1120,13 @@ Aplicado y compilando (`npx tsc --noEmit` limpio), listo para desplegar:
 - Meta descriptions de `/` y `/catalogo`: destacan «Envío gratis desde $50».
 
 **Pendiente fuera del código:** el volante en PDF ya corregido y los mensajes guardados de WhatsApp alineados con la regla.
+
+## 13 oct 2026 (cont.) · El Trío de Reglas de Contenido: Anti-IA, Google y Redactores Pro
+
+Se formalizó el marco editorial definitivo para toda la redacción y contenidos de starTAP Panamá, articulado en tres pilares documentados:
+
+1. **Pilar Anti-IA (`REGLAS_CONTENIDO.md`):** erradicación de delatores algorítmicos (0 rayas largas, 0 adverbios en -mente, 0 palabras clichés, 0 datos inventados).
+2. **Pilar Google (`REGLAS_ESCRITURA_SEO.md`):** cumplimiento de directrices oficiales (Search Intent en primer scroll, titles a 60 chars con Panamá, snippets a 155 chars, E-E-A-T demostrable).
+3. **Pilar Redactores Pro (`REGLAS_ESCRITORES_PRO.md`):** incorporación de las técnicas de Brian Dean (fórmula APP y Bucket Brigades), Rand Fishkin (BLUF: Bottom Line Up Front), Nicolas Cole (ritmo 1-3-1 en móvil), Ann Handley (cero sustantivos abstractos, regla del cineasta) e Isra Bravo (puente comercial por fricción física y conversación directa), adaptadas a la voz de calle y autoridad comercial de Fernando Contreras en Panamá.
+
 
