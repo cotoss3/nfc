@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Testimonios from '@/components/Testimonios';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -312,6 +313,8 @@ export default function CatalogoClient({ initialProducts }: CatalogoClientProps 
             </div>
           </div>
         </section>
+
+        <Testimonios titulo="Lo que dicen los negocios que ya lo tienen" />
 
       </div>
     </div>

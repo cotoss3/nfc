@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Testimonios from '@/components/Testimonios';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -911,6 +912,9 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
 
         </div>
       </section>
+
+      {/* 5.2 TESTIMONIOS DE CLIENTES */}
+      <Testimonios />
 
       {/* 6. FINAL BOTTOM CTA */}
       <section className="bg-slate-950 py-12 sm:py-16 text-center px-4">

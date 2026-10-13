@@ -143,7 +143,7 @@ RUF PIXEL tenía una sola reseña. Le pusimos una placa en el mostrador y a las 
 
 No hicimos nada raro: el cliente que ya estaba satisfecho ahora tiene cómo decirlo en dos segundos.
 
-Aviso por transparencia: RUF PIXEL es un negocio nuestro, por eso tenemos el dato exacto.
+RUF PIXEL es cliente de nuestra agencia, por eso tenemos el dato exacto.
 
 Escríbenos y te contamos qué se hizo.
 ```

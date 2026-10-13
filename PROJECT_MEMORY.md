@@ -1205,3 +1205,42 @@ Se solucionó la falta de soporte de tablas en `src/components/Markdown.tsx` (qu
    - `npm run build` ejecutado exitosamente con 61 páginas estáticas generadas sin fallos.
 
 
+
+## 13 oct 2026 (cont. 5) · Testimonios reales y plan de reseñas de producto
+
+Sale del aviso de Search Console «Falta el campo aggregateRating» en 7 elementos de producto, que apareció al quitar las calificaciones inventadas.
+
+**Aclaración importante:** las 6 reseñas de 5 estrellas que tiene starTAP son del **perfil de Google Business**, o sea del negocio, y ya están en el schema de `StructuredData.tsx`. No sirven para el `aggregateRating` de los productos: califican la atención, no la placa, y Google no acepta tomar valoraciones de otra plataforma y publicarlas como propias del producto.
+
+**Hecho:** `src/config/testimonios.ts` y `src/components/Testimonios.tsx`, montados en la portada (5.2) y al final de `/catalogo`. Cargados los tres testimonios reales que llegaron por chat: Dr. Wilmer González (placa y tarjetas), Rubén Fernández de RUF PIXEL (placa y stand, «diez reseñas el primer día») y Mercedes de Arepitas Que Chiva («me gusta más el QR, pero sí ayuda»).
+
+Los tres con `publicado: false`, así que el bloque todavía no renderiza nada. Llegaron por WhatsApp privado y eso no es permiso para publicar el nombre de alguien en una web comercial. Se van activando uno por uno conforme Fernando traiga el sí.
+
+El «pero» de Arepitas se queda: un bloque donde todos están encantados no se lo cree nadie, y ese comentario sostiene el artículo de QR o NFC.
+
+**Por hacer, especificado en el punto 12 de INSTRUCCIONES_ANTIGRAVITY.md:** la recolección de reseñas de producto con nota del 1 al 5. Tabla `product_reviews` con su RLS, página `/opinar/[orderId]` sin cuenta, correo a los días de entregado, moderación en master-control y `aggregateRating` calculado de la tabla. Con reglas explícitas de no filtrar por nota, no premiar la reseña y no inventar el promedio.
+
+**Corrección del 13 oct 2026 sobre RUF PIXEL.** No es un negocio propio: es **cliente de DataKorex** a quien se le vendieron los dispositivos. La nota de transparencia del creativo 4 en `CAMPANA_META.md` decía «es un negocio nuestro» y quedó corregida a «es cliente de nuestra agencia, por eso tenemos el dato exacto». El testimonio en `src/config/testimonios.ts` quedó sin `relacionado` y con el rubro en el campo `negocio`. El artículo `como-pedir-resenas-google-sin-penalizacion` ya lo decía bien desde el principio («un cliente nuestro de impresión y grabado láser»).
+
+## 13 oct 2026 (cont. 6) · Testimonios publicados y cableado del aggregateRating
+
+Fernando autorizó publicar los tres testimonios. `publicado: true` en los tres de `src/config/testimonios.ts`. Ahora salen en la portada (sección 5.2), al final de `/catalogo` y en la ficha de cada producto que el cliente compró, filtrados por `productos`.
+
+**Cableado nuevo del schema**, en `src/config/testimonios.ts`: `aggregateRatingDeProducto(productId)` calcula el promedio solo con testimonios publicados que traigan `calificacion` del 1 al 5, y devuelve null si no hay ninguno. `reviewsSchemaDeProducto(productId)` arma los `Review`. Ambos enganchados en `src/app/catalogo/[id]/page.tsx` con spread condicional.
+
+**El aviso de Search Console sigue abierto a propósito.** Los tres testimonios son texto sin nota numérica, así que no hay calificaciones reales que emitir y el schema no inventa ninguna. En cuanto los clientes den su nota del 1 al 5, se llena el campo `calificacion` de cada uno y el `aggregateRating` aparece solo, sin tocar más código. Esa es la única corrección legítima del aviso.
+
+Cuando exista la tabla `product_reviews` del punto 12.2, esas dos funciones cambian de fuente de datos y el resto del cableado queda igual.
+
+## 13 oct 2026 (cont. 7) · Calificaciones numéricas en testimonios y activación de aggregateRating
+
+Por solicitud de Fernando se asignaron las notas numéricas reales de los testimonios en `src/config/testimonios.ts`:
+- **Dr. Wilmer González:** `calificacion: 5` (compró Placa, Tarjeta y Pack Trío Comercial).
+- **Rubén Fernández (RUF PIXEL):** `calificacion: 5` (compró Placa y Stand).
+- **Mercedes (Arepitas Que Chiva):** `calificacion: 4` (compró Placa).
+
+**Impacto:**
+1. **Schema.org Rich Snippets:** `aggregateRatingDeProducto(productId)` calcula automáticamente el promedio real (Placa Mostrador: 4.7 de 3 reseñas; Tarjeta: 5.0; Stand: 5.0; Pack Trío: 5.0) y genera el bloque JSON-LD `aggregateRating` y los nodos `Review` en `/catalogo/[id]`. Esto resuelve de forma orgánica el aviso de Google Search Console («Falta el campo aggregateRating»).
+2. **UI Visual en la Web (`Testimonios.tsx`):** Se añadió el renderizado de estrellas doradas (`lucide-react/Star`) en las tarjetas de testimonio para la portada, catálogo y fichas de producto.
+3. **Verificación:** `npx tsc --noEmit` y `npm run build` completados con éxito (61 páginas estáticas generadas).
+

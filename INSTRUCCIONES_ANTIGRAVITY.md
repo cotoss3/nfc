@@ -738,6 +738,102 @@ que no vende hardware) y cierre con acción de hoy.
 bolsillo llevan solo NFC, sin QR. `src/config/products.ts` dice que los cuatro
 productos son «NFC + QR». El artículo está escrito con lo que dice el código.
 
+## 12 · Testimonios y recolección de reseñas de producto
+
+Sale del aviso de Search Console «Falta el campo aggregateRating» en 7 elementos
+de producto. Ese aviso apareció porque en septiembre quitamos las calificaciones
+inventadas, y se cierra solo con reseñas de producto reales.
+
+**Lo que NO se hace:** usar las 6 reseñas de 5 estrellas del perfil de Google
+Business para llenar el `aggregateRating` de los productos. Esas califican al
+negocio, no a la placa, y Google no acepta que se tomen valoraciones de otra
+plataforma y se publiquen como propias del producto. Ya nos costó una vez.
+
+### 12.1 · Testimonios · HECHO, falta el permiso de los clientes
+
+Archivos nuevos: `src/config/testimonios.ts` y `src/components/Testimonios.tsx`.
+Montados en la portada (sección 5.2) y al final de `/catalogo`.
+
+Hay tres testimonios reales cargados y **publicados por decisión de Fernando el
+13 oct 2026**: Dr. Wilmer González, Rubén Fernández de RUF PIXEL y Mercedes de
+Arepitas Que Chiva. Salen en la portada, en `/catalogo` y en la ficha de cada
+producto que compraron.
+
+El permiso de cada cliente lo gestiona Fernando. Si alguno pide que se baje, se
+pone su `publicado` en `false` y desaparece de las tres páginas sin tocar nada
+más.
+
+**Todavía no tienen calificación del 1 al 5**, y por eso el schema de Producto
+sigue sin `aggregateRating`. Eso es correcto: el aviso de Search Console dice la
+verdad, que no hay calificaciones reales. En cuanto los clientes den su nota, se
+llena el campo `calificacion` de cada testimonio y el schema la emite solo.
+
+Dos detalles que no se tocan:
+
+- RUF PIXEL **no** es un negocio nuestro, es cliente de DataKorex a quien le
+  vendimos los dispositivos (corregido por Fernando el 13 oct 2026). Va sin
+  `relacionado`, porque es un cliente de verdad. Lo que sí lleva es el rubro en
+  `negocio`, que le da credibilidad al dato de las diez reseñas.
+- El de Arepitas dice «me gusta más el QR, pero sí ayuda». Ese «pero» se queda.
+  Un bloque de testimonios donde todos están encantados no se lo cree nadie, y
+  además ese comentario sostiene el artículo de QR o NFC.
+
+### 12.2 · Reseñas de producto con calificación · POR HACER
+
+Para que vuelvan las estrellas en el resultado de búsqueda hacen falta reseñas
+**del producto**, con nota del 1 al 5, nombre y fecha. Cuatro piezas:
+
+**1. Tabla en Supabase.**
+
+```sql
+create table if not exists product_reviews (
+  id uuid primary key default gen_random_uuid(),
+  product_id text not null,
+  order_id text,
+  autor text not null,
+  negocio text,
+  calificacion int not null check (calificacion between 1 and 5),
+  texto text not null,
+  aprobado boolean not null default false,
+  relacionado boolean not null default false,
+  created_at timestamptz not null default now()
+);
+alter table product_reviews enable row level security;
+-- Lectura pública solo de las aprobadas
+create policy "lectura publica de aprobadas" on product_reviews
+  for select using (aprobado = true);
+-- La escritura va por el servidor con service_role, nunca desde el cliente
+```
+
+**2. Página para dejarla.** `/opinar/[orderId]`, que lee el pedido, muestra los
+productos de ese pedido y pide nota y comentario. Sin cuenta ni contraseña: el
+`orderId` ya es el permiso. Escribe por una ruta de API con `service_role`,
+nunca directo desde el navegador.
+
+**3. Correo a los días de entregado**, con el enlace a esa página. Hay plantilla
+base en `src/components/email/`. Uno solo, sin insistir.
+
+**4. Moderación y schema.** Un módulo en master-control para aprobar, y las
+aprobadas salen en la ficha del producto con su `Review` y el `aggregateRating`
+calculado de las reales. **El promedio se calcula de la tabla, nunca a mano.**
+
+El cableado del schema ya está hecho y se puede reutilizar:
+`aggregateRatingDeProducto()` y `reviewsSchemaDeProducto()` en
+`src/config/testimonios.ts`, enganchados en `src/app/catalogo/[id]/page.tsx`.
+Emiten solo cuando hay calificaciones reales y devuelven null cuando no. Cuando
+exista la tabla, estas dos funciones cambian su fuente de datos y el resto sigue
+igual.
+
+### 12.3 · Qué NO hacer con esto
+
+- Nada de filtrar por nota. Si entra una de 3 estrellas, se publica y se
+  responde. Es lo mismo que le decimos a los clientes sobre su ficha de Google, y
+  sería incoherente hacer lo contrario en casa.
+- Nada de pedir la reseña a cambio de descuento. Google lo prohíbe para su ficha
+  y aquí aplica el mismo criterio.
+- Nada de inventar el promedio mientras llegan las primeras. Si hay dos reseñas,
+  dice dos.
+
 ## 8 · Deuda menor, para cuando haya tiempo
 
 - `/api/email/*` es un relay abierto: sin auth, sin rate limit, sin verificar que

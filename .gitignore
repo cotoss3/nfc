@@ -39,3 +39,7 @@ herramientas/videos/
 
 # Backup files
 *.bak
+
+# Hojas de calculo y analisis temporales
+*.xlsx
+*.csv

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import { aggregateRatingDeProducto, reviewsSchemaDeProducto } from '@/config/testimonios';
 import { permanentRedirect } from 'next/navigation';
 import ProductDetailClient from './ProductDetailClient';
+import Testimonios from '@/components/Testimonios';
 import { PRODUCTS, getProductById as getCentralProductById } from '@/config/products';
 import { getLandingCopy } from '@/lib/landings';
 
@@ -73,6 +75,16 @@ export default function Page({ params }: { params: { id: string } }) {
         sku: product.sku || `STP-${product.id.toUpperCase()}`,
         mpn: product.mpn || `STP-${product.id.toUpperCase()}`,
         gtin13: product.gtin13 || '0745301294801',
+        // Solo se emite si hay testimonios publicados CON calificación real.
+        ...(aggregateRatingDeProducto(product.id)
+          ? {
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ...aggregateRatingDeProducto(product.id)!,
+              },
+              review: reviewsSchemaDeProducto(product.id),
+            }
+          : {}),
         offers: {
           '@type': 'Offer',
           url: `${BASE_URL}/catalogo/${product.id}`,
@@ -172,6 +184,12 @@ export default function Page({ params }: { params: { id: string } }) {
         />
       )}
       <ProductDetailClient params={params} initialProduct={product || null} />
+      {product && (
+        <Testimonios
+          productId={product.id}
+          titulo="Lo que dicen quienes lo compraron"
+        />
+      )}
     </>
   );
 }
