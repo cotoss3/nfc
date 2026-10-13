@@ -164,8 +164,8 @@ export default function Markdown({ children }: { children: string }) {
 
     salida.push(
       <div key={`table-wrapper-${k++}`} className="not-prose my-8">
-        {/* VISTA MÓVIL (< sm): Tarjetas nativas apiladas, cómodas y sin scroll horizontal */}
-        <div className="sm:hidden space-y-3.5">
+        {/* VISTA MÓVIL (< sm): Acordeón plegable interactivo (Collapsible Rows) */}
+        <div className="sm:hidden space-y-2.5">
           {/* Barra superior de contexto móvil con branding starTAP */}
           <div className="flex items-center justify-between px-1 text-xs">
             <span className="flex items-center gap-1.5 font-bold text-slate-900">
@@ -173,46 +173,70 @@ export default function Markdown({ children }: { children: string }) {
               {headers[0] || 'Comparativa'}
             </span>
             <span className="text-[11px] font-black uppercase tracking-wider text-[#01A6D2]">
-              starTAP Panamá
+              Toca para ver detalles
             </span>
           </div>
 
-          {/* Tarjetas individuales por fila */}
-          {bodyRows.map((row, rIdx) => (
-            <div
-              key={`card-${k}-${rIdx}`}
-              className="rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden"
-            >
-              {/* Barra superior de acento con gradiente de marca starTAP */}
-              <div className="h-1 bg-gradient-to-r from-[#01A6D2] via-[#0194bc] to-[#01A6D2]" />
+          {/* Acordeones individuales por fila */}
+          {bodyRows.map((row, rIdx) => {
+            // Si hay alguna celda con Sí/No, se previsualiza en la barra cerrada
+            const booleanCell = row.slice(1).find((c) => {
+              const clean = c.replace(/\*/g, '').trim().toLowerCase();
+              return clean === 'sí' || clean === 'si' || clean === 'no';
+            });
 
-              <div className="p-4 space-y-3">
-                {/* Título de la fila / Criterio (Negrita destacada) */}
-                <div className="pb-2.5 border-b border-slate-100">
-                  <h4 className="font-bold text-slate-950 text-sm leading-snug">
-                    {inline(row[0] || '', `card-title-${k}-${rIdx}`)}
-                  </h4>
-                </div>
+            return (
+              <details
+                key={`acc-${k}-${rIdx}`}
+                open={rIdx === 0}
+                className="group rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden transition-all duration-200 open:border-[#01A6D2]/60 open:shadow-sm"
+              >
+                <summary className="flex items-center justify-between p-3.5 sm:p-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden bg-white hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center gap-2.5 pr-2 min-w-0">
+                    <span className="w-1.5 h-1.5 shrink-0 rounded-full bg-[#01A6D2] group-open:scale-125 transition-transform" />
+                    <span className="font-bold text-slate-950 text-xs sm:text-sm leading-snug">
+                      {inline(row[0] || '', `acc-title-${k}-${rIdx}`)}
+                    </span>
+                  </div>
 
-                {/* Columnas siguientes como pares etiqueta-valor legibles */}
-                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2 shrink-0">
+                    {booleanCell && (
+                      <span className="scale-90 origin-right">
+                        {renderTableCell(booleanCell, `acc-badge-${k}-${rIdx}`)}
+                      </span>
+                    )}
+                    <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-open:bg-[#01A6D2]/10 group-open:text-[#01A6D2] transition-colors">
+                      <svg
+                        className="w-3.5 h-3.5 transition-transform duration-200 group-open:rotate-180"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
+                  </div>
+                </summary>
+
+                <div className="px-4 pb-4 pt-2.5 border-t border-slate-100 bg-slate-50/40 space-y-2.5">
                   {row.slice(1).map((cell, cIdx) => {
                     const colHeader = headers[cIdx + 1] || '';
                     return (
-                      <div key={`card-cell-${k}-${rIdx}-${cIdx}`} className="text-xs">
+                      <div key={`acc-cell-${k}-${rIdx}-${cIdx}`} className="text-xs">
                         <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-0.5">
                           {colHeader}
                         </span>
                         <div className="text-slate-700 leading-relaxed font-medium">
-                          {renderTableCell(cell, `card-val-${k}-${rIdx}-${cIdx}`)}
+                          {renderTableCell(cell, `acc-val-${k}-${rIdx}-${cIdx}`)}
                         </div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
-            </div>
-          ))}
+              </details>
+            );
+          })}
         </div>
 
         {/* VISTA ESCRITORIO (>= sm): Tabla completa con cabecera oscura y negritas */}

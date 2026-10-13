@@ -1186,8 +1186,8 @@ Se solucionó la falta de soporte de tablas en `src/components/Markdown.tsx` (qu
    - Cierre y renderizado automático al encontrar líneas vacías, texto estándar o fin de documento.
    - Normalización de celdas y badges interactivos automáticos para respuestas «Sí» (pastilla verde esmeralda con punto activo) y «No» (pastilla gris pizarra neutral).
 
-2. **Diseño Mobile-First con Arquitectura Dual (Tarjetas en móvil + Tabla en escritorio):**
-   - **Vista Móvil (`sm:hidden`):** Cada fila se transforma automáticamente en una **tarjeta nativa apilada** (`card stack`) con acento cyan superior, título de criterio en negrita (`font-bold text-slate-950`) y pares etiqueta-valor legibles. Elimina al 100% el scroll horizontal en celulares (360px-414px), logrando lectura vertical continua y cómoda sin gestos incómodos.
+2. **Diseño Mobile-First con Arquitectura Dual (Acordeón Plegable en móvil + Tabla en escritorio):**
+   - **Vista Móvil (`sm:hidden`) - Alternativa 5 (Acordeón Plegable / Collapsible Rows):** Implementado con `<details>` y `<summary>` nativos (100% amigable con SSR y SEO). Cada fila es una barra colapsable compacta con el título del criterio (`font-bold text-slate-950`), chevron animado que rota 180° (`group-open:rotate-180`) y previsualización de pastillas «Sí»/«No» si la fila las contiene. La primera fila se abre por defecto (`open={rIdx === 0}`) para invitar a la interacción. Al tocar cualquier fila, se expande con el desglose de columnas con etiquetas (`text-[10px] uppercase font-black text-slate-400`) y datos completos. Ocupa mínimo espacio vertical y elimina todo scroll horizontal.
    - **Vista Escritorio (`hidden sm:block`):** Tabla tradicional de alta presencia visual con barra degradada cyan starTAP (`#01A6D2` a `#0194bc`), cabecera oscura (`bg-slate-950 text-white font-black uppercase`), primera columna destacada en negrita (`font-bold text-slate-950 bg-slate-50/40`) y alternancia de filas.
    - Aislamiento total con `not-prose` para prevenir interferencias de Tailwind Typography.
 
