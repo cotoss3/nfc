@@ -7,6 +7,7 @@ una fila aquí, con la fecha del **despliegue**, no la del commit.
 
 | Fecha despliegue | Qué cambió | Páginas | Qué esperamos | Cuándo medir |
 | --- | --- | --- | --- | --- |
+| pendiente (preparado 14 oct 2026) | Metas ultra-optimizadas con precios y CTR hooks: Placa ($35), Tarjeta ($20), Stand ($30) y Pack ($50). Titles bajo 50-56 caracteres | `/catalogo/[id]` y `/catalogo` | Desbloquear clics en consultas Top 1 a 7 («placas nfc» pos 1.7, «tarjeta de bolsillo» pos 1.0) | 3 nov 2026 |
 | pendiente (preparado 13 oct 2026) | Titles recortados a 60 caracteres y descripciones a 155, con precio, pago único y envío gratis dentro | `/`, `/catalogo`, `/resenas-google`, `/corporativo`, `/distribuidores`, `/blog` y las 6 de industria | Primer clic en `/catalogo` y `/resenas-google`, que llevaban 25 y 6 impresiones en posiciones 4,3 y 4,7 con cero clics | 3 nov 2026 |
 | pendiente (preparado 13 oct 2026) | `/app` con `noindex` y fuera del `sitemap.ts` | `/app` | Que salga del índice. Llevaba 11 impresiones en posición 9,5 mostrando cifras de ejemplo | 3 nov 2026 |
 | pendiente (preparado 13 oct 2026) | La descripción del catálogo ya no lista precio por producto, solo «desde $20». Evita que se desincronice cada vez que cambian los precios | `/catalogo` | Nada medible | — |

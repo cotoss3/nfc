@@ -26,15 +26,36 @@ export async function generateMetadata({
     };
   }
 
-  const shortDesc = `${product.description} Pago único sin mensualidades. Auto-configurable al llegar a tu negocio en Panamá. Envíos a todo el país.`;
+  const PRODUCT_SEO_OVERRIDES: Record<string, { title: string; description: string }> = {
+    'placa-nfc-mostrador': {
+      title: 'Placa NFC para Reseñas Google Panamá | $35 starTAP',
+      description: 'Placa acrílica de mostrador con chip NFC y QR. Consigue reseñas de Google en tu caja o recepción. Pago único de $35. Envío a todo Panamá.',
+    },
+    'tarjeta-nfc-bolsillo': {
+      title: 'Tarjeta NFC de Reseñas en Panamá | $20 starTAP',
+      description: 'Tarjeta de PVC con chip NFC y QR para pedir reseñas de Google al instante. Pago único de $20 sin mensualidad. Envío a todo Panamá.',
+    },
+    'stand-nfc-mesa': {
+      title: 'Stand NFC para Reseñas Google Panamá | $30 starTAP',
+      description: 'Stand autoportante con NFC y QR para mesas y mostradores. Tus clientes califican en Google con 1 toque. $30 pago único. Envío a todo Panamá.',
+    },
+    'pack-trio-comercial': {
+      title: 'Pack Trío NFC Reseñas Panamá | $50 Envío Gratis',
+      description: 'Incluye 1 Placa de mostrador y 2 Tarjetas de bolsillo NFC + QR. Ahorra $25. Pago único de $50 con envío gratis a todo Panamá.',
+    },
+  };
+
+  const override = PRODUCT_SEO_OVERRIDES[product.id];
+  const metaTitle = override ? override.title : `${product.name} en Panamá | $${product.price} starTAP`.slice(0, 60);
+  const metaDesc = override ? override.description : `${product.description} Pago único sin mensualidades. Envíos a todo Panamá.`.slice(0, 155);
 
   return {
-    title: `${product.name} en Panamá | Pago Único Sin Mensualidades`,
-    description: shortDesc.slice(0, 160),
+    title: metaTitle,
+    description: metaDesc,
     alternates: { canonical: `${BASE_URL}/catalogo/${product.id}` },
     openGraph: {
-      title: `${product.name} en Panamá | starTAP`,
-      description: shortDesc.slice(0, 160),
+      title: metaTitle,
+      description: metaDesc,
       url: `${BASE_URL}/catalogo/${product.id}`,
       siteName: 'starTAP Panamá',
       images: product.image ? [`${BASE_URL}${product.image}`] : undefined,

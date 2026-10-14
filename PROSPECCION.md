@@ -643,3 +643,15 @@ _(vacio por ahora)_
 | 2026-10-14 | Clinica de Ortodoncia y Estetica Dental Centennial | Ortodoncia | Centennial Plaza | 22 | 2.7 | | no contactar | no | Fernando 14-10; DESCARTADO regla dura, 2.7 muy debajo del piso de 3.8 |
 | 2026-10-14 | Centro Medico Plaza Cecilia | Hospital | Ciudad de Panama | 30 | 3.4 | | no contactar | no | Fernando 14-10; DESCARTADO regla dura |
 | 2026-10-14 | Centro de Salud de Pueblo Nuevo | Clinica ambulatoria | Pueblo Nuevo | 51 | 3.3 | | no contactar | no | Fernando 14-10; DESCARTADO regla dura; ademas es centro de salud publico |
+| 2026-10-14 | Celebrity’s Barber Shop | Barberia | Obarrio (Time Square Plaza) | 14 | 4.9 | WhatsApp | 6985-1209 | no | contesto 14-10; ya cuentan con dispositivo NFC en el local; cerrado cordialmente |
+| 2026-10-14 | Spa Barcenas | Centro de estetica y spa | Obarrio (PH Plaza Ejecutiva) | 7 | 5.0 | WhatsApp | 6514-6642 | respondio | atendio duena/encargada; pregunto precio (Stand $30 / Placa $35); pidio contactar DESPUES DEL 15 DE NOVIEMBRE; programar recontacto para esa fecha |
+| 2026-10-14 | Clínica Dental Tu Real Sonrisa | Clínica dental | Vista Alegre (Arraiján) | 6 | 4.8 | WhatsApp | 6301-9351 | pendiente | vendedora 1 lista 14-10 Arraiján; Planta Alta Super Carnes; líderes dentales 84/43 |
+| 2026-10-14 | EcoDentist | Clínica dental | Burunga (Arraiján) | 12 | 4.8 | WhatsApp | 6249-2426 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Oeste 2do piso; líderes dentales 84/43 |
+| 2026-10-14 | Clínica Veterinaria Mi Mascota | Veterinaria | Nuevo Arraiján | 8 | 4.9 | WhatsApp | 6147-8642 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza DM local 3; líderes veterinarias 78/64 |
+| 2026-10-14 | Veterinaria Animal Center | Veterinaria | Arraiján (Brisas del Golf) | 9 | 5.0 | WhatsApp | 6197-3139 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Nuevo Emperador; líderes veterinarias 78/64 |
+| 2026-10-14 | Chiiki Nails & Spa | Centro de estética | Vista Alegre (Arraiján) | 10 | 5.0 | WhatsApp | 6703-4346 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Jade Loma Bonita; top2 salones 133/99 |
+| 2026-10-14 | Clínica Óptica De La Hoz | Óptica | Vacamonte (Arraiján) | 7 | 4.8 | WhatsApp | 6467-1941 | pendiente | vendedora 1 lista 14-10 Arraiján; PH Plaza El Tecal; líderes ópticas 152/124 |
+| 2026-10-14 | Óptica Tapia | Óptica | Paseo Arraiján | 5 | 5.0 | WhatsApp | 6971-9417 | pendiente | vendedora 1 lista 14-10 Arraiján; sucursal Paseo Arraiján; líderes ópticas 152/124 |
+| 2026-10-14 | Pilana Burger | Hamburguesería | Nuevo Arraiján | 11 | 4.7 | WhatsApp | 6188-8442 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Lucky; comida rápida líderes 207/140 |
+| 2026-10-14 | Puchungo Pizzería & Restaurante | Pizzería | Nuevo Arraiján | 13 | 4.6 | WhatsApp | 6956-3117 | pendiente | vendedora 1 lista 14-10 Arraiján; Calle B2; pizzerías líderes 82/110 |
+| 2026-10-14 | Elegance Car Wash | Autolavado | Nuevo Arraiján | 12 | 4.7 | WhatsApp | 6305-3488 | pendiente | vendedora 1 lista 14-10 Arraiján; Vía Interamericana; sala de espera; top2 car wash 48/80 |

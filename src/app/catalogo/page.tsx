@@ -6,8 +6,8 @@ import CatalogoClient from './CatalogoClient';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Placas y Tarjetas NFC para Reseñas de Google | starTAP',
-  description: 'Placas, stands y tarjetas NFC para que tu cliente deje su reseña de Google con un toque. Desde $20, pago único. Envío gratis en pedidos desde $50.',
+  title: 'Dispositivos NFC y QR Reseñas Panamá | Desde $20 starTAP',
+  description: 'Placas, stands y tarjetas NFC para conseguir reseñas en Google Maps. Desde $20 pago único sin mensualidades. Envío gratis desde $50 a todo Panamá.',
   alternates: {
     canonical: `${BASE_URL}/catalogo`,
   },
