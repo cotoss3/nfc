@@ -25,11 +25,10 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Inicio', href: '/' },
     { name: 'Catálogo', href: '/catalogo' },
-    { name: 'Más Reseñas', href: '/resenas-google' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'Por Industria', href: '/resenas-google' },
+    { name: 'Distribuidores', href: '/distribuidores' },
     { name: 'Corporativo', href: '/corporativo' },
-    { name: 'App Pro ⚡', href: '/app' },
-    { name: 'Administrar Tarjetas', href: '/dashboard' },
+    { name: 'Blog', href: '/blog' },
   ];
 
   return (
@@ -61,7 +60,15 @@ export default function Navbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center space-x-3 sm:space-x-5">
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            {/* Activar / Gestionar TAP */}
+            <Link
+              href="/dashboard"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand-200 bg-brand-50/60 hover:bg-brand-100 text-brand-800 hover:text-brand-950 text-xs font-bold uppercase tracking-wider transition-colors shadow-2xs"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5 text-accent-500" />
+              <span>Activar TAP</span>
+            </Link>
             {/* Cart Button */}
             <Link
               href="/cart"
@@ -132,6 +139,16 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+          <div className="pt-2 border-t border-brand-100 mt-2">
+            <Link
+              href="/dashboard"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide uppercase text-accent-600 bg-accent-50/70 hover:bg-accent-100 transition-colors"
+            >
+              <LayoutDashboard className="w-4 h-4 text-accent-500" />
+              <span>Activar / Mi TAP</span>
+            </Link>
+          </div>
         </div>
       )}
     </nav>

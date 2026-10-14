@@ -203,7 +203,7 @@ export default function Footer() {
                   Programa de Distribuidores
                 </Link>
               </li>
-              <li><Link href="/shop" className="hover:text-white transition-colors text-gray-400">Ver Catálogo Completo →</Link></li>
+              <li><Link href="/catalogo" className="hover:text-white transition-colors text-gray-400">Ver Catálogo Completo →</Link></li>
             </ul>
           </div>
 
@@ -226,7 +226,7 @@ export default function Footer() {
             <h3 className="text-white font-bold text-xs uppercase tracking-wider">Información</h3>
             <ul className="space-y-2 text-xs">
               <li><Link href="/blog" className="hover:text-white transition-colors">Blog y Guías Google Maps</Link></li>
-              <li><Link href="/app" className="hover:text-white transition-colors">Plataforma & Funciones</Link></li>
+              <li><Link href="/dashboard" className="hover:text-white transition-colors">Activar / Configurar TAP</Link></li>
               <li><Link href="/envios" className="hover:text-white transition-colors">Cobertura de Envíos</Link></li>
               <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-400">Términos del Servicio</Link></li>
               <li><Link href="/privacidad" className="hover:text-white transition-colors text-gray-400">Política de Privacidad</Link></li>
