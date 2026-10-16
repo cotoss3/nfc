@@ -1265,4 +1265,29 @@ Fernando subió las 3 fotografías definitivas para el artículo `¿Código QR o
 3. **Placeholders y Prompts para imágenes:** Asignados 3 espacios de imágenes (`placeholder:/blog/...`) y creado el documento `herramientas/prompts/imagenes-resena-negativa.md` con las especificaciones y prompts detallados para generar o subir las fotos definitivas.
 4. **Validación:** Integrado en `POSTS` de `src/lib/blog.ts`. `npx tsc --noEmit` completado en 0 errores.
 
+## 16 oct 2026 (cont.) · Reescribir Artículo 8 con Metodología Pro Copywriter y Metas CTR
+
+Por indicación de Fernando («no usate la regala de ctr metas y metodologia de escritura en este articulo»), se reescribió `src/content/blog/responder-resenas-negativas-google-panama.ts` aplicando de forma rigurosa los tres manuales normativos (`REGLAS_ESCRITURA_SEO.md`, `REGLAS_ESCRITORES_PRO.md` y `REGLAS_CONTENIDO.md`):
+
+1. **Metas CTR Operativas (`REGLAS_ESCRITURA_SEO.md`):**
+   - `tituloSeo` (59 caracteres, tope 60): `'Cómo Responder Reseñas Negativas en Google Panamá | starTAP'` (incluye «Panamá» y la marca al final).
+   - `descripcion` (152 caracteres, tope 155): `'Aprende a responder malas reseñas en Google Maps en Panamá con plantillas reales. Protege tu ficha con pago único desde $20 y envío gratis sobre $49.99.'` (incluye datos concretos de CTR: pago único, precio desde $20 y regla oficial de envío gratis en compras mayores a $49.99).
+2. **Estructura Pro Copywriter (`REGLAS_ESCRITORES_PRO.md`):**
+   - **Gancho APP + BLUF en 59 palabras (< 60 palabras):** Agree (dolor cotidiano del domingo por la noche), Promise + BLUF (la solución real en menos de 24 horas y dilución por volumen), Preview (qué denuncias acepta Google, 3 plantillas y cómo blindar la ficha).
+   - **Ritmo móvil 1-3-1:** Párrafos de máximo 2 a 3 líneas en pantalla móvil, frase corta de enganche, bloque de desarrollo y frase de remate.
+   - **Bucket Brigades autorizadas:** Inserción de cuatro conectores naturales: *«Aquí está el detalle:»*, *«Veámoslo con números:»*, *«En la práctica:»*, *«Lo que nadie te dice:»*.
+   - **Regla del cineasta:** Escena física visualizable de cobro en mostrador (el cliente pide la cuenta, paga, acerca su celular al stand/placa y en 4 segundos tiene las 5 estrellas listas).
+   - **Puente comercial por contraste de fricción:** Se explica primero el método manual gratuito (enlace corto en Google Business Profile por WhatsApp), se evidencia la fricción (el cliente va manejando, de 30 mensajes responden 2), y se introduce el hardware físico starTAP (Stand $30, Placa $35, Tarjeta $20, Pack Trío $50) con condiciones transparentes (pago único, envío gratis sobre $49.99).
+   - **Cierre con Next Logical Step:** Acción inmediata en 10 minutos (responder pendientes) más alternativa de equipar el local con hardware starTAP.
+3. **Pilar Anti-IA (`REGLAS_CONTENIDO.md`):**
+   - 0 adverbios en `-mente` (eliminados «sinceramente», «directamente»).
+   - 0 rayas largas (`—`).
+   - 0 palabras prohibidas de IA.
+   - 0 contrastes binarios formulaicos.
+4. **Verificación y Despliegue:**
+   - Creado script validador automatizado `scratch/validate_rules.js` (0 errores críticos, 0 advertencias).
+   - `npx tsc --noEmit` completado con 0 errores.
+   - `npm run build` completado exitosamente (62 páginas estáticas generadas).
+
+
 
