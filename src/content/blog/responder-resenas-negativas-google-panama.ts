@@ -22,10 +22,10 @@ export const post: BlogPost = {
     'resenas falsas google panama'
   ],
   imagen: {
-    src: 'placeholder:/blog/responder-resena-negativa-google-panama.webp',
-    alt: 'Teléfono mostrando una reseña de una estrella en Google Maps sobre un mostrador en Panamá',
-    ancho: 1200,
-    alto: 630,
+    src: '/blog/responder-resena-negativa-google-panama.webp',
+    alt: 'Cliente mostrando una reseña de 1 estrella en Google Maps desde su celular en un mostrador en Panamá',
+    ancho: 1024,
+    alto: 571,
   },
   relacionados: [
     {
@@ -70,7 +70,7 @@ Borrarla no existe. La solución que funciona es contestar con calma antes de 24
 
 Aquí verás qué denuncias acepta Google, tres plantillas para Panamá y cómo blindar tu ficha hoy.
 
-![Notificación de reseña en mostrador](placeholder:/blog/notificacion-resena-negativa-celular-panama.webp)
+![Alerta en tiempo real de nueva reseña negativa de 1 estrella en el mostrador](/blog/notificacion-resena-negativa-celular-panama.webp)
 
 El impulso inicial de cualquier dueño es discutir o buscar con desesperación un botón para borrar el comentario.
 
@@ -129,7 +129,7 @@ Aplica cuando entra 1 estrella pero no encuentras ninguna orden, factura ni cita
 
 > «Hola, [Nombre]. Revisamos nuestro libro de citas y facturación de las últimas semanas y no encontramos registro de tu atención con este usuario. Cuidamos mucho el servicio y queremos saber qué pasó. Si visitaste nuestro local con otra persona o hubo una confusión, por favor escríbenos al WhatsApp [teléfono] para atenderte con gusto.»
 
-![Stand de reseñas starTAP en mostrador](placeholder:/blog/stand-resenas-google-mostrador-panama.webp)
+![Stand acrílico starTAP con tecnología NFC y QR para Google Reviews en mostrador](/blog/stand-resenas-google-mostrador-panama.webp)
 
 ## La matemática del algoritmo: cómo blindar tu ficha de verdad
 
