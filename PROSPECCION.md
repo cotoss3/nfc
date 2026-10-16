@@ -650,7 +650,7 @@ _(vacio por ahora)_
 | 2026-10-14 | Clínica Veterinaria Mi Mascota | Veterinaria | Nuevo Arraiján | 8 | 4.9 | WhatsApp | 6147-8642 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza DM local 3; líderes veterinarias 78/64 |
 | 2026-10-14 | Veterinaria Animal Center | Veterinaria | Arraiján (Brisas del Golf) | 9 | 5.0 | WhatsApp | 6197-3139 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Nuevo Emperador; líderes veterinarias 78/64 |
 | 2026-10-14 | Chiiki Nails & Spa | Centro de estética | Vista Alegre (Arraiján) | 10 | 5.0 | WhatsApp | 6703-4346 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Jade Loma Bonita; top2 salones 133/99 |
-| 2026-10-14 | Clínica Óptica De La Hoz | Óptica | Vacamonte (Arraiján) | 7 | 4.8 | WhatsApp | 6467-1941 | pendiente | vendedora 1 lista 14-10 Arraiján; PH Plaza El Tecal; líderes ópticas 152/124 |
+| 2026-10-14 | Clínica Óptica De La Hoz | Óptica | Vacamonte (Arraiján) | 7 | 4.8 | WhatsApp | 6467-1941 | respondio | vendedora 1; pidio precio y fotos 15-10 15:52; PH Plaza El Tecal; líderes ópticas 152/124 |
 | 2026-10-14 | Óptica Tapia | Óptica | Paseo Arraiján | 5 | 5.0 | WhatsApp | 6971-9417 | pendiente | vendedora 1 lista 14-10 Arraiján; sucursal Paseo Arraiján; líderes ópticas 152/124 |
 | 2026-10-14 | Pilana Burger | Hamburguesería | Nuevo Arraiján | 11 | 4.7 | WhatsApp | 6188-8442 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Lucky; comida rápida líderes 207/140 |
 | 2026-10-14 | Puchungo Pizzería & Restaurante | Pizzería | Nuevo Arraiján | 13 | 4.6 | WhatsApp | 6956-3117 | pendiente | vendedora 1 lista 14-10 Arraiján; Calle B2; pizzerías líderes 82/110 |

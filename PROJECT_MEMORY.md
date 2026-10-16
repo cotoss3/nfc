@@ -1258,3 +1258,11 @@ Fernando subió las 3 fotografías definitivas para el artículo `¿Código QR o
 - `npx tsc --noEmit` completado en 0 errores.
 - `npm run build` completado exitosamente con 61 páginas estáticas generadas.
 
+## 16 oct 2026 · Análisis GSC/Internet y 8vo artículo (Reseñas Negativas en Google Maps)
+
+1. **Análisis de intención y Search Console:** Se analizó el mapa de contenidos y las búsquedas locales. El dolor más urgente y con mayor carga emocional de un comerciante en Panamá es cuando recibe una reseña de 1 estrella. Se atacó el hueco planificado #2 de `ANALISIS_KEYWORDS.md` sin canibalizar con el artículo 3 (gestión general) ni con el 1 (políticas).
+2. **Redacción bajo REGLAS_CONTENIDO.md:** Creado `src/content/blog/responder-resenas-negativas-google-panama.ts` (~1.150 palabras). Incluye experiencia real de Panamá, datos de campo en Panamá Oeste y capital, 3 plantillas prácticas de respuesta local, comparativa en tabla de cuándo reportar ante Google y el argumento matemático de por qué el volumen de reseñas positivas en mostrador neutraliza las críticas aisladas.
+3. **Placeholders y Prompts para imágenes:** Asignados 3 espacios de imágenes (`placeholder:/blog/...`) y creado el documento `herramientas/prompts/imagenes-resena-negativa.md` con las especificaciones y prompts detallados para generar o subir las fotos definitivas.
+4. **Validación:** Integrado en `POSTS` de `src/lib/blog.ts`. `npx tsc --noEmit` completado en 0 errores.
+
+
