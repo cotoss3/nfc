@@ -655,3 +655,32 @@ _(vacio por ahora)_
 | 2026-10-14 | Pilana Burger | Hamburguesería | Nuevo Arraiján | 11 | 4.7 | WhatsApp | 6188-8442 | pendiente | vendedora 1 lista 14-10 Arraiján; Plaza Lucky; comida rápida líderes 207/140 |
 | 2026-10-14 | Puchungo Pizzería & Restaurante | Pizzería | Nuevo Arraiján | 13 | 4.6 | WhatsApp | 6956-3117 | pendiente | vendedora 1 lista 14-10 Arraiján; Calle B2; pizzerías líderes 82/110 |
 | 2026-10-14 | Elegance Car Wash | Autolavado | Nuevo Arraiján | 12 | 4.7 | WhatsApp | 6305-3488 | pendiente | vendedora 1 lista 14-10 Arraiján; Vía Interamericana; sala de espera; top2 car wash 48/80 |
+
+| 2026-10-16 | Medic & Dental Center | Clínica dental y médica | Nuevo Arraiján (Calle 2da) | 6 | 4.8 | WhatsApp | 6745-3672 | pendiente | vendedora 1 lista 16-10; líderes dentales Arraiján 84/43 |
+| 2026-10-16 | Good Pets Veterinaria | Veterinaria | Nuevo Arraiján | 7 | 4.9 | WhatsApp | 6533-5581 | pendiente | vendedora 1 lista 16-10; líderes veterinarias Arraiján 78/64 |
+| 2026-10-16 | Laboratorio Delgado Especializado | Laboratorio clínico | Plaza Paseo Arraiján (p2) | 8 | 4.8 | WhatsApp | 6305-1037 | pendiente | vendedora 1 lista 16-10; líderes laboratorios zona 70/45 |
+| 2026-10-16 | Beauty Athena Salon | Salón de belleza | Plaza West (Vista Alegre) | 5 | 5.0 | WhatsApp | 6776-0531 | pendiente | vendedora 1 lista 16-10; líderes salones Arraiján 133/99 |
+| 2026-10-16 | Veterinaria Best Friends | Veterinaria | Costa Verde (Blvd. Arrocha) | 9 | 4.9 | WhatsApp | 6380-2939 | pendiente | vendedora 1 lista 16-10; líder Costa Verde Dr. Medina 180+ |
+| 2026-10-16 | Friends Barber Shop | Barbería | Market Plaza Costa Verde (Local D7) | 11 | 4.7 | WhatsApp | 6802-2855 | pendiente | vendedora 1 lista 16-10; líderes barberías zona 120/85 |
+| 2026-10-16 | Dlash Bar | Centro de estética y pestañas | Market Plaza Costa Verde | 8 | 4.9 | WhatsApp | 6227-3641 | pendiente | vendedora 1 lista 16-10; líderes estética zona 90/65 |
+| 2026-10-16 | Clínica Panamá Oeste | Clínica médica | Anclas Mall & Plaza (La Chorrera) | 10 | 4.7 | WhatsApp | 6418-9448 | pendiente | vendedora 1 lista 16-10; líderes clínicas Chorrera 110/75 |
+| 2026-10-16 | Bolos del Bronx | Sport Bar y restaurante | Anclas Mall (La Chorrera) | 12 | 4.6 | WhatsApp | 6976-0865 | pendiente | vendedora 1 lista 16-10; líderes bares y rest Chorrera 280/150 |
+| 2026-10-16 | Restaurante Sunly | Restaurante chino | Anclas Mall (La Chorrera) | 14 | 4.5 | WhatsApp | 6246-6551 | pendiente | vendedora 1 lista 16-10; líderes comida china Chorrera 705/135 |
+
+| 2026-10-19 | Salón de Belleza Kadosh | Salón de belleza | San Francisco | 6 | 4.8 | WhatsApp | 6968-2539 | pendiente | lunes salones 19-10; líderes salones San Francisco 140/220 |
+| 2026-10-19 | Reyes Salón | Salón de belleza | San Francisco | 8 | 4.9 | WhatsApp | 6975-2085 | pendiente | lunes salones 19-10; líderes salones San Francisco 140/220 |
+| 2026-10-19 | Barbería Frisco | Barbería | San Francisco (Vía Porras c/ C. 65) | 10 | 4.7 | WhatsApp | 6780-8205 | pendiente | lunes barberías 19-10; líderes barberías San Francisco 160/95 |
+| 2026-10-19 | CH Beauty Panamá | Estética y salón | San Francisco (Plaza Fundadores C. 74) | 5 | 5.0 | WhatsApp | 6459-6815 | pendiente | lunes salones 19-10; líderes salones San Francisco 180/110 |
+| 2026-10-19 | Love Of Lashes | Pestañas y estética | San Francisco (C. 71 Este) | 7 | 4.9 | WhatsApp | 6417-8341 | pendiente | lunes salones 19-10; líderes estética zona 130/85 |
+| 2026-10-19 | JH Salon | Salón de belleza | Obarrio (Plaza Galerías Obarrio) | 9 | 4.8 | WhatsApp | 6325-6416 | pendiente | lunes salones 19-10; líderes salones Obarrio 190/125 |
+| 2026-10-19 | Salón de Belleza Miss Terios | Salón y barbería | Obarrio (Galerías Obarrio) | 4 | 5.0 | WhatsApp | 6210-5189 | pendiente | lunes salones 19-10; líderes salones Obarrio 190/125 |
+| 2026-10-19 | Barbería Universidad Nacional | Barbería | El Cangrejo (Vía Argentina) | 11 | 4.7 | WhatsApp | 6204-4349 | pendiente | lunes barberías 19-10; líderes barberías El Cangrejo 150/80 |
+| 2026-10-19 | D&T Beauty Salón & Barber Shop | Salón y barbería | El Cangrejo (Vía Argentina) | 6 | 5.0 | WhatsApp | 6677-6631 | pendiente | lunes salones 19-10; líderes El Cangrejo 150/90 |
+| 2026-10-19 | Barbería Machete | Barbería | El Cangrejo (Vía Argentina) | 8 | 4.8 | WhatsApp | 6481-4802 | pendiente | lunes barberías 19-10; líderes barberías El Cangrejo 150/80 |
+| 2026-10-19 | d-uñas Marbella | Salón de uñas | Marbella / Bella Vista (C. 47) | 12 | 4.6 | WhatsApp | 6357-5706 | pendiente | lunes uñas 19-10; líderes uñas Bella Vista 170/115 |
+| 2026-10-19 | La Primavera Salón | Salón de belleza | Bella Vista (C. 40 Este) | 7 | 4.9 | WhatsApp | 6125-4409 | pendiente | lunes salones 19-10; líderes salones Bella Vista 140/85 |
+| 2026-10-19 | Nails & Co | Salón de uñas | Bella Vista (C. 52, Edif. Bolívar) | 9 | 4.8 | WhatsApp | 6786-0339 | pendiente | lunes uñas 19-10; líderes uñas Bella Vista 160/95 |
+| 2026-10-19 | Biker Salón & Barbería | Salón y barbería | Bethania (C.C. El Dorado PB) | 10 | 4.7 | WhatsApp | 6634-3939 | pendiente | lunes salones 19-10; líderes salones El Dorado 180/110 |
+| 2026-10-19 | Donny Barber PTY | Barbería | Bethania (C.C. El Dorado) | 6 | 5.0 | WhatsApp | 6918-9460 | pendiente | lunes barberías 19-10; líderes barberías El Dorado 180/110 |
+
+

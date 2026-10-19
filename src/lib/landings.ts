@@ -224,6 +224,141 @@ export const LANDINGS: LandingCopy[] = [
       { q: '¿Incluye costo de envío?', a: 'El envío es gratuito en Ciudad de Panamá y Panamá Oeste. Para provincias enviamos por Uno Express o Servientrega.' },
     ],
     coloresPorDefecto: ['Acrílico 3mm + PVC 0.76mm'],
+  },
+  {
+    ids: ['stand-nfc-instagram', 'stand-instagram'],
+    etiqueta: 'Línea Oficial Instagram',
+    h1: 'Convierte a tus clientes en seguidores de Instagram.',
+    h1Destacado: 'En un solo toque.',
+    subtitulo:
+      'El Stand NFC de Mesa para Instagram facilita que tus clientes acerquen su celular para seguir tu cuenta oficial y compartir su experiencia antes de salir de tu local.',
+    nombreCorto: 'Stand Instagram',
+    heroImagenAlt:
+      'Stand NFC de mesa starTAP para Instagram con código QR y chip contactless en Panamá',
+    beneficios: [
+      {
+        titulo: 'Más rápido que buscar tu usuario',
+        texto:
+          'Un toque con el móvil abre tu perfil directamente en la app de Instagram del cliente. Cero errores tecleando nombres complejos o cuentas parecidas.',
+        icono: 'zap',
+        imagenAlt: 'Cliente acercando el celular al stand NFC de Instagram en la mesa',
+      },
+      {
+        titulo: 'PVC autoportante resistente al uso continuo',
+        texto:
+          'Estructura rígida con ángulo ergonómico para mesas de restaurantes, cafeterías, escritorios y barras de atención al cliente.',
+        icono: 'shield',
+        imagenAlt: 'Detalle del acabado autoportante del stand NFC Instagram starTAP',
+      },
+      {
+        titulo: 'Doble tecnología: NFC y Código QR HD',
+        texto:
+          'Funciona al 100% con cualquier celular inteligente: lectura por proximidad NFC o escaneo del código QR impreso en alta definición.',
+        icono: 'sparkles',
+        imagenAlt: 'Código QR y sensor NFC integrados en el stand Instagram starTAP',
+      },
+    ],
+    pasos: [
+      { titulo: 'Colócalo en la mesa o mostrador', texto: 'A la vista de tus clientes mientras esperan su pedido o cuenta.' },
+      { titulo: 'El cliente acerca su celular', texto: 'Se abre tu perfil de Instagram al instante en su pantalla.' },
+      { titulo: 'Ganas un seguidor real', texto: 'El cliente te sigue en el acto y puede etiquetarte en historias y fotos.' },
+    ],
+    faqs: [
+      { q: '¿Abre directo la aplicación de Instagram?', a: 'Sí, al acercar el teléfono o escanear el código QR se lanza la app oficial de Instagram con tu perfil listo para seguir.' },
+      { q: '¿Puedo cambiar mi usuario de Instagram después?', a: 'Sí, el enlace se puede actualizar en cualquier momento desde tu panel de starTAP sin necesidad de cambiar el dispositivo físico.' },
+      { q: '¿Necesita baterías o conectarse a corriente?', a: 'No. El chip NFC se energiza por inducción electromagnética con la antena del teléfono móvil del cliente. No requiere cables ni mantenimiento.' },
+    ],
+    coloresPorDefecto: ['Blanco con Degradado Instagram'],
+  },
+  {
+    ids: ['placa-nfc-instagram', 'placa-instagram'],
+    etiqueta: 'Acrílico 3mm Degradado Instagram',
+    h1: 'Multiplica tus seguidores de Instagram en el mostrador.',
+    h1Destacado: 'Sin fricción.',
+    subtitulo:
+      'Placa acrílica pulida de 3mm con adhesivo industrial 3M y diseño oficial de Instagram. Colócala en tu caja o mostrador para que cada cliente que pague se convierta en seguidor de tu marca.',
+    nombreCorto: 'Placa Instagram',
+    heroImagenAlt:
+      'Placa acrílica de mostrador starTAP con chip NFC y QR para Instagram en Panamá',
+    beneficios: [
+      {
+        titulo: 'Seguidores reales en el momento del cobro',
+        texto:
+          'Aprovecha los segundos en que el cliente espera su factura o tarjeta para invitarlo a seguirte y enterarse de tus promociones y novedades.',
+        icono: 'zap',
+        imagenAlt: 'Cliente acercando el celular a la placa acrílica de Instagram en el mostrador',
+      },
+      {
+        titulo: 'Acrílico blanco de 3mm de alto impacto',
+        texto:
+          'Material duradero y elegante, resistente al agua y a la limpieza diaria con alcohol o desinfectantes comerciales.',
+        icono: 'shield',
+        imagenAlt: 'Acabado en acrílico brillante de la placa de mostrador Instagram',
+      },
+      {
+        titulo: 'Fijación segura con adhesivo 3M incluido',
+        texto:
+          'Se instala en 30 segundos sobre madera, metal, vidrio o granito sin necesidad de taladros ni tornillos.',
+        icono: 'sparkles',
+        imagenAlt: 'Adhesivo 3M posterior en la placa NFC de Instagram starTAP',
+      },
+    ],
+    pasos: [
+      { titulo: 'Pégala junto a tu caja', texto: 'Retira la cinta protectora 3M y fíjala firmemente sobre el mostrador o pared.' },
+      { titulo: 'El cliente acerca su móvil', texto: 'La antena NFC envía la señal y abre tu perfil de Instagram en 2 segundos.' },
+      { titulo: 'Comunidad en crecimiento', texto: 'Convierte clientes presenciales en seguidores fieles que ven tus historias a diario.' },
+    ],
+    faqs: [
+      { q: '¿En qué superficies se puede pegar?', a: 'Se adhiere perfectamente a madera, vidrio, mármol, acrílico y melamina gracias a su cinta 3M de alta adherencia.' },
+      { q: '¿El pago incluye mensualidades?', a: 'No. Es un pago único de $35.00 de por vida, sin contratos ni suscripciones mensuales.' },
+      { q: '¿Qué garantía tiene?', a: 'Cuenta con 12 meses de garantía de fábrica sobre el funcionamiento del chip NFC.' },
+    ],
+    coloresPorDefecto: ['Acrílico 3mm Degradado Instagram'],
+  },
+  {
+    ids: ['tarjeta-nfc-instagram', 'tarjeta-instagram', 'card-instagram'],
+    etiqueta: 'Tarjeta de Bolsillo Instagram',
+    h1: 'Lleva tu perfil de Instagram a todas partes.',
+    h1Destacado: 'Conecta en 2 segundos.',
+    subtitulo:
+      'Tarjeta de PVC en acabado satinado con diseño exclusivo de Instagram y chip NFC. Ideal para entregas a domicilio, eventos, ferias y networking comercial.',
+    nombreCorto: 'Tarjeta Instagram',
+    heroImagenAlt:
+      'Tarjeta NFC de bolsillo starTAP con diseño Instagram para ganar seguidores en Panamá',
+    beneficios: [
+      {
+        titulo: 'Tu tarjeta de presentación moderna e interactiva',
+        texto:
+          'En vez de entregar un papel que termina en la basura, acerca tu tarjeta al teléfono de tu cliente y queda guardado en su Instagram de inmediato.',
+        icono: 'zap',
+        imagenAlt: 'Persona tocando el celular de un cliente con la tarjeta NFC de Instagram',
+      },
+      {
+        titulo: 'PVC resistente al agua y al bolsillo',
+        texto:
+          'Mismo grosor y durabilidad que una tarjeta de crédito (0.76mm). Llévala en tu billetera o con un lanyard en eventos corporativos.',
+        icono: 'shield',
+        imagenAlt: 'Tarjeta NFC de bolsillo Instagram en acabado PVC ultra resistente',
+      },
+      {
+        titulo: 'Ideal para repartidores y vendedores en calle',
+        texto:
+          'Permite a tu equipo de ventas y mensajeros pedir que sigan la cuenta de tu negocio en la misma puerta del cliente al entregar el pedido.',
+        icono: 'sparkles',
+        imagenAlt: 'Uso de la tarjeta NFC de Instagram en entregas a domicilio',
+      },
+    ],
+    pasos: [
+      { titulo: 'Llévala en tu billetera', texto: 'Lista para usar en cualquier momento que conozcas a un cliente potencial.' },
+      { titulo: 'Acércala a su celular', texto: 'El celular detecta la tarjeta sin necesidad de que el cliente instale ninguna aplicación.' },
+      { titulo: 'Conexión instantánea', texto: 'Abre tu perfil de Instagram y el cliente te sigue al momento.' },
+    ],
+    faqs: [
+      { q: '¿Es compatible con iPhone y Android?', a: 'Sí. Funciona con todos los modelos de iPhone desde el XS en adelante y con todos los dispositivos Android que tengan sensor NFC activo.' },
+      { q: '¿Puedo llevarla colgada en una cinta o lanyard?', a: 'Sí, cabe en cualquier portacredenciales estándar de oficina o evento.' },
+      { q: '¿Qué pasa si cambio el nombre de mi cuenta de Instagram?', a: 'Puedes reprogramar el enlace en cualquier momento usando una app gratuita como NFC Tools o contactando a nuestro soporte.' },
+    ],
+    coloresPorDefecto: ['PVC Degradado Instagram'],
   }
 ];
 

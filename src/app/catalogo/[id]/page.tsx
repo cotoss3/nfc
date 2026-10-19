@@ -43,6 +43,18 @@ export async function generateMetadata({
       title: 'Pack Trío NFC Reseñas Panamá | $50 Envío Gratis',
       description: 'Incluye 1 Placa de mostrador y 2 Tarjetas de bolsillo NFC + QR. Ahorra $25. Pago único de $50 con envío gratis a todo Panamá.',
     },
+    'placa-nfc-instagram': {
+      title: 'Placa NFC para Instagram Panamá | $35 starTAP',
+      description: 'Placa acrílica de mostrador con chip NFC y QR para Instagram. Consigue seguidores reales al instante en tu local. Pago único de $35. Envío a todo Panamá.',
+    },
+    'tarjeta-nfc-instagram': {
+      title: 'Tarjeta NFC para Instagram Panamá | $20 starTAP',
+      description: 'Tarjeta de PVC con chip NFC y QR para conseguir seguidores de Instagram en eventos y entregas. Pago único de $20 sin mensualidad. Envío a todo Panamá.',
+    },
+    'stand-nfc-instagram': {
+      title: 'Stand NFC para Instagram Panamá | $30 starTAP',
+      description: 'Stand autoportante con NFC y QR para mesas y mostradores. Tus clientes te siguen en Instagram con 1 toque. $30 pago único. Envíos a todo Panamá.',
+    },
   };
 
   const override = PRODUCT_SEO_OVERRIDES[product.id];

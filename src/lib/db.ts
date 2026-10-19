@@ -204,8 +204,8 @@ const INITIAL_PRODUCTS: Product[] = PRODUCTS.map((p) => ({
   image: p.image,
   images: p.images,
   material: p.material,
-  category: (p.category === 'cards' ? 'cards' : p.category === 'plates' ? 'plates' : 'accessories') as any,
-  type: 'google'
+  category: (p.category === 'cards' ? 'cards' : p.category === 'plates' ? 'plates' : p.category === 'stands' ? 'stands' : p.category === 'packs' ? 'packs' : 'accessories') as any,
+  type: (p.type || 'google') as any
 }));
 
 

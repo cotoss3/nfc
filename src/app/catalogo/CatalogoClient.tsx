@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Testimonios from '@/components/Testimonios';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -17,7 +17,8 @@ import {
   ShieldCheck,
   Star,
   ArrowRight,
-  Tag
+  Tag,
+  Instagram
 } from 'lucide-react';
 import { ProductConfig, PRODUCTS } from '@/config/products';
 import { useCart } from '@/context/CartContext';
@@ -29,8 +30,10 @@ interface CatalogoClientProps {
 export default function CatalogoClient({ initialProducts }: CatalogoClientProps = {}) {
   const router = useRouter();
   const { addToCart } = useCart();
+  const [filter, setFilter] = useState<'all' | 'google' | 'instagram'>('all');
   const allProducts = (initialProducts && initialProducts.length > 0) ? initialProducts : PRODUCTS;
   const hardwareProducts = allProducts.filter((p) => !p.isPack && p.category !== 'test' && p.type !== 'test');
+  const filteredProducts = hardwareProducts.filter((p) => filter === 'all' || p.type === filter);
   const specialPacks = allProducts.filter((p) => p.isPack && p.category !== 'test' && p.type !== 'test');
 
   const handleAddToCartPack = (product: ProductConfig) => {
@@ -65,7 +68,7 @@ export default function CatalogoClient({ initialProducts }: CatalogoClientProps 
           </h1>
 
           <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            Hardware de captación directa de valoraciones en Google Maps para tu negocio en Panamá. <strong className="text-slate-900 font-bold">Pago único de por vida, sin contratos y sin mensualidades.</strong>
+            Hardware de captación directa de valoraciones en Google Maps y seguidores en Instagram para tu negocio en Panamá. <strong className="text-slate-900 font-bold">Pago único de por vida, sin contratos y sin mensualidades.</strong>
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs font-semibold text-slate-700">
@@ -181,17 +184,57 @@ export default function CatalogoClient({ initialProducts }: CatalogoClientProps 
 
         {/* Sección de Productos Individuales */}
         <div className="space-y-6">
-          <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
-              Dispositivos Individuales
-            </h2>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Pago único | Sin mensualidades
-            </span>
+          <div className="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
+                Dispositivos Individuales
+              </h2>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mt-0.5">
+                Pago único | Sin mensualidades
+              </span>
+            </div>
+
+            {/* Selector de Plataforma / Filtro */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setFilter('all')}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  filter === 'all'
+                    ? 'bg-slate-950 text-white shadow'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                }`}
+              >
+                Todos ({hardwareProducts.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter('google')}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  filter === 'google'
+                    ? 'bg-blue-600 text-white shadow'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                }`}
+              >
+                <span>Google Maps</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter('instagram')}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  filter === 'instagram'
+                    ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white shadow'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                }`}
+              >
+                <Instagram className="w-3.5 h-3.5" />
+                <span>Instagram</span>
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {hardwareProducts.map((product) => (
+            {filteredProducts.map((product) => (
               <div 
                 key={product.id}
                 className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between"
@@ -199,8 +242,12 @@ export default function CatalogoClient({ initialProducts }: CatalogoClientProps 
                 <div>
                   {/* Badge de Material */}
                   <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-1 rounded-md">
-                      {product.categoryLabel}
+                    <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md ${
+                      product.type === 'instagram'
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-sm'
+                        : 'text-amber-800 bg-amber-100'
+                    }`}>
+                      {product.type === 'instagram' ? 'INSTAGRAM' : product.categoryLabel}
                     </span>
                     <span className="text-[11px] font-semibold text-slate-500">
                       {product.badge}

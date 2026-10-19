@@ -1289,5 +1289,24 @@ Por indicación de Fernando («no usate la regala de ctr metas y metodologia de 
    - `npx tsc --noEmit` completado con 0 errores.
    - `npm run build` completado exitosamente (62 páginas estáticas generadas).
 
+## 19 oct 2026 · Lanzamiento de la Línea de Productos NFC para Instagram
 
+Fernando subió los diseños oficiales de los 3 dispositivos físicos para Instagram con precios calculados sobre la base de los modelos de Google Maps:
 
+1. **Catálogo y Precios Oficiales (`src/config/products.ts`):**
+   - **Tarjeta NFC para Instagram (`tarjeta-nfc-instagram`):** $20.00 (PVC 0.76mm con diseño degradado Instagram).
+   - **Stand NFC de Mesa para Instagram (`stand-nfc-instagram`):** $30.00 (PVC autoportante con NFC y QR).
+   - **Placa NFC para Instagram (`placa-nfc-instagram`):** $35.00 (Acrílico blanco 3mm con adhesivo industrial 3M y diseño oficial).
+2. **Imágenes WebP (`public/products/instagram/`):**
+   - Convertidas a WebP de alta definición y optimizadas con `sharp`:
+     - `placa-nfc-instagram-mostrador.webp`
+     - `tarjeta-nfc-instagram-bolsillo.webp`
+     - `stand-nfc-instagram-mesa.webp`
+3. **Landings y SEO (`src/lib/landings.ts` y `src/app/catalogo/[id]/page.tsx`):**
+   - Creados los textos de landing, beneficios, pasos de uso y FAQs orientados a conversión de seguidores de Instagram y social proof.
+   - Metadatos SEO configurados con títulos y descripciones únicas optimizadas para Panamá y CTR.
+4. **Filtros en Catálogo (`src/app/catalogo/CatalogoClient.tsx`):**
+   - Añadidos botones de filtro en `/catalogo` (`Todos (6)`, `Google Maps`, `Instagram`) y badge degradado especial de Instagram.
+5. **Verificación:**
+   - `npx tsc --noEmit` completado en 0 errores.
+   - `npm run build` completado exitosamente generando 65 páginas estáticas (3 nuevas rutas de producto pre-renderizadas).

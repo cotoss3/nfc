@@ -100,6 +100,72 @@ export const PRODUCTS: ProductConfig[] = [
     type: 'google'
   },
   {
+    id: 'tarjeta-nfc-instagram',
+    aliases: ['tarjeta-instagram', 'card-instagram'],
+    sku: 'STP-NFC-CARD-IG',
+    mpn: 'STP-CRD-IG',
+    gtin13: '0745301294849',
+    name: 'Tarjeta NFC para Instagram',
+    category: 'cards',
+    categoryLabel: 'TARJETA DE BOLSILLO',
+    material: 'PVC DEGRADADO INSTAGRAM 0.76MM | NFC + QR',
+    price: 20,
+    priceFormatted: '$20.00',
+    badge: 'PVC Degradado Instagram 0.76mm',
+    description: 'Tarjeta de PVC tamaño bolsillo con diseño exclusivo de Instagram y chip NFC integrado. Consigue que tus clientes te sigan al instante al entregar un pedido, en eventos o en visitas comerciales.',
+    useCase: 'Eventos, meseros, repartidores, influencers y atención móvil.',
+    image: '/products/instagram/tarjeta-nfc-instagram-bolsillo.webp',
+    images: [
+      '/products/instagram/tarjeta-nfc-instagram-bolsillo.webp'
+    ],
+    spec: 'Impermeable HD + Chip NTAG Ultrarrápido',
+    type: 'instagram'
+  },
+  {
+    id: 'stand-nfc-instagram',
+    aliases: ['stand-instagram'],
+    sku: 'STP-NFC-STAND-IG',
+    mpn: 'STP-STD-IG',
+    gtin13: '0745301294856',
+    name: 'Stand NFC de Mesa para Instagram',
+    category: 'stands',
+    categoryLabel: 'STAND DE MESA Y RECEPCIÓN',
+    material: 'PVC BLANCO AUTOPORTANTE | NFC + QR',
+    price: 30,
+    priceFormatted: '$30.00',
+    badge: 'PVC Autoportante Instagram',
+    description: 'Estructura rígida autoportante con NFC y código QR para mesas, barras y mostradores. Invita a tus clientes a seguir tu perfil de Instagram y compartir su experiencia con un solo toque del celular.',
+    useCase: 'Mesas de restaurantes, cafeterías, escritorios, barras y clínicas.',
+    image: '/products/instagram/stand-nfc-instagram-mesa.webp',
+    images: [
+      '/products/instagram/stand-nfc-instagram-mesa.webp'
+    ],
+    spec: 'Ángulo Inclinado Ergonómico + Antena NFC Dual',
+    type: 'instagram'
+  },
+  {
+    id: 'placa-nfc-instagram',
+    aliases: ['placa-instagram'],
+    sku: 'STP-NFC-PLACA-IG',
+    mpn: 'STP-PLC-IG',
+    gtin13: '0745301294863',
+    name: 'Placa NFC para Instagram',
+    category: 'plates',
+    categoryLabel: 'PLACA DE MOSTRADOR Y PARED',
+    material: 'ACRÍLICO BLANCO 3MM DEGRADADO | NFC + QR',
+    price: 35,
+    priceFormatted: '$35.00',
+    badge: 'Acrílico 3mm Degradado Instagram',
+    description: 'Placa acrílica pulida de 3mm con adhesivo industrial 3M y diseño oficial de Instagram. Pégala en tu caja de cobro, vitrina o pared para ganar seguidores directos en tu local.',
+    useCase: 'Caja de cobro, recepción, mostrador y vitrina de atención.',
+    image: '/products/instagram/placa-nfc-instagram-mostrador.webp',
+    images: [
+      '/products/instagram/placa-nfc-instagram-mostrador.webp'
+    ],
+    spec: 'Adhesivo 3M Industrial + Chip NTAG Integrado',
+    type: 'instagram'
+  },
+  {
     id: 'pack-trio-comercial',
     aliases: ['pack-trio'],
     sku: 'STP-NFC-TRIO-01',
