@@ -40,12 +40,23 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
   const router = useRouter();
   const { addToCart, getItemCount } = useCart();
 
-  // Los 3 productos principales del home
-  const HOME_PRODUCT_IDS = ['tarjeta-nfc-bolsillo', 'placa-nfc-mostrador', 'stand-nfc-mesa'];
+  // Pestañas del Catálogo en Home
+  const [activeCatalogTab, setActiveCatalogTab] = useState<'google' | 'instagram'>('google');
+
+  const GOOGLE_PRODUCT_IDS = ['tarjeta-nfc-bolsillo', 'placa-nfc-mostrador', 'stand-nfc-mesa'];
+  const INSTAGRAM_PRODUCT_IDS = ['tarjeta-nfc-instagram', 'placa-nfc-instagram', 'stand-nfc-instagram'];
+
   const catalog = (initialProducts && initialProducts.length > 0) ? initialProducts : dbLocal.getProducts();
-  const homeProducts = HOME_PRODUCT_IDS.map(id =>
+
+  const googleProducts = GOOGLE_PRODUCT_IDS.map(id =>
     catalog.find(p => p.id === id)
   ).filter(Boolean) as (Product | ProductConfig)[];
+
+  const instagramProducts = INSTAGRAM_PRODUCT_IDS.map(id =>
+    catalog.find(p => p.id === id)
+  ).filter(Boolean) as (Product | ProductConfig)[];
+
+  const currentProducts = activeCatalogTab === 'google' ? googleProducts : instagramProducts;
 
   const packProduct = catalog.find(p => p.id === 'pack-trio-comercial');
   const packPrice = packProduct?.price ?? 50;
@@ -331,173 +342,139 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
             </p>
           </div>
 
+          {/* PESTAÑAS SELECTORAS DE CATEGORÍA (GOOGLE REVIEWS VS INSTAGRAM) */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex p-1.5 bg-slate-200/80 rounded-2xl gap-1.5 shadow-inner">
+              <button
+                type="button"
+                onClick={() => setActiveCatalogTab('google')}
+                className={`px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer ${
+                  activeCatalogTab === 'google'
+                    ? 'bg-slate-950 text-white shadow-md'
+                    : 'text-slate-600 hover:text-slate-950 hover:bg-white/50'
+                }`}
+              >
+                <span className="text-amber-400 font-black">★</span>
+                <span>Reseñas Google</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCatalogTab('instagram')}
+                className={`px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer ${
+                  activeCatalogTab === 'instagram'
+                    ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white shadow-md'
+                    : 'text-slate-600 hover:text-slate-950 hover:bg-white/50'
+                }`}
+              >
+                <span>📸</span>
+                <span>Línea Instagram</span>
+                <span className="text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded-full font-black uppercase">Nuevo</span>
+              </button>
+            </div>
+          </div>
+
           <div className="mb-8 max-w-3xl mx-auto bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center shadow-xs">
             <p className="text-xs sm:text-sm font-bold text-amber-950">
-              ⚡ Incluye chip NFC de respuesta rápida + Código QR impreso en alta resolución. 0 mensualidades.
+              {activeCatalogTab === 'google' 
+                ? '⚡ Incluye chip NFC de respuesta rápida + Código QR impreso en alta resolución. 0 mensualidades.' 
+                : '📸 Conecta directo a tu perfil de Instagram. Gana seguidores y menciones en tu local físico.'}
             </p>
           </div>
 
           {/* Catalog Responsive Layout: Horizontal Touch Scroll on Mobile (<768px), 3-Column Grid on Desktop */}
           <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 px-4 -mx-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible scrollbar-none">
             
-            {/* Item 1: Tarjeta NFC de Bolsillo */}
-            {homeProducts[0] && (
-              <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
-                <div>
-                  <div className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
-                    <img
-                      src={homeProducts[0].image}
-                      alt={homeProducts[0].name}
-                      width={360}
-                      height={360}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
-                      Portátil
+            {currentProducts.map((product, idx) => {
+              const isFeatured = idx === 1; // Placa en medio como destacada
+              return (
+                <div
+                  key={product.id}
+                  className={`w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden flex flex-col justify-between transition-all ${
+                    isFeatured
+                      ? 'shadow-xl border-2 border-slate-950 relative transform hover:-translate-y-1'
+                      : 'shadow-md border border-slate-200 hover:border-slate-400'
+                  }`}
+                >
+                  {isFeatured && (
+                    <span
+                      className={`absolute -top-3 right-4 text-white text-[10px] font-black uppercase px-3 py-0.5 rounded-full shadow-md z-20 ${
+                        activeCatalogTab === 'instagram'
+                          ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500'
+                          : 'bg-amber-500'
+                      }`}
+                    >
+                      {activeCatalogTab === 'instagram' ? '✨ Más Pedida' : '🔥 Más Vendida'}
                     </span>
+                  )}
+                  <div>
+                    <div
+                      className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2"
+                      onClick={() => router.push(`/catalogo/${product.id}`)}
+                    >
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        width={360}
+                        height={360}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
+                      />
+                      <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
+                        {('badge' in product && product.badge) || (idx === 0 ? 'Portátil' : idx === 1 ? 'Acrílico 3mm' : 'Stand de Mesa')}
+                      </span>
+                    </div>
+                    <div className="p-4 sm:p-5 space-y-2">
+                      <h3
+                        className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1"
+                        onClick={() => router.push(`/catalogo/${product.id}`)}
+                      >
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-snug font-medium line-clamp-2">
+                        {product.description}
+                      </p>
+                      <div className="flex items-baseline justify-between pt-1">
+                        <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">
+                          ${product.price.toFixed(2)} USD
+                        </span>
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          Envío Panamá
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4 sm:p-5 space-y-2">
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1" onClick={() => router.push(`/catalogo/${homeProducts[0].id}`)}>
-                      {homeProducts[0].name}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-snug font-medium line-clamp-2">
-                      PVC ultrarresistente tamaño tarjeta de crédito. Llévala en tu billetera o portacredencial para entregas o eventos.
-                    </p>
-                    <div className="flex items-baseline justify-between pt-1">
-                      <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">${homeProducts[0].price.toFixed(2)} USD</span>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Envío Panamá</span>
+
+                  <div className="p-4 pt-0 sm:p-5 sm:pt-0">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleQuickAdd(product, true)}
+                        className={`flex-1 py-3 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1 ${
+                          isFeatured && activeCatalogTab === 'google'
+                            ? 'bg-amber-500 hover:bg-amber-600 text-slate-950'
+                            : isFeatured && activeCatalogTab === 'instagram'
+                            ? 'bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:opacity-95'
+                            : 'bg-slate-950 hover:bg-slate-900'
+                        }`}
+                      >
+                        <span>Comprar Ahora &rarr;</span>
+                      </button>
+                      <button
+                        onClick={() => handleQuickAdd(product, false)}
+                        className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center justify-center shrink-0 cursor-pointer"
+                        title="Añadir al Carrito"
+                      >
+                        <ShoppingCart
+                          className={`w-4 h-4 ${
+                            isFeatured && activeCatalogTab === 'google' ? 'text-amber-500' : 'text-slate-800'
+                          }`}
+                        />
+                      </button>
                     </div>
                   </div>
                 </div>
-
-                <div className="p-4 pt-0 sm:p-5 sm:pt-0">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleQuickAdd(homeProducts[0], true)}
-                      className="flex-1 py-3 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1"
-                    >
-                      <span>Comprar Ahora &rarr;</span>
-                    </button>
-                    <button
-                      onClick={() => handleQuickAdd(homeProducts[0], false)}
-                      className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center justify-center shrink-0"
-                      title="Añadir al Carrito"
-                    >
-                      <ShoppingCart className="w-4 h-4 text-slate-800" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Item 2: Placa NFC Mostrador (DESTACADO) */}
-            {homeProducts[1] && (
-              <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-slate-950 flex flex-col justify-between relative transform hover:-translate-y-1 transition-all">
-                <span className="absolute -top-3 right-4 bg-amber-500 text-white text-[10px] font-black uppercase px-3 py-0.5 rounded-full shadow-md z-20">
-                  🔥 Más Vendida
-                </span>
-                <div>
-                  <div className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
-                    <img
-                      src={homeProducts[1].image}
-                      alt={homeProducts[1].name}
-                      width={360}
-                      height={360}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
-                      Acrílico 3mm
-                    </span>
-                  </div>
-                  <div className="p-4 sm:p-5 space-y-2">
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1" onClick={() => router.push(`/catalogo/${homeProducts[1].id}`)}>
-                      {homeProducts[1].name}
-                    </h3>
-                    <p className="text-xs text-slate-700 leading-snug font-semibold line-clamp-2">
-                      Acrílico blanco pulido de 3mm con adhesivo 3M. Colócala en la caja registradora o recepción para capturar reseñas al cobrar.
-                    </p>
-                    <div className="flex items-baseline justify-between pt-1">
-                      <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">${homeProducts[1].price.toFixed(2)} USD</span>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Envío Panamá</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 pt-0 sm:p-5 sm:pt-0">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleQuickAdd(homeProducts[1], true)}
-                      className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1"
-                    >
-                      <span>Comprar Ahora &rarr;</span>
-                    </button>
-                    <button
-                      onClick={() => handleQuickAdd(homeProducts[1], false)}
-                      className="p-3 bg-slate-950 hover:bg-slate-900 text-white font-bold rounded-xl transition flex items-center justify-center shrink-0"
-                      title="Añadir al Carrito"
-                    >
-                      <ShoppingCart className="w-4 h-4 text-amber-400" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Item 3: Stand NFC Mesa */}
-            {homeProducts[2] && (
-              <div className="w-[82vw] sm:w-[310px] shrink-0 snap-center md:w-auto bg-white rounded-3xl overflow-hidden shadow-md border border-slate-200 flex flex-col justify-between hover:border-slate-400 transition-all">
-                <div>
-                  <div className="aspect-square relative bg-slate-50 cursor-pointer overflow-hidden flex items-center justify-center p-2" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
-                    <img
-                      src={homeProducts[2].image}
-                      alt={homeProducts[2].name}
-                      width={360}
-                      height={360}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-sm z-10">
-                      Stand de Mesa
-                    </span>
-                  </div>
-                  <div className="p-4 sm:p-5 space-y-2">
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase tracking-tight cursor-pointer hover:text-amber-600 transition-colors line-clamp-1" onClick={() => router.push(`/catalogo/${homeProducts[2].id}`)}>
-                      {homeProducts[2].name}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-snug font-medium line-clamp-2">
-                      Estructura rígida autoportante ideal para mesas de restaurantes, cafeterías, escritorios y clínicas.
-                    </p>
-                    <div className="flex items-baseline justify-between pt-1">
-                      <span className="text-xl sm:text-2xl font-black text-slate-950 font-mono">${homeProducts[2].price.toFixed(2)} USD</span>
-                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Envío Panamá</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 pt-0 sm:p-5 sm:pt-0">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleQuickAdd(homeProducts[2], true)}
-                      className="flex-1 py-3 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center gap-1"
-                    >
-                      <span>Comprar Ahora &rarr;</span>
-                    </button>
-                    <button
-                      onClick={() => handleQuickAdd(homeProducts[2], false)}
-                      className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center justify-center shrink-0"
-                      title="Añadir al Carrito"
-                    >
-                      <ShoppingCart className="w-4 h-4 text-slate-800" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+              );
+            })}
 
           </div>
 

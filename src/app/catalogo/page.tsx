@@ -33,7 +33,6 @@ export default async function CatalogoPage() {
     brand: { '@type': 'Brand', name: 'starTAP Panamá' },
     sku: 'STP-NFC-CATALOGO',
     mpn: 'STP-NFC-ALL',
-    gtin13: '0745301294801',
     category: 'Hardware > Dispositivos NFC',
     image: `${BASE_URL}/images/posicionamiento-seo-google-maps-panama-startap.webp`,
     offers: {
@@ -110,7 +109,6 @@ export default async function CatalogoPage() {
         brand: { '@type': 'Brand', name: 'starTAP Panamá' },
         sku: product.sku || `STP-${product.id.toUpperCase()}`,
         mpn: product.mpn || `STP-${product.id.toUpperCase()}`,
-        gtin13: product.gtin13 || '0745301294801',
         offers: {
           '@type': 'Offer',
           price: product.price.toFixed(2),

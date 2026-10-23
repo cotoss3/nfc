@@ -49,7 +49,6 @@ export default async function Page() {
         'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
         'sku': 'STP-NFC-CARD-01',
         'mpn': 'STP-CRD-01',
-        'gtin13': '0745301294801',
         'offers': {
           '@type': 'Offer',
           'price': tarjetaPrice.toFixed(2),
@@ -103,7 +102,6 @@ export default async function Page() {
         'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
         'sku': 'STP-NFC-PLACA-01',
         'mpn': 'STP-PLC-01',
-        'gtin13': '0745301294818',
         'offers': {
           '@type': 'Offer',
           'price': placaPrice.toFixed(2),
@@ -157,7 +155,6 @@ export default async function Page() {
         'brand': { '@type': 'Brand', 'name': 'starTAP Panamá' },
         'sku': 'STP-NFC-STAND-01',
         'mpn': 'STP-STD-01',
-        'gtin13': '0745301294825',
         'offers': {
           '@type': 'Offer',
           'price': standPrice.toFixed(2),

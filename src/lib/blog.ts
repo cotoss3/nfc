@@ -6,6 +6,7 @@ import { post as articulo5 } from '@/content/blog/como-conseguir-100-resenas-goo
 import { post as articulo6 } from '@/content/blog/reclamar-ficha-google-mi-negocio-panama';
 import { post as articulo7 } from '@/content/blog/qr-o-nfc-resenas-google-panama';
 import { post as articulo8 } from '@/content/blog/responder-resenas-negativas-google-panama';
+import { post as articulo9 } from '@/content/blog/cuantas-resenas-necesitas-google-maps-panama';
 
 export const BASE_URL = 'https://startap.com.pa';
 
@@ -69,7 +70,7 @@ export const AUTORES: Record<string, Autor> = {
   },
 };
 
-export const POSTS: BlogPost[] = [articulo8, articulo7, articulo6, articulo5, articulo4, articulo1, articulo2, articulo3];
+export const POSTS: BlogPost[] = [articulo9, articulo8, articulo7, articulo6, articulo5, articulo4, articulo1, articulo2, articulo3];
 
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);

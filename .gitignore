@@ -43,3 +43,6 @@ herramientas/videos/
 # Hojas de calculo y analisis temporales
 *.xlsx
 *.csv
+
+# Archivos de scratch temporales
+scratch/

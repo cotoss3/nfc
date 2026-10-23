@@ -87,3 +87,77 @@ vuelve a ser «Envío gratis desde $50 a todo Panamá».
 
 Lección para la bitácora: la política de envío cambió dos veces en el mismo día.
 Ningún texto debe repetir la regla sin mirar antes `src/config/shipping.ts`.
+
+## 19 de octubre de 2026 — Feed de Google Merchant: fuera los GTIN prestados
+
+Pendiente de desplegar. Fecha de despliegue: ____________
+
+Los siete productos llevaban códigos de barras GTIN-13 de la serie
+`0745301294801` a `...863`. El dígito verificador de los siete es correcto, pero
+el prefijo GS1 `0745301` está registrado a nombre de otra empresa, no de
+starTAP. Google Merchant lee ese prefijo y le atribuye el producto a ese
+fabricante, y en el schema de las páginas pasaba lo mismo.
+
+Para producto propio hecho a mano, sin código de barras comprado a GS1, lo que
+Google pide es declarar que no existe identificador. Eso se hizo:
+
+- `src/config/products.ts`: fuera el campo `gtin13` del tipo y de los 7 productos.
+- `src/app/google-merchant.xml/route.ts`: fuera `<g:gtin>`, entra
+  `<g:identifier_exists>no</g:identifier_exists>`.
+- `src/app/page.tsx`, `src/app/catalogo/page.tsx` y `src/app/catalogo/[id]/page.tsx`:
+  fuera `gtin13` del JSON-LD de Product. Un GTIN equivocado en el schema es peor
+  que ninguno.
+
+El `sku` y el `mpn` se quedan: esos sí son códigos propios de starTAP.
+
+También en el feed:
+
+- La marca se queda como «starTAP Panamá», que es la decisión del 15 de
+  septiembre por el tema de los homónimos (startap.pro, startap.lat y varios
+  más). No se toca.
+- Entra `<g:google_product_category>222</g:google_product_category>` (Electronics)
+  y `<g:product_type>` propio por formato (Tarjetas, Stands, Placas, Packs).
+- La descripción del canal ahora nombra a la empresa que opera la marca:
+  KoreNet Cloud & Web.
+
+**Fuera del código, en el panel de Google Merchant Center:** el nombre del
+negocio y el del feed todavía son de la empresa anterior. Eso no se arregla
+desde el repositorio; hay que cambiarlo en la configuración de la cuenta.
+
+### Merchant Center, mismo 19 de octubre
+
+Entramos a la cuenta 666381414 («Startap») a ver por qué no se mostraba nada.
+
+Lo que había:
+
+- En Fuentes de datos, bajo «Encontrado por Google», aparecía **smartzonie.com**
+  con 0 productos, reintentando cada 24 horas. De ahí salía el error «La URL de la
+  tienda online no coincide» en el 100% de los productos.
+- Los únicos productos de la cuenta eran cuatro cargados a mano en septiembre, los
+  cuatro en «No aprobado»: Stand NFC de mesa, Stand NFC para Reseñas de Google
+  (duplicado del anterior), Tarjeta NFC de Bolsillo y «Diseño Web» de $250, que es
+  un servicio de DataKorex y Merchant no acepta servicios. Los tres NFC estaban sin
+  precio fijo («Varios»).
+- `google-merchant.xml` NO estaba dado de alta como fuente de datos. Por eso
+  Merchant nunca vio los siete productos reales.
+
+Lo que se hizo:
+
+- Archivados los tres productos NFC cargados a mano. «Diseño Web» se dejó por
+  decisión de Fernando.
+- Dada de alta la fuente **«starTAP Panama - feed XML»** apuntando a
+  `https://startap.com.pa/google-merchant.xml`, solo Panamá, español, etiqueta de
+  feed PA, actualización cada 24 horas. La primera descarga entró con los **siete
+  productos**, todos los atributos reconocidos y sin problemas en el archivo.
+
+Lo que quedó pendiente:
+
+- Los siete siguen en «No aprobado» porque el error de cuenta «No se ha mostrado
+  ningún producto» bloquea toda la cuenta. La revisión ya está solicitada y tarda
+  unos días.
+- La opción para sacar smartzonie.com de la lista es «Dejar de gestionar
+  productos», pero apaga la detección automática de TODA la tienda, también la de
+  startap.com.pa. No se tocó. Con el feed dado de alta esa fila pesa poco.
+- Un producto tiene la imagen por debajo de 500x500 px.
+- El teléfono de la cuenta es el personal de Fernando (6713-4341) y no el de la
+  empresa (6483-9004).

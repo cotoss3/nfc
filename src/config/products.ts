@@ -20,7 +20,6 @@ export interface ProductConfig {
   type: string;
   sku?: string;
   mpn?: string;
-  gtin13?: string;
 }
 
 export const PRODUCTS: ProductConfig[] = [
@@ -29,7 +28,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['tarjeta-nfc', 'placa-google'],
     sku: 'STP-NFC-CARD-01',
     mpn: 'STP-CRD-01',
-    gtin13: '0745301294801',
     name: 'Tarjeta NFC de Bolsillo',
     category: 'cards',
     categoryLabel: 'TARJETA DE BOLSILLO',
@@ -54,7 +52,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['placa-acrilica-nfc', 'NFC_10001'],
     sku: 'STP-NFC-PLACA-01',
     mpn: 'STP-PLC-01',
-    gtin13: '0745301294818',
     name: 'Placa NFC para Reseñas de Google',
     category: 'plates',
     categoryLabel: 'PLACA DE MOSTRADOR Y PARED',
@@ -77,7 +74,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['stand-nfc', 'NFC10002'],
     sku: 'STP-NFC-STAND-01',
     mpn: 'STP-STD-01',
-    gtin13: '0745301294825',
     name: 'Stand NFC para Reseñas de Google',
     category: 'stands',
     categoryLabel: 'STAND DE MESA Y RECEPCIÓN',
@@ -104,7 +100,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['tarjeta-instagram', 'card-instagram'],
     sku: 'STP-NFC-CARD-IG',
     mpn: 'STP-CRD-IG',
-    gtin13: '0745301294849',
     name: 'Tarjeta NFC para Instagram',
     category: 'cards',
     categoryLabel: 'TARJETA DE BOLSILLO',
@@ -126,7 +121,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['stand-instagram'],
     sku: 'STP-NFC-STAND-IG',
     mpn: 'STP-STD-IG',
-    gtin13: '0745301294856',
     name: 'Stand NFC de Mesa para Instagram',
     category: 'stands',
     categoryLabel: 'STAND DE MESA Y RECEPCIÓN',
@@ -148,7 +142,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['placa-instagram'],
     sku: 'STP-NFC-PLACA-IG',
     mpn: 'STP-PLC-IG',
-    gtin13: '0745301294863',
     name: 'Placa NFC para Instagram',
     category: 'plates',
     categoryLabel: 'PLACA DE MOSTRADOR Y PARED',
@@ -170,7 +163,6 @@ export const PRODUCTS: ProductConfig[] = [
     aliases: ['pack-trio'],
     sku: 'STP-NFC-TRIO-01',
     mpn: 'STP-TRIO-01',
-    gtin13: '0745301294832',
     name: 'Pack Trío Comercial (1 Placa Mostrador + 2 Tarjetas de Bolsillo)',
     category: 'packs',
     categoryLabel: 'PAQUETE EMPRESARIAL',

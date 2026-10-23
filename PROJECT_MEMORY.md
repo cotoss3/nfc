@@ -156,6 +156,28 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
 
+### 2026-10-19 · Feed de Google Merchant sin GTIN prestados
+
+Los siete productos llevaban códigos de barras GTIN-13 (`0745301294801` y los
+seis siguientes) cuyo prefijo GS1 pertenece a otra empresa. Google Merchant y el
+schema de las páginas le atribuían el producto a ese fabricante.
+
+Se quitó el `gtin13` del tipo y de los siete productos en `src/config/products.ts`,
+del JSON-LD de `page.tsx`, `catalogo/page.tsx` y `catalogo/[id]/page.tsx`, y del
+feed, que ahora declara `<g:identifier_exists>no</g:identifier_exists>`, que es lo
+que Google pide para producto propio sin código de barras comprado. El `sku` y el
+`mpn` se quedan porque son códigos de starTAP.
+
+El feed además gana `<g:google_product_category>` y `<g:product_type>`, y la
+descripción del canal ya nombra a KoreNet Cloud & Web como empresa que opera la
+marca. La marca sigue siendo «starTAP Panamá» por la decisión del 15 de septiembre.
+
+Compila: `npx tsc --noEmit` sin errores. Falta el `npm run build` en Windows y el
+deploy.
+
+Pendiente fuera del código: en el panel de Google Merchant Center el nombre del
+negocio y el del feed siguen siendo los de la empresa anterior.
+
 ### 2026-09-15 · Marca alineada a "starTAP Panamá"
 
 Decisión tras el hallazgo de homónimos: no se cambia el nombre, se **califica**.

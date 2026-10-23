@@ -406,6 +406,22 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-10-13 | La Ceiba Panamá Restaurante y Bar | Bar restaurante | La Chorrera (Av. de las Américas) | 3 | 5.0 | WhatsApp | 6882-2705 | pendiente | top2 bares Chorrera 205/170 |
 | 2026-10-13 | Mariscos Hermanos Mateo | Marisquería | La Chorrera (C. El Hatillo) | 10 | 4.7 | WhatsApp | 6637-5976 | pendiente | top2 marisquerías Chorrera 96/150 |
 
+
+| 2026-10-20 | Restaurante Nueva Gorgona WhatsApp | Restaurante chino | Nueva Gorgona (Chame) | 14 | 4.7 | WhatsApp | 6746-9259 | pendiente | top2 restaurantes Nueva Gorgona 14/174 |
+| 2026-10-20 | Restaurante La Cocoa | Restaurante | El Coco (La Chorrera) | 2 | 5.0 | WhatsApp | 6795-3416 | pendiente | lideres busqueda El Coco 921/479 |
+| 2026-10-20 | Date un gusto | Hamburgueseria | Altos de la Pradera (La Chorrera) | 11 | 4.9 | WhatsApp | 6080-8535 | pendiente | top2 hamburguesas Chorrera 3415/289 |
+| 2026-10-20 | Sados Burger | Comida rapida | La Chorrera | 4 | 5.0 | WhatsApp | 6268-8836 | pendiente | contesta resenas; top2 hamburguesas 3415/289 |
+| 2026-10-20 | LA SAZON DE DONA DARIS | Fonda | La Chorrera | 5 | 4.4 | WhatsApp | 6100-8802 | pendiente | top2 comida casera Chorrera 327/921 |
+| 2026-10-20 | Dame Dos | Comida rapida | La Chorrera | 5 | 4.6 | WhatsApp | 6112-5919 | pendiente | fotos de hace 2 semanas; top2 hamburguesas 3415/289 |
+| 2026-10-20 | Delicias Mami | Desayunos criollos | La Chorrera (31 Nte) | 11 | 5.0 | WhatsApp | 6488-1362 | pendiente | responde resenas; top2 desayunos Chorrera 2017/515 |
+| 2026-10-20 | Bocatto | Heladeria y postres | La Chorrera (Av. San Martin) | 1 | 5.0 | WhatsApp | 6226-7868 | pendiente | ficha nueva, fotos de hace 18 dias; top2 heladerias 1577/58 |
+| 2026-10-20 | La Refreshqueria Ruby's Paradise | Cafeteria | La Chorrera (Calle 17 Sur) | 3 | 5.0 | WhatsApp | 6641-3622 | pendiente | ficha sin reclamar; top2 cafeterias Chorrera 1125/834 |
+| 2026-10-20 | DOLCE CAFFE | Cafeteria | La Chorrera (V6GQ+R9C) | 1 | 5.0 | WhatsApp | 6157-8551 | pendiente | unica resena de hace anos; top2 cafeterias 1125/834 |
+| 2026-10-20 | RetroBurger | Hamburgueseria | La Chorrera (V6F6+HJ5) | 4 | 4.5 | WhatsApp | 6118-1416 | pendiente | ficha sin reclamar y resenas de 7 anos; confirmar si sigue abierto |
+| 2026-10-20 | CHACK'S | Cafeteria | La Chorrera (San Martin 252-14) | 4 | 4.8 | llamada | 830-4330 | pendiente | numero de 7 digitos, sin WhatsApp; top2 cafeterias 1125/834 |
+| 2026-10-20 | Heladeria Dulces Momentos | Heladeria | La Chorrera (V6QJ+V5W) | 2 | 5.0 | llamada | 254-4263 | pendiente | fijo sin WhatsApp; resenas de 9 anos; top2 heladerias 1577/58 |
+
+
 ## 6. Zonas y rubros ya agotados
 
 _(vacio por ahora)_
@@ -667,6 +683,19 @@ _(vacio por ahora)_
 | 2026-10-16 | Bolos del Bronx | Sport Bar y restaurante | Anclas Mall (La Chorrera) | 12 | 4.6 | WhatsApp | 6976-0865 | pendiente | vendedora 1 lista 16-10; líderes bares y rest Chorrera 280/150 |
 | 2026-10-16 | Restaurante Sunly | Restaurante chino | Anclas Mall (La Chorrera) | 14 | 4.5 | WhatsApp | 6246-6551 | pendiente | vendedora 1 lista 16-10; líderes comida china Chorrera 705/135 |
 
+| 2026-10-19 | Barbershop west j&k | Barbería | Nuevo Arraiján | 6 | 4.7 | WhatsApp | 6746-5670 | pendiente | barberías/salones Arraiján 19-10; top2 barberías Nuevo Arraiján 35/60; reseñas de 3+ años |
+| 2026-10-19 | JL BARBERSHOP VERACRUZ | Barbería | Veracruz (diagonal al cuartel) | 10 | 4.6 | WhatsApp | 6738-0041 | pendiente | barberías/salones Arraiján 19-10; líder local; arriba de su búsqueda salen patrocinadas de ciudad 308/492 |
+| 2026-10-19 | ND BARBER STUDIO | Barbería | Veracruz (calle central) | 7 | 4.9 | WhatsApp | 6429-8597 | pendiente | barberías/salones Arraiján 19-10; reseñas de 6-7 años; misma búsqueda que JL |
+| 2026-10-19 | Billing Money Barber Shop | Barbería | Burunga | 1 | 5.0 | WhatsApp | 6484-4552 | pendiente | barberías/salones Arraiján 19-10; primero búsqueda Burunga 31 (Ch.willy) |
+| 2026-10-19 | barbería oscar | Barbería | Burunga | 4 | 4.5 | WhatsApp | 6126-2544 | pendiente | barberías/salones Arraiján 19-10; ficha sin reclamar; primero Burunga 31 |
+| 2026-10-19 | YN salón hair&nails | Centro de estética | Nuevo Arraiján | 4 | 5.0 | WhatsApp | 6902-6150 | pendiente | barberías/salones Arraiján 19-10; líderes peluquería Nuevo Arraiján 58/49 |
+| 2026-10-19 | JM Sala de Belleza by Mercedes | Peluquería | Nuevo Arraiján (C. 7) | 4 | 5.0 | WhatsApp | 6712-0602 | pendiente | barberías/salones Arraiján 19-10; líderes 58/49; cierra 5pm |
+| 2026-10-19 | Strudy's Salon | Peluquería | Nuevo Arraiján | 8 | 4.9 | WhatsApp | 6860-7644 | pendiente | barberías/salones Arraiján 19-10; líderes 58/49; reseñas de 7+ años; activo en Instagram |
+| 2026-10-19 | AM SALOOM by Astrid | Centro de estética | Nuevo Arraiján (Calle 3ra) | 4 | 5.0 | WhatsApp | 6301-1298 | pendiente | barberías/salones Arraiján 19-10; responde reseñas; líderes 58/49 |
+| 2026-10-19 | Fashion key Salón & spa | Centro de estética | Ciudad del Futuro (Nuevo Arraiján) | 3 | 5.0 | WhatsApp | 6289-1567 | pendiente | barberías/salones Arraiján 19-10; líderes 58/49 |
+| 2026-10-19 | Ladys Fashion Salon | Centro de estética | Bosques de Nuevo Arraiján | 5 | 4.8 | WhatsApp | 6257-3562 | pendiente | barberías/salones Arraiján 19-10; ficha sin reclamar; top2 salón de belleza Arraiján 18/24 |
+| 2026-10-19 | Wapa's S.A. | Centro de estética | Nuevo Arraiján (Carr. Panamericana) | 9 | 4.6 | WhatsApp | 6910-0009 | pendiente | barberías/salones Arraiján 19-10; ficha sin reclamar; top2 18/24 |
+| 2026-10-19 | Fashion Key Unisex | Centro de estética | Arraiján (Carr. Panamericana) | 3 | 4.7 | llamada | 344-6936 | pendiente | barberías/salones Arraiján 19-10; fijo sin WhatsApp |
 | 2026-10-19 | Salón de Belleza Kadosh | Salón de belleza | San Francisco | 6 | 4.8 | WhatsApp | 6968-2539 | pendiente | lunes salones 19-10; líderes salones San Francisco 140/220 |
 | 2026-10-19 | Reyes Salón | Salón de belleza | San Francisco | 8 | 4.9 | WhatsApp | 6975-2085 | pendiente | lunes salones 19-10; líderes salones San Francisco 140/220 |
 | 2026-10-19 | Barbería Frisco | Barbería | San Francisco (Vía Porras c/ C. 65) | 10 | 4.7 | WhatsApp | 6780-8205 | pendiente | lunes barberías 19-10; líderes barberías San Francisco 160/95 |
@@ -682,5 +711,31 @@ _(vacio por ahora)_
 | 2026-10-19 | Nails & Co | Salón de uñas | Bella Vista (C. 52, Edif. Bolívar) | 9 | 4.8 | WhatsApp | 6786-0339 | pendiente | lunes uñas 19-10; líderes uñas Bella Vista 160/95 |
 | 2026-10-19 | Biker Salón & Barbería | Salón y barbería | Bethania (C.C. El Dorado PB) | 10 | 4.7 | WhatsApp | 6634-3939 | pendiente | lunes salones 19-10; líderes salones El Dorado 180/110 |
 | 2026-10-19 | Donny Barber PTY | Barbería | Bethania (C.C. El Dorado) | 6 | 5.0 | WhatsApp | 6918-9460 | pendiente | lunes barberías 19-10; líderes barberías El Dorado 180/110 |
+| 2026-10-21 | CLINICA TU SALUD SB | Medicina general | Bella Vista (Via Espana, Clinica Metropolis) | 5 | 4.8 | WhatsApp | 6259-9055 | pendiente | clinicas ciudad 21-10; top2 clinicas Obarrio 64/25 |
+| 2026-10-21 | Clinica Pediatrica Vallarino | Pediatria | Bella Vista (Balboa Plaza) | 1 | 5.0 | WhatsApp | 6959-3371 | pendiente | clinicas ciudad 21-10; top pediatra 614/6 |
+| 2026-10-21 | Women & Kids Dra. Telsys Bonilla | Pediatria | Paitilla (Consultorios Medicos Paitilla p6) | 1 | 5.0 | WhatsApp | 6210-1696 | pendiente | clinicas ciudad 21-10; top pediatra 614/6 |
+| 2026-10-21 | Dr. Mike Carrillo | Pediatria | Paitilla (The Panama Clinic Torre B) | 2 | 5.0 | WhatsApp | 6960-0990 | pendiente | clinicas ciudad 21-10; top pediatra 614/6 |
+| 2026-10-21 | Centro Oftalmologico Knino & Felino | Oftalmologia veterinaria | Via Espana (Mini Mall) | 14 | 4.7 | WhatsApp | 6788-8569 | pendiente | clinicas ciudad 21-10; top2 veterinarias 241/151; comparte local con K-nino |
+| 2026-10-21 | Amorfisioandvet | Rehabilitacion veterinaria | Bella Vista (C. 51 Este, PH Vista Tower) | 20 | 5.0 | WhatsApp | 6378-2359 | pendiente | clinicas ciudad 21-10; top2 veterinarias 241/151 |
+| 2026-10-21 | OPTISALUD | Optometria y oftalmologia | Via Espana (Edif. Almirante) | 13 | 5.0 | WhatsApp | 6203-6010 | pendiente | clinicas ciudad 21-10; top2 optica 466/177 |
+| 2026-10-21 | Luz Amira Caballero Nutricion | Nutricion clinica | Paitilla (The Panama Clinic p23) | 2 | 5.0 | WhatsApp | 6946-8168 | pendiente | clinicas ciudad 21-10; top2 nutricion 79/35 |
+| 2026-10-21 | Centro de Terapias Orientales Paitilla | Acupuntura | Paitilla (C. Ramon H. Jurado) | 6 | 5.0 | WhatsApp | 6418-8589 | pendiente | clinicas ciudad 21-10; top2 acupuntura 88/44; sede Lefevre tiene 88 |
+| 2026-10-21 | MedicGym Panama | Centro medico especializado | Obarrio (Soho City Center p2) | 6 | 4.5 | llamada | 263-4007 | pendiente | clinicas ciudad 21-10; fijo sin WhatsApp |
+| 2026-10-21 | Clinica Veterinaria El Carmen | Veterinaria | Via Porras 95 | 2 | 5.0 | llamada | 399-8716 | pendiente | clinicas ciudad 21-10; fijo sin WhatsApp |
+| 2026-10-21 | MAYOLM Health Center | Medicina alternativa | Bella Vista (Rali Business Center PB) | 7 | 4.4 | llamada | 373-5110 | pendiente | clinicas ciudad 21-10; fijo sin WhatsApp |
+| 2026-10-21 | Nutricionista Lic. Giselle Nunez | Nutricion | Marbella (Royal Center) | 2 | 5.0 | llamada | 340-9994 | pendiente | clinicas ciudad 21-10; fijo sin WhatsApp; mismo numero que Dr. Savarain |
 
 
+| 2026-10-22 | QUALITY SERVICES EXPRESS | Taller mecanico | Via Puerto Caimito (La Chorrera) | 12 | 4.5 | WhatsApp | 6247-5992 | pendiente | talleres jueves; top2 talleres Puerto Caimito 12/57; es el primero de su busqueda |
+| 2026-10-22 | Ed Car Services | Taller mecanico | Altos del Campo (Puerto Caimito) | 3 | 5.0 | WhatsApp | 6667-1391 | pendiente | talleres jueves; top2 talleres Puerto Caimito 12/57 |
+| 2026-10-22 | Auto Service JS | Taller mecanico | Vacamonte | 2 | 5.0 | WhatsApp | 6684-8737 | pendiente | talleres jueves; top2 talleres Puerto Caimito 12/57 |
+| 2026-10-22 | AUTOCENTER TALLER 2 | Taller mecanico | Blvd. Arboledas (La Chorrera) | 2 | 5.0 | WhatsApp | 6771-5910 | pendiente | talleres jueves; top2 talleres Puerto Caimito 12/57 |
+| 2026-10-22 | Electromecanica Taty | Electromecanica automotriz | Entrada El Nance (San Carlos) | 10 | 4.8 | WhatsApp | 6731-2299 | pendiente | talleres jueves; top2 talleres San Carlos 3/10; busqueda floja |
+| 2026-10-22 | Diagnostico Automotriz en Panama | Taller de revision de automoviles | Vista Alegre (Arraijan) | 4 | 4.8 | WhatsApp | 6370-3154 | pendiente | talleres jueves; top2 talleres Vista Alegre 17/7; cierra 7pm |
+| 2026-10-22 | TOMY NARVAEZ AUTO PARTS | Auto aire acondicionado | La Chorrera (Calle 40 Sur) | 9 | 5.0 | WhatsApp | 6151-9480 | pendiente | talleres jueves; top2 auto aire Chorrera 42/9; el primero tiene 4.1 |
+| 2026-10-22 | AutoAireWestCar | Auto aire acondicionado | La Chorrera (detras del Super 99 de Plaza Italia) | 8 | 4.9 | WhatsApp | 6756-6758 | pendiente | talleres jueves; top2 auto aire Chorrera 42/9 |
+| 2026-10-22 | Taller autoaire Refriauto Cool Solutions | Auto aire acondicionado | Blvd. Costa Verde | 3 | 5.0 | WhatsApp | 6837-6973 | pendiente | talleres jueves; top2 auto aire Chorrera 42/9 |
+| 2026-10-22 | Taller Automotriz Workshop RSC | Taller de automoviles | La Chorrera (antes del INADEH, Freeman) | 10 | 5.0 | WhatsApp | 6920-1306 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35 |
+| 2026-10-22 | Carritoss Panama | Taller y asistencia vial | La Chorrera (Leopoldo Castillo) | 8 | 4.6 | WhatsApp | 6617-2924 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35; resenas mencionan servicio vial |
+| 2026-10-22 | Taller Autozero | Taller mecanico | Panama Oeste | 2 | 5.0 | WhatsApp | 6137-4970 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35 |
+| 2026-10-22 | Autodiagnostico Motor Services | Taller mecanico | La Chorrera (al lado de la escuela Juan Pablo II) | 1 | 5.0 | WhatsApp | 6340-5340 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35 |

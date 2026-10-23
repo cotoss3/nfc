@@ -107,7 +107,6 @@ export default function Page({ params }: { params: { id: string } }) {
         brand: { '@type': 'Brand', name: 'starTAP Panamá' },
         sku: product.sku || `STP-${product.id.toUpperCase()}`,
         mpn: product.mpn || `STP-${product.id.toUpperCase()}`,
-        gtin13: product.gtin13 || '0745301294801',
         // Solo se emite si hay testimonios publicados CON calificación real.
         ...(aggregateRatingDeProducto(product.id)
           ? {
