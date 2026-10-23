@@ -24,8 +24,8 @@ export const post: BlogPost = {
   imagen: {
     src: '/blog/cuantas-resenas-necesitas-google-maps-panama.webp',
     alt: 'Dueño de negocio en Panamá revisando en su celular el mapa de Google con las reseñas de su competencia en el mostrador',
-    ancho: 1024,
-    alto: 571,
+    ancho: 1200,
+    alto: 675,
   },
   relacionados: [
     {
