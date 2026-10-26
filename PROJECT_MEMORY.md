@@ -2,6 +2,8 @@
 
 Este documento contiene la **memoria viva del proyecto starTAP**. Debe ser consultado y mantenido actualizado por cualquier desarrollador que trabaje en esta base de código.
 
+> ⚡ **Última Actualización (26 oct 2026):** Publicado el 10mo artículo del blog: **[Cómo optimizar la ficha de Google de tu negocio en Panamá](file:///c:/Users/fcontreras/Desktop/Vitales%20locales/NFC/src/content/blog/optimizar-ficha-google-negocio-panama.ts)** (`/blog/optimizar-ficha-google-negocio-panama`). Total de artículos activos: 10. Ver detalles en la [Bitácora de Progreso](#📝-10-bitácora-de-progreso).
+
 ---
 
 ## 📌 1. Visión General del Proyecto
@@ -135,6 +137,17 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
   industria nueva basta agregar un objeto ahí, la ruta y el sitemap se generan solos.
   Emiten JSON-LD `FAQPage` + `BreadcrumbList`.
 * `/shop/[id]` usa `generateMetadata` + JSON-LD `Product` leyendo `db_store.json` en servidor.
+* **Blog y Artículos (`src/content/blog/` y `src/lib/blog.ts`):** 10 artículos publicados y activos en `/blog`:
+  1. `/blog/optimizar-ficha-google-negocio-panama` (26 oct 2026 - 10mo artículo)
+  2. `/blog/cuantas-resenas-necesitas-google-maps-panama` (23 oct 2026 - 9no artículo)
+  3. `/blog/responder-resenas-negativas-google-panama` (16 oct 2026 - 8vo artículo)
+  4. `/blog/qr-o-nfc-resenas-google-panama` (13 oct 2026 - 7mo artículo)
+  5. `/blog/reclamar-ficha-google-mi-negocio-panama` (13 oct 2026 - 6to artículo)
+  6. `/blog/como-conseguir-100-resenas-google-maps` (13 oct 2026 - 5to artículo)
+  7. `/blog/negocio-sin-local-google-maps-panama` (13 oct 2026 - 4to artículo)
+  8. `/blog/como-pedir-resenas-google-sin-penalizacion` (15 sep 2026 - 1er artículo)
+  9. `/blog/por-que-mi-negocio-no-aparece-en-google-maps` (15 sep 2026 - 2do artículo)
+  10. `/blog/ver-y-responder-resenas-de-tu-negocio-en-google` (15 sep 2026 - 3er artículo)
 
 ## 🛒 9. Landings de producto (refactor sep 2026)
 
@@ -155,6 +168,56 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Entrada nueva arriba. Formato: fecha · qué se hizo · qué quedó pendiente.
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
+
+### 2026-10-26 · Décimo artículo del blog: optimizar la ficha de Google
+
+Escrito `src/content/blog/optimizar-ficha-google-negocio-panama.ts` (1.494 palabras de lectura, ~2.090 totales)
+y registrado como `articulo10` al inicio de POSTS en `src/lib/blog.ts`. Entra automáticamente
+al sitemap y al feed estático.
+
+El tema se eligió contra datos de Search Console: los nueve artículos existentes
+cubren reseñas y ninguno cubre qué hacer con la ficha después de reclamarla. Los dos
+temas con más impresiones del sitio ya tenían artículo (23 y 16 de octubre).
+
+Datos propios contados con script sobre PROSPECCION.md: 525 negocios anotados, 44
+con ficha sin reclamar, 433 de 498 con menos de 15 reseñas, calificación promedio
+4,82, y 15 anotados como que contestan reseñas.
+
+Metas CTR y reglas:
+- `tituloSeo`: 'Optimizar la Ficha de Google en Panamá | starTAP' (48 caracteres, < 60).
+- `descripcion`: 'Qué campos de tu ficha de Google mueven el mapa en Panamá: categoría, nombre, fotos y horario. Lo que dice la documentación oficial y lo que no arregla.' (152 caracteres, < 155).
+- Gancho APP + BLUF (< 60 palabras), ritmo 1-3-1, conector natural bucket brigade, puente de fricción al catálogo físico (desde $20, pago único sin mensualidad, envío gratis sobre $49.99).
+- Anti-IA: cero palabras prohibidas, tono conversacional con rigor de campo.
+
+Verificación técnica:
+- `npx tsc --noEmit` completado en 0 errores.
+- Generadas y convertidas a WebP las 4 imágenes oficiales en `public/blog/`:
+  - `optimizar-ficha-google-negocio-panama.webp` (1200x630, 93 KB, barbería Panamá Oeste).
+  - `categoria-principal-ficha-google-panama.webp` (800x600, 71 KB, plano cenital selección categoría).
+  - `fotos-ficha-google-negocio-panama.webp` (800x600, 124 KB, foto al interior de floristería/estética).
+  - `horario-telefono-ficha-google-panama.webp` (800x600, 99 KB, local cerrado en La Chorrera).
+- `npm run build` completado exitosamente con 67/67 páginas estáticas pre-renderizadas.
+
+Detalle aparte: cinco artículos viejos tienen la meta description sobre el tope de
+155 (entre 156 y 175). Anotado en CAMBIOS_SEO.md.
+
+### 2026-10-23 · Noveno artículo del blog: cuántas reseñas necesitas en Google Maps
+
+Escrito `src/content/blog/cuantas-resenas-necesitas-google-maps-panama.ts` (~2.050 palabras totales)
+y registrado como `articulo9` en `src/lib/blog.ts`.
+
+El tema responde a la consulta de mayor volumen e impresiones en Search Console para Panamá
+(«cuántas reseñas necesito para salir en google maps» y «cómo salir primero en google maps panamá»).
+Desmonta el mito de la nota perfecta (5.0 con pocas reseñas vs 4.8 con 90 reseñas), introduce
+el concepto de la brecha contra el 3er competidor del local pack y la velocidad/frecuencia
+de opiniones recientes para superar perfiles estancados con 300+ reseñas.
+
+Estructura y reglas:
+- Cumple `REGLAS_CONTENIDO.md` y `REGLAS_ESCRITURA_SEO.md`: `tituloSeo` de 56 caracteres (`Cuántas Reseñas Necesitas en Google Maps Panamá | starTAP`), `descripcion` de 150 caracteres con gancho comercial y regla oficial de envío gratis sobre $49.99.
+- Gancho APP + BLUF en menos de 60 palabras, ritmo móvil 1-3-1, bucket brigades naturales.
+- Puente comercial: catálogo de dispositivos físicos starTAP (desde $20, pago único sin mensualidades, envío gratis sobre $49.99).
+- 5 FAQs completas con Schema FAQPage y OpenGraph optimizado.
+- Verificado con `npx tsc --noEmit` y `npm run build` exitoso (67 páginas estáticas).
 
 ### 2026-10-19 · Feed de Google Merchant sin GTIN prestados
 

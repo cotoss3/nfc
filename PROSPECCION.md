@@ -422,9 +422,36 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-10-20 | Heladeria Dulces Momentos | Heladeria | La Chorrera (V6QJ+V5W) | 2 | 5.0 | llamada | 254-4263 | pendiente | fijo sin WhatsApp; resenas de 9 anos; top2 heladerias 1577/58 |
 
 
+
+
+| 2026-10-26 | Barbería Judy | Barbería | Caimitillo (entrada de Villa Acuario) | 1 | 5.0 | WhatsApp | 6220-7089 | pendiente | lunes barberias 26-10; Arraijan agotado (28-09, 12-10, 14-10, 16-10), se roto a Panama Norte; publicacion del dueno hace 4 meses; top2 barberia Panama Norte 179/121 |
+| 2026-10-26 | Barbería tito_ronals | Barbería | Las Cumbres (4FQ8+V4X) | 4 | 4.5 | WhatsApp | 6117-4587 | pendiente | lunes barberias 26-10; abierto 24h; ficha sin reclamar; ultima resena de 1 ano; top2 179/121 |
+| 2026-10-26 | Barbería Internet San Pablo | Barbería | Chilibre (C. San Pablo) | 6 | 5.0 | WhatsApp | 6050-6196 | pendiente | lunes barberias 26-10; Instagram en la ficha; resenas de 2-5 anos; top2 179/121 |
+| 2026-10-26 | Barbería Rivas | Barbería | Caimitillo (La Julitza) | 1 | 5.0 | WhatsApp | 6080-7398 | pendiente | lunes barberias 26-10; ficha sin reclamar; cierra 10pm; resena de 5 anos; top2 179/121 |
+| 2026-10-26 | Barbería CJ | Barbería | Panamá (C. Enrique Linares) | 4 | 5.0 | WhatsApp | 6545-5563 | pendiente | lunes barberias 26-10; sube fotos y videos propios; resenas de 4-5 anos; top2 179/121 |
+| 2026-10-26 | Barbería House of Shaves | Barbería | Caimitillo (5C9X+C4C) | 1 | 5.0 | WhatsApp | 6796-4702 | pendiente | lunes barberias 26-10; ficha sin reclamar; 5 fotos; top2 179/121 |
+| 2026-10-26 | Barbería y Sala de Belleza New Smile | Barbería y salón | Residencial Santa Teresa (4FG3+PVJ) | 1 | 5.0 | WhatsApp | 6229-1839 | pendiente | lunes barberias 26-10; ficha sin reclamar ni horario; resena de 7 anos; top2 179/121 |
+| 2026-10-26 | D' Alta Barber Beauty Salon | Barbería y salón | Villa Lucre (CC Punta Fresca) | 12 | 4.7 | WhatsApp | 6915-8288 | pendiente | lunes barberias 26-10; ficha sin reclamar; resenas hablan de la atencion; top2 179/121 |
+| 2026-10-26 | Den's Cuts Barbería | Barbería | Las Cumbres (4FC7+PF) | 8 | 5.0 | WhatsApp | 6710-7945 | pendiente | lunes barberias 26-10; resena de 3 semanas con servicios marcados; ficha sin reclamar; top2 179/121 |
+| 2026-10-26 | Shany Beauty Salon | Peluquería | Las Cumbres (4F95+24) | 11 | 5.0 | WhatsApp | 6791-2129 | pendiente | lunes salones 26-10; mujer empresaria; ficha sin reclamar; resenas largas; top2 salones Panama 105/78 |
+| 2026-10-26 | Shema Beauty Salón | Centro de estética | La Cabima (via a Praderas de San Lorenzo) | 12 | 4.7 | WhatsApp | 6516-8183 | pendiente | lunes salones 26-10; carta de servicios en la ficha; resenas casi todas del mismo ano; top2 105/78 |
+| 2026-10-26 | Iris Salon | Centro de estética | Las Cumbres (4FH8+9PR) | 6 | 4.8 | WhatsApp | 6600-7878 | pendiente | lunes salones 26-10; cierra 8pm; top2 105/78 |
+| 2026-10-26 | She Is Salon Hair & Nails | Peluquería | Las Praderas Sur (3HF4+3VQ) | 14 | 4.8 | WhatsApp | 6957-1075 | pendiente | lunes salones 26-10; ficha sin reclamar; resena con 13 fotos; promo de unas publicada en resena; top2 105/78 |
+| 2026-10-26 | Sala de Belleza y Barbería Anyelu | Centro de estética | El Balboa (PH Mystic Towers, San Miguelito) | 11 | 4.5 | WhatsApp | 6651-8956 | pendiente | lunes salones 26-10; mujer empresaria; contesta todas las resenas; top2 105/78 |
+| 2026-10-26 | Fanny Salon | Centro de estética | Las Cumbres (4FJ9+933) | 3 | 4.3 | WhatsApp | 6523-1505 | pendiente | lunes salones 26-10; ficha sin reclamar; resenas de 7-9 anos; top2 105/78 |
+
 ## 6. Zonas y rubros ya agotados
 
-_(vacio por ahora)_
+**Arraijan, barberias y salones.** Agotado el 2026-10-26 tras cinco pasadas:
+cabecera y Burunga (28-09), La Chorrera como rotacion (05-10), Veracruz, Vacamonte y
+Nuevo Arraijan (12-10), Vista Alegre y Costa Verde (14-10 y 16-10). En la pasada del
+26-10 se revisaron Cerro Silvestre, Nuevo Emperador, Loma Cova y Juan D. Arosemena: lo
+que queda son fichas de 0 a 4 resenas sin competidor cercano que sirva de comparacion, o
+negocios ya contactados. Se rota a Panama Norte (Las Cumbres, Alcalde Diaz, Chilibre,
+Caimitillo, La Cabima), que si tiene lideres de busqueda con 179 y 121 resenas. Capira se
+reviso tambien y quedo descartada por densidad: ninguna barberia pasa de 16 resenas.
+
+
 
 > Nota 2026-09-28: aparecio aqui una anotacion que daba por agotado Arraijan barberias y
 > salones diciendo que las fichas no publican telefono. Se reviso de nuevo el mismo dia y si
@@ -739,3 +766,22 @@ _(vacio por ahora)_
 | 2026-10-22 | Carritoss Panama | Taller y asistencia vial | La Chorrera (Leopoldo Castillo) | 8 | 4.6 | WhatsApp | 6617-2924 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35; resenas mencionan servicio vial |
 | 2026-10-22 | Taller Autozero | Taller mecanico | Panama Oeste | 2 | 5.0 | WhatsApp | 6137-4970 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35 |
 | 2026-10-22 | Autodiagnostico Motor Services | Taller mecanico | La Chorrera (al lado de la escuela Juan Pablo II) | 1 | 5.0 | WhatsApp | 6340-5340 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35 |
+
+
+| 2026-10-23 | TH BOUTIQUE | Tienda de ropa y alquiler de vestuario | Arraijan (Urb. Aragon) | 1 | 5.0 | WhatsApp | 6009-0473 | pendiente | viernes rotativo tiendas; top2 ropa Arraijan 192/706; ficha patrocinada, confirmar direccion |
+| 2026-10-23 | Distribuidora Universal | Tienda de variedades y alimentacion | Arraijan (W8M6+J4C) | 2 | 5.0 | WhatsApp | 6416-1074 | pendiente | viernes rotativo tiendas; top2 variedades Arraijan 1581/706 (plazas) |
+| 2026-10-23 | Centro de Novedades y Sederias | Papeleria y novedades | Burunga (entrada, Carr. Panamericana) | 3 | 4.3 | WhatsApp | 6100-0051 | pendiente | viernes rotativo tiendas; lideres papeleria Arraijan 510/93 |
+| 2026-10-23 | Muebleria El Gran Yo Soy | Muebleria y colchoneria | Arraijan (diagonal Banco Nacional) | 5 | 5.0 | WhatsApp | 6512-8861 | pendiente | viernes rotativo tiendas; top2 muebleria 72/28, lider 920 |
+| 2026-10-23 | Reparacion de Zapato TROYA | Zapatero | Arraijan (W8W9+FXP) | 8 | 4.3 | WhatsApp | 6786-3112 | pendiente | viernes rotativo tiendas; lideres zapateria 223/162 |
+| 2026-10-23 | Estrella Cell | Tienda de accesorios para moviles | Capira (Carr. Interamericana 14-27) | 8 | 5.0 | WhatsApp | 6428-3225 | pendiente | viernes rotativo tiendas; compite con Astrocell 33 (4.3) en la misma busqueda |
+| 2026-10-23 | Bella K Super Store Capira | Tienda de ropa de segunda mano | Capira (Carr. Interamericana 12-123) | 6 | 4.8 | WhatsApp | 6818-9168 | pendiente | viernes rotativo tiendas; primero de su busqueda pero fragil; Almacen Que Locura 15 |
+| 2026-10-23 | Issa Princess Boutique | Boutique | Capira (Residencial del Oeste) | 1 | 5.0 | WhatsApp | 6526-2257 | pendiente | viernes rotativo tiendas; top2 ropa Capira 6/15 |
+| 2026-10-23 | CB PLASMADOS | Tienda de ropa personalizada | Capira | 2 | 5.0 | WhatsApp | 6949-2775 | pendiente | viernes rotativo tiendas; top2 ropa Capira 6/15; entrega a domicilio |
+| 2026-10-23 | Ferricentro Capira | Tienda de herramientas | Capira (Villa Rosario, Carr. Interamericana) | 1 | 5.0 | llamada | 248-5198 | pendiente | fijo sin WhatsApp; top2 ferreterias Capira 22/17 |
+| 2026-10-23 | Mi Closet Outlet | Tienda de ropa | Vacamonte / Veracruz (V6QG+4RG) | 13 | 4.8 | llamada | 345-3112 | pendiente | fijo sin WhatsApp; BONCH Vista Alegre 13 y BON CH Campo Lindbergh 608 en la misma busqueda |
+
+> Nota 2026-10-23: las busquedas de hoteles y hospedajes en Maps abren la interfaz de reservas
+> (precios y fechas) y no muestran telefono en el listado, asi que el rubro rinde poco por este
+> metodo. El viernes rotativo se trabajo con tiendas en Arraijan, Burunga, Capira y Vacamonte.
+> Capira y Chame tienen poca densidad: muchas fichas sin resenas (sin calificacion, no califican)
+> y varias busquedas se desvian a la ciudad de Panama.

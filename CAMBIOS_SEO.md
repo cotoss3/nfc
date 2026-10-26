@@ -161,3 +161,51 @@ Lo que quedó pendiente:
 - Un producto tiene la imagen por debajo de 500x500 px.
 - El teléfono de la cuenta es el personal de Fernando (6713-4341) y no el de la
   empresa (6483-9004).
+
+## 26 de octubre de 2026 — Décimo artículo: optimizar la ficha de Google
+
+Pendiente de desplegar. Fecha de despliegue: ____________
+
+**Por qué este tema y no otro.** Revisé Search Console de los últimos 90 días. Los
+nueve artículos del blog giran todos alrededor de reseñas, y ninguno dice qué
+hacer con la ficha una vez reclamada. «Optimizar la ficha» no le pisa territorio a
+ninguno: el de reclamar cubre el trámite, el de cuántas reseñas cubre los tres
+factores del ranking, y el de ver y responder cubre la gestión de opiniones.
+
+Los dos temas que más impresiones tienen en starTAP («cuántas reseñas necesito»,
+20 impresiones, y el racimo de «responder reseñas», 28) ya están escritos: son los
+artículos del 23 y del 16 de octubre, todavía muy nuevos para rankear.
+
+**Lo que se escribió.** `optimizar-ficha-google-negocio-panama`, 1.494 palabras.
+Secciones: categoría principal, nombre del negocio, fotos, horario y teléfono,
+datos de campo de Panamá Oeste, lo que no arregla, el camino manual y el cierre
+con cuatro pasos de 20 minutos.
+
+**Datos propios usados** (los dos que exigen las reglas, contados con script sobre
+`PROSPECCION.md`, no de memoria):
+
+- 525 negocios anotados, casi todos entre La Chorrera y Arraiján.
+- 44 con la ficha sin reclamar.
+- 433 de 498 con menos de 15 reseñas.
+- Calificación promedio 4,82.
+- Solo 15 de 525 anotados como que contestan reseñas.
+
+El artículo aclara dentro del texto que esas notas se anotaron negocio por negocio
+y no son un censo, porque los 44 son un piso y no el total.
+
+**Fuentes oficiales citadas:** categoría de la empresa, fotos y videos del perfil,
+y directrices de representación de empresas (nombre, horario, teléfono, dirección).
+
+**Verificado:** `npx tsc --noEmit` sin errores. Registrado en POSTS de
+`src/lib/blog.ts` como `articulo10` y de primero, así que entra solo al sitemap.
+El script anti IA pasa limpio salvo un falso positivo de ritmo sobre una lista.
+Title 48 caracteres, meta 152.
+
+**Falta antes de publicar:** las cuatro imágenes. Los prompts están en
+`herramientas/prompts/imagenes-optimizar-ficha.md`. Mientras no existan en
+`public/blog/`, el artículo sale con las imágenes rotas.
+
+**Hallazgo de paso:** cinco artículos viejos tienen la meta description por encima
+del tope de 155 del manual. `como-conseguir-100-resenas` va en 175,
+`negocio-sin-local` en 174, `como-pedir-resenas` en 159, `ver-y-responder` en 157 y
+`reclamar-ficha` en 156. Se cortan en celular.
