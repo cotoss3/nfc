@@ -3,9 +3,9 @@ import type { BlogPost } from '@/lib/blog';
 export const post: BlogPost = {
   slug: 'como-pedir-resenas-google-sin-penalizacion',
   titulo: 'Cómo pedir reseñas de Google sin que te penalicen',
-  tituloSeo: 'Cómo Pedir Reseñas de Google sin que te Penalicen | Guía Panamá',
+  tituloSeo: 'Cómo Pedir Reseñas de Google sin Penalización | starTAP',
   descripcion:
-    'Pedir reseñas a tus clientes es legal. Filtrarlas o pagarlas no. Qué permite Google, qué te puede costar la ficha y cómo pedirlas bien en un negocio de Panamá.',
+    'Pedir reseñas es legal; filtrarlas o pagarlas no. Conoce las políticas de Google, qué prácticas causan sanciones y cómo conseguirlas en tu negocio.',
   resumen:
     'La pregunta que más me hacen visitando negocios no es cuánto cuesta, es si esto se puede hacer. Aquí está la línea exacta entre pedir reseñas y que Google te sancione.',
   fecha: '2026-09-15',

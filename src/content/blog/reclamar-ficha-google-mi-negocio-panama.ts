@@ -5,7 +5,7 @@ export const post: BlogPost = {
   titulo: 'Cómo reclamar la ficha de Google de tu negocio cuando ya existe',
   tituloSeo: 'Reclamar Ficha de Google de mi Negocio | Guía Panamá',
   descripcion:
-    'Tu negocio aparece en Google Maps y tú nunca lo pusiste. Cómo saber si la ficha está sin reclamar, cómo reclamarla y qué hacer si alguien más la administra.',
+    'Tu negocio sale en Google Maps y no lo pusiste. Descubre cómo saber si la ficha está sin reclamar, cómo tomar el control y qué hacer si otro la administra.',
   resumen:
     'Google crea fichas solo, sin avisarle a nadie. Mientras no la reclames no puedes responder reseñas ni corregir tu horario, y cualquiera puede cambiar tu información.',
   fecha: '2026-10-12',

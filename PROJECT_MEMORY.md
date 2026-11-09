@@ -169,6 +169,26 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
 
+### 2026-11-09 · Auditoría GSC, medición de hipótesis y optimización de snippets en cola
+
+Medición oficial de Search Console contra la línea base de octubre (vía API en tiempo real):
+- **Crecimiento:** En los últimos 28 días el sitio alcanzó **18 clics y 455 impresiones** (frente a 10 clics y 250 impresiones iniciales). 70% de las impresiones totales se concentran en el último mes.
+- **Validación de hipótesis de CTR:**
+  - `/catalogo` pasó de **0 clics a 8 clics** (99 impresiones, posición media 4.8).
+  - `/catalogo/placa-nfc-mostrador` alcanzó **5 clics** (54 impresiones, CTR 9.3%, posición 5.9).
+  - `/resenas-google` pasó de **0 a 1 clic** (26 impresiones).
+- **Indexación:** Verificación 100% PASS vía URL Inspection API. Los 10 artículos y fichas de producto están en estado `Submitted and indexed`.
+
+**Acciones de optimización en cola ejecutadas:**
+1. **`/catalogo/tarjeta-nfc-bolsillo`:** Metas ajustadas para atacar las consultas Top 10 (`tarjeta nfc` pos 9.5 y `tarjetas nfc panama` pos 16.5). Title a 50 car. (`Tarjeta NFC en Panamá para Reseñas ($20) | starTAP`) y description a 153 car.
+2. **Corrección de Snippets y Meta Descriptions (>155 car.):**
+   - `como-conseguir-100-resenas-google-maps.ts`: Title a 57 car., Description a 148 car. (antes 175). Interlinking interno a placa, stand y tarjeta.
+   - `ver-y-responder-resenas-de-tu-negocio-en-google.ts`: Title a 57 car., Description a 141 car. (antes 157). Interlinking interno a placa y tarjeta.
+   - `negocio-sin-local-google-maps-panama.ts`: Description a 152 car. (antes 174).
+   - `como-pedir-resenas-google-sin-penalizacion.ts`: Title a 55 car. (antes 62), Description a 147 car. (antes 159).
+   - `reclamar-ficha-google-mi-negocio-panama.ts`: Description a 155 car. (antes 156).
+3. **Verificación:** `npx tsc --noEmit` completado en 0 errores y `npm run build` completado exitosamente con 67/67 páginas estáticas.
+
 ### 2026-10-26 · Décimo artículo del blog: optimizar la ficha de Google
 
 Escrito `src/content/blog/optimizar-ficha-google-negocio-panama.ts` (1.494 palabras de lectura, ~2.090 totales)

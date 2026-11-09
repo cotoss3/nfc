@@ -32,8 +32,8 @@ export async function generateMetadata({
       description: 'Placa acrílica de mostrador con chip NFC y QR. Consigue reseñas de Google en tu caja o recepción. Pago único de $35. Envío a todo Panamá.',
     },
     'tarjeta-nfc-bolsillo': {
-      title: 'Tarjeta NFC de Reseñas en Panamá | $20 starTAP',
-      description: 'Tarjeta de PVC con chip NFC y QR para pedir reseñas de Google al instante. Pago único de $20 sin mensualidad. Envío a todo Panamá.',
+      title: 'Tarjeta NFC en Panamá para Reseñas ($20) | starTAP',
+      description: 'Tarjeta inteligente con chip NFC y QR para pedir reseñas de Google al instante. Pago único de $20 sin mensualidad. Envío a todo Panamá en 24h.',
     },
     'stand-nfc-mesa': {
       title: 'Stand NFC para Reseñas Google Panamá | $30 starTAP',

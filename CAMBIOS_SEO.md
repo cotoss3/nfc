@@ -162,6 +162,27 @@ Lo que quedó pendiente:
 - El teléfono de la cuenta es el personal de Fernando (6713-4341) y no el de la
   empresa (6483-9004).
 
+## 9 de noviembre de 2026 — Medición oficial y optimización de snippets en cola
+
+**Resultados de la medición del 3-9 de noviembre (Verificado contra API de GSC):**
+¡Hipótesis validada con éxito rotundo!
+- `/catalogo` pasó de **0 clics a 8 clics** (99 impresiones, CTR 8.1%, posición 4.8).
+- `/catalogo/placa-nfc-mostrador` generó **5 clics** (54 impresiones, CTR 9.3%, posición 5.9).
+- `/resenas-google` pasó de **0 clics a 1 clic** (26 impresiones, CTR 3.8%).
+- Clics totales del sitio en los últimos 28 días: **18 clics y 455 impresiones** (frente a 10 clics y 250 impresiones de la línea base previa).
+
+**Acciones aplicadas hoy (en cola):**
+1. **`/catalogo/tarjeta-nfc-bolsillo`:** Meta title ajustado a `Tarjeta NFC en Panamá para Reseñas ($20) | starTAP` (50 car.) y descripción a 153 car. con gancho de $20, sin mensualidad y entrega 24h para capturar las búsquedas en posición 9.5 (`tarjeta nfc`) y posición 16.5 (`tarjetas nfc panama`).
+2. **Corrección de los 5 artículos con meta description > 155:**
+   - `como-conseguir-100-resenas-google-maps.ts`: Title a 57 car., Description a 148 car. (antes 175). Interlinking a placa, stand y tarjeta.
+   - `ver-y-responder-resenas-de-tu-negocio-en-google.ts`: Title a 57 car., Description a 141 car. (antes 157). Interlinking a placa y tarjeta.
+   - `negocio-sin-local-google-maps-panama.ts`: Description a 152 car. (antes 174).
+   - `como-pedir-resenas-google-sin-penalizacion.ts`: Title a 55 car. (antes 62), Description a 147 car. (antes 159).
+   - `reclamar-ficha-google-mi-negocio-panama.ts`: Description a 155 car. (antes 156).
+3. **Compilación y build:** `npx tsc --noEmit` y `npm run build` completados con éxito (67/67 páginas estáticas).
+
+---
+
 ## 26 de octubre de 2026 — Décimo artículo: optimizar la ficha de Google
 
 Pendiente de desplegar. Fecha de despliegue: ____________

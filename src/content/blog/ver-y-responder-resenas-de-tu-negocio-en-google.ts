@@ -3,9 +3,9 @@ import type { BlogPost } from '@/lib/blog';
 export const post: BlogPost = {
   slug: 'ver-y-responder-resenas-de-tu-negocio-en-google',
   titulo: 'Cómo ver y responder las reseñas que le dejan a tu negocio en Google',
-  tituloSeo: 'Ver y Responder las Reseñas de tu Negocio en Google Maps',
+  tituloSeo: 'Ver y Responder Reseñas de Google en tu Negocio | starTAP',
   descripcion:
-    'Dónde se ven las reseñas de tu negocio en Google, cómo responderlas, qué se puede reportar y qué hacer cuando Google rechaza una denuncia. Con plazos reales.',
+    'Aprende dónde ver las reseñas de tu negocio en Google Maps, cómo responderlas desde el celular y cómo denunciar opiniones falsas paso a paso.',
   resumen:
     'Si buscaste "ver mis reseñas de Google", hay dos cosas distintas con el mismo nombre: las que tú escribiste como cliente y las que te dejaron a ti. Aquí vemos cómo gestionar las segundas.',
   fecha: '2026-09-25',
@@ -152,7 +152,7 @@ Responder y reportar no sube tu posición por sí solo. Lo que mueve la aguja es
 el flujo de reseñas nuevas, y eso depende de cuántos clientes satisfechos
 terminan escribiendo algo. En nuestra [guía de reseñas de Google por industria](/resenas-google) vemos en qué momento pedirlas según el tipo de negocio.
 
-Nosotros vendemos placas y tarjetas NFC que acortan ese camino, y eso es lo
+Nosotros vendemos [placas NFC para mostrador](/catalogo/placa-nfc-mostrador) y [tarjetas NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) que acortan ese camino, y eso es lo
 único de esta página que te cobramos. Ver, responder y reportar es gratis y lo
 haces tú en media hora.
 

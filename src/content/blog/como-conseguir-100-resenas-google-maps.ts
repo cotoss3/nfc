@@ -3,9 +3,9 @@ import type { BlogPost } from '@/lib/blog';
 export const post: BlogPost = {
   slug: 'como-conseguir-100-resenas-google-maps',
   titulo: 'Cómo conseguir 100 reseñas reales en Google Maps sin rogarle al cliente',
-  tituloSeo: 'Cómo Conseguir 100 Reseñas en Google Maps sin Rogar | Guía Práctica',
+  tituloSeo: '100 Reseñas en Google Maps sin Rogar al Cliente | starTAP',
   descripcion:
-    'Rogar por reseñas no funciona y da pena. Por qué tus clientes satisfechos no te dejan 5 estrellas, cuál es el momento exacto para pedirlo y cómo llegar a 100 de forma natural.',
+    'Por qué tus clientes no dejan reseñas, cuál es el momento exacto para pedirlas y el método paso a paso para llegar a 100 opiniones de forma natural.',
   resumen:
     'El 90% de tus clientes sale contento pero no deja nada. No es mala voluntad: es fricción y mal momento. Aquí está el sistema práctico para llegar a tus primeras 100 reseñas sin rogar ni perseguir a nadie.',
   fecha: '2026-10-07',
@@ -139,7 +139,7 @@ Google Business Profile te da un enlace directo que abre la ventana de puntuaci�
 Funciona bien si tu presupuesto es cero, aunque el papel se desgasta, no todos abren la cámara para escanear y a veces se ve improvisado.
 
 ### Opción 2: Dispositivo NFC de mostrador o tarjeta física
-Es una placa o stand acrílico con chip inalámbrico integrado (como el que usamos en [starTAP Panamá](/catalogo)). El cliente solo acerca su teléfono —igual a cuando paga con tarjeta contactless o Apple Pay— y se le abre automáticamente la pantalla de 5 estrellas de tu negocio.
+Es una [placa NFC de mostrador](/catalogo/placa-nfc-mostrador), un [stand de mesa](/catalogo/stand-nfc-mesa) o una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) con chip inalámbrico integrado (como los de [starTAP Panamá](/catalogo)). El cliente solo acerca su teléfono —igual a cuando paga con tarjeta contactless o Apple Pay— y se le abre automáticamente la pantalla de 5 estrellas de tu negocio.
 
 Sin abrir cámara, sin escribir en el buscador y sin buscar links. Toca el stand, marca las 5 estrellas y listo. Tarda 8 segundos reloj.
 

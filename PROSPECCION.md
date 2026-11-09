@@ -440,7 +440,81 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-10-26 | Sala de Belleza y Barbería Anyelu | Centro de estética | El Balboa (PH Mystic Towers, San Miguelito) | 11 | 4.5 | WhatsApp | 6651-8956 | pendiente | lunes salones 26-10; mujer empresaria; contesta todas las resenas; top2 105/78 |
 | 2026-10-26 | Fanny Salon | Centro de estética | Las Cumbres (4FJ9+933) | 3 | 4.3 | WhatsApp | 6523-1505 | pendiente | lunes salones 26-10; ficha sin reclamar; resenas de 7-9 anos; top2 105/78 |
 
+| 2026-10-27 | Fonda Quiquin | Fonda | Vista Alegre, Arraijan (W7HX+H7) | 8 | 4.9 | WhatsApp | 6731-1280 | pendiente | martes restaurantes 27-10; La Chorrera restaurantes y fondas agotada, se roto a Arraijan y Panama Oeste; WhatsApp y carta en la ficha; top2 fondas Arraijan 257/86 |
+| 2026-10-27 | FONDA LOS JUANOS | Fonda | Nuevo Arraijan (W7GG+P5) | 7 | 4.7 | WhatsApp | 6400-3881 | pendiente | martes restaurantes 27-10; mujer empresaria; resena de hace 5 meses; top2 Vista Alegre 126/81 |
+| 2026-10-27 | Fonda El Sabor Ocueno SA | Fonda desayunos | Burunga, Arraijan (X89V+G2) | 11 | 4.5 | WhatsApp | 6737-2610 | pendiente | martes restaurantes 27-10; ficha sin reclamar; dentro de Ferreteria El Diamante; lider Burunga 17 |
+| 2026-10-27 | Fonda Edwin | Fonda | Vacamonte (W8C3+C6) | 3 | 5.0 | WhatsApp | 6592-8165 | pendiente | martes restaurantes 27-10; ficha sin reclamar; resenas de hace 6 anos; lider Vacamonte 17 |
+| 2026-10-27 | Fonda La Tierra Que Jala | Fonda brunch | Panama Oeste (WCM5+HVR) | 9 | 4.6 | WhatsApp | 6242-1891 | pendiente | martes restaurantes 27-10; cierra 10pm; lider busqueda 17 |
+| 2026-10-27 | Fonda aguila Dule | Fonda | Valle del Sol (W9G9+HCX) | 7 | 5.0 | WhatsApp | 6118-0080 | pendiente | martes restaurantes 27-10; abre 3pm; lider busqueda 17 |
+| 2026-10-27 | Fonda La Fe | Fonda | Panama Oeste (W9QC+5F5) | 2 | 4.5 | WhatsApp | 6527-3332 | pendiente | martes restaurantes 27-10; cierra 3:30pm; lider busqueda 17 |
+| 2026-10-27 | LA PESCA RESTAURANT & LOUNGE | Marisqueria | Nuevo Emperador, Arraijan (X863+GH) | 7 | 5.0 | WhatsApp | 6746-4222 | pendiente | martes restaurantes 27-10; resenas todas de hace 4 meses; vecino La Pesca Food Town 53; top busqueda mariscos oeste 752 |
+| 2026-10-27 | King of fish | Restaurante de pescados | Arraijan (X854+8CR) | 6 | 5.0 | WhatsApp | 6047-2842 | pendiente | martes restaurantes 27-10; ficha sin reclamar; vende por PedidosYa; mencionan al dueno por nombre; top2 752/53 |
+| 2026-10-27 | Cevicheria Delicias Sonis | Cevicheria | Nuevo Arraijan (W7C4+2V) | 5 | 5.0 | WhatsApp | 6974-4321 | pendiente | martes restaurantes 27-10; ficha sin reclamar; top2 cevicherias Arraijan 1835/53 |
+| 2026-10-27 | Cevicheria Costa de Arraijan | Cevicheria | Arraijan (W9W7+5XM) | 12 | 4.3 | WhatsApp | 6311-6288 | pendiente | martes restaurantes 27-10; ficha sin reclamar; resenas de 7 a 10 anos; Facebook en la ficha; top2 1835/53 |
+| 2026-10-27 | Mariscos Espinosa | Marisqueria | La Chorrera (R6X6+M7) | 3 | 5.0 | WhatsApp | 6821-0573 | pendiente | martes restaurantes 27-10; resena de hace una semana con promo de camarones; top2 pescado La Chorrera 178/150 |
+| 2026-10-27 | Restaurante De SHIPPO | Restaurante de mariscos | La Chorrera (V6MG+996) | 14 | 4.3 | WhatsApp | 6669-7587 | pendiente | martes restaurantes 27-10; ficha sin reclamar; resenas de hace 9 anos; top2 178/150 |
+| 2026-10-27 | Fonda Polleras y Sabores | Fonda | Arraijan (XFHG+FRM) | 6 | 5.0 | visita | sin telefono en la ficha | pendiente | martes restaurantes 27-10; no publica telefono; vende por PedidosYa; candidato a visita |
+| 2026-10-27 | COCO FISH | Restaurante | El Coco, La Chorrera (V58M+XVR) | 4 | 4.5 | visita | sin telefono en la ficha | pendiente | martes restaurantes 27-10; abierto 24h; no publica telefono; candidato a visita |
+| 2026-10-27 | Restaurante y grill la Parada | Restaurante | Arraijan (X855+24) | 5 | 4.8 | visita | sin telefono en la ficha | pendiente | martes restaurantes 27-10; dentro del Super Mercado Lluvia de Oro; no publica telefono |
+| 2026-10-27 | Mercado de Marisco | Marisqueria | La Chorrera (V6H9+QG) | 6 | 4.5 | visita | sin telefono en la ficha | pendiente | martes restaurantes 27-10; no publica telefono; candidato a visita |
+| 2026-10-27 | Fonda Sabor Dominicano | Fonda dominicana | Arraijan (XF55+RR9) | 5 | 4.6 | visita | sin telefono en la ficha | pendiente | martes restaurantes 27-10; no publica telefono; resenas de 1 a 7 anos |
+
+| 2026-11-02 | La barbería pty | Barbería | Tocumen (Plaza Tocumen Sur) | 6 | 4.3 | WhatsApp | 6025-7398 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; ultima resena de 2 anos; abre hasta madrugada |
+| 2026-11-02 | Barberia Dj Kirby | Barbería | Tocumen (C. Borneo 251) | 11 | 5.0 | WhatsApp | 6025-3144 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; resenas de 3-4 anos; cierra 9pm |
+| 2026-11-02 | Vallejo Barbershop | Barbería | Tocumen (3H4G+J6) | 8 | 5.0 | WhatsApp | 6907-8242 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; clientes lo mencionan por el corte; abre 12pm |
+| 2026-11-02 | BARBERIA SMASHK | Barbería | Pedregal (calle L local 1) | 7 | 5.0 | WhatsApp | 6260-1457 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; cierra 10pm |
+| 2026-11-02 | RB Barber Studio | Barbería | 24 de Diciembre (3JW6+J4) | 2 | 5.0 | WhatsApp | 6326-3811 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; resena de hace 1 mes con fotos; abre 11am |
+| 2026-11-02 | Barberia y sala de belleza Tony | Barbería y salón | Don Bosco (C. Bello Horizonte) | 8 | 4.9 | WhatsApp | 6484-6128 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; barberia y salon en el mismo local; cierra 7pm |
+| 2026-11-02 | Rayon's Barberia & Tattoo | Barbería y tatuajes | Tocumen (Principal Ca D 34) | 14 | 4.7 | WhatsApp | 6249-9962 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 barberias Tocumen 64/28; barberia y tatuaje; cierra 9pm; tiene sitio web |
+| 2026-11-02 | Salon de belleza Yami Lo | Salón de belleza | Tocumen (Plaza Tocumen Sur) | 12 | 4.9 | WhatsApp | 6484-7715 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 salones Tocumen 46/24; resena de hace 10 anos; clientela vieja |
+| 2026-11-02 | Hair Colors Salon | Salón de belleza | Tocumen (Plaza Tocumen Sur) | 14 | 5.0 | WhatsApp | 6280-2165 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 salones Tocumen 46/24; contestan todas las resenas; tienen reservas en linea |
+| 2026-11-02 | Infinity Salón y Boutique | Salón de belleza | Tocumen (C. Pl. Tocumen) | 6 | 4.3 | WhatsApp | 6865-1876 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 salones Tocumen 46/24; ficha sin reclamar; cierra 8pm |
+| 2026-11-02 | Carol Salón | Salón de belleza | Tocumen (C. 3ra, 2HWR+QP) | 3 | 5.0 | WhatsApp | 6605-7084 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 salones Tocumen 46/24; resenas de hace 3-4 anos; cierra 8pm |
+| 2026-11-02 | Akaneh Beauty Salon VERSALLES | Salón de belleza | Versalles (calle costanera) | 8 | 4.6 | WhatsApp | 6223-7804 | pendiente | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 salones Tocumen 46/24; hacen novias y eventos; cierra 8pm |
+| 2026-11-02 | Martinas Beauty Salon | Salón de belleza | Versalles (Plaza Panamá Versalles) | 8 | 4.5 | WhatsApp | 6457-8216 | respondió | lunes barberias y salones 02-11; Arraijan y Panama Norte agotados, se roto a Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles); top2 salones Tocumen 46/24; Instagram en la ficha; cierra 7pm |
+| 2026-11-02 | Urban Barber 507 | Barbería | Pedregal (3H9J+JVC) | 4 | 4.8 | llamada | 390-8146 | pendiente | lunes barberias 02-11; fijo sin WhatsApp; abierto 24h; ficha sin reclamar; top2 barberias Tocumen 64/28 |
+| 2026-11-02 | Grisnails Beauty Salon | Salón de belleza | Tocumen (C. Pl. Tocumen 108) | 10 | 4.9 | visita | sin telefono en la ficha | pendiente | lunes salones 02-11; ficha sin reclamar ni telefono; candidato a visita; top2 salones Tocumen 46/24 |
+
+| 2026-11-03 | Grill House Veracruz | Bar y parrilla | Veracruz (V9RH+389, C. 1) | 11 | 4.5 | WhatsApp | 6524-4406 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 restaurantes Veracruz 154/762; resenas de 6-7 anos; cierra 3am; ficha sin reclamar |
+| 2026-11-03 | Happy Coffee | Cafeteria | Arraijan (Barriada la paz, Mini Super Hanna) | 2 | 5.0 | WhatsApp | 6002-0075 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 cafeterias Arraijan 137/120; contesta resenas; cierra 6pm; mujer empresaria |
+| 2026-11-03 | Restaurante Bendicion De Burunga | Restaurante | Burunga, Arraijan (X85G+VW) | 2 | 5.0 | WhatsApp | 6538-9763 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 restaurantes Burunga 137/120; fuerte en desayunos de domingo; ficha sin horario |
+| 2026-11-03 | Antojitos Beach | Restaurante de playa | Veracruz (V9VW+GX8) | 9 | 5.0 | WhatsApp | 6070-0289 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 restaurantes Veracruz 154/762; resenas de 7 anos; ficha sin reclamar |
+| 2026-11-03 | Donde mas | Comida rapida | Arraijan (Hacia Chapala 221-9) | 1 | 5.0 | WhatsApp | 6942-0996 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 comida rapida Arraijan 434/197; cierra 9pm |
+| 2026-11-03 | Callejeros del West | Hamburgueseria | Nuevo Arraijan (W7GF+R8) | 3 | 4.0 | WhatsApp | 6475-6914 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 hamburguesas Arraijan 434/197; vende por PedidosYa; abre 4pm |
+| 2026-11-03 | Nacion Burger | Hamburgueseria | Arraijan (W7Q6+4J, Las Villas) | 8 | 5.0 | WhatsApp | 6454-7031 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 hamburguesas Arraijan 434/197; contesta todas las resenas; abre 5pm; mujer empresaria |
+| 2026-11-03 | La esquinita del pescado | Marisqueria | Vacamonte (El Tecal, W78Q+FW) | 4 | 4.8 | WhatsApp | 6135-3221 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 mariscos Panama Oeste 754/53; pedidos desde el automovil |
+| 2026-11-03 | Delicias Marie - Pescados y Mariscos | Marisqueria | Nuevo Arraijan (X74F+X2, Residencial Eden) | 1 | 5.0 | WhatsApp | 6516-4535 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 mariscos Panama Oeste 754/53; carta y fotos montadas; mujer empresaria |
+| 2026-11-03 | Salo fish | Marisqueria | Vacamonte (W74R+X6) | 6 | 5.0 | WhatsApp | 6441-7500 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 mariscos Panama Oeste 754/53; resenas de 5 anos |
+| 2026-11-03 | Restaurante El Tecal | Restaurante | Vacamonte (W77V+VJ, al lado del Super 99) | 5 | 4.4 | WhatsApp | 6795-9638 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); top2 restaurantes Vacamonte 754/81; cierra 10pm |
+| 2026-11-03 | Restaurante Paseo Center | Restaurante y comida china | Burunga, Arraijan (W8J2+X7J Plaza Paseo) | 11 | 4.5 | llamada | 247-4878 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); fijo sin WhatsApp; top2 comida china Arraijan 354/137; vende por PedidosYa |
+| 2026-11-03 | Artesana Pizzeria Brisas del Golf | Pizzeria | Brisas del Golf de Arraijan (X7FV+QJ) | 8 | 4.3 | llamada | 349-7020 | pendiente | martes restaurantes 03-11; La Chorrera agotada, se roto a Arraijan, Veracruz y Vacamonte (Panama Oeste); fijo sin WhatsApp; top2 pizzerias Arraijan 831/704; pizza a la lena |
+
+
+| 2026-11-05 | Gorgona Cars \| Autoshop | Taller mecanico | Nueva Gorgona (Calle los pescadores) | 1 | 5.0 | WhatsApp | 6018-3186 | pendiente | talleres jueves 05-11; zona nueva Nueva Gorgona y Capira; top2 talleres Gorgona 46/110 |
+| 2026-11-05 | Taller Robolt | Torneria | Nueva Gorgona | 2 | 5.0 | WhatsApp | 6714-3321 | pendiente | talleres jueves 05-11; top2 talleres Gorgona 46/110; torneria |
+| 2026-11-05 | Auto aire Chamos cool Solution | Aire acondicionado automotriz | Nueva Gorgona | 4 | 5.0 | WhatsApp | 6815-8511 | pendiente | talleres jueves 05-11; top2 talleres Gorgona 46/110; horario hasta 5am |
+| 2026-11-05 | REPUESTO WESTZONE 2 | Taller y repuestos | Malambo (Arraijan, Plaza Malambo) | 7 | 4.9 | WhatsApp | 6881-8881 | pendiente | talleres jueves 05-11; busqueda lubricentro Arraijan; top2 128/58; sede hermana con 200 resenas |
+| 2026-11-05 | Modo Brasil taller de moto | Taller de motos | Capira | 2 | 5.0 | WhatsApp | 6118-9353 | pendiente | talleres jueves 05-11; motos Capira; lider de la busqueda 20 |
+| 2026-11-05 | Llantero Abel | Llanteria | Capira (Carr. Interamericana 44-12) | 11 | 4.3 | WhatsApp | 6995-1863 | pendiente | talleres jueves 05-11; primero de su busqueda con 11; top2 llanteria Capira 11/2 |
+| 2026-11-05 | Llantas los Jimmy 2 by Grupo Jimmy | Llanteria | Capira | 3 | 5.0 | WhatsApp | 6779-5717 | pendiente | talleres jueves 05-11; top2 llanteria Capira 11/2; grupo con mas de una sede |
+| 2026-11-05 | JM Studio Carwash | Autolavado | Arraijan | 5 | 5.0 | WhatsApp | 6011-0294 | pendiente | talleres jueves 05-11; autolavados Arraijan; top2 48/40; tiene sitio web; cierra 10pm |
+| 2026-11-05 | Car Wash La Mantenida | Autolavado | Arraijan (W7GM+9RV) | 1 | 5.0 | WhatsApp | 6975-2515 | pendiente | talleres jueves 05-11; autolavados Arraijan; top2 48/40; cierra 11pm |
+| 2026-11-05 | el expreso chapisteria | Chapisteria y pintura | Bique (Arraijan) | 3 | 5.0 | WhatsApp | 6878-5207 | pendiente | talleres jueves 05-11; chapisteria Oeste; top2 18/9; tiene sitio web |
+| 2026-11-05 | Tallerpanamacustomcreation | Chapisteria y pintura | Panama Oeste (Manzana 130107) | 9 | 4.7 | WhatsApp | 6775-5373 | pendiente | talleres jueves 05-11; chapisteria Oeste; top2 18/9; a 9 resenas del primero |
+| 2026-11-05 | Rocco Performance | Chapisteria y pintura | La Chorrera (V6CG+GHH) | 7 | 5.0 | WhatsApp | 6920-5843 | pendiente | talleres jueves 05-11; talleres Chorrera; top2 139/110 |
+| 2026-11-05 | Taller de Mecanica Villarreal | Taller mecanico | Panama Oeste (W7MQ+GCV) | 12 | 4.5 | visita | sin telefono en la ficha | pendiente | talleres jueves 05-11; ficha sin telefono; candidato a visita |
+| 2026-11-05 | Kobies workshop | Taller mecanico | Nueva Gorgona (Av. Nueva Gorgona 20-19) | 9 | 4.8 | visita | sin telefono en la ficha | pendiente | talleres jueves 05-11; ficha sin telefono; candidato a visita; top2 talleres Gorgona 46/110 |
+
 ## 6. Zonas y rubros ya agotados
+
+**La Chorrera, restaurantes y fondas.** Agotada el 2026-10-27 tras la pasada del martes: se
+revisaron Guadalupe, Puerto Caimito, El Coco, Playa Leona y pizzerias, y lo que queda son
+fichas ya contactadas, negocios con mas de 30 resenas o fichas de 0 resenas sin competidor
+que sirva de comparacion. Se rota a Arraijan y Panama Oeste en restaurantes, fondas y
+mariscos (Vista Alegre, Nuevo Arraijan, Burunga, Vacamonte, Nuevo Emperador), que si tiene
+lideres de busqueda con 257, 752 y 1835 resenas. Capira, Chame, Bejuco, Nueva Gorgona y
+Coronado se revisaron tambien: la costa quedo descartada por densidad de resenas y en
+Bejuco solo salio Fonda El Mango, marcada por Google como posible cierre.
 
 **Arraijan, barberias y salones.** Agotado el 2026-10-26 tras cinco pasadas:
 cabecera y Burunga (28-09), La Chorrera como rotacion (05-10), Veracruz, Vacamonte y
@@ -451,6 +525,12 @@ negocios ya contactados. Se rota a Panama Norte (Las Cumbres, Alcalde Diaz, Chil
 Caimitillo, La Cabima), que si tiene lideres de busqueda con 179 y 121 resenas. Capira se
 reviso tambien y quedo descartada por densidad: ninguna barberia pasa de 16 resenas.
 
+
+**Panama Norte, barberias y salones.** Revisado el 2026-10-26 (Las Cumbres, Alcalde Diaz,
+Chilibre, Caimitillo, La Cabima): 16 fichas contactadas. En la pasada del 02-11 se roto a
+Panama Este (Tocumen, 24 de Diciembre, Pedregal, Versalles), que si tiene lideres de
+busqueda con 64 y 28 resenas en barberias y 46 y 24 en salones. Queda material en la zona
+para al menos otra pasada.
 
 
 > Nota 2026-09-28: aparecio aqui una anotacion que daba por agotado Arraijan barberias y
@@ -768,7 +848,7 @@ reviso tambien y quedo descartada por densidad: ninguna barberia pasa de 16 rese
 | 2026-10-22 | Autodiagnostico Motor Services | Taller mecanico | La Chorrera (al lado de la escuela Juan Pablo II) | 1 | 5.0 | WhatsApp | 6340-5340 | pendiente | talleres jueves; top2 frenos y suspension Oeste 65/35 |
 
 
-| 2026-10-23 | TH BOUTIQUE | Tienda de ropa y alquiler de vestuario | Arraijan (Urb. Aragon) | 1 | 5.0 | WhatsApp | 6009-0473 | pendiente | viernes rotativo tiendas; top2 ropa Arraijan 192/706; ficha patrocinada, confirmar direccion |
+| 2026-10-23 | TH BOUTIQUE | Tienda de ropa y alquiler de vestuario | Arraijan (Urb. Aragon) | 1 | 5.0 | WhatsApp | 6009-0473 | respondio | viernes rotativo tiendas; top2 ropa Arraijan 192/706; ficha patrocinada, confirmar direccion; contesto 26-10 'vestidos de xv anos' al cierre del primer mensaje; se responde con precio directo (placa $30, Pack Trio $50, pago unico) y el enlace del sitio; se ofrecen fotos |
 | 2026-10-23 | Distribuidora Universal | Tienda de variedades y alimentacion | Arraijan (W8M6+J4C) | 2 | 5.0 | WhatsApp | 6416-1074 | pendiente | viernes rotativo tiendas; top2 variedades Arraijan 1581/706 (plazas) |
 | 2026-10-23 | Centro de Novedades y Sederias | Papeleria y novedades | Burunga (entrada, Carr. Panamericana) | 3 | 4.3 | WhatsApp | 6100-0051 | pendiente | viernes rotativo tiendas; lideres papeleria Arraijan 510/93 |
 | 2026-10-23 | Muebleria El Gran Yo Soy | Muebleria y colchoneria | Arraijan (diagonal Banco Nacional) | 5 | 5.0 | WhatsApp | 6512-8861 | pendiente | viernes rotativo tiendas; top2 muebleria 72/28, lider 920 |
@@ -779,9 +859,99 @@ reviso tambien y quedo descartada por densidad: ninguna barberia pasa de 16 rese
 | 2026-10-23 | CB PLASMADOS | Tienda de ropa personalizada | Capira | 2 | 5.0 | WhatsApp | 6949-2775 | pendiente | viernes rotativo tiendas; top2 ropa Capira 6/15; entrega a domicilio |
 | 2026-10-23 | Ferricentro Capira | Tienda de herramientas | Capira (Villa Rosario, Carr. Interamericana) | 1 | 5.0 | llamada | 248-5198 | pendiente | fijo sin WhatsApp; top2 ferreterias Capira 22/17 |
 | 2026-10-23 | Mi Closet Outlet | Tienda de ropa | Vacamonte / Veracruz (V6QG+4RG) | 13 | 4.8 | llamada | 345-3112 | pendiente | fijo sin WhatsApp; BONCH Vista Alegre 13 y BON CH Campo Lindbergh 608 en la misma busqueda |
+| 2026-10-28 | Dra. Katherine Thils Ortopedia | Ortopedia | Paitilla (Consultorios Medicos Paitilla p5, cons. 532) | 0 | sin resenas | WhatsApp | 6300-9803 | pendiente | top2 ortopedia 78/67 |
+| 2026-10-28 | Dra. Yasmin Garcia Otorrino | Otorrinolaringologia | Paitilla (Consultorios Medicos Paitilla) | 5 | 4.2 | WhatsApp | 6451-6515 | pendiente | top2 otorrino 219/154 |
+| 2026-10-28 | Clinica Estetica Belladonna spa | Medicina estetica | Via Israel (XFJM+2QQ) | 0 | sin resenas | WhatsApp | 6319-6256 | pendiente | top2 estetica 36/29 |
+| 2026-10-28 | Dr. Jose Rafael Solis Toala | Cardiologia | Punta Pacifica (Pacifica Salud / The Panama Clinic) | 2 | 5.0 | WhatsApp | 6981-3129 | pendiente | top2 cardio 924/56 |
+| 2026-10-28 | Clinica Cardiovascular | Cardiologia | Punta Pacifica (Consultorios Hospital 1er piso, Blvd. Pacifica) | 14 | 5.0 | WhatsApp | 6365-6040 | pendiente | top2 cardio 924/56 |
+| 2026-10-28 | Dr. Walter Morales Ku Urologia | Urologia | Ciudad de Panama (Centro Medico de Alta Especialidad, p8) | 5 | 4.2 | WhatsApp | 6618-2433 | pendiente | top2 urologia 850/105 |
+| 2026-10-28 | Dr. Ruben Urena | Urologia | Punta Pacifica (Consultorios Punta Pacifica, cons. 604) | 7 | 4.4 | WhatsApp | 6070-0707 | pendiente | top2 urologia 850/105 |
+| 2026-10-28 | Dr. Jorge A. Castro Ferrari Urologo | Urologia | Punta Pacifica (Hospital Pacifica Salud p7, cons. 6-7) | 2 | 5.0 | WhatsApp | 6090-3441 | pendiente | top2 urologia 850/105 |
+| 2026-10-28 | CENTRO ESPECIALIZADO EN NEURODESARROLLO | Neurodesarrollo infantil | Bella Vista (PH Bay Mall, Av. Vasco Nunez de Balboa) | 2 | 5.0 | WhatsApp | 6180-5672 | pendiente | top2 terapia ocupacional 37/28 |
+| 2026-10-28 | ADD Aprendizaje Dinamico Dirigido | Terapia ocupacional | Ciudad de Panama | 3 | 5.0 | WhatsApp | 6303-5615 | pendiente | top2 terapia ocupacional 37/28 |
+| 2026-10-28 | Child Development & Consultant Panama | Logopedia y desarrollo infantil | San Francisco (C. 64 Este) | 0 | sin resenas | WhatsApp | 6676-9092 | pendiente | top2 terapia ocupacional 37/28 |
+| 2026-10-28 | Clinica Ortotrauma Panama | Ortopedia y traumatologia | Paitilla (Consultorios Medicos Paitilla p5, 505-506) | 2 | 5.0 | llamada | 206-2533 | pendiente | fijo sin WhatsApp |
+| 2026-10-28 | Clinica de Especialidades Ortopedicas | Ortopedia | Via Espana (Clinica Hospital San Fernando) | 2 | 5.0 | llamada | 838-9492 | pendiente | fijo sin WhatsApp |
+| 2026-10-28 | Dr. Edmundo Ford Ortopedista y Traumatologo | Ortopedia | Via Espana (Centro Especializado San Fernando) | 3 | 5.0 | llamada | 261-7275 | pendiente | fijo sin WhatsApp |
+| 2026-10-28 | Clinica Estetica Carvajal Suc. Marbella | Medicina estetica | Marbella (Consultorios Royal Center 504) | 13 | 5.0 | llamada | 209-4284 | pendiente | fijo sin WhatsApp |
+| 2026-10-28 | Centro Cardiologico Marbella Panama | Cardiologia | Marbella (XFGH+VVG) | 0 | sin resenas | llamada | 340-9979 | pendiente | fijo sin WhatsApp |
+| 2026-10-28 | Dr. Rogelio Perez Valdivieso | Endocrinologia | Ciudad de Panama (XFC8+QJ6) | 9 | 4.4 | llamada | 398-2349 | pendiente | fijo sin WhatsApp |
+| 2026-10-28 | Instituto Medico Especializado | Centro medico | Via Espana (Plaza Comercial San Fernando) | 7 | 4.6 | llamada | 366-0000 | pendiente | fijo sin WhatsApp |
 
 > Nota 2026-10-23: las busquedas de hoteles y hospedajes en Maps abren la interfaz de reservas
 > (precios y fechas) y no muestran telefono en el listado, asi que el rubro rinde poco por este
 > metodo. El viernes rotativo se trabajo con tiendas en Arraijan, Burunga, Capira y Vacamonte.
 > Capira y Chame tienen poca densidad: muchas fichas sin resenas (sin calificacion, no califican)
 > y varias busquedas se desvian a la ciudad de Panama.
+
+| 2026-10-29 | Taller Panama Express | Taller mecanico | Nuevo Chorrillo (Arraijan) | 4 | 5.0 | WhatsApp | 6453-6597 | pendiente | talleres jueves 29-10; top2 busqueda Nuevo Chorrillo 188/4 |
+| 2026-10-29 | Taller de Mecanica Burunga | Taller mecanico | Burunga (Arraijan) | 3 | 4.3 | WhatsApp | 6631-0503 | pendiente | talleres jueves 29-10; primero de su busqueda; lideres Arraijan 188/73 |
+| 2026-10-29 | Auto flow 507 | Taller mecanico | Burunga (C. 2 de Mayo) | 3 | 4.7 | WhatsApp | 6535-5502 | pendiente | talleres jueves 29-10; abierto 24 horas; lideres Arraijan 188/73 |
+| 2026-10-29 | Multiservicios Servicar | Taller de automoviles | Cerro Silvestre (Arraijan) | 9 | 4.4 | WhatsApp | 6836-0209 | pendiente | talleres jueves 29-10; lideres Cerro Silvestre 188/60 |
+| 2026-10-29 | Allmotorservice | Taller mecanico | Cerro Silvestre (Arraijan) | 3 | 5.0 | WhatsApp | 6885-2753 | pendiente | talleres jueves 29-10; mecanica 4x4 y suspension; lideres 188/60 |
+| 2026-10-29 | Mechanic Express Torres | Taller de reparacion de automoviles | Nuevo Chorrillo (Arraijan) | 8 | 4.8 | WhatsApp | 6418-1705 | pendiente | talleres jueves 29-10; lideres busqueda 188/58 |
+| 2026-10-29 | NITROWEST | Taller mecanico | Arraijan | 14 | 4.9 | WhatsApp | 6860-7328 | pendiente | talleres jueves 29-10; a una resena de las 15; lider busqueda 188 |
+| 2026-10-29 | Taller y rastro el fulo | Taller mecanico y rastro | Arraijan | 4 | 4.8 | WhatsApp | 6230-3179 | pendiente | talleres jueves 29-10; lideres Arraijan 188/58 |
+| 2026-10-29 | TALLER MECANICO ERIC CAR SERVICE | Taller mecanico | Guadalupe (La Chorrera) | 14 | 5.0 | WhatsApp | 6588-6893 | pendiente | talleres jueves 29-10; segundo de su busqueda; top2 Guadalupe 65/14 |
+| 2026-10-29 | Taller de Mecanica Davisin | Taller de reparacion de automoviles | La Chorrera | 13 | 4.4 | WhatsApp | 6793-2774 | pendiente | talleres jueves 29-10; top2 Guadalupe 65/14; lider Chorrera 147 |
+| 2026-10-29 | Taller Kielo style AOG | Taller mecanico | La Chorrera | 1 | 5.0 | WhatsApp | 6922-5925 | pendiente | talleres jueves 29-10; abierto 24 horas; lider busqueda 65, lider Chorrera 147 |
+| 2026-10-29 | Taller Kairos mecanica en general | Taller mecanico | La Chorrera (Carr. Interamericana) | 3 | 5.0 | WhatsApp | 6960-5105 | pendiente | talleres jueves 29-10; lider busqueda 65, lider Chorrera 147 |
+| 2026-10-29 | Taller Engines Solution Equipo Pesado | Taller mecanico equipo pesado | Burunga (Arraijan) | 8 | 4.3 | llamada | 259-6474 | pendiente | talleres jueves 29-10; fijo sin WhatsApp; lideres Arraijan 188/73 |
+
+| 2026-11-04 | JOSE HERMIDA, PANAMA SPINE & BRAIN CENTER | Neurocirugia | San Francisco / Punta Pacifica | 1 | 5.0 | WhatsApp | 6228-1281 | pendiente | clinicas ciudad 04-11; especialidades nuevas (neuro, gastro, alergia, vascular, psiquiatria, nefro, odontopediatria); top2 neurologo 34/90 |
+| 2026-11-04 | Doctora Rita Aguilar | Gastroenterologia | Ciudad de Panama (07096) | 0 | sin resenas | WhatsApp | 6948-3463 | pendiente | clinicas ciudad 04-11; top2 gastro 225/79; ficha abierta 24h sin resenas |
+| 2026-11-04 | Gastroenterologa Dra. Fatima Lopez Nieto | Gastroenterologia | Paitilla (C. Ramon H. Jurado) | 0 | sin resenas | WhatsApp | 6248-2249 | pendiente | clinicas ciudad 04-11; top2 gastro 225/79; tiene sitio web, ficha en cero |
+| 2026-11-04 | Dr. Emilio Saturno Alergologo | Alergologia | Ciudad de Panama | 2 | 5.0 | WhatsApp | 6677-3354 | pendiente | clinicas ciudad 04-11; top2 alergologo 118/80; resena menciona trato con ninos |
+| 2026-11-04 | INASA Instituto de Neumologia y Alergias | Neumologia y alergias | Via Espana (Centro Especializado San Fernando) | 4 | 5.0 | WhatsApp | 6997-7621 | pendiente | clinicas ciudad 04-11; top2 alergologo 118/80; sede propia |
+| 2026-11-04 | Dra. Maria Alejandra Diaz Cirujana Vascular | Cirugia vascular | Paitilla (The Panama Clinic p27, cons. 2704) | 1 | 5.0 | WhatsApp | 6977-9055 | pendiente | clinicas ciudad 04-11; top2 varices 14/6; busqueda floja, facil de ganar |
+| 2026-11-04 | CLINICA VASCULAR DE PANAMA DR GERARDO VICTORIA | Cirugia vascular | Ciudad de Panama | 6 | 4.3 | WhatsApp | 6672-5416 | pendiente | clinicas ciudad 04-11; top2 varices 14/6; empatado por el segundo lugar |
+| 2026-11-04 | Dental Medic center | Dentista infantil | Bella Vista (XFFC+V55, C. 43 Este) | 0 | sin resenas | WhatsApp | 6335-6207 | pendiente | clinicas ciudad 04-11; top2 odontopediatra Bella Vista 21/29 |
+| 2026-11-04 | Dra. Denisse Cotes - Psiquiatra | Psiquiatria | Paitilla (Consultorios Medicos Av. Balboa y C. 53) | 3 | 5.0 | WhatsApp | 6209-7606 | pendiente | clinicas ciudad 04-11; top2 psiquiatra 20/8 |
+| 2026-11-04 | Clinica Mental Salud | Salud mental | Ciudad de Panama | 2 | 5.0 | WhatsApp | 6274-2221 | pendiente | clinicas ciudad 04-11; top2 psiquiatra 20/8; cierra 7pm |
+| 2026-11-04 | Nefrologo en Panama - Dr. Camilo Jaen Russo | Nefrologia | Bella Vista (Calle 39 Este) | 3 | 5.0 | WhatsApp | 6859-7054 | pendiente | clinicas ciudad 04-11; top2 nefrologo 10/4, el primero en 4.2; busqueda muy floja |
+| 2026-11-04 | Gastroenterologo Doctor Jan Axel Cubilla | Gastroenterologia | Paitilla (The Panama Clinic Torre A p12, cons. 1209) | 7 | 5.0 | llamada | 310-9912 | pendiente | clinicas ciudad 04-11; fijo sin WhatsApp; top2 gastro 225/79 |
+| 2026-11-04 | Gastroenterologo Dr. Alexis McKenzie Ballesteros | Gastroenterologia | Punta Pacifica (Hospital Pacifica Salud, cons. 420) | 0 | sin resenas | llamada | 204-8347 | pendiente | clinicas ciudad 04-11; fijo sin WhatsApp; top2 gastro 225/79 |
+| 2026-11-04 | Clinica de Venas y enfermedades Vasculares | Flebologia | Ciudad de Panama (XFVH+4RG) | 5 | 4.4 | llamada | 264-7406 | pendiente | clinicas ciudad 04-11; fijo sin WhatsApp; top2 varices 14/6 |
+| 2026-11-04 | Clinica Dr. Setton / Cirugia Plastica | Cirugia plastica | Punta Pacifica (Pacifica Salud, cons. 424) | 7 | 5.0 | llamada | 204-8458 | pendiente | clinicas ciudad 04-11; fijo sin WhatsApp; top2 cirugia plastica 193/121 |
+| 2026-11-04 | Dr. Generoso Guerra Bautista | Reumatologia | Marbella (Consultorios Royal Center p2, cons. 206) | 1 | 5.0 | llamada | 263-3283 | pendiente | clinicas ciudad 04-11; fijo sin WhatsApp; primero de la busqueda de reumatologo |
+| 2026-11-04 | Dra. Balkys Alvarez Varela | Psiquiatria | Paitilla (Av. Balboa con C. 53 Este) | 1 | 5.0 | llamada | 206-2598 | pendiente | clinicas ciudad 04-11; fijo sin WhatsApp; top2 psiquiatra 20/8 |
+
+| 2026-11-06 | Nicol's Boutique / Fajas Nicol's | Boutique y fajas | La Chorrera (entrando por el parque Simon Bolivar) | 11 | 5.0 | WhatsApp | 6314-0308 | pendiente | viernes rotativo 06-11; tiendas en La Chorrera (zona nueva para el rubro; Arraijan, Burunga, Capira y Vacamonte ya trabajadas); top2 tiendas de ropa Chorrera 361/87 |
+| 2026-11-06 | Glamour_marce_boutique | Boutique | La Chorrera (Barrio Balboa, C. Prestan) | 2 | 4.5 | WhatsApp | 6812-6907 | pendiente | viernes rotativo 06-11; tiendas La Chorrera; top2 tiendas de ropa Chorrera 361/87 |
+| 2026-11-06 | Naty's Boutique | Tienda de ropa | La Chorrera (A 35-675) | 1 | 5.0 | WhatsApp | 6234-5694 | pendiente | viernes rotativo 06-11; tiendas La Chorrera; entrega a domicilio; top2 361/87 |
+| 2026-11-06 | COMERCIALIZADORA 507 | Tienda de herramientas | La Chorrera (Virgen de Guadalupe) | 1 | 5.0 | WhatsApp | 6716-1770 | pendiente | viernes rotativo 06-11; top2 ferreteria Chorrera 140/19 |
+| 2026-11-06 | Jellini La Chorrera | Tienda de material escolar | La Chorrera (Plaza Panama Oeste) | 2 | 5.0 | WhatsApp | 6997-1962 | pendiente | viernes rotativo 06-11; top2 papeleria Chorrera 94/2 (segundo de su busqueda) |
+| 2026-11-06 | Orquidarium Panama | Floristeria | La Chorrera | 5 | 5.0 | WhatsApp | 6950-3660 | pendiente | viernes rotativo 06-11; top2 floristeria Chorrera 514/31 |
+| 2026-11-06 | Dreams and flowers | Floristeria | La Chorrera (Barriada Maribel) | 4 | 5.0 | WhatsApp | 6433-3670 | pendiente | viernes rotativo 06-11; cierra 10pm; top2 floristeria Chorrera 514/31 |
+| 2026-11-06 | Floristeria Naya | Floristeria | La Chorrera (Calle Larga, detras de la iglesia) | 6 | 4.5 | WhatsApp | 6415-0902 | pendiente | viernes rotativo 06-11; top2 floristeria Chorrera 514/31 |
+| 2026-11-06 | CLINICELL MOBILE | Tienda de moviles | La Chorrera | 2 | 5.0 | WhatsApp | 6044-6673 | pendiente | viernes rotativo 06-11; top2 accesorios de celular Chorrera 32/433 |
+| 2026-11-06 | Muebles Modernos La Chorrera | Tienda de muebles | La Chorrera (Av. de las Americas, entre MEDUCA y Don Lee) | 13 | 4.8 | WhatsApp | 6816-9433 | pendiente | viernes rotativo 06-11; a 2 resenas de las 15; top2 muebleria Chorrera 19/84 |
+| 2026-11-06 | Mas x Menos Panama La Chorrera | Tienda de variedades | La Chorrera (C. Baldomero Gonzalez) | 3 | 4.7 | WhatsApp | 6888-0308 | pendiente | viernes rotativo 06-11; top2 variedades Chorrera 30/1480 |
+| 2026-11-06 | Zapateria Juan | Zapateria y ropa | La Chorrera (V6JC+G3V) | 10 | 4.3 | WhatsApp | 6273-7414 | pendiente | viernes rotativo 06-11; top2 tienda de zapatos Chorrera 10/10, lider del rubro bbb Shoes 117 |
+| 2026-11-06 | CUTARRAS_SANDALIAS | Zapateria a medida | La Chorrera (Del Tinajon 169-10) | 8 | 4.9 | WhatsApp | 6644-0308 | pendiente | viernes rotativo 06-11; top2 tienda de zapatos Chorrera 10/10 |
+| 2026-11-06 | Zapateria Don Luis | Zapateria | La Chorrera (Altos del Araguaney) | 2 | 5.0 | WhatsApp | 6195-4209 | pendiente | viernes rotativo 06-11; top2 tienda de zapatos Chorrera 10/10 |
+| 2026-11-06 | Mundo Floral | Floristeria | La Chorrera (1015) | 12 | 4.8 | llamada | 350-2766 | pendiente | viernes rotativo 06-11; fijo sin WhatsApp; top2 floristeria Chorrera 514/31 |
+| 2026-11-06 | Boutique Desnudo Collection | Tienda de ropa vintage | La Chorrera (V6QG+5QM) | 2 | 5.0 | llamada | 258-3980 | pendiente | viernes rotativo 06-11; fijo sin WhatsApp; top2 tiendas de ropa Chorrera 361/87 |
+| 2026-11-06 | Muebleria West House | Tienda de muebles | La Chorrera (V6H8+557) | 5 | 4.8 | llamada | 254-7760 | pendiente | viernes rotativo 06-11; fijo sin WhatsApp; top2 muebleria Chorrera 19/84 |
+| 2026-11-06 | Muebleria y Joyeria La Chorrerana S.A. | Tienda de muebles y joyeria | La Chorrera | 1 | 5.0 | llamada | 253-5858 | pendiente | viernes rotativo 06-11; fijo sin WhatsApp; top2 muebleria Chorrera 19/84 |
+| 2026-11-06 | Muebles Espana S.A. | Comercio de muebles | La Chorrera (Cl. Rosario, parque Feuillet) | 2 | 4.5 | llamada | 253-2187 | pendiente | viernes rotativo 06-11; fijo sin WhatsApp; top2 muebleria Chorrera 19/84 |
+| 2026-11-06 | Magic Edu Store | Papeleria | La Chorrera (Av. Ricardo J. Alfaro 4573) | 1 | 5.0 | llamada | 345-1060 | pendiente | viernes rotativo 06-11; fijo sin WhatsApp; top2 papeleria Chorrera 94/2 |
+| 2026-11-06 | Zapateria Lala | Zapatero | La Chorrera (V6H8+JRC) | 10 | 4.9 | visita | sin telefono en la ficha | pendiente | viernes rotativo 06-11; ficha sin telefono; primero de su busqueda con 10; candidato a visita |
+
+| 2026-11-09 | D&D salon | Salon de belleza | La Dona, Tocumen (3JW5+95) | 7 | 4.6 | WhatsApp | 6723-1934 | pendiente | barberias y salones lunes 09-11; Arraijan agotada, Panama Norte agotada, pasada 2 de Panama Este (La Dona, Pacora, Don Bosco, Buena Vista); top2 salones La Dona 46/26; ultima resena de hace 3 anos |
+| 2026-11-09 | Salon Dreams Scarleth | Salon de belleza | Buena Vista, Tocumen (3JFW+VFR) | 11 | 4.6 | WhatsApp | 6230-8109 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones Tocumen 46/27; todas las resenas de hace 10 anos; ficha sin reclamar |
+| 2026-11-09 | Ebano Beauty Salon Extensiones | Salon de belleza | La Dona (Plaza Fenix Town) | 2 | 5.0 | WhatsApp | 6572-7864 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones La Dona 46/26; mujer empresaria; especialidad extensiones |
+| 2026-11-09 | D' Evelyn salon | Salon de belleza | Don Bosco (Parque La Riviera, 2HXW+7X) | 3 | 5.0 | WhatsApp | 6701-7585 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones Don Bosco 46/12; ficha sin reclamar |
+| 2026-11-09 | Barberia First Element | Barberia | Pacora (4P43+X6C) | 14 | 4.6 | WhatsApp | 6283-5912 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 barberias Pacora 19/15; a 5 resenas del primero |
+| 2026-11-09 | Barberia Nacho | Barberia | Pacora (4PFX+43J) | 2 | 5.0 | WhatsApp | 6692-4974 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 barberias Pacora 19/15; ficha sin reclamar; resena mas vieja de 7 anos |
+| 2026-11-09 | Alejandra Riera Studio | Salon de belleza | La Dona (4J4H+46) | 5 | 5.0 | WhatsApp | 6855-6997 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones La Dona 46/26; contesta todas las resenas; resena reciente de hace 5 dias |
+| 2026-11-09 | Glow salon la dona | Salon de belleza | La Dona (4J4J+472) | 1 | 5.0 | WhatsApp | 6229-5304 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones La Dona 46/26; activa en Instagram; ficha sin reclamar |
+| 2026-11-09 | Sala de Belleza yuly | Salon de belleza | La Dona / Tocumen (4J5P+8F) | 2 | 5.0 | WhatsApp | 6448-9893 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones zona 46/26; ficha sin horario |
+| 2026-11-09 | Pablito barber Shop | Barberia | Pacora (Calle Principal, 4P43+VM) | 2 | 4.5 | WhatsApp | 6549-0278 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 barberias Pacora 19/15; cierra 10:30pm |
+| 2026-11-09 | Salon de belleza Luado | Salon de belleza | Tocumen (Segunda 3912-1, 4J27+JW) | 1 | 5.0 | WhatsApp | 6870-5877 | pendiente | barberias y salones lunes 09-11; pasada 2 Panama Este; top2 salones Tocumen 46/27; resena de hace 8 anos; ficha sin reclamar |
+| 2026-11-09 | Salon New Family | Salon de belleza | La Dona (3JFQ+XJV) | 2 | 4.5 | llamada | 396-9848 | pendiente | barberias y salones lunes 09-11; fijo sin WhatsApp; top2 salones La Dona 46/26; ficha sin reclamar |
+| 2026-11-09 | Studio Cejas La Dona | Centro de estetica | La Dona (CC La Dona, Tocumen) | 1 | 5.0 | llamada | 386-3831 | pendiente | barberias y salones lunes 09-11; fijo sin WhatsApp; top2 salones La Dona 46/26; ficha sin reclamar |
+| 2026-11-09 | Valentina Beauty Studio | Salon de belleza | Las Mananitas (3JP3+632) | 2 | 5.0 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono y sin reclamar; candidato a visita |
+| 2026-11-09 | Barberia Chicho Style | Barberia | Pacora (4P9R+HPR) | 6 | 4.8 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono; candidato a visita; top2 barberias Pacora 19/15 |
+| 2026-11-09 | Alex Barber Shop | Barberia | Pacora (Las Colinas, 3PQ5+R6) | 7 | 5.0 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono; candidato a visita; resenas de 3 a 5 anos |
+| 2026-11-09 | Barberia hermanos soto | Barberia | Pacora (4P8M+FQM) | 3 | 4.7 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono ni horario; candidato a visita |
