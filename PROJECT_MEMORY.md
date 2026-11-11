@@ -2,7 +2,7 @@
 
 Este documento contiene la **memoria viva del proyecto starTAP**. Debe ser consultado y mantenido actualizado por cualquier desarrollador que trabaje en esta base de código.
 
-> ⚡ **Última Actualización (26 oct 2026):** Publicado el 10mo artículo del blog: **[Cómo optimizar la ficha de Google de tu negocio en Panamá](file:///c:/Users/fcontreras/Desktop/Vitales%20locales/NFC/src/content/blog/optimizar-ficha-google-negocio-panama.ts)** (`/blog/optimizar-ficha-google-negocio-panama`). Total de artículos activos: 10. Ver detalles en la [Bitácora de Progreso](#📝-10-bitácora-de-progreso).
+> ⚡ **Última Actualización (11 nov 2026):** Estudio de nicho con DataForSEO y publicación del 11vo artículo del blog: **[Qué es NFC y para qué sirve en un negocio](file:///c:/Users/fcontreras/Desktop/Vitales%20locales/NFC/src/content/blog/que-es-nfc-y-para-que-sirve-en-un-negocio.ts)** (`/blog/que-es-nfc-y-para-que-sirve-en-un-negocio`). Total de artículos activos: 11. Ver detalles en la [Bitácora de Progreso](#📝-10-bitácora-de-progreso).
 
 ---
 
@@ -137,17 +137,18 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
   industria nueva basta agregar un objeto ahí, la ruta y el sitemap se generan solos.
   Emiten JSON-LD `FAQPage` + `BreadcrumbList`.
 * `/shop/[id]` usa `generateMetadata` + JSON-LD `Product` leyendo `db_store.json` en servidor.
-* **Blog y Artículos (`src/content/blog/` y `src/lib/blog.ts`):** 10 artículos publicados y activos en `/blog`:
-  1. `/blog/optimizar-ficha-google-negocio-panama` (26 oct 2026 - 10mo artículo)
-  2. `/blog/cuantas-resenas-necesitas-google-maps-panama` (23 oct 2026 - 9no artículo)
-  3. `/blog/responder-resenas-negativas-google-panama` (16 oct 2026 - 8vo artículo)
-  4. `/blog/qr-o-nfc-resenas-google-panama` (13 oct 2026 - 7mo artículo)
-  5. `/blog/reclamar-ficha-google-mi-negocio-panama` (13 oct 2026 - 6to artículo)
-  6. `/blog/como-conseguir-100-resenas-google-maps` (13 oct 2026 - 5to artículo)
-  7. `/blog/negocio-sin-local-google-maps-panama` (13 oct 2026 - 4to artículo)
-  8. `/blog/como-pedir-resenas-google-sin-penalizacion` (15 sep 2026 - 1er artículo)
-  9. `/blog/por-que-mi-negocio-no-aparece-en-google-maps` (15 sep 2026 - 2do artículo)
-  10. `/blog/ver-y-responder-resenas-de-tu-negocio-en-google` (15 sep 2026 - 3er artículo)
+* **Blog y Artículos (`src/content/blog/` y `src/lib/blog.ts`):** 11 artículos publicados y activos en `/blog`:
+  1. `/blog/que-es-nfc-y-para-que-sirve-en-un-negocio` (11 nov 2026 - 11vo artículo)
+  2. `/blog/optimizar-ficha-google-negocio-panama` (26 oct 2026 - 10mo artículo)
+  3. `/blog/cuantas-resenas-necesitas-google-maps-panama` (23 oct 2026 - 9no artículo)
+  4. `/blog/responder-resenas-negativas-google-panama` (16 oct 2026 - 8vo artículo)
+  5. `/blog/qr-o-nfc-resenas-google-panama` (13 oct 2026 - 7mo artículo)
+  6. `/blog/reclamar-ficha-google-mi-negocio-panama` (13 oct 2026 - 6to artículo)
+  7. `/blog/como-conseguir-100-resenas-google-maps` (13 oct 2026 - 5to artículo)
+  8. `/blog/negocio-sin-local-google-maps-panama` (13 oct 2026 - 4to artículo)
+  9. `/blog/como-pedir-resenas-google-sin-penalizacion` (15 sep 2026 - 1er artículo)
+  10. `/blog/por-que-mi-negocio-no-aparece-en-google-maps` (15 sep 2026 - 2do artículo)
+  11. `/blog/ver-y-responder-resenas-de-tu-negocio-en-google` (15 sep 2026 - 3er artículo)
 
 ## 🛒 9. Landings de producto (refactor sep 2026)
 
@@ -189,8 +190,7 @@ Scripts nuevos reutilizables: `scratch/volumen_nicho.py` (volumen por país) y
 `scratch/dataforseo_keywords.py` (expansión de semillas). Ambos leen las
 credenciales de DataForSEO del `.env.local` y nunca las imprimen.
 
-Compila: `npx tsc --noEmit` sin errores. Falta la imagen de portada, el build en
-Windows y el deploy.
+Compila y genera estáticas limpio: `npx tsc --noEmit` (0 errores) y `npm run build` completado exitosamente con 68/68 páginas estáticas. Portada asignada en WebP con imagen oficial de placa y celular en mostrador. Pendiente el deploy.
 
 ### 2026-11-09 · Auditoría GSC, medición de hipótesis y optimización de snippets en cola
 
