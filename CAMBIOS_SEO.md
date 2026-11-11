@@ -230,3 +230,50 @@ Title 48 caracteres, meta 152.
 del tope de 155 del manual. `como-conseguir-100-resenas` va en 175,
 `negocio-sin-local` en 174, `como-pedir-resenas` en 159, `ver-y-responder` en 157 y
 `reclamar-ficha` en 156. Se cortan en celular.
+
+## 11 de noviembre de 2026 — Artículo 11: qué es NFC
+
+Pendiente de desplegar. Fecha de despliegue: ____________
+
+**Por qué este tema.** Sale del estudio de DataForSEO del mismo día
+(`ANALISIS_KEYWORDS_2026-11.md`). «Que es nfc» son **140 búsquedas al mes en
+Panamá**, la keyword más grande de todo el nicho, y ninguna página nuestra la
+atacaba. Los diez artículos anteriores hablan de reseñas de Google; ninguno
+explicaba la tecnología que vendemos.
+
+Escala fuera: la misma consulta son **5.400 al mes en México**. Es el único
+contenido del blog que puede traer tráfico de LATAM sin cambiar una palabra.
+
+**La segunda keyword, «stand nfc» (30 en Panamá, 1.000 en México), se trabaja desde
+aquí.** No se escribió página nueva para ella: el title de
+`/catalogo/stand-nfc-mesa` ya es «Stand NFC para Reseñas Google Panamá | $30
+starTAP», que está bien construido. Lo que le faltaba era autoridad interna, así
+que el artículo la enlaza con anchor exacto «stand NFC». Una intención, una
+página.
+
+**Excepción consciente a la regla del title.** El `tituloSeo` NO lleva «Panamá».
+La PARTE 1 del manual pide que sobreviva siempre, y la checklist de la PARTE 5 lo
+condiciona a que la página sea local. Esta no lo es: apunta deliberadamente al
+tráfico de México y Colombia, donde el volumen es 20 veces mayor. Meter «Panamá»
+lo restringiría sin ganar nada.
+
+**Anti-canibalización.** El artículo 7 (`qr-o-nfc-resenas-google-panama`) pelea
+«QR o NFC», que es una comparación para decidir. Este explica qué es la tecnología
+y para qué sirve. Se enlazan entre ellos y no comparten keyword.
+
+**Datos propios usados** (los dos que exigen las reglas):
+
+- Mercedes, de Arepitas Que Chiva: «me gusta más el QR, pero sí ayuda». Publicada
+  con autorización en `testimonios.ts`.
+- Rubén, de RUF PIXEL: diez reseñas el primer día con placa y stand. También
+  publicado y con el contexto de que no es lo normal.
+- 525 negocios anotados en prospección, 44 con la ficha sin reclamar.
+
+**Verificado:** `npx tsc --noEmit` sin errores. Registrado como `articulo11` y de
+primero en POSTS, así que entra solo al sitemap. Script anti IA limpio salvo un
+falso positivo de ritmo sobre una lista de viñetas. Title 51 caracteres, meta 153.
+1.204 palabras.
+
+**Falta antes de publicar:** la imagen de portada,
+`que-es-nfc-para-que-sirve-negocio.webp`. Las otras dos del artículo ya existen en
+`public/blog/`. Prompt en `herramientas/prompts/imagenes-que-es-nfc.md`.

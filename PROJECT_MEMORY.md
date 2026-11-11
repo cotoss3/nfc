@@ -169,6 +169,29 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
 
+### 2026-11-11 · Estudio de keywords con DataForSEO y artículo 11
+
+Medidas 86 keywords del nicho NFC y QR en Panamá, México y Colombia. Costo $0.27.
+Resultado en `ANALISIS_KEYWORDS_2026-11.md` y datos en `scratch/volumen_nicho.csv`.
+
+Hallazgo central: todo el nicho en Panamá son **630 búsquedas al mes** y solo 28 de
+las 86 keywords tienen volumen. El transaccional de reseñas son 70 al mes. México
+tiene 20 veces ese volumen y Colombia 5 veces. Airbnb dio **cero en los tres
+países**, así que queda descartado como apuesta de contenido.
+
+Escrito `src/content/blog/que-es-nfc-y-para-que-sirve-en-un-negocio.ts` (1.204
+palabras), registrado como `articulo11` al inicio de POSTS. Ataca «que es nfc»
+(140/mes en Panamá, 5.400 en México), que era el único hueco grande del blog. La
+keyword «stand nfc» se alimenta desde ahí con enlace de anchor exacto hacia
+`/catalogo/stand-nfc-mesa`, sin crear página que la canibalice.
+
+Scripts nuevos reutilizables: `scratch/volumen_nicho.py` (volumen por país) y
+`scratch/dataforseo_keywords.py` (expansión de semillas). Ambos leen las
+credenciales de DataForSEO del `.env.local` y nunca las imprimen.
+
+Compila: `npx tsc --noEmit` sin errores. Falta la imagen de portada, el build en
+Windows y el deploy.
+
 ### 2026-11-09 · Auditoría GSC, medición de hipótesis y optimización de snippets en cola
 
 Medición oficial de Search Console contra la línea base de octubre (vía API en tiempo real):
