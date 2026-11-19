@@ -505,6 +505,54 @@ Cuando una combinación se agote, se anota aquí y se pasa a otro corregimiento.
 | 2026-11-05 | Taller de Mecanica Villarreal | Taller mecanico | Panama Oeste (W7MQ+GCV) | 12 | 4.5 | visita | sin telefono en la ficha | pendiente | talleres jueves 05-11; ficha sin telefono; candidato a visita |
 | 2026-11-05 | Kobies workshop | Taller mecanico | Nueva Gorgona (Av. Nueva Gorgona 20-19) | 9 | 4.8 | visita | sin telefono en la ficha | pendiente | talleres jueves 05-11; ficha sin telefono; candidato a visita; top2 talleres Gorgona 46/110 |
 
+| 2026-11-11 | Nutrisalud Panama | Nutricion clinica | San Francisco (CENDIGASTRO, Rali Business Center Torre A) | 1 | 5.0 | WhatsApp | 6794-3486 | pendiente | clinicas ciudad 11-11; rubros nuevos nutricion y acupuntura; top2 nutricionista 15/36 |
+| 2026-11-11 | Nutricion Panama | Nutricion | Marbella (Calle 53 Este) | 2 | 5.0 | WhatsApp | 6615-6915 | pendiente | clinicas ciudad 11-11; top2 nutricionista 15/36; cierra 1pm, solo manana |
+| 2026-11-11 | Nutricionista Gabriela Spence | Nutricion | Via Argentina | 1 | 5.0 | WhatsApp | 6454-2539 | pendiente | clinicas ciudad 11-11; top2 nutricionista 15/36; tiene sitio web; cierra 7pm |
+| 2026-11-11 | Monica Vidal Nutricionista | Nutricion | San Francisco (Pacific Center Torre A, The Panama Clinic) | 1 | 5.0 | WhatsApp | 6853-5079 | pendiente | clinicas ciudad 11-11; top2 nutricionista 15/36; resena menciona guias nutricionales |
+| 2026-11-11 | Lic. Kevin A. Zhong Nutricion Clinica Panama | Nutricion clinica | San Francisco (The Panama Clinic Torre A, cons. 0910) | 2 | 5.0 | WhatsApp | 6448-1666 | pendiente | clinicas ciudad 11-11; top2 nutricionista 15/36; tiene sitio web |
+| 2026-11-11 | Luz Amira Caballero Nutricionista Clinica y Metabolica | Nutricion clinica y metabolica | San Francisco (The Panama Clinic p23, cons. 2322) | 2 | 5.0 | WhatsApp | 6946-8168 | pendiente | clinicas ciudad 11-11; top2 nutricionista 15/36; tiene sitio web |
+| 2026-11-11 | Nutricionista Namsin Ng | Nutricion | Marbella (Calle 53 Este) | 0 | sin resenas | WhatsApp | 6353-3648 | pendiente | clinicas ciudad 11-11; top2 nutricionista 15/36; tiene sitio web, ficha en cero; abre 1:30pm |
+| 2026-11-11 | Centro de Terapias Orientales Paitilla | Clinica de acupuntura | Paitilla (C. Ramon H. Jurado) | 6 | 5.0 | WhatsApp | 6418-8589 | pendiente | clinicas ciudad 11-11; top2 acupuntura 88/44; atiende hasta 8pm; sede hermana con 88 resenas |
+| 2026-11-11 | Instituto Holistico Cuantico | Clinica de acupuntura | Century Tower (Via Ricardo J. Alfaro 1619) | 2 | 5.0 | WhatsApp | 6670-0982 | pendiente | clinicas ciudad 11-11; top2 acupuntura 88/44; cierra 7pm |
+| 2026-11-11 | Wellness Garden Clinic | Clinica de acupuntura | Ciudad de Panama | 0 | sin resenas | WhatsApp | 6010-3314 | pendiente | clinicas ciudad 11-11; top2 acupuntura 88/44; ficha en cero, abierta |
+| 2026-11-11 | Fabian Corpas Medicina Tradicional China | Medicina tradicional china | Ciudad de Panama (XFHQ+564) | 1 | 5.0 | WhatsApp | 6827-9675 | pendiente | clinicas ciudad 11-11; top2 acupuntura 88/44; cierra 3pm |
+| 2026-11-11 | MedicGym Panama Centro Medico Especializado | Endocrinologia | Soho City Center (segundo piso) | 6 | 4.5 | llamada | 263-4007 | pendiente | clinicas ciudad 11-11; fijo sin WhatsApp; top2 endocrinologo 9/5, busqueda muy floja |
+| 2026-11-11 | Clinica de Infertilidad Dr. Saul Maloul | Reproduccion asistida | Marbella (Consultorios Medicos Royal Center) | 6 | 5.0 | llamada | 223-9273 | pendiente | clinicas ciudad 11-11; fijo sin WhatsApp; rubro fertilidad nuevo |
+| 2026-11-11 | Nutricionista Panama Lic. Giselle Nunez | Nutricion | Ciudad de Panama | 2 | 5.0 | llamada | 340-9994 | pendiente | clinicas ciudad 11-11; fijo sin WhatsApp; top2 nutricionista 15/36 |
+| 2026-11-11 | Fanny Cardoze Nutrition & Fitness | Nutricion | San Francisco (Rali Business Center, Av. Vasco Nunez de Balboa 315) | 0 | sin resenas | llamada | 393-6667 | pendiente | clinicas ciudad 11-11; fijo sin WhatsApp; ficha en cero con sitio web |
+| 2026-11-11 | Dr. Nelson Santamaria Medicina Interna Neumologia CEDITER | Neumologia y medicina interna | Ciudad de Panama (Centro Medico Nacional de Alta Especialidad) | 8 | 4.5 | llamada | 209-5022 | pendiente | clinicas ciudad 11-11; fijo sin WhatsApp; rubro medicina interna nuevo |
+
+| 2026-11-12 | Taller De la Hoz | Taller mecanico | Vacamonte (Arraijan) | 12 | 4.3 | WhatsApp | 6004-0432 | pendiente | talleres jueves 12-11; zonas nuevas Vacamonte y rubros polarizado/tapiceria; top2 talleres Vacamonte 35/18; tiene sitio web |
+| 2026-11-12 | Taller de mecanica Jehova Jireh | Taller mecanico | Altos del Tecal (Arraijan) | 3 | 4.7 | WhatsApp | 6563-2483 | pendiente | talleres jueves 12-11; top2 talleres Vacamonte 35/18 |
+| 2026-11-12 | Taller ian | Taller mecanico | Hacia Puerto Vacamonte (Arraijan) | 0 | sin resenas | WhatsApp | 6455-2922 | pendiente | talleres jueves 12-11; ficha en cero, abierta hasta 7pm; top2 35/18 |
+| 2026-11-12 | Taller Alvis | Taller mecanico | La Chorrera | 0 | sin resenas | WhatsApp | 6660-0025 | pendiente | talleres jueves 12-11; busqueda suspension y frenos Chorrera; top2 65/36; cierra 7pm |
+| 2026-11-12 | L&R Llantas y Servicios Tecnicos | Llanteria y taller | La Chorrera (Via principal) | 0 | sin resenas | WhatsApp | 6606-2085 | pendiente | talleres jueves 12-11; cierra 10:30pm; tiene sitio web; top2 65/36 |
+| 2026-11-12 | Servicio automotriz J.C | Taller de automoviles | Arraijan | 0 | sin resenas | WhatsApp | 6713-9447 | pendiente | talleres jueves 12-11; busqueda frenos Nuevo Emperador/Arraijan; top2 188/58 |
+| 2026-11-12 | Taller de Mecanica Dominguez y Torneria J. Dominguez | Taller y torneria | Arraijan | 0 | sin resenas | WhatsApp | 6164-8006 | pendiente | talleres jueves 12-11; rubro torneria con poca competencia; top2 188/58 |
+| 2026-11-12 | R.SA | Taller de automoviles | Arraijan | 0 | sin resenas | WhatsApp | 6332-0307 | pendiente | talleres jueves 12-11; top2 188/58 |
+| 2026-11-12 | SummerStore by SummerGlass | Polarizado de autos | La Chorrera (Uniplaza) | 2 | 5.0 | WhatsApp | 6775-8282 | pendiente | talleres jueves 12-11; rubro nuevo polarizado; lideres polarizado Chorrera 320/170 |
+| 2026-11-12 | West Window Tint - Papel Ahumado PPF | Polarizado y PPF | La Chorrera (frente a la policlinica) | 6 | 4.8 | WhatsApp | 6690-5260 | pendiente | talleres jueves 12-11; hace PPF; lideres polarizado Chorrera 320/170 |
+| 2026-11-12 | MultiserviciossoundcarDC | Polarizado y sonido | La Chorrera (V6MG+R4W) | 0 | sin resenas | WhatsApp | 6025-5887 | pendiente | talleres jueves 12-11; lideres polarizado Chorrera 320/170 |
+| 2026-11-12 | Tapiceria Jireh | Tapiceria automotriz | Arraijan (Carr. Interamericana) | 2 | 5.0 | WhatsApp | 6587-5520 | pendiente | talleres jueves 12-11; rubro nuevo tapiceria; lider tapiceria 47 (en la ciudad) |
+
+| 2026-11-18 | CENTRO ESPECIALIZADO EN NEURODESARROLLO | Terapia ocupacional infantil | San Francisco (PH Bay Mall, Av. Vasco Nunez de Balboa) | 3 | 5.0 | WhatsApp | 6180-5672 | pendiente | clinicas ciudad 18-11; rubros nuevos terapia ocupacional, lenguaje, dolor y psicopedagogia; top2 terapia ocupacional 37/28; cierra 8pm |
+| 2026-11-18 | ADD Aprendizaje Dinamico Dirigido | Terapia ocupacional | Ciudad de Panama | 3 | 5.0 | WhatsApp | 6303-5615 | pendiente | clinicas ciudad 18-11; top2 terapia ocupacional 37/28; cierra 6:30pm; tiene sitio web |
+| 2026-11-18 | Es una Etapa | Terapia ocupacional | Bella Vista (PH Colores de Bella Vista 6F) | 0 | sin resenas | WhatsApp | 6902-4227 | pendiente | clinicas ciudad 18-11; ficha en cero, abierta; top2 terapia ocupacional 37/28; cierra 5pm |
+| 2026-11-18 | Child Development & Consultant Panama | Fonoaudiologia y logopedia | San Francisco (C. 64 Este) | 0 | sin resenas | WhatsApp | 6676-9092 | pendiente | clinicas ciudad 18-11; top2 terapia de lenguaje 26/21; tiene sitio web; cierra 5pm |
+| 2026-11-18 | Medicina del Dolor PTY - Dr. Edgar Luna | Medicina del dolor | Paitilla (Hospital The Panama Clinic) | 4 | 5.0 | WhatsApp | 6619-8728 | pendiente | clinicas ciudad 18-11; rubro nuevo medicina del dolor; lider de la busqueda 151; abre 12pm |
+| 2026-11-18 | Dra. Melissa Vega Clinica de Dolor | Medicina del dolor | Marbella (Consultorios Royal Center seccion A) | 9 | 5.0 | WhatsApp | 6303-3524 | pendiente | clinicas ciudad 18-11; lider de la busqueda 151; tiene sitio web; cierra 6pm |
+| 2026-11-18 | PSICOPEDA.RR CIUDAD DE PANAMA | Psicopedagogia | Via Espana (PH Domino) | 2 | 5.0 | WhatsApp | 6416-6057 | pendiente | clinicas ciudad 18-11; rubro nuevo psicopedagogia; top2 psicopedagogia 14/14, busqueda floja |
+| 2026-11-18 | Psicopedagogia Integral Panama | Psicopedagogia | Paitilla (The Panama Clinic) | 0 | sin resenas | WhatsApp | 6290-0107 | pendiente | clinicas ciudad 18-11; top2 psicopedagogia 14/14; tiene sitio web y clases en linea |
+| 2026-11-18 | Psicopedan | Psicopedagogia | Juan Diaz (San Antonio, entrando por la UAM) | 1 | 5.0 | WhatsApp | 6892-3981 | pendiente | clinicas ciudad 18-11; top2 psicopedagogia 14/14; tiene sitio web; cierra 6pm |
+| 2026-11-18 | Growing Minds Panama | Psicopedagogia | Ciudad de Panama (C. 74 Oeste) | 0 | sin resenas | WhatsApp | 6781-4310 | pendiente | clinicas ciudad 18-11; top2 psicopedagogia 14/14; abre 4pm, atiende en la tarde |
+| 2026-11-18 | Noris Nicosia | Psicologia | Ciudad de Panama (Calle tercera) | 0 | sin resenas | WhatsApp | 6646-3848 | pendiente | clinicas ciudad 18-11; ficha en cero con sitio web; top2 psicopedagogia 14/14 |
+| 2026-11-18 | Cliniter Clinica de Terapia Ocupacional y Fonoaudiologia | Terapia ocupacional y fonoaudiologia | Ciudad de Panama (XFHJ+C9C) | 0 | sin resenas | llamada | 263-7762 | pendiente | clinicas ciudad 18-11; fijo sin WhatsApp; top2 terapia ocupacional 37/28 |
+| 2026-11-18 | THE AUTISM CENTER PANAMA | Clinica ambulatoria | San Francisco (Las Calas, C. 73 Este) | 1 | 5.0 | llamada | 300-4707 | pendiente | clinicas ciudad 18-11; fijo sin WhatsApp; top2 terapia ocupacional 37/28 |
+| 2026-11-18 | Clinica del Dolor, Huesos y Articulaciones | Medicina del dolor y acupuntura | Via Porras | 1 | 5.0 | llamada | 279-1888 | pendiente | clinicas ciudad 18-11; fijo sin WhatsApp; lider de la busqueda 151 |
+| 2026-11-18 | CENTRO PSICOLOGICO ESPECIALIZADO / NEURO PSICOLOGIA | Neuropsicologia | Ciudad de Panama (C. Esther Neira de Calvo) | 1 | 5.0 | llamada | 214-3557 | pendiente | clinicas ciudad 18-11; fijo sin WhatsApp; top2 psicopedagogia 14/14 |
+| 2026-11-18 | Centro Medico Integral de Alta Especialidad | Centro medico | Ciudad de Panama (Av. Justo Arosemena y C. 38 Este) | 10 | 4.2 | llamada | 307-3605 | pendiente | clinicas ciudad 18-11; fijo sin WhatsApp; salio en busqueda de geriatra, lider 90 |
+| 2026-11-18 | U.S Medic | Centro de diagnostico por imagen | Bella Vista (Plaza Bella Metro, C. 38 Este) | 14 | 4.1 | llamada | +55 11 94545-3523 | pendiente | clinicas ciudad 18-11; la ficha publica un numero de Brasil, no valida para WhatsApp local; top2 imagenes 2865/1645 |
+
 ## 6. Zonas y rubros ya agotados
 
 **La Chorrera, restaurantes y fondas.** Agotada el 2026-10-27 tras la pasada del martes: se
@@ -955,3 +1003,40 @@ para al menos otra pasada.
 | 2026-11-09 | Barberia Chicho Style | Barberia | Pacora (4P9R+HPR) | 6 | 4.8 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono; candidato a visita; top2 barberias Pacora 19/15 |
 | 2026-11-09 | Alex Barber Shop | Barberia | Pacora (Las Colinas, 3PQ5+R6) | 7 | 5.0 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono; candidato a visita; resenas de 3 a 5 anos |
 | 2026-11-09 | Barberia hermanos soto | Barberia | Pacora (4P8M+FQM) | 3 | 4.7 | visita | sin telefono en la ficha | pendiente | barberias y salones lunes 09-11; ficha sin telefono ni horario; candidato a visita |
+
+| 2026-11-13 | USA2/24 Ropa americana | Tienda de ropa americana | 24 de Diciembre (La Casa del Zinc-R) | 5 | 4.2 | WhatsApp | 6579-0055 | pendiente | viernes rotativo 13-11; zona nueva Panama Este tiendas; top2 ropa 24 de Dic 38/27 |
+| 2026-11-13 | ImpresionArte & mas | Papeleria | 24 de Diciembre (Plaza La 25) | 0 | sin resenas | WhatsApp | 6876-4792 | pendiente | viernes rotativo 13-11; ficha en cero; top2 papeleria 24 de Dic 35/3 |
+| 2026-11-13 | Slogan | Papeleria | 24 de Diciembre | 0 | sin resenas | WhatsApp | 6993-0651 | pendiente | viernes rotativo 13-11; cierra 3pm; top2 papeleria 35/3 |
+| 2026-11-13 | L&J soluciones integrales | Papeleria | 24 de Diciembre 123 | 0 | sin resenas | WhatsApp | 6309-2873 | pendiente | viernes rotativo 13-11; entrega a domicilio; top2 papeleria 35/3 |
+| 2026-11-13 | Floristeria del Este en tocumen | Floristeria | Tocumen (Calle 1 210-1) | 3 | 5.0 | WhatsApp | 6294-8776 | pendiente | viernes rotativo 13-11; top2 floristeria Tocumen 82/62 |
+| 2026-11-13 | Floristeria y Boutique Flores de Prestigio | Floristeria y boutique | 24 de Diciembre (Plaza PH, donde esta El Fuerte) | 0 | sin resenas | WhatsApp | 6165-4539 | pendiente | viernes rotativo 13-11; tiene sitio web; top2 floristeria 82/62 |
+| 2026-11-13 | Distribuidora y floristeria Blooming flowers | Floristeria mayorista | 24 de Diciembre | 3 | 5.0 | WhatsApp | 6303-1210 | pendiente | viernes rotativo 13-11; mayorista; top2 floristeria 82/62 |
+| 2026-11-13 | Impresiones Bayen y floristeria | Floristeria e impresiones | Tocumen (paseo central) | 0 | sin resenas | WhatsApp | 6763-1850 | pendiente | viernes rotativo 13-11; cierra 11:30pm; top2 floristeria 82/62 |
+| 2026-11-13 | MOVILMAX | Reparacion y venta de celulares | Tocumen (C. Pl. Tocumen, 3H6H+F3M) | 1 | 5.0 | WhatsApp | 6666-8870 | pendiente | viernes rotativo 13-11; top2 celulares Tocumen 180/17 |
+| 2026-11-13 | Confortarte Mobiliaria | Tienda de muebles | Area Tocumen / 24 de Diciembre | 2 | 5.0 | WhatsApp | 6764-2739 | pendiente | viernes rotativo 13-11; entrega a domicilio; top2 muebleria Tocumen 188/36 |
+| 2026-11-13 | Maymax Boutique | Tienda de ropa | Tocumen (Don Bosco Plaza, Aeropuerto Comercial Park II local 2) | 2 | 5.0 | WhatsApp | 6938-2828 | pendiente | viernes rotativo 13-11; busqueda dominada por el aeropuerto 5647/20 |
+| 2026-11-13 | Zapateria CH-B | Zapateria | Tocumen | 4 | 4.8 | WhatsApp | 6296-0001 | pendiente | viernes rotativo 13-11; top2 zapateria Tocumen 13/38 |
+| 2026-11-13 | Botas y Mas 24 de Diciembre | Tienda de botas | 24 de Diciembre (4J3G+GR8, Ctra. Panamericana) | 0 | sin resenas | llamada | 221-7181 | pendiente | viernes rotativo 13-11; fijo sin WhatsApp; top2 zapateria 13/38 |
+| 2026-11-13 | Reprevenza S.A. | Fabrica de muebles | Via Tocumen (Parque Industrial Las Olas) | 12 | 4.4 | llamada | 398-5250 | pendiente | viernes rotativo 13-11; fijo sin WhatsApp; top2 muebleria 188/36 |
+| 2026-11-13 | Muebles Estilizados S.A. | Colchoneria | Via Tocumen (Edificio Colchones Romance) | 1 | 5.0 | llamada | 220-4186 | pendiente | viernes rotativo 13-11; fijo sin WhatsApp; top2 muebleria 188/36 |
+| 2026-11-13 | DiGiTAL HOGAR | Tienda de muebles | La Dona (Centro Comercial La Dona) | 13 | 4.2 | llamada | 295-1495 | pendiente | viernes rotativo 13-11; fijo sin WhatsApp; top2 muebleria 188/36 |
+
+> Nota 2026-11-13: viernes rotativo con tiendas en Panama Este (Tocumen, 24 de Diciembre, Pedregal,
+> La Dona). Panama Norte (Las Cumbres, Alcalde Diaz, Chilibre) se probo primero y rinde poco para
+> tiendas: las busquedas de ropa y papeleria se desvian a la ciudad y ferreteria solo dio dos fichas
+> con mas de 45 resenas. Pedregal tambien se desvia a Bella Vista. En Panama Este queda material
+> para otra pasada en variedades, mascotas y bisuteria.
+
+| 2026-11-17 | Fonda Cotito | Fonda | Tocumen (Via Tocumen, 3JC2+H5) | 1 | 5.0 | WhatsApp | 6880-2997 | pendiente | restaurantes martes 17-11; rotacion a Panama Este por agotamiento de Chorrera; top2 fonda Tocumen 75/38; cierra 3pm |
+| 2026-11-17 | Fonda Rincon Criollo | Fonda | Tocumen (4J38+594) | 2 | 5.0 | WhatsApp | 6734-6090 | pendiente | restaurantes martes 17-11; ficha sin reclamar; top2 fonda Tocumen 75/38; cierra 7:30pm |
+| 2026-11-17 | Fonda El santenito | Fonda | Tocumen (frente al INADEH, 3JF2+M7) | 1 | 5.0 | WhatsApp | 6108-7447 | pendiente | restaurantes martes 17-11; tiene carta cargada; top2 fonda Tocumen 75/38; cierra 2pm |
+| 2026-11-17 | Fonda Sector Sur | Fonda | Tocumen (Calle 465, 3JJ7+HQ) | 3 | 5.0 | WhatsApp | 6843-6688 | pendiente | restaurantes martes 17-11; ficha sin reclamar; ultima resena hace 5 anos; top2 75/38 |
+| 2026-11-17 | Fonda Las Juanas | Fonda | Tocumen (Cabuya via principal, 3JWJ+H6) | 2 | 5.0 | WhatsApp | 6640-0167 | pendiente | restaurantes martes 17-11; cierra 2am, movimiento de madrugada; top2 75/38 |
+| 2026-11-17 | Milk & Bread Said | Restaurante | Pacora (San Juan, calle 19, 3MPW+JJ) | 5 | 4.8 | WhatsApp | 6865-4119 | pendiente | restaurantes martes 17-11; zona nueva Pacora; top2 restaurantes Pacora 72/65; cierra 10pm |
+| 2026-11-17 | Donde la fula pedregal | Restaurante de mariscos | Pedregal (3H79+56) | 7 | 5.0 | WhatsApp | 6717-3006 | pendiente | restaurantes martes 17-11; zona nueva Pedregal; carta con corvina entera; top2 fonda Pedregal 132/75 |
+| 2026-11-17 | Fonda Flor De Guayacan | Fonda | Pedregal (3H9C+GFM) | 9 | 4.6 | WhatsApp | 6730-6542 | pendiente | restaurantes martes 17-11; ficha sin reclamar; resenas de hace 7 a 9 anos; top2 132/75; cierra 3pm |
+| 2026-11-17 | Fonda Donde Angelo | Fonda | Carr. Antigua (2GRV+M2) | 5 | 4.4 | WhatsApp | 6904-4366 | pendiente | restaurantes martes 17-11; ficha sin reclamar; fuerte en desayuno; top2 132/75; cierra 6pm |
+| 2026-11-17 | Fonda Margelita | Fonda | Panama (3HHW+V5V) | 2 | 4.5 | WhatsApp | 6618-4281 | pendiente | restaurantes martes 17-11; tiene PedidosYa e Instagram; top2 132/75; cierra 10pm |
+| 2026-11-17 | Fonda Vanesa | Fonda | Panama (3H5C+QP) | 8 | 4.5 | WhatsApp | 6556-1411 | pendiente | restaurantes martes 17-11; resena reciente de hace 2 meses; top2 132/75; cierra 3:30pm |
+| 2026-11-17 | Fonda Bonao | Fonda | Tocumen (4M22+855, C. Primera) | 4 | 4.5 | llamada | 384-7719 | pendiente | restaurantes martes 17-11; fijo sin WhatsApp; top2 fonda Tocumen 75/38 |
+| 2026-11-17 | Fonda Don Benito | Fonda | Tocumen (0825, C. Cabuya, 3JVJ+PX) | 1 | 5.0 | llamada | 379-5158 | pendiente | restaurantes martes 17-11; fijo sin WhatsApp; tiene TikTok; top2 75/38 |

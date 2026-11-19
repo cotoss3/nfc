@@ -226,6 +226,8 @@ export default function Footer() {
             <h3 className="text-white font-bold text-xs uppercase tracking-wider">Información</h3>
             <ul className="space-y-2 text-xs">
               <li><Link href="/blog" className="hover:text-white transition-colors">Blog y Guías Google Maps</Link></li>
+              <li><Link href="/blog/reclamar-ficha-google-mi-negocio-panama" className="hover:text-white transition-colors">Reclamar Ficha de Google</Link></li>
+              <li><Link href="/blog/ver-y-responder-resenas-de-tu-negocio-en-google" className="hover:text-white transition-colors">Ver y Responder Reseñas</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">Activar / Configurar TAP</Link></li>
               <li><Link href="/envios" className="hover:text-white transition-colors">Cobertura de Envíos</Link></li>
               <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-400">Términos del Servicio</Link></li>

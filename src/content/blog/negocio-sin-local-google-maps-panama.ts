@@ -3,9 +3,9 @@ import type { BlogPost } from '@/lib/blog';
 export const post: BlogPost = {
   slug: 'negocio-sin-local-google-maps-panama',
   titulo: 'Cómo poner en Google Maps un negocio que no tiene local',
-  tituloSeo: 'Negocio sin Local en Google Maps | Guía Panamá 2026',
+  tituloSeo: 'Google Maps para Negocios sin Local en Panamá | starTAP',
   descripcion:
-    'Negocio desde casa, tienda online o a domicilio en Panamá: qué pide Google para registrarte sin local, cómo configurar la zona de servicio y requisitos.',
+    'Negocio desde casa o a domicilio: cómo usar Google Maps para negocios en Panamá sin local físico, configurar la zona de servicio y evitar suspensiones.',
   resumen:
     'Vender por Instagram desde la casa no te saca de Google Maps, pero hay un requisito que casi nadie lee y que decide si calificas o te suspenden la ficha.',
   fecha: '2026-10-03',

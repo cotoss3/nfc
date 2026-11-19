@@ -2,7 +2,7 @@
 
 Este documento contiene la **memoria viva del proyecto starTAP**. Debe ser consultado y mantenido actualizado por cualquier desarrollador que trabaje en esta base de código.
 
-> ⚡ **Última Actualización (11 nov 2026):** Estudio de nicho con DataForSEO y publicación del 11vo artículo del blog: **[Qué es NFC y para qué sirve en un negocio](file:///c:/Users/fcontreras/Desktop/Vitales%20locales/NFC/src/content/blog/que-es-nfc-y-para-que-sirve-en-un-negocio.ts)** (`/blog/que-es-nfc-y-para-que-sirve-en-un-negocio`). Total de artículos activos: 11. Ver detalles en la [Bitácora de Progreso](#📝-10-bitácora-de-progreso).
+> ⚡ **Última Actualización (19 nov 2026):** Medición de Search Console (642 impresiones en 28 días, +41%) y optimización para capturar consultas transaccionales (`comprar nfc`, `google maps para negocios panamá`, `ficha de google panamá`). Total de artículos activos: 11. Ver detalles en la [Bitácora de Progreso](#📝-10-bitácora-de-progreso).
 
 ---
 
@@ -169,6 +169,26 @@ El proyecto cuenta con una infraestructura de conocimiento construida con `graph
 > Entrada nueva arriba. Formato: fecha · qué se hizo · qué quedó pendiente.
 > Fernando maneja el deploy por su propio proceso de GitHub; el código se deja
 > compilando y commiteable, nunca se publica desde la sesión.
+
+### 2026-11-19 · Medición GSC de 28 días y optimización para búsquedas calientes
+
+Resultados obtenidos con la API de Search Console al 19 de noviembre:
+- **Impresiones en 28 días:** Subieron de 455 a **642 impresiones** (+41% en 10 días).
+- **Posición media global:** Mejoró de 18.1 a **13.6**.
+- **Impacto de cambios del 9 de noviembre:**
+  - `/catalogo/tarjeta-nfc-bolsillo`: Subió a 62 impresiones y **capturó su primer clic orgánico**.
+  - `/blog/optimizar-ficha-google-negocio-panama`: Debutó con **1 clic en posición 1.0 (CTR 100%)**.
+  - `/blog/que-es-nfc-y-para-que-sirve-en-un-negocio` (publicado 11-nov): En 8 días alcanzó **9 impresiones y posición media 4.7** (Top 5).
+  - `/catalogo/pack-trio-comercial` y `/catalogo/tarjeta-nfc-instagram`: Capturaron 1 clic c/u.
+
+**Acciones de optimización ejecutadas:**
+1. **`/catalogo`:** Title a `Comprar Dispositivos NFC en Panamá | Desde $20 starTAP` (54 car.) y descripción con gancho de precio $20 y entrega 24h para capturar `comprar nfc` (pos 4), `nfc costo` (pos 1) y `chip nfc donde comprar` (pos 1).
+2. **`/resenas-google`:** Title a `Google Maps para Negocios y Ficha en Panamá | starTAP` (53 car.) y descripción a 152 car. para atacar `google maps para negocios panamá` (27 impr, pos 33) y `ficha de google panamá` (16 impr, pos 21).
+3. **`/blog/reclamar-ficha-google-mi-negocio-panama`:** Title a `Cómo Reclamar la Ficha de Google en Panamá | starTAP` (52 car.) y descripción a 154 car. para capturar la búsqueda de posición 16.
+4. **`/blog/negocio-sin-local-google-maps-panama`:** Title a `Google Maps para Negocios sin Local en Panamá | starTAP` (55 car.) y descripción a 151 car. para capturar la búsqueda de posición 33.
+5. **Sitewide Footer (`Footer.tsx`):** Inyección de enlaces directos a `/blog/ver-y-responder-resenas-de-tu-negocio-en-google` (pos 13.4 con 90 impresiones) y a `/blog/reclamar-ficha-google-mi-negocio-panama` para transferir autoridad y empujarlos a Página 1.
+6. **Estrategia de maduración:** Los artículos 10 y 11 NO se modifican para permitir que Google consolide sus posiciones en el Top 5 sin reiniciar su aprendizaje.
+7. **Verificación:** `npx tsc --noEmit` completado en 0 errores y `npm run build` completado exitosamente con 68/68 páginas estáticas.
 
 ### 2026-11-11 · Estudio de keywords con DataForSEO y artículo 11
 
@@ -1438,3 +1458,6 @@ Fernando subió los diseños oficiales de los 3 dispositivos físicos para Insta
 5. **Verificación:**
    - `npx tsc --noEmit` completado en 0 errores.
    - `npm run build` completado exitosamente generando 65 páginas estáticas (3 nuevas rutas de producto pre-renderizadas).
+
+## 2026-11-12 — Investigación para sitio nuevo (no es parte de starTAP)
+- Ejecutados `scratch/nichos_sitio_nuevo.py` y nuevo `scratch/serp_nichos_sitio_nuevo.py` (DataForSEO, 0,38 USD + SERP). Resultados y decisión en `../sitio-consumo-energia/PROJECT_MEMORY.md`. No se tocó código ni claves de starTAP.

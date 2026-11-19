@@ -3,9 +3,9 @@ import type { BlogPost } from '@/lib/blog';
 export const post: BlogPost = {
   slug: 'reclamar-ficha-google-mi-negocio-panama',
   titulo: 'Cómo reclamar la ficha de Google de tu negocio cuando ya existe',
-  tituloSeo: 'Reclamar Ficha de Google de mi Negocio | Guía Panamá',
+  tituloSeo: 'Cómo Reclamar la Ficha de Google en Panamá | starTAP',
   descripcion:
-    'Tu negocio sale en Google Maps y no lo pusiste. Descubre cómo saber si la ficha está sin reclamar, cómo tomar el control y qué hacer si otro la administra.',
+    'Tu negocio sale en Google Maps y no lo pusiste. Descubre cómo saber si tu ficha de Google en Panamá está sin reclamar y cómo tomar el control paso a paso.',
   resumen:
     'Google crea fichas solo, sin avisarle a nadie. Mientras no la reclames no puedes responder reseñas ni corregir tu horario, y cualquiera puede cambiar tu información.',
   fecha: '2026-10-12',

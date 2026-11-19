@@ -162,6 +162,27 @@ Lo que quedó pendiente:
 - El teléfono de la cuenta es el personal de Fernando (6713-4341) y no el de la
   empresa (6483-9004).
 
+## 19 de noviembre de 2026 — Medición de 28 días y optimización para búsquedas calientes
+
+**Resultados al 19 de noviembre (Verificado contra API de GSC en tiempo real):**
+- **Impresiones en 28 días:** Saltaron de 455 a **642 impresiones** (+41% en 10 días).
+- **Posición media global:** Mejoró de 18.1 a **13.6**.
+- **Resultados de las acciones del 9 de noviembre:**
+  - `/catalogo/tarjeta-nfc-bolsillo`: Subió a 62 impresiones y **capturó su primer clic orgánico**.
+  - `/blog/optimizar-ficha-google-negocio-panama`: Debutó con **1 clic en posición 1.0 (CTR 100%)**.
+  - `/blog/que-es-nfc-y-para-que-sirve-en-un-negocio` (publicado 11-nov): En 8 días alcanzó **9 impresiones y posición media 4.7** (Top 5).
+  - `/catalogo/pack-trio-comercial` y `/catalogo/tarjeta-nfc-instagram`: Capturaron 1 clic c/u.
+
+**Acciones aplicadas hoy:**
+1. **`/catalogo`:** Title enfocado en `Comprar Dispositivos NFC en Panamá | Desde $20 starTAP` (54 car.) y descripción con `Compra chips y tarjetas NFC en Panamá... Desde $20... Envíos en 24h` (151 car.) para capturar las búsquedas en posición 1 a 4 (`comprar nfc`, `nfc costo`, `nfc cuanto cuesta`, `chip nfc donde comprar`).
+2. **`/resenas-google`:** Title a `Google Maps para Negocios y Ficha en Panamá | starTAP` (53 car.) y descripción a 152 car. para atacar `google maps para negocios panamá` (27 impr, pos 33) y `ficha de google panamá` (16 impr, pos 21).
+3. **`/blog/reclamar-ficha-google-mi-negocio-panama`:** Title a `Cómo Reclamar la Ficha de Google en Panamá | starTAP` (52 car.) y descripción a 154 car. para capturar la búsqueda de posición 16.
+4. **`/blog/negocio-sin-local-google-maps-panama`:** Title a `Google Maps para Negocios sin Local en Panamá | starTAP` (55 car.) y descripción a 151 car. para capturar la búsqueda de posición 33.
+5. **Sitewide Footer (`Footer.tsx`):** Inyección de enlaces directos a `/blog/ver-y-responder-resenas-de-tu-negocio-en-google` (que escaló a pos 13.4 con 90 impresiones) y a `/blog/reclamar-ficha-google-mi-negocio-panama` para transferir autoridad y empujarlos a Página 1.
+6. **Estrategia de maduración:** Los artículos 10 y 11 NO se modifican para permitir que Google consolide sus posiciones en el Top 5 sin reiniciar su aprendizaje.
+
+---
+
 ## 9 de noviembre de 2026 — Medición oficial y optimización de snippets en cola
 
 **Resultados de la medición del 3-9 de noviembre (Verificado contra API de GSC):**
