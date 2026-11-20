@@ -348,7 +348,7 @@ function ProductCarousel({
 
                 src={img}
 
-                alt={`Miniatura ${idx + 1}`}
+                alt={`${alt} - Foto miniatura ${idx + 1}`}
 
                 width={64}
 

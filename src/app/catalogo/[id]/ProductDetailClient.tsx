@@ -238,7 +238,7 @@ export default function ProductDetailClient({
                       (selectedImage || product.image) === img ? 'border-brand-950 ring-2 ring-brand-950' : 'border-brand-200'
                     }`}
                   >
-                    <img src={img} alt={`Miniatura ${idx}`} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={img} alt={`${product.name} - Foto miniatura ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
@@ -416,7 +416,7 @@ export default function ProductDetailClient({
                       </div>
                       {logoPreview && (
                         <div className="mt-2 flex items-center space-x-3 bg-white p-2.5 rounded-xl border border-brand-200">
-                          <img src={logoPreview} alt="Logo Preview" className="h-9 w-9 object-contain rounded border" />
+                          <img src={logoPreview} alt="Vista previa del logo personalizado para tu starTAP" className="h-9 w-9 object-contain rounded border" />
                           <span className="text-xs text-green-600 font-bold">✓ Vista previa de logo cargada</span>
                         </div>
                       )}

@@ -521,7 +521,7 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
                     <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border-2 border-amber-400 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/NFC_10001/NFC_10001_Placa.webp"
-                        alt="1x Placa Acrílica de Mostrador"
+                        alt="1x Placa Acrílica NFC de Mostrador para reseñas de Google en Panamá"
                         width={96}
                         height={96}
                         loading="lazy"
@@ -533,7 +533,7 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
                     <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
-                        alt="1x Tarjeta NFC de Bolsillo"
+                        alt="1x Tarjeta NFC de Bolsillo para reseñas de Google en Panamá"
                         width={96}
                         height={96}
                         loading="lazy"
@@ -545,7 +545,7 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
                     <div className="h-20 sm:h-24 bg-white rounded-2xl p-1 border border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
                       <img
                         src="/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp"
-                        alt="2x Tarjeta NFC de Bolsillo"
+                        alt="2x Tarjeta NFC de Bolsillo para reseñas de Google en Panamá"
                         width={96}
                         height={96}
                         loading="lazy"
