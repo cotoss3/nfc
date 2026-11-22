@@ -300,11 +300,12 @@ export default function Footer() {
           <div className="space-y-1 text-center md:text-left">
             <p>© {new Date().getFullYear()} starTAP Panamá. Todos los derechos reservados.</p>
             <p className="text-[11px] text-gray-400">
-              Desarrollo Web por{' '}
+              Desarrollo Web & Software por{' '}
               <a
-                href="https://datakorex.com"
+                href="https://www.datakorex.com/"
                 target="_blank"
                 rel="noopener noreferrer"
+                title="DataKorex – Soluciones Web, Software y SEO en Panamá"
                 className="text-amber-400 font-bold hover:text-white transition-colors"
               >
                 DataKorex (datakorex.com)

@@ -30,21 +30,21 @@ import { INDUSTRIAS } from '@/lib/industrias';
 const BASE_URL = 'https://startap.com.pa';
 
 export const metadata: Metadata = {
-  title: 'Google Maps para Negocios y Ficha en Panamá | starTAP',
+  title: 'Placas y Tarjetas de Reseñas Google Maps en Panamá | starTAP',
   description:
-    'Posiciona tu negocio en Google Maps y optimiza tu ficha de Google en Panamá: estrategias por industria para conseguir clientes y reseñas de 5 estrellas.',
+    'Consigue más reseñas de 5 estrellas en Google Maps. Placas y stands acrílicos con chip NFC y código QR para tu mostrador en Panamá. Pago único sin mensualidades.',
   keywords: [
-    'reseñas google maps',
+    'placas de reseñas google panamá',
+    'tarjeta de reseña de google',
+    'ficha de google panamá',
+    'placas nfc personalizadas',
+    'reseñas google maps panamá',
     'reseñas en google maps',
-    'reseñas de google maps',
     'comentarios google maps',
-    'google maps comentarios',
     'opiniones google maps panamá',
     'top local business panama',
     'posicionamiento movil en panama',
-    'posicionamiento tienda online en panama',
     'servicio seo local panama',
-    'estrategia seo local panama',
   ],
   alternates: { canonical: '/resenas-google' },
   openGraph: {

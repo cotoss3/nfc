@@ -14,15 +14,17 @@ import RealTimeTracker from '@/components/RealTimeTracker';
 export const metadata: Metadata = {
   metadataBase: new URL('https://startap.com.pa'),
   title: {
-    default: 'Placas y Tarjetas NFC para Reseñas de Google en Panamá | starTAP',
+    default: 'Tarjetas NFC Panamá y Placas de Reseñas Google | starTAP',
     template: '%s | starTAP Panamá',
   },
   description:
-    'Multiplica tus reseñas de Google Maps con tarjetas, stands y placas NFC. Un toque y listo, sin apps ni mensualidades. Envíos a todo Panamá.',
+    'Tarjetas de presentación digitales y placas NFC para reseñas de Google en Panamá. Hardware contactless sin mensualidades. Envíos 24-48h a todo Panamá.',
   keywords: [
     'tarjetas nfc panama',
+    'tarjetas de presentacion digitales panama',
     'placas nfc google panama',
     'placa nfc para reseñas google maps',
+    'tarjetas inteligentes nfc',
     'comprar tarjeta nfc google panama',
     'stand nfc reseñas panama',
     'nfc google reviews panama',
