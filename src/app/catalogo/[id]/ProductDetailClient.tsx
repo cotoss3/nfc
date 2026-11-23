@@ -508,33 +508,49 @@ export default function ProductDetailClient({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-brand-700">
-            <div className="space-y-3">
-              <h3 className="font-bold text-brand-950 text-base">¿En qué negocios funciona mejor?</h3>
-              <p className="leading-relaxed">
-                Ideal para negocios con mostrador o pared donde fijarla: restaurantes, bares, hoteles, recepciones, clínicas, peluquerías y cualquier local de atención al público. Su diseño se adapta a cualquier superficie comercial.
-              </p>
-            </div>
-            
-            <div className="space-y-3">
-              <h3 className="font-bold text-brand-950 text-base">¿Cómo se instala?</h3>
-              <p className="leading-relaxed">
-                La instalación es muy sencilla: limpia la superficie, despega el adhesivo de alta fijación de la parte trasera y pégala en el lugar que elijas. No necesitas herramientas ni perforar la pared. En menos de un minuto está lista.
-              </p>
-            </div>
+            {((landingCopy && landingCopy.faqs.length > 0) ? landingCopy.faqs : [
+              {
+                q: '¿En qué negocios funciona mejor?',
+                a: 'Ideal para negocios con mostrador, atención presencial o entregas: restaurantes, clínicas, cafeterías, salones, tiendas y profesionales en Panamá.',
+              },
+              {
+                q: '¿Cómo funciona con los clientes?',
+                a: 'El cliente solo acerca su teléfono celular al chip NFC o escanea el código QR de respaldo. En menos de 2 segundos se abre directamente la pantalla de 5 estrellas de tu perfil de Google.',
+              },
+              {
+                q: '¿Necesito pagar alguna mensualidad o suscripción?',
+                a: 'No. Todos los dispositivos starTAP son de pago único sin mensualidades obligatorias ni renovaciones anuales.',
+              },
+              {
+                q: '¿Es compatible con iPhone y Android?',
+                a: 'Sí, es 100% compatible con todos los smartphones modernos a través de lectura NFC o cámara para el código QR.',
+              },
+            ]).map((faq, idx) => (
+              <div key={idx} className="space-y-2 bg-brand-50/60 p-5 rounded-2xl border border-brand-100">
+                <h3 className="font-bold text-brand-950 text-base">{faq.q}</h3>
+                <p className="leading-relaxed text-brand-700">{faq.a}</p>
+              </div>
+            ))}
+          </div>
 
-            <div className="space-y-3">
-              <h3 className="font-bold text-brand-950 text-base">¿Necesito una app para que funcione?</h3>
-              <p className="leading-relaxed">
-                No. La placa funciona directamente con el lector NFC integrado en la mayoría de smartphones modernos. Tus clientes solo necesitan acercar su teléfono y tener sesión iniciada en su cuenta de Google.
+          {/* Enlaces Internos Contextuales Estratégicos */}
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+            <p className="font-semibold text-slate-900">
+              💡 Descubre la gama completa de <Link href="/" className="text-brand-950 underline font-bold hover:text-amber-600">tarjetas NFC en Panamá</Link> y placas de reseñas de starTAP.
+            </p>
+            {product.id === 'tarjeta-nfc-bolsillo' ? (
+              <p>
+                ¿También cuentas con un punto de cobro fijo o mostrador de recepción? Revisa nuestra <Link href="/catalogo/placa-nfc-mostrador" className="text-brand-950 underline font-bold hover:text-amber-600">placa NFC para mostrador</Link> en acrílico de 3mm con adhesivo industrial 3M para captar opiniones antes de que el cliente se retire de tu local.
               </p>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="font-bold text-brand-950 text-base">¿Por qué elegir esta solución?</h3>
-              <p className="leading-relaxed">
-                Aumentar tus reseñas en Google Maps orgánicamente es la mejor inversión en marketing local. Más estrellas atraen a más clientes todos los días, mejorando tu posicionamiento sobre tus competidores en el mapa de Panamá.
+            ) : product.id === 'placa-nfc-mostrador' ? (
+              <p>
+                ¿Tienes personal que atiende mesas, repartidores a domicilio o técnicos en ruta? Equípalos con una <Link href="/catalogo/tarjeta-nfc-bolsillo" className="text-brand-950 underline font-bold hover:text-amber-600">tarjeta NFC de bolsillo</Link> para solicitar reseñas de Google Maps en cualquier lugar sin depender de un mostrador fijo.
               </p>
-            </div>
+            ) : (
+              <p>
+                Explora también nuestra <Link href="/catalogo/placa-nfc-mostrador" className="text-brand-950 underline font-bold hover:text-amber-600">placa NFC para mostrador</Link> y la <Link href="/catalogo/tarjeta-nfc-bolsillo" className="text-brand-950 underline font-bold hover:text-amber-600">tarjeta NFC de bolsillo</Link> en nuestro <Link href="/catalogo" className="text-brand-950 underline font-bold hover:text-amber-600">catálogo de productos</Link>.
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -174,9 +174,9 @@ Para pedir reseñas sin comprar nada entras a tu Perfil de Negocio, sacas el enl
 
 Se traba en el mostrador. El cliente ya pagó, tiene las llaves en la mano y quiere salir. Abrir WhatsApp, buscar tu mensaje, tocar el enlace y esperar a que cargue son cuatro movimientos que casi nadie hace parado frente a la caja.
 
-En la práctica: ahí es donde entra el hardware. El cliente acerca el celular a la placa del mostrador y el formulario de las cinco estrellas se abre sin que escriba nada. Es el mismo enlace de tu ficha, metido en un chip.
+En la práctica: ahí es donde entra el hardware. El cliente acerca el celular a una [placa NFC para mostrador](/catalogo/placa-nfc-mostrador) o a una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) y el formulario de las cinco estrellas se abre sin que escriba nada. Es el mismo enlace de tu ficha, metido en un chip.
 
-Los dispositivos de [starTAP](/catalogo) son de pago único, sin mensualidad, y llegan programados con tu ficha. El envío es gratis en pedidos desde $50.
+Las soluciones de [tarjetas NFC en Panamá](/) de [starTAP](/catalogo) son de pago único, sin mensualidad, y llegan programadas con tu ficha. El envío es gratis en pedidos desde $50.
 
 Lo que no hacen: conseguir la reseña solos. Si la placa termina debajo del teclado de la caja, no pasa nada. Lo que mueve el número es la frase corta del que atiende cuando la pone sobre el mostrador.
 

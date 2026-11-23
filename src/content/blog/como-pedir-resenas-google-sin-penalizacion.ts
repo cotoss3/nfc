@@ -146,11 +146,11 @@ Después de instalar dispositivos en varios negocios, lo que veo es que casi tod
 
 **El esfuerzo.** Pedirle que busque tu negocio en Google, lo encuentre entre varios parecidos, baje hasta reseñas y escriba algo son cinco pasos. Ahí se cae casi todo el mundo, no por mala voluntad sino porque es incómodo hacerlo parado frente a ti.
 
-Por eso funciona cualquier cosa que lo reduzca a un toque: un enlace directo por WhatsApp, un QR en la mesa, un dispositivo NFC en la caja. La tecnología no es lo importante. Lo importante es que el cliente llegue directo a la pantalla de calificar.
+Por eso funciona cualquier cosa que lo reduzca a un toque: un enlace directo por WhatsApp, un QR en la mesa o una [placa NFC para mostrador](/catalogo/placa-nfc-mostrador) junto a la caja. La tecnología no es lo importante. Lo importante es que el cliente llegue directo a la pantalla de calificar.
 
 ![Stand NFC y QR autoportante para mesas y barras de atención](/products/NFC10002/stand-nfc-resenas-google-frontal.webp)
 
-Y una cosa más que aprendí a la mala: si tu equipo no lo menciona, no pasa nada. Un stand en el mostrador que nadie señala genera una fracción de lo que genera el mismo stand con un mesero diciendo "si te gustó, acercá el celular aquí".
+Y una cosa más que aprendí a la mala: si tu equipo no lo menciona, no pasa nada. Un [stand NFC de mesa](/catalogo/stand-nfc-mesa) en el mostrador que nadie señala genera una fracción de lo que genera el mismo stand con un mesero diciendo "si te gustó, acerca el celular aquí". O mejor aún, dotar al personal con una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) en su portacredencial. En starTAP desarrollamos [tarjetas NFC en Panamá](/) precisamente para eliminar esa fricción en segundos.
 
 ![Tarjeta NFC de bolsillo para que meseros y personal de atención la lleven en su portacredencial](/products/tarjeta-nfc/tarjeta-nfc-en-lanyard-empleado.webp)
 

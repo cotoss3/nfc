@@ -161,7 +161,7 @@ trabajar.
 
 ![Cliente dejando una reseña de 5 estrellas en Google mediante dispositivo físico NFC en mostrador comercial](/blog/conseguir-resenas-google-maps-placa-nfc.webp)
 
-Lo vemos constantemente en starTAP: locales que llevaban meses estancados con 15 o 20 reseñas comienzan a recibir 4 o 5 reseñas semanales tras colocar placas NFC en caja o mesas. Ese flujo constante le demuestra a Google que el negocio está activo y atendiendo público todos los días.
+Lo vemos constantemente en starTAP: negocios que llevaban meses estancados con 15 o 20 reseñas comienzan a recibir 4 o 5 reseñas semanales tras instalar una [placa NFC para mostrador](/catalogo/placa-nfc-mostrador) en la caja o equipar a sus colaboradores con una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo). Con el uso de [tarjetas NFC en Panamá](/) para captar opiniones al instante, ese flujo constante le demuestra a Google que el negocio está activo y atendiendo público todos los días.
 
 ## El orden en que yo lo revisaría
 

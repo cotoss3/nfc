@@ -3,16 +3,16 @@ import HomeClient from './HomeClient';
 import { getCatalogoConPrecios } from '@/lib/precios';
 
 export const metadata: Metadata = {
-  title: 'Tarjetas NFC en Panamá y Placas de Reseñas Google | starTAP',
+  title: 'starTAP: Tarjetas NFC y Placas de Reseñas Google en Panamá | ¡Multiplica tus 5★!',
   description:
-    'Tarjetas de presentación digitales y placas NFC para reseñas de Google en Panamá. Chip contactless inteligente, sin mensualidades y con entrega rápida en 24h.',
+    'Consigue más reseñas de 5 estrellas en Google Maps con starTAP. Tarjetas NFC y placas contactless inteligentes en Panamá. ¡Sin apps, sin mensualidades, entrega 24h!',
   alternates: {
     canonical: 'https://startap.com.pa/',
   },
   openGraph: {
-    title: 'Tarjetas NFC Panamá y Placas de Reseñas Google | starTAP',
+    title: 'starTAP: Tarjetas NFC y Placas de Reseñas Google en Panamá | ¡Multiplica tus 5★!',
     description:
-      'Multiplica tus clientes y reseñas en Google Maps con tarjetas y placas NFC inteligentes. Entrega rápida en todo Panamá. Sin mensualidades.',
+      'Consigue más reseñas de 5 estrellas en Google Maps con starTAP. Tarjetas NFC y placas contactless inteligentes en Panamá. ¡Sin apps, sin mensualidades, entrega 24h!',
     url: 'https://startap.com.pa/',
     siteName: 'starTAP Panamá',
     images: [

@@ -139,7 +139,7 @@ Google Business Profile te da un enlace directo que abre la ventana de puntuaci�
 Funciona bien si tu presupuesto es cero, aunque el papel se desgasta, no todos abren la cámara para escanear y a veces se ve improvisado.
 
 ### Opción 2: Dispositivo NFC de mostrador o tarjeta física
-Es una [placa NFC de mostrador](/catalogo/placa-nfc-mostrador), un [stand de mesa](/catalogo/stand-nfc-mesa) o una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) con chip inalámbrico integrado (como los de [starTAP Panamá](/catalogo)). El cliente solo acerca su teléfono —igual a cuando paga con tarjeta contactless o Apple Pay— y se le abre automáticamente la pantalla de 5 estrellas de tu negocio.
+Puedes instalar una [placa NFC para mostrador](/catalogo/placa-nfc-mostrador), colocar un [stand de mesa](/catalogo/stand-nfc-mesa) o equipar a tus meseros y repartidores con una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo). Con las soluciones de [tarjetas NFC en Panamá](/) de starTAP, el cliente solo acerca su teléfono —igual a cuando paga con tarjeta contactless o Apple Pay— y se le abre automáticamente la pantalla de 5 estrellas de tu negocio en Google Maps.
 
 Sin abrir cámara, sin escribir en el buscador y sin buscar links. Toca el stand, marca las 5 estrellas y listo. Tarda 8 segundos reloj.
 

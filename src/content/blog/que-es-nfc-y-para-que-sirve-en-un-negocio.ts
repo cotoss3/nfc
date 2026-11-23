@@ -120,11 +120,11 @@ El chip es el mismo en los tres. Lo que cambia es dónde se para la pieza y en q
 
 | Formato | Dónde va | Para quién |
 | --- | --- | --- |
-| Tarjeta de bolsillo | Billetera o delantal | Quien atiende fuera del mostrador |
+| [Tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) | Billetera o delantal | Quien atiende fuera del mostrador |
 | Stand de mesa | Sobre la mesa o la barra | Restaurantes y salas de espera |
 | Placa de mostrador | Pegada en la caja | Tiendas, talleres y recepciones |
 
-El [stand NFC](/catalogo/stand-nfc-mesa) es el formato que más preguntan los restaurantes y las salas de espera, porque se para solo y queda con el ángulo inclinado hacia la persona que está sentada. La [placa NFC de mostrador](/catalogo/placa-nfc-mostrador) va pegada y no se mueve, que es su ventaja: nadie la guarda en una gaveta al limpiar.
+Para el personal en movimiento o repartidores, la [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) es la opción más práctica. El [stand NFC](/catalogo/stand-nfc-mesa) es el formato que más preguntan los restaurantes y las salas de espera, porque se para solo y queda con el ángulo inclinado hacia la persona que está sentada. Por su parte, la [placa NFC para mostrador](/catalogo/placa-nfc-mostrador) va pegada en la caja y no se mueve, que es su ventaja: nadie la guarda en una gaveta al limpiar. Si quieres comparar las distintas opciones de [tarjetas NFC en Panamá](/) y placas físicas para tu negocio, revisa nuestro [catálogo completo](/catalogo).
 
 Rubén, de RUF PIXEL, instaló la placa y el stand juntos y registró diez reseñas el primer día. Ese es el número más alto que tenemos anotado y no es lo que le pasa a todo el mundo. Lo publico porque muestra de qué depende: él puso las piezas a la vista y su equipo las ofrecía.
 

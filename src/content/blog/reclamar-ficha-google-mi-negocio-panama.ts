@@ -156,7 +156,7 @@ La forma de pedirlas sin arriesgar la ficha está en [cómo pedir reseñas de Go
 
 ![Placa NFC de starTAP en el mostrador de un salón en Panamá para que el cliente deje su reseña de Google con un toque](/blog/placa-nfc-mostrador-despues-de-reclamar-ficha.webp)
 
-Nosotros vendemos dispositivos que acortan ese paso, y los tienes en [el catálogo](/catalogo). Nada de lo que está arriba sobre reclamar la ficha necesita que nos compres algo: el trámite es gratis y lo haces tú en una tarde.
+Nosotros desarrollamos [tarjetas NFC en Panamá](/) y placas físicas que acortan ese paso: puedes instalar una [placa NFC para mostrador](/catalogo/placa-nfc-mostrador) fija o llevar una [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo), disponibles en nuestro [catálogo de productos](/catalogo). Nada de lo que está arriba sobre reclamar la ficha necesita que nos compres algo: el trámite es gratis y lo haces tú en una tarde.
 
 **Lo que puedes hacer en los próximos diez minutos:** busca tu negocio en Maps desde el celular y fíjate si sale «¿Es tu empresa?». Con eso ya sabes en cuál de los dos casos estás, y es el único paso que no puede hacer nadie por ti.`,
   cierre: `Escrito por Fernando Contreras, fundador de starTAP Panamá. Los datos de fichas sin reclamar salen de nuestra propia lista de prospección en La Chorrera y Arraiján.

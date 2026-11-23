@@ -183,6 +183,7 @@ export const LANDINGS: LandingCopy[] = [
       { q: '¿Soporta la intemperie o salpicaduras de agua?', a: 'Sí. El chip NFC está sellado dentro del cuerpo de acrílico de 3 mm. Es impermeable y resiste el calor de Panamá.' },
       { q: '¿Puedo solicitar el logo de mi negocio en la placa?', a: 'Sí. La placa viene con el diseño estándar y puedes añadir la impresión de tu logo si lo requieres (+ $5.00).' },
       { q: '¿Cobran mensualidades por usar la placa?', a: 'No. Es un pago único por el dispositivo, sin suscripciones obligatorias ni renovaciones anuales.' },
+      { q: '¿Puedo cambiar el enlace de Google si me mudo de local o cambio de ficha?', a: 'Sí. Todas las placas starTAP son 100% reconfigurables en cualquier momento desde tu panel de control, sin tener que comprar un nuevo dispositivo.' },
     ],
     coloresPorDefecto: ['Acrílico Blanco', 'Acrílico Transparente', 'Acrílico Negro'],
   },

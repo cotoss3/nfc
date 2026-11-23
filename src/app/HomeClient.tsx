@@ -176,7 +176,7 @@ export default function HomeClient({ initialProducts }: HomeClientProps = {}) {
 
             {/* High-Impact Benefit Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 leading-[1.12] tracking-tight">
-              Multiplica tus Reseñas de 5★ en Google Maps en tu Mostrador 🇵🇦
+              Multiplica tus Reseñas de 5★ en Google Maps con starTAP en tu Mostrador 🇵🇦
             </h1>
 
             {/* Clear Value Proposition */}
