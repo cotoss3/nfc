@@ -22,9 +22,8 @@ export default function MetaPixel() {
   if (!FB_PIXEL_ID) return null;
 
   return (
-    <>
-      <Script id="meta-pixel" strategy="lazyOnload">
-        {`
+    <Script id="meta-pixel" strategy="lazyOnload">
+      {`
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -35,18 +34,7 @@ s.parentNode.insertBefore(t,s)}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '${FB_PIXEL_ID}');
 fbq('track', 'PageView');
-        `}
-      </Script>
-      <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height="1"
-          width="1"
-          style={{ display: 'none' }}
-          alt="Meta Pixel starTAP Panamá - Seguimiento de conversiones"
-          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
-        />
-      </noscript>
-    </>
+      `}
+    </Script>
   );
 }

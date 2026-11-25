@@ -3,7 +3,7 @@ import type { BlogPost } from '@/lib/blog';
 export const post: BlogPost = {
   slug: 'tarjetas-nfc-en-panama-guia-de-compra-y-precios',
   titulo: 'Tarjetas NFC en Panamá: Guía de Compra, Precios y Dónde Conseguirlas Sin Mensualidades',
-  tituloSeo: 'Tarjetas NFC en Panamá: Guía de Compra y Precios 2026 | starTAP',
+  tituloSeo: 'Tarjetas NFC en Panamá: Guía de Compra y Precios 2026',
   descripcion:
     'Cuánto cuestan las tarjetas NFC en Panamá, cómo funcionan sin suscripciones mensuales y qué formato elegir (bolsillo o mostrador) para tu negocio. Precios reales desde $20.',
   resumen:
@@ -31,7 +31,7 @@ export const post: BlogPost = {
   faqs: [
     {
       q: '¿Cuánto cuesta una tarjeta NFC en Panamá?',
-      a: 'Una tarjeta NFC de bolsillo individual en PVC de alta durabilidad cuesta $20.00 USD en Panamá. Existen paquetes como la promoción de 2 tarjetas con logo por $25.00 USD, o placas acrílicas de mostrador por $35.00 USD. Todas son de pago único.',
+      a: 'Una tarjeta NFC de bolsillo individual en PVC de alta durabilidad cuesta $20.00 USD en Panamá. Puedes agregarle tu logo personalizado (+ $5.00) o código QR de respaldo (+ $3.00). Además, ofrecemos descuentos por volumen desde 3 unidades (hasta 20% OFF) y soluciones completas como el Pack Trío Comercial por $50.00 USD con envío gratis.',
     },
     {
       q: '¿La tarjeta NFC requiere pagar alguna mensualidad o suscripción?',
@@ -39,7 +39,7 @@ export const post: BlogPost = {
     },
     {
       q: '¿Funciona con cualquier teléfono celular en Panamá?',
-      a: 'Sí. Funciona de forma automática con todos los iPhone (XR en adelante) y con cualquier Android que tenga antena NFC activa. Además, todas las tarjetas incluyen un código QR de alta resolución en el reverso para celulares más antiguos.',
+      a: 'Sí. Funciona de forma automática con todos los iPhone (XR en adelante) y con cualquier Android que tenga antena NFC activa. Además, puedes añadir un código QR de alta resolución en el reverso para celulares más antiguos o sin lector NFC.',
     },
     {
       q: '¿La otra persona tiene que descargar alguna aplicación?',
@@ -47,7 +47,7 @@ export const post: BlogPost = {
     },
     {
       q: '¿Se puede personalizar con el logo de mi negocio?',
-      a: 'Sí. Puedes solicitar la impresión de tu logo a full color tanto en las tarjetas de PVC de bolsillo como en las placas acrílicas para mostrador.',
+      a: 'Sí. Puedes solicitar la impresión de tu logo a full color (+ $5.00) tanto en las tarjetas de PVC de bolsillo como en las placas acrílicas para mostrador.',
     },
     {
       q: '¿Qué pasa si cambio de número de WhatsApp, local o enlace?',
@@ -61,8 +61,6 @@ Mandar a imprimir un millar de tarjetas de papel en Panamá cuesta entre $40 y $
 Por eso las **tarjetas NFC en Panamá** han pasado de ser una curiosidad tecnológica a una herramienta de trabajo estándar para vendedores, consultores, restaurantes, clínicas y comercios locales.
 
 En esta guía te explico con números transparentes cuánto cuestan en Panamá, cómo funcionan en la práctica, qué formatos existen y la trampa comercial más común que debes evitar antes de comprar.
-
-![Mano acercando un celular a una tarjeta NFC de bolsillo sobre una mesa de madera](/blog/tarjetas-nfc-en-panama-guia-de-compra-y-precios.webp)
 
 ---
 
@@ -87,7 +85,7 @@ En el mercado local existen tres formas de resolver el contacto y las reseñas d
 | :--- | :--- | :--- | :--- | :--- |
 | **Tarjetas de papel tradicionales (1,000 uds)** | $50 – $75 | $0 | $50 – $75 | Tienes que botarlas y mandar a imprimir de nuevo |
 | **Plataformas extranjeras (Popl, Tapni, Linq)** | $30 – $45 + envío de USA | $6 a $12 USD / mes | **$102 – $189 USD** | Si dejas de pagar la mensualidad, tu tarjeta queda inactiva |
-| **[Tarjetas NFC starTAP Panamá](/catalogo/tarjeta-nfc-bolsillo)** | **$20.00 USD** (o promo 2x$25) | **$0 (Pago único)** | **$20 – $25 USD** | Se edita gratis en tu panel cuantas veces quieras |
+| **[Tarjetas NFC starTAP Panamá](/catalogo/tarjeta-nfc-bolsillo)** | **$20.00 USD** (con descuentos por volumen) | **$0 (Pago único)** | **$20.00 USD** | Se edita gratis en tu panel cuantas veces quieras |
 
 > **El dato:** Una sola [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) sustituye miles de tarjetas impresas de papel y dura años sin desgastarse gracias a su fabricación en PVC técnico impermeable de 0.76mm (el mismo grosor y resistencia de una tarjeta de crédito o débito bancaria).
 
@@ -98,18 +96,21 @@ En el mercado local existen tres formas de resolver el contacto y las reseñas d
 No todos los negocios necesitan el mismo tipo de dispositivo. Dependiendo de si tu atención es en la calle o detrás de un mostrador, el formato cambia:
 
 ### 1. [Tarjeta NFC de Bolsillo](/catalogo/tarjeta-nfc-bolsillo) ($20.00 USD)
+![Tarjeta NFC de Bolsillo starTAP para reseñas de Google en Panamá](/products/tarjeta-nfc/tarjeta-nfc-bolsillo-resenas-google-panama.webp)
 * **Para quién es:** Vendedores, corredores de bienes raíces, abogados, médicos, técnicos en ruta, repartidores y meseros.
 * **Dónde va:** En la billetera, en el bolsillo del delantal o en un portacredencial colgado al cuello con lanyard.
 * **Material:** PVC blanco mate o negro de 0.76 mm de grosor, completamente impermeable.
 * **Uso principal:** Networking ejecutivo, intercambio instantáneo de contactos o solicitud de reseñas en mesa y entregas a domicilio.
 
 ### 2. [Placa NFC para Mostrador](/catalogo/placa-nfc-mostrador) ($35.00 USD)
+![Placa NFC acrílica de mostrador para reseñas de Google en Panamá](/products/NFC_10001/NFC_10001_Placa.webp)
 * **Para quién es:** Restaurantes, cafeterías, barberías, salones de belleza, talleres mecánicos, farmacias y comercios con caja de cobro.
 * **Dónde va:** Pegada junto a la caja registradora, datáfono o recepción mediante adhesivo industrial 3M (sin taladrar).
 * **Material:** Acrílico premium pulido de 3 mm de espesor, resistente al agua y a la limpieza diaria con alcohol o desinfectante.
 * **Uso principal:** Captar reseñas en Google Maps al momento exacto en que el cliente realiza el pago.
 
 ### 3. [Stand NFC de Mesa](/catalogo/stand-nfc-mesa) ($30.00 USD)
+![Stand NFC de mesa autoportante para restaurantes y clínicas en Panamá](/products/NFC10002/NFC_10002_Stan.webp)
 * **Para quién es:** Restaurantes, bares, cafeterías, escritorios de consulta y salas de espera.
 * **Dónde va:** Autoportante sobre las mesas o barras de atención.
 * **Material:** Estructura rígida inclinada con ángulo ergonómico para que el cliente sentado acerque el celular cómodamente.
@@ -144,15 +145,15 @@ Si decides adquirir tarjetas inteligentes para tu empresa, asegúrate de que el 
 
 En starTAP tenemos inventario físico y taller de personalización directo en Panamá:
 
-* **Envíos locales rápidos:** Entregas en 24 a 48 horas en Ciudad de Panamá y Panamá Oeste (Arraiján, La Chorrera), y envíos a todo el interior del país a través de Uno Express o Flete Chavale.
+* **Envíos locales rápidos:** Entregas en 24 a 48 horas en Ciudad de Panamá y Panamá Oeste (Arraiján, La Chorrera), y envíos a todo el interior del país a través de Uno Express o Servientrega.
 * **Personalización con tu Logo:** Puedes encargar tus tarjetas con el diseño corporativo de tu empresa a full color.
 * **Métodos de pago locales:** Aceptamos Yappy directo de Banco General y tarjetas de crédito/débito Visa o Mastercard con factura fiscal con RUC.
 
-Para ver las opciones disponibles y las promociones vigentes de 2 piezas, visita nuestro [catálogo de tarjetas NFC en Panamá](/catalogo) o escríbenos directamente por WhatsApp al [+507 6483-9004](https://wa.me/50764839004).`,
+Para ver las opciones disponibles, los descuentos por volumen y el [Pack Trío Comercial](/catalogo/pack-trio-comercial), visita nuestro [catálogo de tarjetas NFC en Panamá](/catalogo) o escríbenos directamente por WhatsApp al [+507 6483-9004](https://wa.me/50764839004).`,
   cierre: `Escrito por Fernando Contreras, fundador de starTAP Panamá y DataKorex. Diseñamos e implementamos soluciones de proximidad NFC y posicionamiento local para negocios en todo Panamá.
 
 Nota de transparencia: fabricamos y comercializamos dispositivos NFC. La información sobre costos y especificaciones técnicas está basada en precios de mercado vigentes en Panamá en 2026.`,
-  ctaAuditoria: true,
+  ctaAuditoria: false,
   relacionados: [
     { titulo: 'Tarjeta NFC de bolsillo para negocios', href: '/catalogo/tarjeta-nfc-bolsillo' },
     { titulo: 'Placa NFC para mostrador y recepción', href: '/catalogo/placa-nfc-mostrador' },

@@ -263,7 +263,7 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             
             {/* Left Column: Article Body & FAQs */}
-            <main className="lg:col-span-8 min-w-0">
+            <div className="lg:col-span-8 min-w-0">
               {/* Mobile Table of Contents */}
               {secciones.length > 2 && (
                 <nav
@@ -324,28 +324,56 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
               {/* CTA Section */}
               <section className="mt-12 rounded-3xl bg-gradient-to-br from-brand-950 via-brand-900 to-brand-950 text-white p-7 sm:p-9 shadow-xl relative overflow-hidden">
                 <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-accent-500/10 rounded-full blur-2xl pointer-events-none" />
-                <h2 className="text-2xl sm:text-3xl font-black mb-3 text-white">¿Quieres que te ayudemos con tu negocio?</h2>
-                <p className="text-brand-300 leading-relaxed text-sm sm:text-base">
-                  Vendemos dispositivos NFC para reseñas y trabajamos SEO local en Panamá. Si tienes
-                  dudas sobre tu ficha, escríbenos y te decimos qué te falta, compres o no.
-                </p>
-                <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                  <a
-                    href={WHATSAPP_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 font-bold transition text-white shadow-md hover:shadow-lg"
-                  >
-                    <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                    Escríbenos por WhatsApp
-                  </a>
-                  <Link
-                    href="/catalogo"
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/25 hover:bg-white/10 font-bold transition text-white"
-                  >
-                    Ver catálogo NFC
-                  </Link>
-                </div>
+                {post.categoria === 'Dispositivos' ? (
+                  <>
+                    <h2 className="text-2xl sm:text-3xl font-black mb-3 text-white">¿Quieres cotizar tarjetas o placas NFC para tu negocio?</h2>
+                    <p className="text-brand-300 leading-relaxed text-sm sm:text-base">
+                      Fabricamos tarjetas de bolsillo, placas de mostrador y stands en acrílico y PVC sellado en Panamá. Te asesoramos sobre el mejor formato para tu local o equipo de ventas, listas para usar y sin mensualidades.
+                    </p>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <a
+                        href="https://wa.me/50764839004?text=Hola%2C%20le%C3%AD%20la%20gu%C3%ADa%20de%20tarjetas%20NFC%20en%20el%20blog%20de%20starTAP%20y%20quiero%20cotizar%20dispositivos%20para%20mi%20negocio."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 font-bold transition text-white shadow-md hover:shadow-lg"
+                      >
+                        <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                        Cotizar por WhatsApp
+                      </a>
+                      <Link
+                        href="/catalogo"
+                        className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/25 hover:bg-white/10 font-bold transition text-white"
+                      >
+                        Ver catálogo y precios
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="text-2xl sm:text-3xl font-black mb-3 text-white">¿Quieres que te ayudemos con tu negocio?</h2>
+                    <p className="text-brand-300 leading-relaxed text-sm sm:text-base">
+                      Vendemos dispositivos NFC para reseñas y trabajamos SEO local en Panamá. Si tienes
+                      dudas sobre tu ficha, escríbenos y te decimos qué te falta, compres o no.
+                    </p>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <a
+                        href={WHATSAPP_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 font-bold transition text-white shadow-md hover:shadow-lg"
+                      >
+                        <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                        Escríbenos por WhatsApp
+                      </a>
+                      <Link
+                        href="/catalogo"
+                        className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/25 hover:bg-white/10 font-bold transition text-white"
+                      >
+                        Ver catálogo NFC
+                      </Link>
+                    </div>
+                  </>
+                )}
               </section>
 
               {/* Related links */}
@@ -392,7 +420,7 @@ export default function ArticuloPage({ params }: { params: { slug: string } }) {
                   </ul>
                 </section>
               )}
-            </main>
+            </div>
 
             {/* Right Column: Desktop Sticky Sidebar */}
             <aside className="lg:col-span-4 hidden lg:block sticky top-24 space-y-6">

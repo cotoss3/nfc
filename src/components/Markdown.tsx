@@ -33,7 +33,7 @@ function inline(texto: string, keyBase: string): React.ReactNode[] {
             rel="noopener noreferrer"
             className="text-accent-600 underline underline-offset-2 hover:text-accent-700"
           >
-            {m[1]}
+            {inline(m[1], `${keyBase}-a-txt-${i}`)}
           </a>
         ) : (
           <Link
@@ -41,18 +41,18 @@ function inline(texto: string, keyBase: string): React.ReactNode[] {
             href={href}
             className="text-accent-600 underline underline-offset-2 hover:text-accent-700"
           >
-            {m[1]}
+            {inline(m[1], `${keyBase}-a-txt-${i}`)}
           </Link>
         )
       );
     } else if (m[3]) {
       partes.push(
         <strong key={`${keyBase}-b-${i}`} className="font-bold text-brand-950">
-          {m[3]}
+          {inline(m[3], `${keyBase}-b-txt-${i}`)}
         </strong>
       );
     } else if (m[4]) {
-      partes.push(<em key={`${keyBase}-i-${i}`}>{m[4]}</em>);
+      partes.push(<em key={`${keyBase}-i-${i}`}>{inline(m[4], `${keyBase}-i-txt-${i}`)}</em>);
     }
 
     ultimo = m.index + m[0].length;
@@ -87,7 +87,9 @@ function renderTableCell(cell: string, keyBase: string): React.ReactNode {
 
 /** Convierte un encabezado en un id estable para anclas y tabla de contenidos */
 export function slugificar(texto: string): string {
-  return texto
+  // Elimina la sintaxis de enlaces Markdown [texto](url) dejando solo el texto visible
+  const sinEnlaces = texto.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  return sinEnlaces
     .toLowerCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
@@ -380,11 +382,34 @@ export default function Markdown({ children }: { children: string }) {
       continue;
     }
 
+    if (l === '---' || /^---+$/.test(l)) {
+      cerrarLista();
+      salida.push(
+        <hr key={`hr-${k++}`} className="my-10 border-t border-brand-200" />
+      );
+      continue;
+    }
+
+    if (l.startsWith('>')) {
+      cerrarLista();
+      const t = l.replace(/^>\s*/, '');
+      salida.push(
+        <blockquote
+          key={`bq-${k++}`}
+          className="border-l-4 border-amber-500 bg-amber-50/60 rounded-r-2xl px-5 py-4 my-7 text-brand-900 text-base leading-relaxed italic shadow-2xs"
+        >
+          {inline(t, `bq-${k}`)}
+        </blockquote>
+      );
+      continue;
+    }
+
     const ordenada = /^\d+\.\s+/.test(l);
-    if (l.startsWith('- ') || ordenada) {
+    const noOrdenada = /^[-*]\s+/.test(l);
+    if (noOrdenada || ordenada) {
       if (lista.length && listaOrdenada !== ordenada) cerrarLista();
       listaOrdenada = ordenada;
-      lista.push(l.replace(/^(-|\d+\.)\s+/, ''));
+      lista.push(l.replace(/^([-*]|\d+\.)\s+/, ''));
       continue;
     }
 
