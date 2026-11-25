@@ -9,6 +9,7 @@ import { post as articulo8 } from '@/content/blog/responder-resenas-negativas-go
 import { post as articulo9 } from '@/content/blog/cuantas-resenas-necesitas-google-maps-panama';
 import { post as articulo10 } from '@/content/blog/optimizar-ficha-google-negocio-panama';
 import { post as articulo11 } from '@/content/blog/que-es-nfc-y-para-que-sirve-en-un-negocio';
+import { post as articulo12 } from '@/content/blog/tarjetas-nfc-en-panama-guia-de-compra-y-precios';
 
 export const BASE_URL = 'https://startap.com.pa';
 
@@ -72,7 +73,7 @@ export const AUTORES: Record<string, Autor> = {
   },
 };
 
-export const POSTS: BlogPost[] = [articulo11, articulo10, articulo9, articulo8, articulo7, articulo6, articulo5, articulo4, articulo1, articulo2, articulo3];
+export const POSTS: BlogPost[] = [articulo12, articulo11, articulo10, articulo9, articulo8, articulo7, articulo6, articulo5, articulo4, articulo1, articulo2, articulo3];
 
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);
