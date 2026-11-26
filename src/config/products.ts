@@ -25,7 +25,7 @@ export interface ProductConfig {
 export const PRODUCTS: ProductConfig[] = [
   {
     id: 'tarjeta-nfc-bolsillo',
-    aliases: ['tarjeta-nfc', 'placa-google'],
+    aliases: ['tarjeta-nfc', 'placa-google', 'tarjeta-nfc-google'],
     sku: 'STP-NFC-CARD-01',
     mpn: 'STP-CRD-01',
     name: 'Tarjeta NFC de Bolsillo',

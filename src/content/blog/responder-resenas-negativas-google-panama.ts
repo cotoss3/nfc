@@ -167,7 +167,7 @@ El cajero le muestra el [stand de acrílico en el mostrador](/catalogo/stand-nfc
 
 Sin escribir links largos ni buscar el nombre de tu local en Google Maps.
 
-Para negocios con reparto a domicilio o técnicos en calle, la [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-google) ($20) permite pedir la calificación en la misma puerta del cliente al entregar el pedido.
+Para negocios con reparto a domicilio o técnicos en calle, la [tarjeta NFC de bolsillo](/catalogo/tarjeta-nfc-bolsillo) ($20) permite pedir la calificación en la misma puerta del cliente al entregar el pedido.
 
 Si tienes un local con caja y varias mesas, el [Pack Trío Comercial](/catalogo/pack-trio-comercial) ($50) combina stand, placa y tarjeta para cubrir todo el camino del cliente. Todos nuestros productos funcionan con pago único, sin mensualidades ni aplicaciones que instalar.
 
