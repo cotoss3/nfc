@@ -167,9 +167,15 @@ export default function Page({ params }: { params: { id: string } }) {
             '@type': 'MerchantReturnPolicy',
             applicableCountry: 'PA',
             returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-            merchantReturnDays: 90,
+            merchantReturnDays: 7,
             returnMethod: 'https://schema.org/ReturnByMail',
-            returnFees: 'https://schema.org/FreeReturn',
+            returnFees: 'https://schema.org/ReturnShippingFees',
+            restockingFee: {
+              '@type': 'MonetaryAmount',
+              value: '4.00',
+              currency: 'USD',
+            },
+            returnPolicyUrl: `${BASE_URL}/devoluciones`,
           },
           shippingDetails: {
             '@type': 'OfferShippingDetails',

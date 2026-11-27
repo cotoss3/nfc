@@ -230,6 +230,7 @@ export default function Footer() {
               <li><Link href="/blog/ver-y-responder-resenas-de-tu-negocio-en-google" className="hover:text-white transition-colors">Ver y Responder Reseñas</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">Activar / Configurar TAP</Link></li>
               <li><Link href="/envios" className="hover:text-white transition-colors">Cobertura de Envíos</Link></li>
+              <li><Link href="/devoluciones" className="hover:text-white transition-colors">Política de Devoluciones</Link></li>
               <li><Link href="/terminos" className="hover:text-white transition-colors text-gray-400">Términos del Servicio</Link></li>
               <li><Link href="/privacidad" className="hover:text-white transition-colors text-gray-400">Política de Privacidad</Link></li>
             </ul>
@@ -314,6 +315,7 @@ export default function Footer() {
           </div>
           <div className="flex items-center space-x-4 text-xs">
             <Link href="/envios" className="hover:text-gray-200 transition-colors">Envíos</Link>
+            <Link href="/devoluciones" className="hover:text-gray-200 transition-colors">Devoluciones</Link>
             <Link href="/terminos" className="hover:text-gray-200 transition-colors">Términos</Link>
             <Link href="/privacidad" className="hover:text-gray-200 transition-colors">Privacidad</Link>
             <a
