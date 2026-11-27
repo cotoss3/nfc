@@ -70,8 +70,23 @@ export async function generateMetadata({
       description: metaDesc,
       url: `${BASE_URL}/catalogo/${product.id}`,
       siteName: 'starTAP Panamá',
-      images: product.image ? [`${BASE_URL}${product.image}`] : undefined,
+      images: product.image
+        ? [
+            {
+              url: `${BASE_URL}${product.image}`,
+              width: 800,
+              height: 800,
+              alt: `${product.name} - starTAP Panamá`,
+            },
+          ]
+        : undefined,
       type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metaTitle,
+      description: metaDesc,
+      images: product.image ? [`${BASE_URL}${product.image}`] : undefined,
     },
     // Meta (Facebook/Instagram) Catalog Product Tags
     other: {
@@ -107,7 +122,29 @@ export default function Page({ params }: { params: { id: string } }) {
         brand: { '@type': 'Brand', name: 'starTAP Panamá' },
         sku: product.sku || `STP-${product.id.toUpperCase()}`,
         mpn: product.mpn || `STP-${product.id.toUpperCase()}`,
-        // Solo se emite si hay testimonios publicados CON calificación real.
+        additionalProperty: [
+          {
+            '@type': 'PropertyValue',
+            name: 'Entrega',
+            value: '24 a 48 horas en Panamá',
+          },
+          {
+            '@type': 'PropertyValue',
+            name: 'Mensualidades',
+            value: 'Cero mensualidades (Pago único)',
+          },
+          {
+            '@type': 'PropertyValue',
+            name: 'Garantía',
+            value: '12 meses reemplazo directo',
+          },
+          {
+            '@type': 'PropertyValue',
+            name: 'Mínimo',
+            value: 'Desde 1 unidad (Sin mínimo)',
+          },
+        ],
+        // Calificación y reseñas reales de clientes verificados en Panamá
         ...(aggregateRatingDeProducto(product.id)
           ? {
               aggregateRating: {

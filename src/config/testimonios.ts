@@ -90,9 +90,16 @@ export function aggregateRatingDeProducto(productId: string): {
   bestRating: string;
   worstRating: string;
 } | null {
-  const conNota = testimoniosDeProducto(productId).filter(
+  // Primero busca los testimonios específicos del producto
+  let conNota = testimoniosDeProducto(productId).filter(
     (t) => typeof t.calificacion === 'number'
   );
+  
+  // Si este producto aún no tiene uno exclusivo, usa los testimonios generales verificados de starTAP
+  if (conNota.length === 0) {
+    conNota = testimoniosPublicables().filter((t) => typeof t.calificacion === 'number');
+  }
+
   if (conNota.length === 0) return null;
 
   const suma = conNota.reduce((acc, t) => acc + (t.calificacion as number), 0);
@@ -108,17 +115,22 @@ export function aggregateRatingDeProducto(productId: string): {
 
 /** Los `Review` del schema, solo los que tienen nota */
 export function reviewsSchemaDeProducto(productId: string) {
-  return testimoniosDeProducto(productId)
-    .filter((t) => typeof t.calificacion === 'number')
-    .map((t) => ({
-      '@type': 'Review',
-      author: { '@type': 'Person', name: t.nombre },
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: String(t.calificacion),
-        bestRating: '5',
-        worstRating: '1',
-      },
-      reviewBody: t.texto,
-    }));
+  let reviews = testimoniosDeProducto(productId).filter(
+    (t) => typeof t.calificacion === 'number'
+  );
+  if (reviews.length === 0) {
+    reviews = testimoniosPublicables().filter((t) => typeof t.calificacion === 'number');
+  }
+
+  return reviews.map((t) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: t.nombre },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: String(t.calificacion),
+      bestRating: '5',
+      worstRating: '1',
+    },
+    reviewBody: t.texto,
+  }));
 }
